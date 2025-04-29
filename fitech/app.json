@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "FITECH",
-    "slug": "fitech-app",
+    "slug": "fitech",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
