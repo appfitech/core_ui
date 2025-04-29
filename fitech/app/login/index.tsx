@@ -67,13 +67,19 @@ export default function LoginScreen() {
             style={styles.logo}
           />
           <Animated.Text entering={FadeIn.delay(300)} style={styles.title}>
-            {"Fitech"}
+            Fitech
           </Animated.Text>
         </Animated.View>
 
         {showCard && (
           <>
-            <Vector1 width={200} height={200} />
+            <Animated.View
+              entering={FadeInUp.delay(100)}
+              style={styles.svgWrapper}
+            >
+              <Vector1 width={250} height={250} />
+            </Animated.View>
+
             <Animated.View
               entering={SlideInDown.springify().damping(15)}
               style={styles.card}
@@ -135,13 +141,12 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   logoContainer: {
-    alignItems: "center",
-    justifyContent: "center",
     position: "absolute",
-    flexDirection: "row",
-    columnGap: 10,
-    width,
     top: 10,
+    width,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 10
   },
   logo: {
@@ -152,7 +157,14 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: "800",
     letterSpacing: 1,
-    color: COLORS.light.blue
+    color: COLORS.light.blue,
+    marginLeft: 12
+  },
+  svgWrapper: {
+    position: "absolute",
+    top: height * 0.3,
+    left: width / 2 - 125,
+    zIndex: 0
   },
   card: {
     backgroundColor: "#fff",
@@ -163,7 +175,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 8 },
     shadowRadius: 16,
-    elevation: 10
+    elevation: 10,
+    zIndex: 1
   },
   inputGroup: {
     flexDirection: "row",
