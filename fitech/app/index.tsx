@@ -23,8 +23,10 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(200).duration(800)}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>Welcome to FITECH</Text>
-        <Text style={styles.subtitle}>Your fitness journey starts here</Text>
+        <Text style={styles.title}>{"¡Bienvenido a FITECH!"}</Text>
+        <Text style={styles.subtitle}>
+          {"Tu mejor versión está a punto de activarse."}
+        </Text>
       </Animated.View>
 
       <Animated.View
@@ -32,13 +34,13 @@ export default function WelcomeScreen() {
         style={styles.buttonContainer}
       >
         <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>Create Account</Text>
+          <Text style={styles.primaryButtonText}>{"Crear cuenta"}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() => router.push("/login")}
         >
-          <Text style={styles.secondaryButtonText}>Sign In</Text>
+          <Text style={styles.secondaryButtonText}>{"Iniciar sesión"}</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
   title: {
     color: COLORS.dark.textPrimary,
     fontSize: 32,
-    fontFamily: "Inter_800ExtraBold",
+    fontFamily: "Urbanist_700Bold",
     marginTop: 12,
     letterSpacing: 1
   },

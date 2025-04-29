@@ -10,121 +10,132 @@ import {
   Platform,
   Image
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import Animated, {
-  Easing,
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  FadeIn,
   FadeInUp,
   SlideInDown,
   ZoomIn
 } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/colors";
-import Vector1 from "../../assets/images/vectors/vector_1.svg";
-
-const { width, height } = Dimensions.get("window");
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+const { width } = Dimensions.get("window");
 
 export default function LoginScreen() {
-  const [showCard, setShowCard] = useState(false);
+  const [showUI, setShowUI] = useState(false);
 
-  const logoY = useSharedValue(height / 2 - 100);
-  const logoScale = useSharedValue(1);
+  const router = useRouter();
 
   useEffect(() => {
-    setTimeout(() => {
-      logoY.value = withTiming(80, {
-        duration: 800,
-        easing: Easing.out(Easing.exp)
-      });
-      logoScale.value = withTiming(0.7, {
-        duration: 800,
-        easing: Easing.out(Easing.exp)
-      });
-      setShowCard(true);
-    }, 1200);
+    setTimeout(() => setShowUI(true), 600);
   }, []);
-
-  const animatedLogoStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: logoY.value }, { scale: logoScale.value }],
-    opacity: withTiming(1, { duration: 200 })
-  }));
 
   return (
     <LinearGradient
-      colors={[COLORS.dark.background, COLORS.dark.background]}
+      colors={[COLORS.dark.accent, COLORS.dark.background]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.container}
       >
-        <Animated.View style={[styles.logoContainer, animatedLogoStyle]}>
-          <Image
+        <View style={styles.header}>
+          <Animated.Image
+            entering={FadeInUp.duration(600)}
             source={require("../../assets/images/logos/logo.png")}
             style={styles.logo}
+            resizeMode='contain'
           />
-          <Animated.Text entering={FadeIn.delay(300)} style={styles.title}>
-            Fitech
+          <Animated.Text
+            entering={FadeInUp.delay(200)}
+            style={styles.headerTitle}
+          >
+            {"Inicia sesión en tu \ncuenta"}
           </Animated.Text>
-        </Animated.View>
+          <Animated.Text
+            entering={FadeInUp.delay(300)}
+            style={styles.headerSubtitle}
+          >
+            {"Entrena. Mejora. Repite."}
+          </Animated.Text>
+        </View>
 
-        {showCard && (
-          <>
-            <Animated.View
-              entering={FadeInUp.delay(100)}
-              style={styles.svgWrapper}
-            >
-              <Vector1 width={250} height={250} />
+        {showUI && (
+          <Animated.View
+            entering={SlideInDown.springify().damping(15)}
+            style={styles.card}
+          >
+            <TouchableOpacity style={styles.googleButton}>
+              <Ionicons name='logo-google' size={20} color='#000' />
+              <Text style={styles.googleButtonText}>
+                {"Continuar con Google"}
+              </Text>
+            </TouchableOpacity>
+
+            <View style={styles.separator}>
+              <View style={styles.line} />
+              <Text style={styles.separatorText}>{"O inicia sesión con"}</Text>
+              <View style={styles.line} />
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name='mail-outline'
+                size={20}
+                color='#888'
+                style={styles.iconLeft}
+              />
+              <TextInput
+                placeholder='Email'
+                placeholderTextColor='#888'
+                keyboardType='email-address'
+                style={styles.input}
+              />
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Ionicons
+                name='lock-closed-outline'
+                size={20}
+                color='#888'
+                style={styles.iconLeft}
+              />
+              <TextInput
+                placeholder={"Contraseña"}
+                placeholderTextColor='#888'
+                secureTextEntry
+                style={[styles.input, { flex: 1, marginBottom: 0 }]}
+              />
+              <Ionicons name='eye-outline' size={20} color='#888' />
+            </View>
+
+            <View style={styles.optionsRow}>
+              <TouchableOpacity>
+                <Text style={styles.rememberMe}>☐ {"Recuérdame"}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.forgotText}>
+                  {"¿Olvidaste tu contraseña?"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Animated.View entering={ZoomIn.delay(200)}>
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={() => router.push("/onboarding")}
+              >
+                <Text style={styles.loginButtonText}>{"Iniciar sesión"}</Text>
+              </TouchableOpacity>
             </Animated.View>
 
-            <Animated.View
-              entering={SlideInDown.springify().damping(15)}
-              style={styles.card}
-            >
-              <Animated.View entering={FadeInUp.delay(200)}>
-                <View style={styles.inputGroup}>
-                  <Ionicons
-                    name='mail-outline'
-                    size={20}
-                    color='#888'
-                    style={styles.icon}
-                  />
-                  <TextInput
-                    placeholder='Email'
-                    placeholderTextColor='#888'
-                    style={styles.input}
-                    keyboardType='email-address'
-                  />
-                </View>
-              </Animated.View>
-
-              <Animated.View entering={FadeInUp.delay(400)}>
-                <View style={styles.inputGroup}>
-                  <Ionicons
-                    name='lock-closed-outline'
-                    size={20}
-                    color='#888'
-                    style={styles.icon}
-                  />
-                  <TextInput
-                    placeholder='Password'
-                    placeholderTextColor='#888'
-                    secureTextEntry
-                    style={styles.input}
-                  />
-                </View>
-              </Animated.View>
-
-              <Animated.View entering={ZoomIn.delay(600)}>
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText}>Login</Text>
-                </TouchableOpacity>
-              </Animated.View>
-            </Animated.View>
-          </>
+            <View style={styles.footerText}>
+              <Text style={{ color: "#999" }}>{"¿No tienes una cuenta?"}</Text>
+              <TouchableOpacity>
+                <Text style={styles.signUp}>{"Regístrate"}</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
         )}
       </KeyboardAvoidingView>
     </LinearGradient>
@@ -132,79 +143,140 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  gradient: {
-    flex: 1
-  },
   container: {
     flex: 1,
-    paddingHorizontal: 24,
-    justifyContent: "center"
-  },
-  logoContainer: {
-    position: "absolute",
-    top: 10,
-    width,
-    flexDirection: "row",
-    justifyContent: "center",
+    // backgroundColor: "#F2F6FF",
     alignItems: "center",
-    zIndex: 10
+    justifyContent: "flex-start",
+    paddingTop: 60,
+    paddingHorizontal: 24
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 32
   },
   logo: {
-    width: 60,
-    height: 60
+    width: 40,
+    height: 40,
+    marginBottom: 16
   },
-  title: {
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: 1,
-    color: COLORS.light.blue,
-    marginLeft: 12
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "700",
+    textAlign: "center",
+    color: "#fff"
   },
-  svgWrapper: {
-    position: "absolute",
-    top: height * 0.3,
-    left: width / 2 - 125,
-    zIndex: 0
+  headerSubtitle: {
+    fontSize: 14,
+    color: "#DDE6FF",
+    textAlign: "center",
+    marginTop: 8
   },
   card: {
     backgroundColor: "#fff",
+    width: "100%",
     borderRadius: 16,
     padding: 24,
-    marginTop: height * 0.35,
     shadowColor: "#000",
-    shadowOpacity: 0.15,
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 16,
-    elevation: 10,
-    zIndex: 1
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 12,
+    elevation: 6
   },
-  inputGroup: {
+  googleButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F7F8FA",
+    padding: 12,
+    borderRadius: 10,
+    justifyContent: "center"
+  },
+  googleButtonText: {
+    marginLeft: 8,
+    fontWeight: "600",
+    fontSize: 14
+  },
+  separator: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#E4E6EB"
+  },
+  separatorText: {
+    marginHorizontal: 10,
+    color: "#999",
+    fontSize: 12
+  },
+  input: {
+    backgroundColor: "#F5F7FA",
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 14,
+    fontSize: 14,
+    // marginBottom: 16,
+    // overflow: "hidden",
+    color: "#1B1F23"
+  },
+  passwordWrapper: {
+    backgroundColor: "#F5F7FA",
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 0,
+    marginBottom: 16
+  },
+  optionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 16
+  },
+  rememberMe: {
+    fontSize: 12,
+    color: "#666"
+  },
+  forgotText: {
+    fontSize: 12,
+    color: COLORS.light.primary,
+    fontWeight: "500"
+  },
+  loginButton: {
+    backgroundColor: COLORS.light.primary,
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: "center"
+  },
+  loginButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16
+  },
+  footerText: {
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  signUp: {
+    color: COLORS.light.primary,
+    fontWeight: "500"
+  },
+  gradient: {
+    flex: 1
+  },
+  inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F7FA",
-    borderRadius: 12,
+    borderRadius: 10,
     paddingHorizontal: 12,
     marginBottom: 16
   },
-  icon: {
+  iconLeft: {
     marginRight: 8
-  },
-  input: {
-    flex: 1,
-    height: 48,
-    fontSize: 16,
-    color: "#1B1F23"
-  },
-  button: {
-    backgroundColor: "#0F4C81",
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginTop: 12
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16
   }
 });
