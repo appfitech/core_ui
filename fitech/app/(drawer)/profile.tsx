@@ -9,19 +9,15 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "../stores/user";
-import { useGetAllFiles } from "../api/queries/useGetAllFiles";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { useGetPicture } from "../api/queries/useGetPicture";
 import AvatarSvg from "../../assets/images/avatar.svg";
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const user = useUserStore((s) => s.user?.user?.person);
-  const username = useUserStore((s) => s.user?.user?.username);
   const userType = useUserStore((s) => s.user?.user?.type);
-  const userId = useUserStore((s) => s.user?.user?.id);
 
   return (
     <ScrollView
@@ -35,18 +31,18 @@ export default function ProfileScreen() {
       ]}
     >
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
-        {/* <Image
-          source={require("../../assets/images/avatar.svg")}
-          // source={
-          //   user?.profilePhotoId
-          //     ? { uri: `https://cdn.yourapi.com/files/${user.profilePhotoId}` }
-          //     : require("../../assets/images/avatars/default-avatar.png")
-          // }
-          style={styles.avatar}
-        /> */}
-        <View style={styles.avatarWrapper}>
-          <AvatarSvg width='100%' height='100%' />
-        </View>
+        {user?.profilePhotoId ? (
+          <Image
+            source={{
+              uri: `https://appfitech.com/v1/app/file-upload/view/${user?.profilePhotoId}`
+            }}
+            style={styles.avatar}
+          />
+        ) : (
+          <View style={styles.avatarWrapper}>
+            <AvatarSvg width='100%' height='100%' />
+          </View>
+        )}
         <Text style={styles.name}>
           {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
         </Text>
@@ -78,7 +74,7 @@ export default function ProfileScreen() {
         <SectionItem
           icon='images-outline'
           label='Galería de Fotos'
-          route={""}
+          route={"image-gallery"}
         />
         <SectionItem
           icon='videocam-outline'
@@ -110,7 +106,7 @@ function SectionItem({
   return (
     <TouchableOpacity
       style={styles.item}
-      onPress={() => router.push(`/../${route}`)}
+      onPress={() => route && router.push(`/../${route}`)}
     >
       <View style={styles.iconWrapper}>
         <Ionicons name={icon as any} size={20} color='#0F4C81' />

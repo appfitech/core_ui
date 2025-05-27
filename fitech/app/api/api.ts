@@ -40,16 +40,21 @@ export const api = {
     return handleResponse(res);
   },
 
-  post: async (path: string, body: any) => {
+  post: async (path: string, body: any, isFormData = false) => {
     const token = useUserStore.getState().user?.token;
+
+    const headers: Record<string, string> = {
+      ...(token && { Authorization: `Bearer ${token}` })
+    };
+
+    if (!isFormData) {
+      headers["Content-Type"] = "application/json";
+    }
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
-      },
-      body: JSON.stringify(body)
+      headers,
+      body: isFormData ? body : JSON.stringify(body)
     });
 
     return handleResponse(res);
@@ -60,6 +65,21 @@ export const api = {
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
       method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
+      body: JSON.stringify(body)
+    });
+
+    return handleResponse(res);
+  },
+
+  delete: async (path: string, body: any = {}) => {
+    const token = useUserStore.getState().user?.token;
+
+    const res = await fetch(`${API_BASE_URL}${path}`, {
+      method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         ...(token && { Authorization: `Bearer ${token}` })

@@ -1,12 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api";
+import { useUserStore } from "@/app/stores/user";
 
-export const useGetAllFiles = (userId?: number) => {
+export const useGetUserPhotos = () => {
+  const userId = useUserStore((s) => s?.user?.user?.id);
+
   return useQuery({
     enabled: !!userId,
     queryKey: ["/file-upload/user", userId],
     queryFn: async () => {
-      return api.get(`/file-upload/user/${userId}`);
+      return api.get(`/profile/${userId}/photos`);
     }
   });
 };

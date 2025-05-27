@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useUserStore } from "../stores/user";
-import { useGetAllFiles } from "../api/queries/useGetAllFiles";
+import { useGetAllFiles } from "../api/queries/useGetUserPhotos";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
