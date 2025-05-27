@@ -3,27 +3,28 @@ const API_BASE_URL = "https://appfitech.com/v1/app";
 import { useUserStore } from "../stores/user";
 
 async function handleResponse(res: Response) {
-  if (!res.ok) {
-    let errorBody = {};
-    try {
-      errorBody = await res.json();
-    } catch {
-      // fallback if response is not JSON
-      errorBody = { message: await res.text() };
-    }
+  const raw = await res.text(); // ✅ only read once
 
+  let parsed: any = {};
+  try {
+    parsed = raw ? JSON.parse(raw) : {};
+  } catch {
+    parsed = { message: raw };
+  }
+
+  if (!res.ok) {
     console.error("[API ERROR]", {
       status: res.status,
       url: res.url,
-      ...errorBody
+      ...parsed
     });
 
-    const error = new Error(errorBody?.message || "Unknown API error");
+    const error = new Error(parsed?.message || "Unknown API error");
     (error as any).status = res.status;
     throw error;
   }
 
-  return res.json();
+  return parsed;
 }
 
 export const api = {
@@ -60,7 +61,7 @@ export const api = {
     return handleResponse(res);
   },
 
-  put: async (path: string, body: any) => {
+  put: async (path: string, body: any = {}) => {
     const token = useUserStore.getState().user?.token;
 
     const res = await fetch(`${API_BASE_URL}${path}`, {

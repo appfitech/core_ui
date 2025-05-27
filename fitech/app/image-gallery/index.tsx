@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -13,12 +13,12 @@ import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { BackButton } from "../components/BackButton";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useGetUserPhotos } from "../api/queries/useGetUserPhotos";
 import { useUploadPhoto } from "../api/mutations/useUploadPhoto";
 import { useDeletePhoto } from "../api/mutations/useDeletePhoto";
-import { Photo } from "../types/photos";
 import { useUserStore } from "../stores/user";
+import { useSetProfilePhoto } from "../api/mutations/useSetProfilePhoto";
 
 const MAX_PHOTOS = 10;
 const MAX_SIZE = 500 * 1024; // 500 KB
@@ -28,12 +28,17 @@ export default function ImageGalleryScreen() {
   const profilePhotoId = useUserStore(
     (s) => s?.user?.user?.person?.profilePhotoId
   );
+  const updateProfilePhotoId = useUserStore((s) => s.updateProfilePhotoId);
+
+  // React.useEffect(() => {
+  //   updateProfilePhotoId(33);
+  // }, []);
+
   const { mutate: uploadPhoto } = useUploadPhoto();
-
-  const { data: photos, isLoading, refetch } = useGetUserPhotos();
   const { mutate: deletePhoto } = useDeletePhoto();
+  const { mutate: setProfilePhoto } = useSetProfilePhoto();
 
-  console.log("[K] data", photos);
+  const { data: photos = [], isLoading, refetch } = useGetUserPhotos();
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -56,22 +61,16 @@ export default function ImageGalleryScreen() {
         return;
       }
 
-      // ✅ Create FormData
       const formData = new FormData();
       formData.append("file", {
         uri: file.uri,
         name: file.fileName ?? `photo.jpg`,
         type: file.type ?? "image/jpeg"
-      } as any); // 👈 required for React Native FormData
+      } as any);
 
-      // ✅ Call mutation
       uploadPhoto(formData, {
-        onSuccess: (data) => {
-          console.log("✅ Upload success", data);
-          refetch();
-        },
-        onError: (err) => {
-          console.error("❌ Upload failed", err);
+        onSuccess: () => refetch(),
+        onError: () => {
           Alert.alert("Error", "No se pudo subir la foto.");
         }
       });
@@ -80,24 +79,41 @@ export default function ImageGalleryScreen() {
 
   const removePhoto = (index: number) => {
     const photo = photos[index];
-
-    // Call backend delete mutation
     deletePhoto(photo.id, {
-      onSuccess: () => {
-        const newPhotos = photos.filter((_, i) => i !== index);
-        // setPhotos(newPhotos);
-
-        refetch();
-
-        // if (profileIndex === index) setProfileIndex(null);
-        // else if (profileIndex !== null && profileIndex > index)
-        //   setProfileIndex(profileIndex - 1);
-      },
-      onError: (err) => {
-        console.error("❌ Error deleting photo", err);
+      onSuccess: () => refetch(),
+      onError: (error) => {
+        console.log("[K] error", error);
         Alert.alert("Error", "No se pudo eliminar la foto.");
       }
     });
+  };
+
+  const confirmSetAsProfile = (photoId: number) => {
+    Alert.alert(
+      "Confirmar",
+      "¿Quieres usar esta foto como tu nueva foto de perfil?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Sí, usar",
+          onPress: () => {
+            console.log("[K] photoId", photoId);
+            setProfilePhoto(
+              { photoId },
+              {
+                onSuccess: async (response) => {
+                  console.log("[K] response", response);
+                  await updateProfilePhotoId(photoId);
+                },
+                onError: (err) => {
+                  console.error("[K] profile photo set failed", err);
+                }
+              }
+            );
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -114,6 +130,7 @@ export default function ImageGalleryScreen() {
       <View style={{ marginBottom: 60 }}>
         <BackButton />
       </View>
+
       <Animated.Text
         entering={FadeInDown.duration(500)}
         style={styles.sectionTitle}
@@ -134,10 +151,13 @@ export default function ImageGalleryScreen() {
         </Text>
       </View>
 
-      {/* Photo Count */}
-      <Text style={styles.counter}>{`${photos.length}/10 fotos subidas`}</Text>
+      <View style={styles.tipBanner}>
+        <Text style={styles.tipTitle}>💡 Tip</Text>
+        <Text style={styles.tipText}>
+          Las fotos de buena calidad generan más confianza con los clientes
+        </Text>
+      </View>
 
-      {/* Main Profile Photo */}
       {!!profilePhotoId && (
         <View style={styles.mainPhotoWrapper}>
           <Image
@@ -150,35 +170,34 @@ export default function ImageGalleryScreen() {
         </View>
       )}
 
-      <View style={styles.tipBanner}>
-        <Text style={styles.tipTitle}>💡 Tip</Text>
-        <Text style={styles.tipText}>
-          Las fotos de buena calidad generan más confianza con los clientes
-        </Text>
-      </View>
-
-      {/* Photo Grid */}
       {!isLoading && (
         <FlatList
           data={photos}
-          keyExtractor={(photo, index) => photo?.id + index}
+          keyExtractor={(photo) => photo.id.toString()}
           horizontal
           contentContainerStyle={{ gap: 10, paddingVertical: 10 }}
           renderItem={({ item, index }) => (
             <View style={styles.thumbnailWrapper}>
-              <TouchableOpacity>
-                <Image
-                  source={{
-                    uri: `https://appfitech.com/v1/app/file-upload/view/${photos[index]?.id}`
-                  }}
-                  style={styles.thumbnail}
-                />
-                {profilePhotoId === photos[index]?.id && (
-                  <View style={styles.avatarBadge}>
-                    <Ionicons name='star' size={16} color='#fff' />
-                  </View>
-                )}
-              </TouchableOpacity>
+              <Image
+                source={{
+                  uri: `https://appfitech.com/v1/app/file-upload/view/${item.id}`
+                }}
+                style={styles.thumbnail}
+              />
+
+              {profilePhotoId === item.id ? (
+                <View style={styles.avatarBadge}>
+                  <Ionicons name='star' size={16} color='#fff' />
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={styles.starBadge}
+                  onPress={() => confirmSetAsProfile(item.id)}
+                >
+                  <Ionicons name='star-outline' size={16} color='#fff' />
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 style={styles.deleteBtn}
                 onPress={() => removePhoto(index)}
@@ -228,12 +247,6 @@ const styles = StyleSheet.create({
     color: "#333",
     marginTop: 4
   },
-  counter: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#0F4C81",
-    marginBottom: 12
-  },
   mainPhotoWrapper: {
     alignItems: "center",
     marginBottom: 20
@@ -267,6 +280,15 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 8
   },
+  starBadge: {
+    position: "absolute",
+    bottom: 4,
+    left: 4,
+    backgroundColor: "#FF8C42",
+    padding: 4,
+    borderRadius: 8,
+    zIndex: 10
+  },
   deleteBtn: {
     position: "absolute",
     top: 4,
@@ -289,24 +311,8 @@ const styles = StyleSheet.create({
     color: "#0F4C81",
     marginTop: 4
   },
-  banner: {
-    backgroundColor: "#E8F4FF",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16
-  },
-  bannerTitle: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#0F4C81",
-    marginBottom: 4
-  },
-  bannerText: {
-    fontSize: 13,
-    color: "#333"
-  },
   trainerBanner: {
-    backgroundColor: "#FFE9D6", // Soft orange/peach
+    backgroundColor: "#FFE9D6",
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,

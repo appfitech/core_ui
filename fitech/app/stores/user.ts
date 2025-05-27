@@ -8,6 +8,7 @@ type UserStore = {
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
   updateUserInfo: (data: LoginResponse["user"]) => Promise<void>;
+  updateProfilePhotoId: (photoId: number) => Promise<void>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -39,6 +40,31 @@ export const useUserStore = create<UserStore>((set, get) => ({
       ...current,
       user: newUserInfo
     };
+
+    await SecureStore.setItemAsync("user", JSON.stringify(updated));
+    set({ user: updated });
+  },
+
+  updateProfilePhotoId: async (photoId: number) => {
+    const current = get().user;
+
+    console.log("[K] current", current);
+
+    console.log("[K] photoId", photoId);
+    if (!current) return;
+
+    const updated = {
+      ...current,
+      user: {
+        ...current?.user,
+        person: {
+          ...current?.user?.person,
+          profilePhotoId: photoId
+        }
+      }
+    };
+
+    console.log("[K] updated", updated);
 
     await SecureStore.setItemAsync("user", JSON.stringify(updated));
     set({ user: updated });

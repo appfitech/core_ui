@@ -8,6 +8,6 @@ export const useDeletePhoto = () => {
 
   return useMutation<LoginResponse, Error, number>({
     mutationFn: async (photoId: number): Promise<LoginResponse> =>
-      api.delete(`/profile/${userId}/photos${photoId}`)
+      api.delete(`/profile/${userId}/photos/${photoId}`)
   });
 };

@@ -6,3 +6,7 @@ export type Photo = {
   file_path: string;
   uploadedAt: [number, number, number, number, number, number]; // [YYYY, M, D, H, m, s]
 };
+
+export type SetProfilePhotoRequest = {
+  photoId: number;
+};
