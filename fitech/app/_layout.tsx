@@ -9,6 +9,7 @@ import {
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Stack } from "expo-router";
+import { ReactQueryProvider } from "./providers/ReactQueryProvider";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -29,5 +30,9 @@ export default function RootLayout() {
 
   if (!fontsLoaded) return null;
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <ReactQueryProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </ReactQueryProvider>
+  );
 }

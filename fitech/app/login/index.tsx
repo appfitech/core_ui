@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -19,16 +19,50 @@ import { Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
+import { BackButton } from "../components/BackButton";
+import { useLogin } from "../api/mutations/useLogin";
+import { useUserStore } from "../stores/user";
 const { width } = Dimensions.get("window");
 
 export default function LoginScreen() {
   const [showUI, setShowUI] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const router = useRouter();
+
+  const setUser = useUserStore((s) => s.setUser);
+  const user = useUserStore((s) => s.user);
+
+  const { mutate: submitLogin } = useLogin();
 
   useEffect(() => {
     setTimeout(() => setShowUI(true), 600);
   }, []);
+
+  const handleChange = useCallback(
+    (key: string) => (text: string) => {
+      if (key === "username") {
+        setUsername(text);
+        return;
+      }
+
+      setPassword(text);
+    },
+    []
+  );
+
+  const handleLogin = useCallback(() => {
+    submitLogin(
+      { username, password },
+      {
+        onSuccess: (response) => {
+          setUser(response);
+          router.push("/onboarding");
+        }
+      }
+    );
+  }, [username, password]);
 
   return (
     <LinearGradient
@@ -40,6 +74,7 @@ export default function LoginScreen() {
         style={styles.container}
       >
         <View style={styles.header}>
+          <BackButton />
           <Animated.Image
             entering={FadeInUp.duration(600)}
             source={require("../../assets/images/logos/logo.png")}
@@ -90,6 +125,8 @@ export default function LoginScreen() {
                 placeholderTextColor='#888'
                 keyboardType='email-address'
                 style={styles.input}
+                value={username}
+                onChangeText={handleChange("username")}
               />
             </View>
 
@@ -104,7 +141,9 @@ export default function LoginScreen() {
                 placeholder={"Contraseña"}
                 placeholderTextColor='#888'
                 secureTextEntry
+                value={password}
                 style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                onChangeText={handleChange("password")}
               />
               <Ionicons name='eye-outline' size={20} color='#888' />
             </View>
@@ -123,7 +162,7 @@ export default function LoginScreen() {
             <Animated.View entering={ZoomIn.delay(200)}>
               <TouchableOpacity
                 style={styles.loginButton}
-                onPress={() => router.push("/onboarding")}
+                onPress={handleLogin}
               >
                 <Text style={styles.loginButtonText}>{"Iniciar sesión"}</Text>
               </TouchableOpacity>

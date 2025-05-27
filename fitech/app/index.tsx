@@ -33,7 +33,10 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(400).duration(800)}
         style={styles.buttonContainer}
       >
-        <TouchableOpacity style={styles.primaryButton}>
+        <TouchableOpacity
+          style={styles.primaryButton}
+          onPress={() => router.push("/register")}
+        >
           <Text style={styles.primaryButtonText}>{"Crear cuenta"}</Text>
         </TouchableOpacity>
         <TouchableOpacity
