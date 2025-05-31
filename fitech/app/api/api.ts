@@ -1,6 +1,6 @@
-const API_BASE_URL = "https://appfitech.com/v1/app";
+import { useUserStore } from '../stores/user';
 
-import { useUserStore } from "../stores/user";
+const API_BASE_URL = 'https://appfitech.com/v1/app';
 
 async function handleResponse(res: Response) {
   const raw = await res.text(); // ✅ only read once
@@ -13,13 +13,13 @@ async function handleResponse(res: Response) {
   }
 
   if (!res.ok) {
-    console.error("[API ERROR]", {
+    console.error('[API ERROR]', {
       status: res.status,
       url: res.url,
-      ...parsed
+      ...parsed,
     });
 
-    const error = new Error(parsed?.message || "Unknown API error");
+    const error = new Error(parsed?.message || 'Unknown API error');
     (error as any).status = res.status;
     throw error;
   }
@@ -33,9 +33,9 @@ export const api = {
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
       headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
-      }
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
     });
 
     return handleResponse(res);
@@ -45,17 +45,17 @@ export const api = {
     const token = useUserStore.getState().user?.token;
 
     const headers: Record<string, string> = {
-      ...(token && { Authorization: `Bearer ${token}` })
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
 
     if (!isFormData) {
-      headers["Content-Type"] = "application/json";
+      headers['Content-Type'] = 'application/json';
     }
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
-      method: "POST",
+      method: 'POST',
       headers,
-      body: isFormData ? body : JSON.stringify(body)
+      body: isFormData ? body : JSON.stringify(body),
     });
 
     return handleResponse(res);
@@ -65,12 +65,12 @@ export const api = {
     const token = useUserStore.getState().user?.token;
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
-      method: "PUT",
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     return handleResponse(res);
@@ -80,16 +80,16 @@ export const api = {
     const token = useUserStore.getState().user?.token;
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
-        ...(token && { Authorization: `Bearer ${token}` })
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
 
     return handleResponse(res);
-  }
+  },
 };
 
 // export const requestHandler = async <T>(

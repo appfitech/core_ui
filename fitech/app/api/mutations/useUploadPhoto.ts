@@ -1,13 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
-import { api } from "../api";
-import { LoginResponse, User } from "@/app/types/user";
-import { useUserStore } from "@/app/stores/user";
+import { useMutation } from '@tanstack/react-query';
+
+import { useUserStore } from '@/app/stores/user';
+import { LoginResponse } from '@/app/types/user';
+
+import { api } from '../api';
 
 export const useUploadPhoto = () => {
   const userId = useUserStore((s) => s?.user?.user?.id);
 
   return useMutation<LoginResponse, Error, FormData>({
     mutationFn: async (formData): Promise<LoginResponse> =>
-      api.post(`/profile/${userId}/photos`, formData, true)
+      api.post(`/profile/${userId}/photos`, formData, true),
   });
 };

@@ -1,18 +1,19 @@
-import React from "react";
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
   Image,
-  TouchableOpacity
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useUserStore } from "../stores/user";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import AvatarSvg from "../../assets/images/avatar.svg";
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import AvatarSvg from '../../assets/images/avatar.svg';
+import { useUserStore } from '../stores/user';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -26,38 +27,38 @@ export default function ProfileScreen() {
         {
           paddingTop: insets.top + 20,
           paddingBottom: insets.bottom + 40,
-          minHeight: "100%"
-        }
+          minHeight: '100%',
+        },
       ]}
     >
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {user?.profilePhotoId ? (
           <Image
             source={{
-              uri: `https://appfitech.com/v1/app/file-upload/view/${user?.profilePhotoId}`
+              uri: `https://appfitech.com/v1/app/file-upload/view/${user?.profilePhotoId}`,
             }}
             style={styles.avatar}
           />
         ) : (
           <View style={styles.avatarWrapper}>
-            <AvatarSvg width='100%' height='100%' />
+            <AvatarSvg width="100%" height="100%" />
           </View>
         )}
         <Text style={styles.name}>
-          {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}
+          {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}
         </Text>
         <Text style={styles.email}>{user?.email}</Text>
         <View
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             marginTop: 10,
-            columnGap: 5
+            columnGap: 5,
           }}
         >
-          <Ionicons name={"barbell-outline"} size={20} color='green' />
+          <Ionicons name={'barbell-outline'} size={20} color="green" />
           <Text style={styles.userType}>
-            {userType === 1 ? "Trainer" : "Usuario"}
+            {userType === 1 ? 'Trainer' : 'Usuario'}
           </Text>
         </View>
       </Animated.View>
@@ -67,25 +68,25 @@ export default function ProfileScreen() {
         style={styles.section}
       >
         <SectionItem
-          icon='person-outline'
-          label='Información Personal'
-          route={"personal-info"}
+          icon="person-outline"
+          label="Información Personal"
+          route={'personal-info'}
         />
         <SectionItem
-          icon='images-outline'
-          label='Galería de Fotos'
-          route={"image-gallery"}
+          icon="images-outline"
+          label="Galería de Fotos"
+          route={'image-gallery'}
         />
         <SectionItem
-          icon='videocam-outline'
-          label='Video Presentación'
-          route={""}
+          icon="videocam-outline"
+          label="Video Presentación"
+          route={''}
         />
-        <SectionItem icon='briefcase-outline' label='Experiencia' route={""} />
+        <SectionItem icon="briefcase-outline" label="Experiencia" route={''} />
         <SectionItem
-          icon='wallet-outline'
-          label='Información Económica'
-          route={""}
+          icon="wallet-outline"
+          label="Información Económica"
+          route={''}
         />
       </Animated.View>
     </ScrollView>
@@ -95,7 +96,7 @@ export default function ProfileScreen() {
 function SectionItem({
   icon,
   label,
-  route
+  route,
 }: {
   icon: string;
   label: string;
@@ -109,10 +110,10 @@ function SectionItem({
       onPress={() => route && router.push(`/../${route}`)}
     >
       <View style={styles.iconWrapper}>
-        <Ionicons name={icon as any} size={20} color='#0F4C81' />
+        <Ionicons name={icon as any} size={20} color="#0F4C81" />
       </View>
       <Text style={styles.itemLabel}>{label}</Text>
-      <Ionicons name='chevron-forward' size={18} color='#999' />
+      <Ionicons name="chevron-forward" size={18} color="#999" />
     </TouchableOpacity>
   );
 }
@@ -120,68 +121,68 @@ function SectionItem({
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#F5F7FA",
-    paddingHorizontal: 20
+    backgroundColor: '#F5F7FA',
+    paddingHorizontal: 20,
   },
   header: {
-    alignItems: "center",
-    marginBottom: 32
+    alignItems: 'center',
+    marginBottom: 32,
   },
   avatar: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    marginBottom: 12
+    marginBottom: 12,
   },
   name: {
     fontSize: 20,
-    fontWeight: "700",
-    color: "#0F4C81"
+    fontWeight: '700',
+    color: '#0F4C81',
   },
   userType: {
     fontSize: 16,
-    fontWeight: "700",
-    color: "green"
+    fontWeight: '700',
+    color: 'green',
   },
   email: {
     fontSize: 14,
-    color: "#555",
-    marginTop: 4
+    color: '#555',
+    marginTop: 4,
   },
   section: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 16,
     paddingVertical: 8,
     paddingHorizontal: 12,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 3
+    elevation: 3,
   },
   item: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee"
+    borderBottomColor: '#eee',
   },
   iconWrapper: {
     width: 32,
-    alignItems: "center"
+    alignItems: 'center',
   },
   itemLabel: {
     flex: 1,
     marginLeft: 12,
     fontSize: 14,
-    fontWeight: "500",
-    color: "#1B1F23"
+    fontWeight: '500',
+    color: '#1B1F23',
   },
   avatarWrapper: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    overflow: "hidden", // 👈 required for clipping
-    backgroundColor: "#fff" // optional fallback
-  }
+    overflow: 'hidden', // 👈 required for clipping
+    backgroundColor: '#fff', // optional fallback
+  },
 });

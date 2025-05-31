@@ -1,15 +1,16 @@
 import {
-  useFonts,
   Urbanist_400Regular,
   Urbanist_500Medium,
   Urbanist_600SemiBold,
   Urbanist_700Bold,
-  Urbanist_800ExtraBold
-} from "@expo-google-fonts/urbanist";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { Stack } from "expo-router";
-import { ReactQueryProvider } from "./providers/ReactQueryProvider";
+  Urbanist_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/urbanist';
+import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+
+import { ReactQueryProvider } from './providers/ReactQueryProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,7 +20,7 @@ export default function RootLayout() {
     Urbanist_500Medium,
     Urbanist_600SemiBold,
     Urbanist_700Bold,
-    Urbanist_800ExtraBold
+    Urbanist_800ExtraBold,
   });
 
   useEffect(() => {

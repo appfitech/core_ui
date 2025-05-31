@@ -1,41 +1,42 @@
-import React, { useState } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-  ScrollView
-} from "react-native";
-import Animated, { FadeInUp, SlideInDown } from "react-native-reanimated";
-import DropDownPicker from "react-native-dropdown-picker";
-import { COLORS } from "../constants/colors";
-import { LinearGradient } from "expo-linear-gradient";
-import { BackButton } from "../components/BackButton";
-import { useCreateUser } from "../api/mutations/useCreateUser";
-import { useRouter } from "expo-router";
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
+
+import { useCreateUser } from '../api/mutations/useCreateUser';
+import { BackButton } from '../components/BackButton';
+import { COLORS } from '../constants/colors';
 
 export default function Register() {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     type: 1,
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    documentNumber: "",
-    username: "",
-    password: ""
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    documentNumber: '',
+    username: '',
+    password: '',
   });
 
   const router = useRouter();
   const { mutate: createUser } = useCreateUser();
 
   const [accountTypes] = useState([
-    { label: "Trainer", value: 1 },
-    { label: "Usuario", value: 2 }
+    { label: 'Trainer', value: 1 },
+    { label: 'Usuario', value: 2 },
   ]);
 
   const handleChange = (field: string, value: string) => {
@@ -49,9 +50,9 @@ export default function Register() {
       { type, username, password, person },
       {
         onSuccess: () => {
-          router.push("/login");
-        }
-      }
+          router.push('/login');
+        },
+      },
     );
   };
 
@@ -61,7 +62,7 @@ export default function Register() {
       style={styles.gradient}
     >
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.container}
       >
         <View style={styles.header}>
@@ -83,7 +84,7 @@ export default function Register() {
         <ScrollView
           contentContainerStyle={styles.scrollForm}
           showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps='handled'
+          keyboardShouldPersistTaps="handled"
         >
           <Animated.View entering={SlideInDown.springify()} style={styles.card}>
             <Text style={styles.label}>Tipo de cuenta</Text>
@@ -95,44 +96,44 @@ export default function Register() {
               setValue={(callback) =>
                 setForm((prev) => ({
                   ...prev,
-                  type: callback(prev.type)
+                  type: callback(prev.type),
                 }))
               }
-              listMode='SCROLLVIEW'
+              listMode="SCROLLVIEW"
               style={styles.dropdown}
               dropDownContainerStyle={{
-                backgroundColor: "#F5F7FA",
-                borderColor: "#ccc"
+                backgroundColor: '#F5F7FA',
+                borderColor: '#ccc',
               }}
             />
 
             {[
-              { label: "Nombre", field: "firstName" },
-              { label: "Apellido", field: "lastName" },
+              { label: 'Nombre', field: 'firstName' },
+              { label: 'Apellido', field: 'lastName' },
               {
-                label: "Correo electrónico",
-                field: "email",
-                keyboardType: "email-address"
+                label: 'Correo electrónico',
+                field: 'email',
+                keyboardType: 'email-address',
               },
               {
-                label: "Teléfono",
-                field: "phoneNumber",
-                keyboardType: "phone-pad"
+                label: 'Teléfono',
+                field: 'phoneNumber',
+                keyboardType: 'phone-pad',
               },
-              { label: "Documento", field: "documentNumber" },
-              { label: "Usuario", field: "username" },
+              { label: 'Documento', field: 'documentNumber' },
+              { label: 'Usuario', field: 'username' },
               {
-                label: "Contraseña",
-                field: "contrasena",
-                secureTextEntry: true
-              }
+                label: 'Contraseña',
+                field: 'contrasena',
+                secureTextEntry: true,
+              },
             ].map(({ label, field, ...rest }) => (
               <View key={field} style={styles.inputWrapper}>
                 <Text style={styles.label}>{label}</Text>
                 <TextInput
                   style={styles.input}
                   placeholder={label}
-                  placeholderTextColor='#888'
+                  placeholderTextColor="#888"
                   secureTextEntry={rest.secureTextEntry}
                   keyboardType={rest.keyboardType}
                   value={form[field]}
@@ -156,77 +157,77 @@ export default function Register() {
 
 const styles = StyleSheet.create({
   gradient: {
-    flex: 1
+    flex: 1,
   },
   container: {
     flex: 1,
     paddingTop: 60,
-    paddingHorizontal: 24
+    paddingHorizontal: 24,
   },
   header: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     marginBottom: 24,
-    marginTop: 24
+    marginTop: 24,
   },
   headerTitle: {
     fontSize: 24,
-    fontWeight: "700",
-    color: "#fff",
-    textAlign: "center"
+    fontWeight: '700',
+    color: '#fff',
+    textAlign: 'center',
   },
   headerSubtitle: {
     fontSize: 14,
-    color: "#DDE6FF",
-    textAlign: "center",
-    marginTop: 8
+    color: '#DDE6FF',
+    textAlign: 'center',
+    marginTop: 8,
   },
   scrollForm: {
-    paddingBottom: 80
+    paddingBottom: 80,
   },
   card: {
-    backgroundColor: "#fff",
-    width: "100%",
+    backgroundColor: '#fff',
+    width: '100%',
     borderRadius: 16,
     padding: 24,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
-    elevation: 6
+    elevation: 6,
   },
   label: {
     fontSize: 12,
-    color: "#666",
+    color: '#666',
     marginBottom: 6,
-    marginTop: 12
+    marginTop: 12,
   },
   inputWrapper: {
-    marginBottom: 4
+    marginBottom: 4,
   },
   input: {
-    backgroundColor: "#F5F7FA",
+    backgroundColor: '#F5F7FA',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 14,
     fontSize: 14,
-    color: "#1B1F23"
+    color: '#1B1F23',
   },
   dropdown: {
-    backgroundColor: "#F5F7FA",
-    borderColor: "#ccc",
-    borderRadius: 10
+    backgroundColor: '#F5F7FA',
+    borderColor: '#ccc',
+    borderRadius: 10,
   },
   submitButton: {
     backgroundColor: COLORS.light.primary,
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: "center",
-    marginTop: 24
+    alignItems: 'center',
+    marginTop: 24,
   },
   submitText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16
-  }
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
 });

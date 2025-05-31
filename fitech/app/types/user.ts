@@ -19,7 +19,7 @@ export type User = {
   type: number;
   premium: boolean;
   premiumBy: string;
-  createdAt: number[]; // timestamp array
+  createdAt: number[];
   updatedAt: number[];
   isEmailVerified: boolean;
   person: Person;

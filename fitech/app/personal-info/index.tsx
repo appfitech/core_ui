@@ -1,20 +1,19 @@
-import React, { useCallback, useState } from "react";
+import { useRouter } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
   TextInput,
-  TouchableOpacity
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useUserStore } from "../stores/user";
-import { useGetAllFiles } from "../api/queries/useGetUserPhotos";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
-import { BackButton } from "../components/BackButton";
-import { useUpdateUser } from "../api/mutations/useUpdateUser";
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useUpdateUser } from '../api/mutations/useUpdateUser';
+import { BackButton } from '../components/BackButton';
+import { useUserStore } from '../stores/user';
 
 export default function PersonalInfoScreen() {
   const insets = useSafeAreaInsets();
@@ -31,7 +30,7 @@ export default function PersonalInfoScreen() {
       onSuccess: async (response) => {
         await updateUserInfo(form);
         router.back();
-      }
+      },
     });
   }, [form]);
 
@@ -43,10 +42,10 @@ export default function PersonalInfoScreen() {
     (key: string) => (text) => {
       setForm((prev) => ({
         ...prev,
-        person: { ...prev?.person, [key]: text }
+        person: { ...prev?.person, [key]: text },
       }));
     },
-    []
+    [],
   );
 
   return (
@@ -56,8 +55,8 @@ export default function PersonalInfoScreen() {
         {
           paddingTop: insets.top + 20,
           paddingBottom: insets.bottom + 60,
-          minHeight: "100%"
-        }
+          minHeight: '100%',
+        },
       ]}
     >
       <View style={{ marginTop: 0, marginBottom: 60 }}>
@@ -79,7 +78,7 @@ export default function PersonalInfoScreen() {
           <Text style={styles.label}>Nombre</Text>
           <TextInput
             style={styles.input}
-            onChangeText={handleChange("firstName")}
+            onChangeText={handleChange('firstName')}
             value={form?.person?.firstName}
           />
         </View>
@@ -88,7 +87,7 @@ export default function PersonalInfoScreen() {
           <Text style={styles.label}>Apellido</Text>
           <TextInput
             style={styles.input}
-            onChangeText={handleChange("lastName")}
+            onChangeText={handleChange('lastName')}
             value={form?.person?.lastName}
           />
         </View>
@@ -99,7 +98,7 @@ export default function PersonalInfoScreen() {
             readOnly
             style={styles.input}
             value={form?.person?.email}
-            keyboardType='email-address'
+            keyboardType="email-address"
           />
         </View>
 
@@ -117,8 +116,8 @@ export default function PersonalInfoScreen() {
           <TextInput
             style={styles.input}
             value={form?.person?.phoneNumber}
-            keyboardType='phone-pad'
-            onChangeText={handleChange("phoneNumber")}
+            keyboardType="phone-pad"
+            onChangeText={handleChange('phoneNumber')}
           />
         </View>
 
@@ -126,12 +125,12 @@ export default function PersonalInfoScreen() {
           <Text style={styles.label}>Biografía</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
-            defaultValue={form?.person?.bio ?? ""}
+            defaultValue={form?.person?.bio ?? ''}
             multiline
             numberOfLines={4}
-            onChangeText={handleChange("bio")}
-            textAlignVertical='top'
-            placeholder='Cuéntanos sobre ti...'
+            onChangeText={handleChange('bio')}
+            textAlignVertical="top"
+            placeholder="Cuéntanos sobre ti..."
           />
         </View>
       </Animated.View>
@@ -152,89 +151,89 @@ export default function PersonalInfoScreen() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#F5F7FA",
-    paddingHorizontal: 20
+    backgroundColor: '#F5F7FA',
+    paddingHorizontal: 20,
   },
   backButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 20
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   backText: {
     marginLeft: 8,
     fontSize: 16,
-    color: "#0F4C81",
-    fontWeight: "600"
+    color: '#0F4C81',
+    fontWeight: '600',
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "700",
-    color: "#0F4C81",
-    marginBottom: 16
+    fontWeight: '700',
+    color: '#0F4C81',
+    marginBottom: 16,
   },
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 20,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 4
+    elevation: 4,
   },
   field: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   label: {
     fontSize: 13,
-    fontWeight: "600",
-    color: "#444",
-    marginBottom: 6
+    fontWeight: '600',
+    color: '#444',
+    marginBottom: 6,
   },
   input: {
-    backgroundColor: "#F5F7FA",
+    backgroundColor: '#F5F7FA',
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 10,
     fontSize: 14,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
-    color: "#1B1F23"
+    borderColor: '#E0E0E0',
+    color: '#1B1F23',
   },
   textArea: {
     height: 100,
-    paddingTop: 10
+    paddingTop: 10,
   },
   buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
   cancelButton: {
     flex: 1,
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: "center",
-    borderColor: "#ccc",
+    alignItems: 'center',
+    borderColor: '#ccc',
     borderWidth: 1,
-    marginRight: 8
+    marginRight: 8,
   },
   cancelText: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 14,
-    color: "#444"
+    color: '#444',
   },
   updateButton: {
     flex: 1,
-    backgroundColor: "#0F4C81",
+    backgroundColor: '#0F4C81',
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: "center",
-    marginLeft: 8
+    alignItems: 'center',
+    marginLeft: 8,
   },
   updateText: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 14,
-    color: "#fff"
-  }
+    color: '#fff',
+  },
 });

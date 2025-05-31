@@ -18,6 +18,10 @@
       "android": {
         "buildType": "apk"
       }
+    },
+    "ios-preview": {
+      "distribution": "internal",
+      "autoIncrement": true
     }
   },
   "submit": {

@@ -1,44 +1,44 @@
-import React, { useRef, useState } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useRef, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
+  Animated as RNAnimated,
   Dimensions,
   FlatList,
+  Image,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  Animated as RNAnimated
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
+  View,
+} from 'react-native';
 
-const { width, height } = Dimensions.get("window");
+const { width, height } = Dimensions.get('window');
 
 const slides = [
   {
-    key: "1",
-    title: "Entrena a tu ritmo",
-    description: "Lleva un control de tus rutinas y avanza a tu manera.",
-    image: require("../../assets/images/onboarding/slide_1.png"),
-    background: ["#00C2FF", "#0F4C81"],
-    blobColor: "#ffffff30"
+    key: '1',
+    title: 'Entrena a tu ritmo',
+    description: 'Lleva un control de tus rutinas y avanza a tu manera.',
+    image: require('../../assets/images/onboarding/slide_1.png'),
+    background: ['#00C2FF', '#0F4C81'],
+    blobColor: '#ffffff30',
   },
   {
-    key: "2",
-    title: "Sigue tu progreso",
-    description: "Visualiza tu evolución y mantente motivado.",
-    image: require("../../assets/images/onboarding/slide_2.png"),
-    background: ["#3E75AA", "#0A365E"],
-    blobColor: "#ffffff20"
+    key: '2',
+    title: 'Sigue tu progreso',
+    description: 'Visualiza tu evolución y mantente motivado.',
+    image: require('../../assets/images/onboarding/slide_2.png'),
+    background: ['#3E75AA', '#0A365E'],
+    blobColor: '#ffffff20',
   },
   {
-    key: "3",
-    title: "Crea el hábito",
-    description: "Establece metas, sé constante y hazlo parte de tu vida.",
-    image: require("../../assets/images/onboarding/slide_3.png"),
-    background: ["#1BA9FF", "#004B75"],
-    blobColor: "#ffffff15"
-  }
+    key: '3',
+    title: 'Crea el hábito',
+    description: 'Establece metas, sé constante y hazlo parte de tu vida.',
+    image: require('../../assets/images/onboarding/slide_3.png'),
+    background: ['#1BA9FF', '#004B75'],
+    blobColor: '#ffffff15',
+  },
 ];
 
 export default function OnboardingScreen() {
@@ -57,12 +57,12 @@ export default function OnboardingScreen() {
 
   const startColor = scrollX.interpolate({
     inputRange: slides.map((_, i) => i * width),
-    outputRange: slides.map((s) => s.background[0])
+    outputRange: slides.map((s) => s.background[0]),
   });
 
   const endColor = scrollX.interpolate({
     inputRange: slides.map((_, i) => i * width),
-    outputRange: slides.map((s) => s.background[1])
+    outputRange: slides.map((s) => s.background[1]),
   });
 
   return (
@@ -83,7 +83,7 @@ export default function OnboardingScreen() {
         viewabilityConfig={viewConfigRef.current}
         onScroll={RNAnimated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: false },
         )}
         scrollEventThrottle={16}
         renderItem={({ item }) => (
@@ -91,13 +91,13 @@ export default function OnboardingScreen() {
             <View
               style={[
                 styles.blobContainer,
-                { backgroundColor: item.blobColor }
+                { backgroundColor: item.blobColor },
               ]}
             >
               <Image
                 source={item.image}
                 style={styles.image}
-                resizeMode='contain'
+                resizeMode="contain"
               />
             </View>
             <Text style={styles.title}>{item.title}</Text>
@@ -111,10 +111,10 @@ export default function OnboardingScreen() {
         style={[
           styles.indicatorContainer,
           {
-            position: "absolute",
+            position: 'absolute',
             bottom: height * 0.22,
-            alignSelf: "center"
-          }
+            alignSelf: 'center',
+          },
         ]}
       >
         {slides.map((_, i) => {
@@ -123,13 +123,13 @@ export default function OnboardingScreen() {
           const widthAnim = scrollX.interpolate({
             inputRange,
             outputRange: [8, 24, 8],
-            extrapolate: "clamp"
+            extrapolate: 'clamp',
           });
 
           const opacity = scrollX.interpolate({
             inputRange,
             outputRange: [0.4, 1, 0.4],
-            extrapolate: "clamp"
+            extrapolate: 'clamp',
           });
 
           return (
@@ -139,8 +139,8 @@ export default function OnboardingScreen() {
                 styles.dot,
                 {
                   width: widthAnim,
-                  opacity
-                }
+                  opacity,
+                },
               ]}
             />
           );
@@ -149,10 +149,10 @@ export default function OnboardingScreen() {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push("/home")}
+        onPress={() => router.push('/home')}
       >
         <Text style={styles.buttonText}>
-          {currentIndex === slides.length - 1 ? "Empezar" : "Saltar"}
+          {currentIndex === slides.length - 1 ? 'Empezar' : 'Saltar'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -175,66 +175,66 @@ const RNAnimatedGradient = ({ startColor, endColor }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   slide: {
     width,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     padding: 20,
-    paddingBottom: 80
+    paddingBottom: 80,
   },
   blobContainer: {
     borderRadius: 150,
     padding: 20,
     marginBottom: 30,
     maxHeight: height * 0.35,
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
     width: width * 0.55,
     height: undefined,
     aspectRatio: 1,
     maxHeight: height * 0.25,
-    borderRadius: 20
+    borderRadius: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: "700",
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 12
+    fontWeight: '700',
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 12,
   },
   description: {
     fontSize: 16,
-    color: "#E5F0FF",
-    textAlign: "center",
-    paddingHorizontal: 20
+    color: '#E5F0FF',
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
   indicatorContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 24
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 24,
   },
   dot: {
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#fff",
-    marginHorizontal: 6
+    backgroundColor: '#fff',
+    marginHorizontal: 6,
   },
   button: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 40,
-    alignSelf: "center",
-    backgroundColor: "#fff",
+    alignSelf: 'center',
+    backgroundColor: '#fff',
     paddingHorizontal: 32,
     paddingVertical: 14,
-    borderRadius: 30
+    borderRadius: 30,
   },
   buttonText: {
-    color: "#0F4C81",
-    fontWeight: "700",
-    fontSize: 16
-  }
+    color: '#0F4C81',
+    fontWeight: '700',
+    fontSize: 16,
+  },
 });
