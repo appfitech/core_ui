@@ -3,9 +3,20 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { COLORS } from './constants/colors';
+import { TRANSLATIONS } from './constants/strings';
 
 export default function WelcomeScreen() {
+  const { welcomeScreen } = TRANSLATIONS;
+
   const router = useRouter();
+
+  const handleRegisterClick = () => {
+    router.push('/register');
+  };
+
+  const handleLoginClick = () => {
+    router.push('/login');
+  };
 
   return (
     <View style={styles.container}>
@@ -16,7 +27,7 @@ export default function WelcomeScreen() {
         <Image
           source={require('../assets/images/logos/logo.png')}
           style={styles.logo}
-          resizeMode="contain"
+          resizeMode={'contain'}
         />
       </Animated.View>
 
@@ -24,10 +35,8 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(200).duration(800)}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>{'¡Bienvenido a FITECH!'}</Text>
-        <Text style={styles.subtitle}>
-          {'Tu mejor versión está a punto de activarse.'}
-        </Text>
+        <Text style={styles.title}>{welcomeScreen.header}</Text>
+        <Text style={styles.subtitle}>{welcomeScreen.subheader}</Text>
       </Animated.View>
 
       <Animated.View
@@ -36,15 +45,19 @@ export default function WelcomeScreen() {
       >
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => router.push('/register')}
+          onPress={handleRegisterClick}
         >
-          <Text style={styles.primaryButtonText}>{'Crear cuenta'}</Text>
+          <Text style={styles.primaryButtonText}>
+            {welcomeScreen.createAccountButton}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.secondaryButton}
-          onPress={() => router.push('/login')}
+          onPress={handleLoginClick}
         >
-          <Text style={styles.secondaryButtonText}>{'Iniciar sesión'}</Text>
+          <Text style={styles.secondaryButtonText}>
+            {welcomeScreen.logInButton}
+          </Text>
         </TouchableOpacity>
       </Animated.View>
     </View>

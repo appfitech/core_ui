@@ -20,9 +20,12 @@ import Animated, {
 import { useLogin } from '../api/mutations/useLogin';
 import { BackButton } from '../components/BackButton';
 import { COLORS } from '../constants/colors';
+import { TRANSLATIONS } from '../constants/strings';
 import { useUserStore } from '../stores/user';
 
 export default function LoginScreen() {
+  const { loginScreen } = TRANSLATIONS;
+
   const [showUI, setShowUI] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -82,13 +85,13 @@ export default function LoginScreen() {
             entering={FadeInUp.delay(200)}
             style={styles.headerTitle}
           >
-            {'Inicia sesión en tu \ncuenta'}
+            {loginScreen.header}
           </Animated.Text>
           <Animated.Text
             entering={FadeInUp.delay(300)}
             style={styles.headerSubtitle}
           >
-            {'Entrena. Mejora. Repite.'}
+            {loginScreen.subheader}
           </Animated.Text>
         </View>
 
@@ -100,13 +103,15 @@ export default function LoginScreen() {
             <TouchableOpacity style={styles.googleButton}>
               <Ionicons name="logo-google" size={20} color="#000" />
               <Text style={styles.googleButtonText}>
-                {'Continuar con Google'}
+                {loginScreen.loginGoogleButton}
               </Text>
             </TouchableOpacity>
 
             <View style={styles.separator}>
               <View style={styles.line} />
-              <Text style={styles.separatorText}>{'O inicia sesión con'}</Text>
+              <Text style={styles.separatorText}>
+                {loginScreen.alternativeLoginCaption}
+              </Text>
               <View style={styles.line} />
             </View>
 
@@ -147,9 +152,6 @@ export default function LoginScreen() {
 
             <View style={styles.optionsRow}>
               <TouchableOpacity>
-                <Text style={styles.rememberMe}>☐ {'Recuérdame'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
                 <Text style={styles.forgotText}>
                   {'¿Olvidaste tu contraseña?'}
                 </Text>
@@ -181,7 +183,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#F2F6FF",
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 60,
@@ -254,8 +255,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 14,
     fontSize: 14,
-    // marginBottom: 16,
-    // overflow: "hidden",
     color: '#1B1F23',
   },
   passwordWrapper: {
@@ -269,12 +268,8 @@ const styles = StyleSheet.create({
   },
   optionsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginBottom: 16,
-  },
-  rememberMe: {
-    fontSize: 12,
-    color: '#666',
   },
   forgotText: {
     fontSize: 12,
