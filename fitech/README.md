@@ -1,50 +1,129 @@
-# Welcome to your Expo app 👋
+# 🏋️ FITECH React Native Project
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Welcome to the **FITECH** React Native app! This guide will help you set up the project and run it locally on your simulator.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Getting Started
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1️⃣ Clone the repository
 
 ```bash
-npm run reset-project
+git clone <your-repo-url>
+cd <your-repo-folder>/fitech
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+### 2️⃣ Install dependencies
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+npm install
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+---
 
-## Join the community
+### 3️⃣ (Optional) Install EAS CLI
 
-Join our community of developers creating universal apps.
+If you want to generate APKs (Android) or IPAs (iOS):
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```bash
+npm install -g eas-cli
+```
+
+> **Note:** You will need an [Expo account](https://expo.dev) to use EAS for builds.
+
+---
+
+### 4️⃣ Xcode and iOS Simulator setup
+
+✅ Make sure **Xcode** is fully installed from the App Store.  
+✅ Verify your developer directory:
+
+```bash
+xcode-select -p
+```
+
+➡ Expected output:
+
+```
+/Applications/Xcode.app/Contents/Developer
+```
+
+❗ If it shows something like `/Library/Developer/CommandLineTools`, fix it:
+
+```bash
+sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+```
+
+✅ Accept Xcode license (if needed):
+
+```bash
+sudo xcodebuild -license accept
+```
+
+✅ Check Xcode version:
+
+```bash
+xcodebuild -version
+```
+
+➡ You should see:
+
+```
+Xcode <your-version>
+Build version <your-build-version>
+```
+
+---
+
+### 5️⃣ Run the project
+
+Start the development server:
+
+```bash
+npm start
+```
+
+➡ When prompted, select:
+
+```
+ios
+```
+
+➡ The app will open in your iOS simulator.
+
+---
+
+## ⚠️ Troubleshooting
+
+- **Simulator won’t open?**  
+Make sure Xcode and its Command Line Tools are installed and configured (see step 4).
+
+- **Error about `xcodebuild` or developer directory?**
+  ```
+  xcodebuild: error: tool 'xcodebuild' requires Xcode, but active developer directory is a command line tools instance
+  ```
+  👉 Fix it:
+
+  ```bash
+  sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+  ```
+
+---
+
+## 📦 Building APK / IPA
+
+Once EAS CLI is installed and you're logged into Expo:
+
+```bash
+eas build --platform android
+```
+or
+```bash
+eas build --platform ios
+```
+
+➡ Learn more at [Expo Application Services](https://expo.dev/eas).
+
+
