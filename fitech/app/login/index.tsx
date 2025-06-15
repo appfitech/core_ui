@@ -21,9 +21,12 @@ import { useLogin } from '../api/mutations/useLogin';
 import { BackButton } from '../components/BackButton';
 import { COLORS } from '../constants/colors';
 import { TRANSLATIONS } from '../constants/strings';
+import { useAuthRedirect } from '../hooks/use-auth-reditect';
 import { useUserStore } from '../stores/user';
 
 export default function LoginScreen() {
+  useAuthRedirect();
+
   const { loginScreen } = TRANSLATIONS;
 
   const [showUI, setShowUI] = useState(false);
@@ -57,6 +60,7 @@ export default function LoginScreen() {
       { username, password },
       {
         onSuccess: (response) => {
+          console.log('[K] user', response);
           setUser(response);
           router.push('/onboarding');
         },

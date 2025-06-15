@@ -11,6 +11,7 @@ export type Person = {
   gender?: string | null;
   presentationVideoId?: number;
   profilePhotoId?: number;
+  fitnessGoalTypes: string[];
 };
 
 export type User = {
@@ -19,8 +20,8 @@ export type User = {
   type: number;
   premium: boolean;
   premiumBy: string;
-  createdAt: number[];
-  updatedAt: number[];
+  createdAt: string;
+  updatedAt: string;
   isEmailVerified: boolean;
   person: Person;
 };

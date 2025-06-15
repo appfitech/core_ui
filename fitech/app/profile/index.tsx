@@ -13,12 +13,19 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AvatarSvg from '../../assets/images/avatar.svg';
+import { BackButton } from '../components/BackButton';
 import { useUserStore } from '../stores/user';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const user = useUserStore((s) => s.user?.user?.person);
   const userType = useUserStore((s) => s.user?.user?.type);
+
+  const handleLogout = async () => {
+    await useUserStore.getState().logout();
+    router.replace('/login'); // Redirect to login after logout
+  };
 
   return (
     <ScrollView
@@ -31,6 +38,9 @@ export default function ProfileScreen() {
         },
       ]}
     >
+      <View style={{ marginTop: 0, marginBottom: 60 }}>
+        <BackButton />
+      </View>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {user?.profilePhotoId ? (
           <Image
@@ -89,6 +99,10 @@ export default function ProfileScreen() {
           route={''}
         />
       </Animated.View>
+
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Cerrar sesión</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
@@ -107,7 +121,7 @@ function SectionItem({
   return (
     <TouchableOpacity
       style={styles.item}
-      onPress={() => route && router.push(`/../${route}`)}
+      onPress={() => route && router.push(`/${route}`)}
     >
       <View style={styles.iconWrapper}>
         <Ionicons name={icon as any} size={20} color="#0F4C81" />
@@ -133,6 +147,13 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginBottom: 12,
+  },
+  avatarWrapper: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    overflow: 'hidden',
+    backgroundColor: '#fff',
   },
   name: {
     fontSize: 20,
@@ -178,11 +199,16 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#1B1F23',
   },
-  avatarWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    overflow: 'hidden', // 👈 required for clipping
-    backgroundColor: '#fff', // optional fallback
+  logoutButton: {
+    marginTop: 24,
+    backgroundColor: '#FF4D4D',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });

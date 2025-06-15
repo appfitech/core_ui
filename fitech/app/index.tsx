@@ -4,8 +4,11 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { COLORS } from './constants/colors';
 import { TRANSLATIONS } from './constants/strings';
+import { useAuthRedirect } from './hooks/use-auth-reditect';
 
 export default function WelcomeScreen() {
+  useAuthRedirect();
+
   const { welcomeScreen } = TRANSLATIONS;
 
   const router = useRouter();
