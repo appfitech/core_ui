@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
@@ -28,7 +29,8 @@ export default function PersonalInfoScreen() {
   const handleUpdate = useCallback(() => {
     updateUser(form, {
       onSuccess: async (response) => {
-        await updateUserInfo(form);
+        console.log('[K] response', response);
+        await updateUserInfo(response);
         router.back();
       },
     });
@@ -100,6 +102,12 @@ export default function PersonalInfoScreen() {
             value={form?.person?.email}
             keyboardType="email-address"
           />
+          {user?.isEmailVerified && (
+            <View style={styles.verifiedTag}>
+              <Ionicons name="checkmark-circle" size={14} color="#4CAF50" />
+              <Text style={styles.verifiedText}>Email Verificado</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.field}>
@@ -135,7 +143,6 @@ export default function PersonalInfoScreen() {
         </View>
       </Animated.View>
 
-      {/* Buttons */}
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
           <Text style={styles.cancelText}>Cancelar</Text>
@@ -235,5 +242,21 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
     color: '#fff',
+  },
+  verifiedTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DFF6DD',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginTop: 10,
+    maxWidth: 150,
+  },
+  verifiedText: {
+    marginLeft: 4,
+    color: '#2E7D32',
+    fontWeight: '600',
+    fontSize: 12,
   },
 });

@@ -14,12 +14,14 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AvatarSvg from '../../assets/images/avatar.svg';
 import { BackButton } from '../components/BackButton';
+import { PremiumTag } from '../components/PremiumTag';
 import { useUserStore } from '../stores/user';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const user = useUserStore((s) => s.user?.user?.person);
+  const person = useUserStore((s) => s.user?.user.person);
+  const user = useUserStore((s) => s.user?.user);
   const userType = useUserStore((s) => s.user?.user?.type);
 
   const handleLogout = async () => {
@@ -42,10 +44,10 @@ export default function ProfileScreen() {
         <BackButton />
       </View>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
-        {user?.profilePhotoId ? (
+        {person?.profilePhotoId ? (
           <Image
             source={{
-              uri: `https://appfitech.com/v1/app/file-upload/view/${user?.profilePhotoId}`,
+              uri: `https://appfitech.com/v1/app/file-upload/view/${person?.profilePhotoId}`,
             }}
             style={styles.avatar}
           />
@@ -55,9 +57,9 @@ export default function ProfileScreen() {
           </View>
         )}
         <Text style={styles.name}>
-          {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}
+          {`${person?.firstName ?? ''} ${person?.lastName ?? ''}`}
         </Text>
-        <Text style={styles.email}>{user?.email}</Text>
+        <Text style={styles.email}>{person?.email}</Text>
         <View
           style={{
             flexDirection: 'row',
@@ -66,10 +68,10 @@ export default function ProfileScreen() {
             columnGap: 5,
           }}
         >
-          <Ionicons name={'barbell-outline'} size={20} color="green" />
           <Text style={styles.userType}>
             {userType === 1 ? 'Trainer' : 'Usuario'}
           </Text>
+          {user?.premium && <PremiumTag />}
         </View>
       </Animated.View>
 
@@ -88,15 +90,9 @@ export default function ProfileScreen() {
           route={'image-gallery'}
         />
         <SectionItem
-          icon="videocam-outline"
-          label="Video Presentación"
-          route={''}
-        />
-        <SectionItem icon="briefcase-outline" label="Experiencia" route={''} />
-        <SectionItem
-          icon="wallet-outline"
-          label="Información Económica"
-          route={''}
+          icon="briefcase-outline"
+          label="Objetivos Fitness"
+          route={'goals'}
         />
       </Animated.View>
 
