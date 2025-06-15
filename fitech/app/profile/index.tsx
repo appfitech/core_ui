@@ -13,7 +13,6 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AvatarSvg from '../../assets/images/avatar.svg';
-import { BackButton } from '../components/BackButton';
 import { PremiumTag } from '../components/PremiumTag';
 import { useUserStore } from '../stores/user';
 
@@ -40,9 +39,9 @@ export default function ProfileScreen() {
         },
       ]}
     >
-      <View style={{ marginTop: 0, marginBottom: 60 }}>
+      {/* <View style={{ marginTop: 0, marginBottom: 60 }}>
         <BackButton />
-      </View>
+      </View> */}
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {person?.profilePhotoId ? (
           <Image
