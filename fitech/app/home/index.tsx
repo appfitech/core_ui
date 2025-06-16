@@ -1,9 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import {
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -21,6 +19,7 @@ export default function HomeScreen() {
   const router = useRouter();
 
   const handleSupportClick = useCallback(() => router.push('/support'), []);
+  const handleTrainersClick = useCallback(() => router.push('/trainers'), []);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
@@ -40,75 +39,17 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.searchBar}>
-          <Ionicons name="search" size={20} color="#999" />
-          <TextInput
-            placeholder="Buscar rutina..."
-            placeholderTextColor="#999"
-            style={styles.searchInput}
-          />
-          <Ionicons name="options-outline" size={20} color="#0F4C81" />
-        </View>
-
-        <LinearGradient colors={['#6A5AE0', '#7B63E7']} style={styles.planCard}>
-          <View style={styles.planHeader}>
-            <Text style={styles.planTitle}>Mi Plan de Hoy</Text>
-            <View style={styles.planDate}>
-              <Ionicons name="calendar-outline" size={16} color="#fff" />
-              <Text style={styles.planDateText}>Nov 11, 2023</Text>
-            </View>
+        <TouchableOpacity onPress={handleTrainersClick}>
+          <View style={styles.searchBar}>
+            <Ionicons name="search" size={20} color="#999" />
+            <TextInput
+              placeholder="Buscar trainers..."
+              placeholderTextColor="#999"
+              style={styles.searchInput}
+            />
+            <Ionicons name="options-outline" size={20} color="#0F4C81" />
           </View>
-          <View style={styles.planMetrics}>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>89</Text>
-              <Text style={styles.metricLabel}>Kg</Text>
-            </View>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>500</Text>
-              <Text style={styles.metricLabel}>Kcal</Text>
-            </View>
-            <View style={styles.metric}>
-              <Text style={styles.metricValue}>45%</Text>
-              <Text style={styles.metricLabel}>Hoy</Text>
-            </View>
-          </View>
-        </LinearGradient>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Categorías</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['General', 'Cardio', 'Fuerza', 'Flexibilidad', 'Funcional'].map(
-              (cat, index) => (
-                <View key={index} style={styles.category}>
-                  <Image
-                    source={require('../../assets/images/bg/bg_1.jpg')}
-                    style={styles.categoryImage}
-                  />
-                  <Text style={styles.categoryLabel}>{cat}</Text>
-                </View>
-              ),
-            )}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Populares</Text>
-          {[1, 2].map((item) => (
-            <View key={item} style={styles.workoutCard}>
-              <Image
-                source={require('../../assets/images/bg/bg_1.jpg')}
-                style={styles.workoutImage}
-              />
-              <View style={styles.workoutInfo}>
-                <Text style={styles.workoutTitle}>Jump Rope</Text>
-                <Text style={styles.workoutSub}>
-                  110 Kcal · 10 Min · 9 Steps
-                </Text>
-                <Text style={styles.workoutTag}>Principiante</Text>
-              </View>
-            </View>
-          ))}
-        </View>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

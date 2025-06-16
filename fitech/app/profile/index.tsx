@@ -25,7 +25,7 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     await useUserStore.getState().logout();
-    router.replace('/login'); // Redirect to login after logout
+    router.replace('/');
   };
 
   return (
@@ -39,9 +39,6 @@ export default function ProfileScreen() {
         },
       ]}
     >
-      {/* <View style={{ marginTop: 0, marginBottom: 60 }}>
-        <BackButton />
-      </View> */}
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {person?.profilePhotoId ? (
           <Image

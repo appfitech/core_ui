@@ -117,7 +117,7 @@ Make sure Xcode and its Command Line Tools are installed and configured (see ste
 Once EAS CLI is installed and you're logged into Expo:
 
 ```bash
-eas build --platform android
+eas build --platform android --profile apk
 ```
 or
 ```bash

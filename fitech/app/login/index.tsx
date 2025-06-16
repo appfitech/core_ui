@@ -104,21 +104,6 @@ export default function LoginScreen() {
             entering={SlideInDown.springify().damping(15)}
             style={styles.card}
           >
-            <TouchableOpacity style={styles.googleButton}>
-              <Ionicons name="logo-google" size={20} color="#000" />
-              <Text style={styles.googleButtonText}>
-                {loginScreen.loginGoogleButton}
-              </Text>
-            </TouchableOpacity>
-
-            <View style={styles.separator}>
-              <View style={styles.line} />
-              <Text style={styles.separatorText}>
-                {loginScreen.alternativeLoginCaption}
-              </Text>
-              <View style={styles.line} />
-            </View>
-
             <View style={styles.inputWrapper}>
               <Ionicons
                 name="mail-outline"
@@ -189,7 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 60,
+    paddingTop: 100,
     paddingHorizontal: 24,
   },
   header: {
@@ -207,6 +192,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textAlign: 'center',
     color: '#fff',
+    marginTop: 40,
   },
   headerSubtitle: {
     fontSize: 14,
@@ -224,6 +210,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 12,
     elevation: 6,
+    marginTop: 20,
   },
   googleButton: {
     flexDirection: 'row',

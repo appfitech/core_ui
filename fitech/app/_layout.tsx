@@ -38,7 +38,7 @@ export default function RootLayout() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const segments = useSegments();
-  const currentRoute = segments[0] || 'home';
+  const currentRoute = segments[0];
 
   const handleNavItemClick = useCallback(
     (route) => () => {
@@ -55,7 +55,10 @@ export default function RootLayout() {
 
   if (!fontsLoaded) return null;
 
-  const shouldHideNav = HIDE_NAV_ROUTES.includes(currentRoute);
+  console.log('[K] currentRoute', currentRoute);
+
+  const shouldHideNav =
+    HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
 
   return (
     <ReactQueryProvider>

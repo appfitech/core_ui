@@ -11,9 +11,6 @@
     "preview": {
       "distribution": "internal"
     },
-    "production": {
-      "autoIncrement": true
-    },
     "apk": {
       "android": {
         "buildType": "apk"
@@ -21,6 +18,10 @@
     },
     "ios-preview": {
       "distribution": "internal",
+      "autoIncrement": true
+    },
+    "production": {
+      "distribution": "store",
       "autoIncrement": true
     }
   },
