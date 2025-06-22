@@ -60,7 +60,6 @@ export default function LoginScreen() {
       { username, password },
       {
         onSuccess: (response) => {
-          console.log('[K] user', response);
           setUser(response);
           router.push('/onboarding');
         },
@@ -112,7 +111,7 @@ export default function LoginScreen() {
                 style={styles.iconLeft}
               />
               <TextInput
-                placeholder="Email"
+                placeholder="Usuario"
                 placeholderTextColor="#888"
                 keyboardType="email-address"
                 style={styles.input}
