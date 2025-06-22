@@ -121,7 +121,8 @@ eas build --platform android --profile apk
 ```
 or
 ```bash
-eas build --platform ios
+eas build --platform ios --profile production
+eas submit --platform ios --latest
 ```
 
 ➡ Learn more at [Expo Application Services](https://expo.dev/eas).
