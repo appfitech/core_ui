@@ -17,17 +17,21 @@ import Animated, {
   ZoomIn,
 } from 'react-native-reanimated';
 
+import { useTheme } from '@/contexts/ThemeContext';
+
+import { TRANSLATIONS } from '../../constants/strings';
 import { useLogin } from '../api/mutations/useLogin';
 import { BackButton } from '../components/BackButton';
-import { COLORS } from '../constants/colors';
-import { TRANSLATIONS } from '../constants/strings';
 import { useAuthRedirect } from '../hooks/use-auth-reditect';
 import { useUserStore } from '../stores/user';
+import { FullTheme } from '../types/theme';
 
 export default function LoginScreen() {
+  const { theme } = useTheme();
   useAuthRedirect();
 
   const { loginScreen } = TRANSLATIONS;
+  const styles = getStyles(theme);
 
   const [showUI, setShowUI] = useState(false);
   const [username, setUsername] = useState('');
@@ -69,7 +73,7 @@ export default function LoginScreen() {
 
   return (
     <LinearGradient
-      colors={[COLORS.dark.accent, COLORS.dark.background]}
+      colors={[theme.primaryDark, theme.background]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
@@ -168,136 +172,137 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: 100,
-    paddingHorizontal: 24,
-  },
-  header: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    marginBottom: 16,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    textAlign: 'center',
-    color: '#fff',
-    marginTop: 40,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#DDE6FF',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  card: {
-    backgroundColor: '#fff',
-    width: '100%',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 12,
-    elevation: 6,
-    marginTop: 20,
-  },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F7F8FA',
-    padding: 12,
-    borderRadius: 10,
-    justifyContent: 'center',
-  },
-  googleButtonText: {
-    marginLeft: 8,
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  separator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  line: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#E4E6EB',
-  },
-  separatorText: {
-    marginHorizontal: 10,
-    color: '#999',
-    fontSize: 12,
-  },
-  input: {
-    backgroundColor: '#F5F7FA',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: '#1B1F23',
-  },
-  passwordWrapper: {
-    backgroundColor: '#F5F7FA',
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 0,
-    marginBottom: 16,
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginBottom: 16,
-  },
-  forgotText: {
-    fontSize: 12,
-    color: COLORS.light.primary,
-    fontWeight: '500',
-  },
-  loginButton: {
-    backgroundColor: COLORS.light.primary,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  loginButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  footerText: {
-    marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  signUp: {
-    color: COLORS.light.primary,
-    fontWeight: '500',
-  },
-  gradient: {
-    flex: 1,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F7FA',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    marginBottom: 16,
-  },
-  iconLeft: {
-    marginRight: 8,
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      paddingTop: 100,
+      paddingHorizontal: 24,
+    },
+    header: {
+      width: '100%',
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    logo: {
+      width: 40,
+      height: 40,
+      marginBottom: 16,
+    },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      textAlign: 'center',
+      color: '#fff',
+      marginTop: 40,
+    },
+    headerSubtitle: {
+      fontSize: 14,
+      color: '#DDE6FF',
+      textAlign: 'center',
+      marginTop: 8,
+    },
+    card: {
+      backgroundColor: '#fff',
+      width: '100%',
+      borderRadius: 16,
+      padding: 24,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 12,
+      elevation: 6,
+      marginTop: 20,
+    },
+    googleButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#F7F8FA',
+      padding: 12,
+      borderRadius: 10,
+      justifyContent: 'center',
+    },
+    googleButtonText: {
+      marginLeft: 8,
+      fontWeight: '600',
+      fontSize: 14,
+    },
+    separator: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 20,
+    },
+    line: {
+      flex: 1,
+      height: 1,
+      backgroundColor: '#E4E6EB',
+    },
+    separatorText: {
+      marginHorizontal: 10,
+      color: '#999',
+      fontSize: 12,
+    },
+    input: {
+      backgroundColor: '#F5F7FA',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 14,
+      fontSize: 14,
+      color: '#1B1F23',
+    },
+    passwordWrapper: {
+      backgroundColor: '#F5F7FA',
+      borderRadius: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 12,
+      paddingVertical: 0,
+      marginBottom: 16,
+    },
+    optionsRow: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginBottom: 16,
+    },
+    forgotText: {
+      fontSize: 12,
+      color: theme.primaryLight,
+      fontWeight: '500',
+    },
+    loginButton: {
+      backgroundColor: theme.primaryDark,
+      paddingVertical: 14,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    loginButtonText: {
+      color: '#fff',
+      fontWeight: '600',
+      fontSize: 16,
+    },
+    footerText: {
+      marginTop: 20,
+      flexDirection: 'row',
+      justifyContent: 'center',
+    },
+    signUp: {
+      color: theme.textPrimary,
+      fontWeight: '500',
+    },
+    gradient: {
+      flex: 1,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#F5F7FA',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      marginBottom: 16,
+    },
+    iconLeft: {
+      marginRight: 8,
+    },
+  });

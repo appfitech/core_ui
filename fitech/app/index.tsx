@@ -2,11 +2,16 @@ import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { COLORS } from './constants/colors';
-import { TRANSLATIONS } from './constants/strings';
+import { useTheme } from '@/contexts/ThemeContext';
+
+import { TRANSLATIONS } from '../constants/strings';
 import { useAuthRedirect } from './hooks/use-auth-reditect';
+import { FullTheme } from './types/theme';
 
 export default function WelcomeScreen() {
+  const { theme } = useTheme();
+  const styles = getThemedStyles(theme);
+
   useAuthRedirect();
 
   const { welcomeScreen } = TRANSLATIONS;
@@ -67,64 +72,65 @@ export default function WelcomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.dark.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  logoContainer: {
-    marginBottom: 32,
-    width: '60%',
-    alignItems: 'center',
-  },
-  logo: {
-    width: '100%',
-    height: 200,
-  },
-  textContainer: {
-    marginBottom: 40,
-    alignItems: 'center',
-  },
-  title: {
-    color: COLORS.dark.textPrimary,
-    fontSize: 32,
-    fontFamily: 'Urbanist_700Bold',
-    marginTop: 12,
-    letterSpacing: 1,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.dark.textSecondary,
-    marginTop: 8,
-  },
-  buttonContainer: {
-    width: '100%',
-    gap: 16,
-  },
-  primaryButton: {
-    backgroundColor: COLORS.light.accent,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  primaryButtonText: {
-    color: COLORS.light.background,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  secondaryButton: {
-    borderColor: COLORS.light.accent,
-    borderWidth: 2,
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  secondaryButtonText: {
-    color: COLORS.light.accent,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
+const getThemedStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 24,
+    },
+    logoContainer: {
+      marginBottom: 32,
+      width: '60%',
+      alignItems: 'center',
+    },
+    logo: {
+      width: '100%',
+      height: 200,
+    },
+    textContainer: {
+      marginBottom: 40,
+      alignItems: 'center',
+    },
+    title: {
+      color: theme.textPrimary,
+      fontSize: 34,
+      fontFamily: 'Urbanist_700Bold',
+      marginTop: 12,
+      letterSpacing: 1,
+    },
+    subtitle: {
+      fontSize: 18,
+      color: theme.textSecondary,
+      marginTop: 8,
+    },
+    buttonContainer: {
+      width: '100%',
+      gap: 16,
+    },
+    primaryButton: {
+      backgroundColor: theme.green500,
+      paddingVertical: 14,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    primaryButtonText: {
+      color: theme.textPrimary,
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    secondaryButton: {
+      borderColor: theme.green700,
+      borderWidth: 2,
+      paddingVertical: 14,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    secondaryButtonText: {
+      color: theme.green700,
+      fontSize: 18,
+      fontWeight: '600',
+    },
+  });

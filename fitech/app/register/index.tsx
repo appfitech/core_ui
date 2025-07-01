@@ -14,11 +14,15 @@ import {
 import DropDownPicker from 'react-native-dropdown-picker';
 import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
+import { useTheme } from '@/contexts/ThemeContext';
+
 import { useCreateUser } from '../api/mutations/useCreateUser';
 import { BackButton } from '../components/BackButton';
-import { COLORS } from '../constants/colors';
+import { FullTheme } from '../types/theme';
 
 export default function Register() {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     type: 1,
@@ -58,7 +62,7 @@ export default function Register() {
 
   return (
     <LinearGradient
-      colors={[COLORS.dark.accent, COLORS.dark.background]}
+      colors={[theme.background, theme.primaryDark]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
@@ -155,79 +159,80 @@ export default function Register() {
   );
 }
 
-const styles = StyleSheet.create({
-  gradient: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 24,
-  },
-  header: {
-    width: '100%',
-    alignItems: 'center',
-    marginBottom: 24,
-    marginTop: 24,
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: '#DDE6FF',
-    textAlign: 'center',
-    marginTop: 8,
-  },
-  scrollForm: {
-    paddingBottom: 80,
-  },
-  card: {
-    backgroundColor: '#fff',
-    width: '100%',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  label: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 6,
-    marginTop: 12,
-  },
-  inputWrapper: {
-    marginBottom: 4,
-  },
-  input: {
-    backgroundColor: '#F5F7FA',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    fontSize: 14,
-    color: '#1B1F23',
-  },
-  dropdown: {
-    backgroundColor: '#F5F7FA',
-    borderColor: '#ccc',
-    borderRadius: 10,
-  },
-  submitButton: {
-    backgroundColor: COLORS.light.primary,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  submitText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    gradient: {
+      flex: 1,
+    },
+    container: {
+      flex: 1,
+      paddingTop: 60,
+      paddingHorizontal: 24,
+    },
+    header: {
+      width: '100%',
+      alignItems: 'center',
+      marginBottom: 24,
+      marginTop: 24,
+    },
+    headerTitle: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: '#fff',
+      textAlign: 'center',
+    },
+    headerSubtitle: {
+      fontSize: 14,
+      color: '#DDE6FF',
+      textAlign: 'center',
+      marginTop: 8,
+    },
+    scrollForm: {
+      paddingBottom: 80,
+    },
+    card: {
+      backgroundColor: '#fff',
+      width: '100%',
+      borderRadius: 16,
+      padding: 24,
+      shadowColor: '#000',
+      shadowOpacity: 0.1,
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 12,
+      elevation: 6,
+    },
+    label: {
+      fontSize: 12,
+      color: '#666',
+      marginBottom: 6,
+      marginTop: 12,
+    },
+    inputWrapper: {
+      marginBottom: 4,
+    },
+    input: {
+      backgroundColor: '#F5F7FA',
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 14,
+      fontSize: 14,
+      color: '#1B1F23',
+    },
+    dropdown: {
+      backgroundColor: '#F5F7FA',
+      borderColor: '#ccc',
+      borderRadius: 10,
+    },
+    submitButton: {
+      backgroundColor: theme.primaryLight,
+      paddingVertical: 14,
+      borderRadius: 10,
+      alignItems: 'center',
+      marginTop: 24,
+    },
+    submitText: {
+      color: '#fff',
+      fontWeight: '600',
+      fontSize: 16,
+    },
+  });

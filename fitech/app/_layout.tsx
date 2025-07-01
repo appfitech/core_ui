@@ -13,8 +13,9 @@ import { useCallback, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ReactQueryProvider } from './providers/ReactQueryProvider';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
+import { ReactQueryProvider } from './providers/ReactQueryProvider';
 SplashScreen.preventAutoHideAsync();
 
 const NAV_ITEMS_MAPPER = {
@@ -61,34 +62,36 @@ export default function RootLayout() {
     HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
 
   return (
-    <ReactQueryProvider>
-      <View style={{ flex: 1 }}>
-        <Stack screenOptions={{ headerShown: false }} />
+    <ThemeProvider>
+      <ReactQueryProvider>
+        <View style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }} />
 
-        {!shouldHideNav && (
-          <View
-            style={[
-              styles.navBar,
-              { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
-            ]}
-          >
-            {Object.keys(NAV_ITEMS_MAPPER).map((navKey) => (
-              <TouchableOpacity
-                key={navKey}
-                style={styles.navItem}
-                onPress={handleNavItemClick(navKey)}
-              >
-                <Ionicons
-                  name={NAV_ITEMS_MAPPER[navKey].icon}
-                  size={28}
-                  color={currentRoute === navKey ? '#fff' : '#AAA'}
-                />
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-      </View>
-    </ReactQueryProvider>
+          {!shouldHideNav && (
+            <View
+              style={[
+                styles.navBar,
+                { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
+              ]}
+            >
+              {Object.keys(NAV_ITEMS_MAPPER).map((navKey) => (
+                <TouchableOpacity
+                  key={navKey}
+                  style={styles.navItem}
+                  onPress={handleNavItemClick(navKey)}
+                >
+                  <Ionicons
+                    name={NAV_ITEMS_MAPPER[navKey].icon}
+                    size={28}
+                    color={currentRoute === navKey ? '#fff' : '#AAA'}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+        </View>
+      </ReactQueryProvider>
+    </ThemeProvider>
   );
 }
 

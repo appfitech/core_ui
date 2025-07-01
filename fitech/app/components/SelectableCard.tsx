@@ -2,7 +2,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-import { COLORS } from '../utils/colors';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export function SelectableCard({
   icon,
@@ -17,6 +17,8 @@ export function SelectableCard({
   selected: boolean;
   onPress: () => void;
 }) {
+  const { theme } = useTheme();
+
   return (
     <TouchableOpacity
       style={[styles.card, selected && styles.cardSelected]}
@@ -24,7 +26,7 @@ export function SelectableCard({
       activeOpacity={0.8}
     >
       <View style={styles.iconWrapper}>
-        <MaterialIcons name={icon} size={30} color={COLORS.primary} />
+        <MaterialIcons name={icon} size={30} color={theme.primary} />
       </View>
       <View style={{ flex: 1, marginRight: 20 }}>
         <Text style={styles.title}>{title}</Text>
