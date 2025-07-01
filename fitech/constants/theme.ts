@@ -33,11 +33,26 @@ const COLORS = {
 
     // Status
     success: '#4CAF50',
+    successBackground: '#E8F5E9',
+    successBorder: '#C8E6C9',
+    successText: '#2E7D32',
+
     warning: '#FFC107',
+    warningBackground: '#FFF8E1',
+    warningBorder: '#FFECB3',
+    warningText: '#FF8F00',
+
     error: '#F44336',
+    errorBackground: '#FFEBEE',
+    errorBorder: '#FFCDD2',
+    errorText: '#C62828',
 
     // UI
     background: '#FFFFFF',
+    backgroundInverted: '#0B1927',
+    backgroundInput: '#F0F2F5',
+    backgroundDropdown: '#D9DDE2',
+    backgroundHeader: '#D9DDE2',
     card: '#F5F5F5',
     textPrimary: '#0B1927',
     textSecondary: '#4F4F4F',
@@ -66,24 +81,39 @@ const COLORS = {
     green800: '#BEEAC4',
     green900: '#DFF7F6',
 
-    // Dark scale (light → dark)
-    dark100: '#D3D9E1',
-    dark200: '#A7B2C4',
-    dark300: '#7B8BA7',
-    dark400: '#4F648A',
-    dark500: '#2F425E',
-    dark600: '#1D2B3E',
-    dark700: '#131D2B',
-    dark800: '#0B1927',
-    dark900: '#000000',
+    // ✅ Inverted dark scale (light → dark names, but actual light values)
+    dark100: '#000000',
+    dark200: '#0B1927',
+    dark300: '#13161B',
+    dark400: '#262C33',
+    dark500: '#3E4650',
+    dark600: '#606B77',
+    dark700: '#88919C',
+    dark800: '#B0B6BE',
+    dark900: '#D9DDE2',
 
     // Status
-    success: '#4CAF50',
-    warning: '#FFC107',
-    error: '#F44336',
+    success: '#81C784',
+    successBackground: '#1B5E20',
+    successBorder: '#2E7D32',
+    successText: '#A5D6A7',
+
+    warning: '#FFD54F',
+    warningBackground: '#FF6F00',
+    warningBorder: '#FFA000',
+    warningText: '#FFE082',
+
+    error: '#E57373',
+    errorBackground: '#B71C1C',
+    errorBorder: '#C62828',
+    errorText: '#FFCDD2',
 
     // UI
     background: '#0B1927',
+    backgroundInverted: '#FFFFFF',
+    backgroundInput: '#262C33',
+    backgroundDropdown: '#3E4650',
+    backgroundHeader: '#000000',
     card: '#121212',
     textPrimary: '#FFFFFF',
     textSecondary: '#C4C4C4',

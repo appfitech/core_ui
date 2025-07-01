@@ -1,6 +1,6 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Image,
   ScrollView,
@@ -12,21 +12,30 @@ import {
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useTheme } from '@/contexts/ThemeContext';
+
 import AvatarSvg from '../../assets/images/avatar.svg';
 import { PremiumTag } from '../components/PremiumTag';
 import { useUserStore } from '../stores/user';
+import { FullTheme } from '../types/theme';
+import { getUserAvatarURL } from '../utils/user';
 
 export default function ProfileScreen() {
+  const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const person = useUserStore((s) => s.user?.user.person);
+  const person = useUserStore((s) => s.user?.user?.person);
   const user = useUserStore((s) => s.user?.user);
   const userType = useUserStore((s) => s.user?.user?.type);
+
+  const styles = getStyles(theme);
 
   const handleLogout = async () => {
     await useUserStore.getState().logout();
     router.replace('/');
   };
+
+  const userAvatarURL = getUserAvatarURL(person);
 
   return (
     <ScrollView
@@ -40,10 +49,10 @@ export default function ProfileScreen() {
       ]}
     >
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
-        {person?.profilePhotoId ? (
+        {userAvatarURL ? (
           <Image
             source={{
-              uri: `https://appfitech.com/v1/app/file-upload/view/${person?.profilePhotoId}`,
+              uri: userAvatarURL,
             }}
             style={styles.avatar}
           />
@@ -61,7 +70,7 @@ export default function ProfileScreen() {
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: 10,
-            columnGap: 5,
+            columnGap: 10,
           }}
         >
           <Text style={styles.userType}>
@@ -76,20 +85,16 @@ export default function ProfileScreen() {
         style={styles.section}
       >
         <SectionItem
-          icon="person-outline"
+          icon="user"
           label="Información Personal"
           route={'personal-info'}
         />
         <SectionItem
-          icon="images-outline"
+          icon="image"
           label="Galería de Fotos"
           route={'image-gallery'}
         />
-        <SectionItem
-          icon="briefcase-outline"
-          label="Objetivos Fitness"
-          route={'goals'}
-        />
+        <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
       </Animated.View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
@@ -109,98 +114,106 @@ function SectionItem({
   route: string;
 }) {
   const router = useRouter();
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
+  const handleClick = useCallback(
+    (route: string) => () => {
+      router.push(`/${route}`);
+    },
+    [],
+  );
 
   return (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => route && router.push(`/${route}`)}
-    >
+    <TouchableOpacity style={styles.item} onPress={handleClick(route)}>
       <View style={styles.iconWrapper}>
-        <Ionicons name={icon as any} size={20} color="#0F4C81" />
+        <Feather name={icon as any} size={23} color={theme.green800} />
       </View>
       <Text style={styles.itemLabel}>{label}</Text>
-      <Ionicons name="chevron-forward" size={18} color="#999" />
+      <Feather name="chevron-right" size={20} color={theme.green700} />
     </TouchableOpacity>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: '#F5F7FA',
-    paddingHorizontal: 20,
-  },
-  header: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 12,
-  },
-  avatarWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#0F4C81',
-  },
-  userType: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: 'green',
-  },
-  email: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 3,
-  },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  iconWrapper: {
-    width: 32,
-    alignItems: 'center',
-  },
-  itemLabel: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1B1F23',
-  },
-  logoutButton: {
-    marginTop: 24,
-    backgroundColor: '#FF4D4D',
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  logoutText: {
-    color: '#fff',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      flexGrow: 1,
+      backgroundColor: theme.background,
+      paddingHorizontal: 20,
+    },
+    header: {
+      alignItems: 'center',
+      marginBottom: 32,
+    },
+    avatar: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      marginBottom: 12,
+    },
+    avatarWrapper: {
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      overflow: 'hidden',
+      backgroundColor: '#fff',
+    },
+    name: {
+      fontSize: 24,
+      fontWeight: '700',
+      color: theme.primary,
+    },
+    userType: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: theme.dark800,
+    },
+    email: {
+      fontSize: 20,
+      color: theme.secondary,
+      marginTop: 4,
+    },
+    section: {
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      shadowColor: theme.background,
+      shadowOpacity: 0.9,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 8,
+      elevation: 3,
+    },
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.dark500,
+    },
+    iconWrapper: {
+      width: 40,
+      alignItems: 'center',
+    },
+    itemLabel: {
+      flex: 1,
+      marginLeft: 12,
+      fontSize: 16,
+      fontWeight: '500',
+      color: theme.dark900,
+      paddingVertical: 10,
+    },
+    logoutButton: {
+      marginTop: 40,
+      backgroundColor: theme.errorText,
+      paddingVertical: 16,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    logoutText: {
+      color: theme.errorBackground,
+      fontWeight: '700',
+      fontSize: 16,
+    },
+  });

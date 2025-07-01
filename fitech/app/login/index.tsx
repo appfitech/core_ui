@@ -17,6 +17,8 @@ import Animated, {
   ZoomIn,
 } from 'react-native-reanimated';
 
+import { ROUTES } from '@/constants/routes';
+import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 
 import { TRANSLATIONS } from '../../constants/strings';
@@ -65,15 +67,19 @@ export default function LoginScreen() {
       {
         onSuccess: (response) => {
           setUser(response);
-          router.push('/onboarding');
+          router.replace(ROUTES.onboarding);
         },
       },
     );
   }, [username, password]);
 
+  const handleSignUp = () => {
+    router.replace(ROUTES.register);
+  };
+
   return (
     <LinearGradient
-      colors={[theme.primaryDark, theme.background]}
+      colors={[theme.background, theme.background]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
@@ -111,7 +117,7 @@ export default function LoginScreen() {
               <Ionicons
                 name="mail-outline"
                 size={20}
-                color="#888"
+                color={theme.dark700}
                 style={styles.iconLeft}
               />
               <TextInput
@@ -128,7 +134,7 @@ export default function LoginScreen() {
               <Ionicons
                 name="lock-closed-outline"
                 size={20}
-                color="#888"
+                color={theme.dark700}
                 style={styles.iconLeft}
               />
               <TextInput
@@ -152,16 +158,18 @@ export default function LoginScreen() {
 
             <Animated.View entering={ZoomIn.delay(200)}>
               <TouchableOpacity
-                style={styles.loginButton}
+                style={styles.submitButton}
                 onPress={handleLogin}
               >
-                <Text style={styles.loginButtonText}>{'Iniciar sesión'}</Text>
+                <Text style={styles.submitText}>{'Iniciar sesión'}</Text>
               </TouchableOpacity>
             </Animated.View>
 
             <View style={styles.footerText}>
-              <Text style={{ color: '#999' }}>{'¿No tienes una cuenta?'}</Text>
-              <TouchableOpacity>
+              <Text style={{ color: theme.dark400, fontSize: 15 }}>
+                {'¿No tienes una cuenta?'}
+              </Text>
+              <TouchableOpacity onPress={handleSignUp}>
                 <Text style={styles.signUp}>{'Regístrate'}</Text>
               </TouchableOpacity>
             </View>
@@ -187,25 +195,25 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 32,
     },
     logo: {
-      width: 40,
-      height: 40,
-      marginBottom: 16,
+      width: 80,
+      height: 80,
+      marginBottom: 10,
     },
     headerTitle: {
-      fontSize: 24,
+      fontSize: 30,
       fontWeight: '700',
       textAlign: 'center',
-      color: '#fff',
+      color: theme.dark900,
       marginTop: 40,
     },
     headerSubtitle: {
-      fontSize: 14,
-      color: '#DDE6FF',
+      fontSize: 18,
+      color: theme.dark700,
       textAlign: 'center',
       marginTop: 8,
     },
     card: {
-      backgroundColor: '#fff',
+      backgroundColor: theme.backgroundInverted,
       width: '100%',
       borderRadius: 16,
       padding: 24,
@@ -215,19 +223,6 @@ const getStyles = (theme: FullTheme) =>
       shadowRadius: 12,
       elevation: 6,
       marginTop: 20,
-    },
-    googleButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: '#F7F8FA',
-      padding: 12,
-      borderRadius: 10,
-      justifyContent: 'center',
-    },
-    googleButtonText: {
-      marginLeft: 8,
-      fontWeight: '600',
-      fontSize: 14,
     },
     separator: {
       flexDirection: 'row',
@@ -244,14 +239,7 @@ const getStyles = (theme: FullTheme) =>
       color: '#999',
       fontSize: 12,
     },
-    input: {
-      backgroundColor: '#F5F7FA',
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 14,
-      fontSize: 14,
-      color: '#1B1F23',
-    },
+
     passwordWrapper: {
       backgroundColor: '#F5F7FA',
       borderRadius: 10,
@@ -267,42 +255,41 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 16,
     },
     forgotText: {
-      fontSize: 12,
-      color: theme.primaryLight,
+      fontSize: 16,
+      color: theme.dark100,
       fontWeight: '500',
     },
-    loginButton: {
-      backgroundColor: theme.primaryDark,
-      paddingVertical: 14,
-      borderRadius: 10,
-      alignItems: 'center',
-    },
-    loginButtonText: {
-      color: '#fff',
-      fontWeight: '600',
-      fontSize: 16,
-    },
     footerText: {
-      marginTop: 20,
+      marginTop: 40,
       flexDirection: 'row',
       justifyContent: 'center',
     },
     signUp: {
-      color: theme.textPrimary,
+      color: theme.dark100,
       fontWeight: '500',
+      marginLeft: 10,
     },
     gradient: {
       flex: 1,
     },
+    iconLeft: {
+      marginRight: 8,
+    },
+    ...SHARED_STYLES(theme),
+    // input: {
+    //   backgroundColor: '#F5F7FA',
+    //   borderRadius: 10,
+    //   paddingHorizontal: 12,
+    //   paddingVertical: 14,
+    //   fontSize: 14,
+    //   color: '#1B1F23',
+    // },
     inputWrapper: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#F5F7FA',
+      backgroundColor: theme.backgroundInput,
       borderRadius: 10,
       paddingHorizontal: 12,
       marginBottom: 16,
-    },
-    iconLeft: {
-      marginRight: 8,
     },
   });

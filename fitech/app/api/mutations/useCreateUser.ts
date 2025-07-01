@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { CreateUserRequest, LoginResponse } from '@/app/types/user';
+import { UserDtoReadable, UserDtoWritable } from '@/src/types/api/types.gen';
 
 import { api } from '../api';
 
 export const useCreateUser = () => {
-  return useMutation<LoginResponse, Error, CreateUserRequest>({
-    mutationFn: async (request): Promise<LoginResponse> =>
+  return useMutation<UserDtoReadable, Error, UserDtoWritable>({
+    mutationFn: async (request): Promise<UserDtoReadable> =>
       api.post('/user', request),
   });
 };

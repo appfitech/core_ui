@@ -30,11 +30,26 @@ export type FullTheme = {
 
   // Status
   success: string;
+  successBackground: string;
+  successBorder: string;
+  successText: string;
+
   warning: string;
+  warningBackground: string;
+  warningBorder: string;
+  warningText: string;
+
   error: string;
+  errorBackground: string;
+  errorBorder: string;
+  errorText: string;
 
   // UI
   background: string;
+  backgroundInverted: string;
+  backgroundInput: string;
+  backgroundDropdown: string;
+  backgroundHeader: string;
   card: string;
   textPrimary: string;
   textSecondary: string;

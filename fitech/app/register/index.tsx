@@ -11,29 +11,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
+import { CREATE_USER_FORM } from '@/constants/forms';
+import { ROUTES } from '@/constants/routes';
+import { SHARED_STYLES } from '@/constants/shared_styles';
+import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
+import { UserDtoWritable } from '@/src/types/api/types.gen';
 
 import { useCreateUser } from '../api/mutations/useCreateUser';
 import { BackButton } from '../components/BackButton';
+import { Dropdown } from '../components/Dropdown';
 import { FullTheme } from '../types/theme';
 
 export default function Register() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState({
-    type: 1,
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    documentNumber: '',
-    username: '',
-    password: '',
-  });
+  const [form, setForm] = useState<UserDtoWritable>(emptyUserWritable);
 
   const router = useRouter();
   const { mutate: createUser } = useCreateUser();
@@ -43,26 +39,28 @@ export default function Register() {
     { label: 'Usuario', value: 2 },
   ]);
 
-  const handleChange = (field: string, value: string) => {
+  const handlePersonChange = (field: string, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      person: { ...prev.person, [field]: value },
+    }));
+  };
+
+  const handleBaseChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = () => {
-    const { username, password, type, ...person } = form;
-
-    createUser(
-      { type, username, password, person },
-      {
-        onSuccess: () => {
-          router.push('/login');
-        },
+    createUser(form, {
+      onSuccess: () => {
+        router.replace(ROUTES.login);
       },
-    );
+    });
   };
 
   return (
     <LinearGradient
-      colors={[theme.dark500, theme.background]}
+      colors={[theme.background, theme.background]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
@@ -75,13 +73,13 @@ export default function Register() {
             entering={FadeInUp.delay(200)}
             style={styles.headerTitle}
           >
-            Crear cuenta
+            {'Crear cuenta'}
           </Animated.Text>
           <Animated.Text
             entering={FadeInUp.delay(300)}
             style={styles.headerSubtitle}
           >
-            Ingresa tus datos para registrarte
+            {'Ingresa tus datos para registrarte'}
           </Animated.Text>
         </View>
 
@@ -91,66 +89,48 @@ export default function Register() {
           keyboardShouldPersistTaps="handled"
         >
           <Animated.View entering={SlideInDown.springify()} style={styles.card}>
-            <Text style={styles.label}>Tipo de cuenta</Text>
-            <DropDownPicker
-              open={open}
+            <Text style={styles.label}>{'Tipo de cuenta'}</Text>
+            <Dropdown
+              options={accountTypes}
+              isOpen={open}
+              setIsOpen={setOpen}
               value={form.type}
-              items={accountTypes}
-              setOpen={setOpen}
-              setValue={(callback) =>
+              onChange={(callback) =>
                 setForm((prev) => ({
                   ...prev,
                   type: callback(prev.type),
                 }))
               }
-              listMode="SCROLLVIEW"
-              style={styles.dropdown}
-              dropDownContainerStyle={{
-                backgroundColor: '#F5F7FA',
-                borderColor: '#ccc',
-              }}
             />
 
-            {[
-              { label: 'Nombre', field: 'firstName' },
-              { label: 'Apellido', field: 'lastName' },
-              {
-                label: 'Correo electrónico',
-                field: 'email',
-                keyboardType: 'email-address',
-              },
-              {
-                label: 'Teléfono',
-                field: 'phoneNumber',
-                keyboardType: 'phone-pad',
-              },
-              { label: 'Documento', field: 'documentNumber' },
-              { label: 'Usuario', field: 'username' },
-              {
-                label: 'Contraseña',
-                field: 'contrasena',
-                secureTextEntry: true,
-              },
-            ].map(({ label, field, ...rest }) => (
-              <View key={field} style={styles.inputWrapper}>
-                <Text style={styles.label}>{label}</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder={label}
-                  placeholderTextColor="#888"
-                  secureTextEntry={rest.secureTextEntry}
-                  keyboardType={rest.keyboardType}
-                  value={form[field]}
-                  onChangeText={(text) => handleChange(field, text)}
-                />
-              </View>
-            ))}
+            {CREATE_USER_FORM.map(({ label, field, ...rest }) => {
+              const isBase = rest?.isBase ?? false;
+
+              return (
+                <View key={field} style={styles.inputWrapper}>
+                  <Text style={styles.label}>{label}</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder={label}
+                    placeholderTextColor={theme.dark700}
+                    secureTextEntry={rest?.secureTextEntry}
+                    keyboardType={rest?.keyboardType}
+                    value={isBase ? form?.[field] : form?.person?.[field]}
+                    onChangeText={(text) =>
+                      isBase
+                        ? handleBaseChange(field, text)
+                        : handlePersonChange(field, text)
+                    }
+                  />
+                </View>
+              );
+            })}
 
             <TouchableOpacity
               style={styles.submitButton}
               onPress={handleSubmit}
             >
-              <Text style={styles.submitText}>Crear cuenta</Text>
+              <Text style={styles.submitText}>{'CREAR CUENTA'}</Text>
             </TouchableOpacity>
           </Animated.View>
         </ScrollView>
@@ -178,12 +158,12 @@ const getStyles = (theme: FullTheme) =>
     headerTitle: {
       fontSize: 24,
       fontWeight: '700',
-      color: '#fff',
+      color: theme.dark900,
       textAlign: 'center',
     },
     headerSubtitle: {
-      fontSize: 14,
-      color: '#DDE6FF',
+      fontSize: 16,
+      color: theme.dark700,
       textAlign: 'center',
       marginTop: 8,
     },
@@ -191,48 +171,11 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 80,
     },
     card: {
-      backgroundColor: '#fff',
+      backgroundColor: theme.background,
       width: '100%',
       borderRadius: 16,
-      padding: 24,
-      shadowColor: '#000',
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 4 },
-      shadowRadius: 12,
+      padding: 16,
       elevation: 6,
     },
-    label: {
-      fontSize: 12,
-      color: '#666',
-      marginBottom: 6,
-      marginTop: 12,
-    },
-    inputWrapper: {
-      marginBottom: 4,
-    },
-    input: {
-      backgroundColor: '#F5F7FA',
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 14,
-      fontSize: 14,
-      color: '#1B1F23',
-    },
-    dropdown: {
-      backgroundColor: '#F5F7FA',
-      borderColor: '#ccc',
-      borderRadius: 10,
-    },
-    submitButton: {
-      backgroundColor: theme.primaryLight,
-      paddingVertical: 14,
-      borderRadius: 10,
-      alignItems: 'center',
-      marginTop: 24,
-    },
-    submitText: {
-      color: '#fff',
-      fontWeight: '600',
-      fontSize: 16,
-    },
+    ...SHARED_STYLES(theme),
   });

@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import {
   Urbanist_400Regular,
   Urbanist_500Medium,
@@ -10,11 +9,12 @@ import {
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemeProvider } from '@/contexts/ThemeContext';
 
+import { NavBar } from './components/NavBar';
 import { ReactQueryProvider } from './providers/ReactQueryProvider';
 SplashScreen.preventAutoHideAsync();
 
@@ -67,28 +67,7 @@ export default function RootLayout() {
         <View style={{ flex: 1 }}>
           <Stack screenOptions={{ headerShown: false }} />
 
-          {!shouldHideNav && (
-            <View
-              style={[
-                styles.navBar,
-                { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
-              ]}
-            >
-              {Object.keys(NAV_ITEMS_MAPPER).map((navKey) => (
-                <TouchableOpacity
-                  key={navKey}
-                  style={styles.navItem}
-                  onPress={handleNavItemClick(navKey)}
-                >
-                  <Ionicons
-                    name={NAV_ITEMS_MAPPER[navKey].icon}
-                    size={28}
-                    color={currentRoute === navKey ? '#fff' : '#AAA'}
-                  />
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+          {!shouldHideNav && <NavBar />}
         </View>
       </ReactQueryProvider>
     </ThemeProvider>

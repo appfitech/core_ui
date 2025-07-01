@@ -1,12 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { LoginRequest, LoginResponse } from '@/app/types/user';
+import {
+  LoginRequestDto,
+  LoginResponseDtoReadable,
+} from '@/src/types/api/types.gen';
 
 import { api } from '../api';
 
 export const useLogin = () => {
-  return useMutation<LoginResponse, Error, LoginRequest>({
-    mutationFn: async (request): Promise<LoginResponse> =>
+  return useMutation<LoginResponseDtoReadable, Error, LoginRequestDto>({
+    mutationFn: async (request): Promise<LoginResponseDtoReadable> =>
       api.post('/auth/login', request),
   });
 };

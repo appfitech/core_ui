@@ -1,14 +1,17 @@
 import * as SecureStore from 'expo-secure-store';
 import { create } from 'zustand';
 
-import { LoginResponse } from '../types/user';
+import {
+  LoginResponseDtoReadable,
+  UserResponseDtoReadable,
+} from '@/src/types/api/types.gen';
 
 type UserStore = {
-  user: LoginResponse | null;
-  setUser: (data: LoginResponse) => Promise<void>;
+  user: LoginResponseDtoReadable | null;
+  setUser: (data: LoginResponseDtoReadable) => Promise<void>;
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
-  updateUserInfo: (data: LoginResponse['user']) => Promise<void>;
+  updateUserInfo: (data: UserResponseDtoReadable) => Promise<void>;
   updateProfilePhotoId: (photoId: number) => Promise<void>;
 };
 
@@ -33,7 +36,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  updateUserInfo: async (newUserInfo: LoginResponse['user']) => {
+  updateUserInfo: async (newUserInfo: UserResponseDtoReadable) => {
     const current = get().user;
     if (!current) return;
 

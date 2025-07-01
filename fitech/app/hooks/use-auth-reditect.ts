@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
+import { ROUTES } from '@/constants/routes';
+
 import { useUserStore } from '../stores/user';
 
-export const useAuthRedirect = (redirectPath: string = '/home') => {
+export const useAuthRedirect = (redirectPath: string = ROUTES.home) => {
   const router = useRouter();
   const { loadUser } = useUserStore();
 

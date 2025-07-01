@@ -12,32 +12,36 @@ import {
   View,
 } from 'react-native';
 
+import { useTheme } from '@/contexts/ThemeContext';
+
+import { FullTheme } from '../types/theme';
+
 const { width, height } = Dimensions.get('window');
 
-const slides = [
+const getSlides = (theme: FullTheme) => [
   {
     key: '1',
     title: 'Entrena a tu ritmo',
     description: 'Lleva un control de tus rutinas y avanza a tu manera.',
     image: require('../../assets/images/onboarding/slide_1.png'),
-    background: ['#00C2FF', '#0F4C81'],
-    blobColor: '#ffffff30',
+    background: [theme.green100, theme.primary],
+    blobColor: theme.green500,
   },
   {
     key: '2',
     title: 'Sigue tu progreso',
     description: 'Visualiza tu evolución y mantente motivado.',
     image: require('../../assets/images/onboarding/slide_2.png'),
-    background: ['#3E75AA', '#0A365E'],
-    blobColor: '#ffffff20',
+    background: [theme.green300, theme.green100],
+    blobColor: theme.green400,
   },
   {
     key: '3',
     title: 'Crea el hábito',
     description: 'Establece metas, sé constante y hazlo parte de tu vida.',
     image: require('../../assets/images/onboarding/slide_3.png'),
-    background: ['#1BA9FF', '#004B75'],
-    blobColor: '#ffffff15',
+    background: [theme.green700, theme.green300],
+    blobColor: theme.green300,
   },
 ];
 
@@ -46,6 +50,10 @@ export default function OnboardingScreen() {
   const scrollX = useRef(new RNAnimated.Value(0)).current;
   const flatListRef = useRef();
   const router = useRouter();
+  const { theme } = useTheme();
+
+  const slides = getSlides(theme);
+  const styles = getStyles(theme);
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
     if (viewableItems.length > 0) {
@@ -67,7 +75,6 @@ export default function OnboardingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Animated gradient background */}
       <RNAnimated.View style={StyleSheet.absoluteFill}>
         <RNAnimatedGradient startColor={startColor} endColor={endColor} />
       </RNAnimated.View>
@@ -173,68 +180,69 @@ const RNAnimatedGradient = ({ startColor, endColor }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  slide: {
-    width,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    paddingBottom: 80,
-  },
-  blobContainer: {
-    borderRadius: 150,
-    padding: 20,
-    marginBottom: 30,
-    maxHeight: height * 0.35,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: width * 0.55,
-    height: undefined,
-    aspectRatio: 1,
-    maxHeight: height * 0.25,
-    borderRadius: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 12,
-  },
-  description: {
-    fontSize: 16,
-    color: '#E5F0FF',
-    textAlign: 'center',
-    paddingHorizontal: 20,
-  },
-  indicatorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 24,
-  },
-  dot: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#fff',
-    marginHorizontal: 6,
-  },
-  button: {
-    position: 'absolute',
-    bottom: 40,
-    alignSelf: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 32,
-    paddingVertical: 14,
-    borderRadius: 30,
-  },
-  buttonText: {
-    color: '#0F4C81',
-    fontWeight: '700',
-    fontSize: 16,
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    slide: {
+      width,
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 20,
+      paddingBottom: 80,
+    },
+    blobContainer: {
+      borderRadius: 150,
+      padding: 20,
+      marginBottom: 30,
+      maxHeight: height * 0.35,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: width * 0.55,
+      height: undefined,
+      aspectRatio: 1,
+      maxHeight: height * 0.25,
+      borderRadius: 20,
+    },
+    title: {
+      fontSize: 30,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      textAlign: 'center',
+      marginBottom: 12,
+    },
+    description: {
+      fontSize: 18,
+      color: theme.secondary,
+      textAlign: 'center',
+      paddingHorizontal: 20,
+    },
+    indicatorContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: 24,
+    },
+    dot: {
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: theme.secondary,
+      marginHorizontal: 6,
+    },
+    button: {
+      position: 'absolute',
+      bottom: 40,
+      alignSelf: 'center',
+      backgroundColor: theme.background,
+      paddingHorizontal: 42,
+      paddingVertical: 16,
+      borderRadius: 30,
+    },
+    buttonText: {
+      color: theme.dark900,
+      fontWeight: '700',
+      fontSize: 18,
+    },
+  });
