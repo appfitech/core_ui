@@ -12,7 +12,10 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write .",
-    "generate_apk": "eas build --platform android --profile preview"
+    "generate_apk": "eas build --platform android --profile apk",
+    "generate_ios": "eas build --platform ios --profile production",
+    "submit_ios": "eas submit --platform ios --latest",
+    "codegen": "openapi-ts --file openapi/fitech.config.ts"
   },
   "jest": {
     "preset": "jest-expo"
@@ -61,6 +64,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
+    "@hey-api/openapi-ts": "^0.77.0",
     "@babel/core": "^7.25.2",
     "@types/jest": "^29.5.12",
     "@types/react": "~18.3.12",

@@ -62,7 +62,7 @@ export default function Register() {
 
   return (
     <LinearGradient
-      colors={[theme.background, theme.primaryDark]}
+      colors={[theme.dark500, theme.background]}
       style={styles.gradient}
     >
       <KeyboardAvoidingView
