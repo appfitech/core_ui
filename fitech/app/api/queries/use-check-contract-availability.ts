@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { ContractAvailabilityResponse } from '@/app/types/trainer';
+import { ContractAvailabilityResponse } from '@/types/trainer';
 
 import { api } from '../api';
 

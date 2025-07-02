@@ -9,10 +9,11 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Contract } from '@/types/contracts';
+
 import { useGetActiveContracts } from '../api/queries/use-get-active-contracts';
 import { useGetInactiveContracts } from '../api/queries/use-get-inactive-contracts';
 import { BackButton } from '../components/BackButton';
-import { Contract } from '../types/contracts';
 
 export default function ContractsScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');

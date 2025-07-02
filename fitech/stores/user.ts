@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import {
   LoginResponseDtoReadable,
   UserResponseDtoReadable,
-} from '@/src/types/api/types.gen';
+} from '@/types/api/types.gen';
 
 type UserStore = {
   user: LoginResponseDtoReadable | null;

@@ -3,10 +3,10 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuthRedirect } from '@/hooks/use-auth-reditect';
+import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../constants/strings';
-import { useAuthRedirect } from './hooks/use-auth-reditect';
-import { FullTheme } from './types/theme';
 
 export default function WelcomeScreen() {
   const { theme } = useTheme();

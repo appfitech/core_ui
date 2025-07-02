@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { FitnessGoal } from '@/app/types/fitness-goals';
+import { FitnessGoal } from '@/types/fitness-goals';
 
 import { api } from '../api';
 

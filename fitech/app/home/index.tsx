@@ -13,12 +13,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ROUTES } from '@/constants/routes';
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
+import { getUserAvatarURL } from '@/utils/user';
 
 import { SearchBar } from '../components/SearchBar';
 import { SupportButton } from '../components/SupportButton';
-import { useUserStore } from '../stores/user';
-import { FullTheme } from '../types/theme';
-import { getUserAvatarURL } from '../utils/user';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();

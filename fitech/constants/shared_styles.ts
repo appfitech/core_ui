@@ -1,6 +1,6 @@
 import { TextStyle, ViewStyle } from 'react-native';
 
-import { FullTheme } from '@/app/types/theme';
+import { FullTheme } from '@/types/theme';
 
 type SharedStyleKeys =
   | 'label'

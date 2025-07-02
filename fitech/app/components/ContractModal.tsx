@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 
-import { TrainerService } from '../types/trainer';
+import { TrainerService } from '@/types/trainer';
 
 export function ContractModal({
   visible,

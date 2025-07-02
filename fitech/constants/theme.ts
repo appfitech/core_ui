@@ -1,4 +1,4 @@
-import { FullTheme } from '@/app/types/theme';
+import { FullTheme } from '@/types/theme';
 
 const COLORS = {
   light: {

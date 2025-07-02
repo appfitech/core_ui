@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { useUserStore } from '@/app/stores/user';
-import { LoginResponse } from '@/app/types/user';
+import { useUserStore } from '@/stores/user';
+import { LoginResponse } from '@/types/user';
 
 import { api } from '../api';
 

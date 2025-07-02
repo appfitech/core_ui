@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { UserDtoReadable, UserDtoWritable } from '@/src/types/api/types.gen';
+import { UserDtoReadable, UserDtoWritable } from '@/types/api/types.gen';
 
 import { api } from '../api';
 

@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useUserStore } from '@/app/stores/user';
-import { Contract } from '@/app/types/contracts';
+import { useUserStore } from '@/stores/user';
+import { Contract } from '@/types/contracts';
 
 import { api } from '../api';
 

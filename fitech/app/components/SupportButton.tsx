@@ -5,9 +5,8 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
-import { transparentize } from '../utils/style';
+import { FullTheme } from '@/types/theme';
+import { transparentize } from '@/utils/style';
 
 export function SupportButton() {
   const router = useRouter();

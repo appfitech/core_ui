@@ -14,12 +14,13 @@ import {
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useUserStore } from '@/stores/user';
+
 import { useDeletePhoto } from '../api/mutations/useDeletePhoto';
 import { useSetProfilePhoto } from '../api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '../api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '../api/queries/useGetUserPhotos';
 import { BackButton } from '../components/BackButton';
-import { useUserStore } from '../stores/user';
 
 const MAX_PHOTOS = 10;
 const MAX_SIZE = 500 * 1024; // 500 KB

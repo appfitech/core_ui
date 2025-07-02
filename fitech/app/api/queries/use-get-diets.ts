@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { DietResource } from '@/app/types/resources';
+import { DietResource } from '@/types/resources';
 
 import { api } from '../api';
 

@@ -1,4 +1,4 @@
-import { PersonDto } from '@/src/types/api/types.gen';
+import { PersonDto } from '@/types/api/types.gen';
 
 export const getUserAvatarURL = (person?: PersonDto) => {
   if (!person || !person?.profilePhotoId) {

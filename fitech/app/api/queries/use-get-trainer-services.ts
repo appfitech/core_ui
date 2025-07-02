@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { TrainerService } from '@/app/types/trainer';
+import { TrainerService } from '@/types/trainer';
 
 import { api } from '../api';
 

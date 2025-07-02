@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { RoutineResource } from '@/app/types/resources';
+import { RoutineResource } from '@/types/resources';
 
 import { api } from '../api';
 

@@ -13,8 +13,7 @@ import {
 } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
+import { FullTheme } from '@/types/theme';
 
 const { width, height } = Dimensions.get('window');
 

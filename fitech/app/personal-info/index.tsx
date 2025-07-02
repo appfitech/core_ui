@@ -12,9 +12,10 @@ import {
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useUserStore } from '@/stores/user';
+
 import { useUpdateUser } from '../api/mutations/useUpdateUser';
 import { BackButton } from '../components/BackButton';
-import { useUserStore } from '../stores/user';
 
 export default function PersonalInfoScreen() {
   const insets = useSafeAreaInsets();

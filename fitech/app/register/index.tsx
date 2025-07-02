@@ -18,12 +18,12 @@ import { ROUTES } from '@/constants/routes';
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
-import { UserDtoWritable } from '@/src/types/api/types.gen';
+import { UserDtoWritable } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 import { useCreateUser } from '../api/mutations/useCreateUser';
 import { BackButton } from '../components/BackButton';
 import { Dropdown } from '../components/Dropdown';
-import { FullTheme } from '../types/theme';
 
 export default function Register() {
   const { theme } = useTheme();

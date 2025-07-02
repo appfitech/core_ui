@@ -12,13 +12,13 @@ import {
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import AvatarSvg from '@/assets/images/avatar.svg';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
+import { getUserAvatarURL } from '@/utils/user';
 
-import AvatarSvg from '../../assets/images/avatar.svg';
 import { PremiumTag } from '../components/PremiumTag';
-import { useUserStore } from '../stores/user';
-import { FullTheme } from '../types/theme';
-import { getUserAvatarURL } from '../utils/user';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();

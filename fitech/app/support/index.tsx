@@ -12,10 +12,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
 
 import { useSendInquiry } from '../api/mutations/useSendInquiry';
 import { BackButton } from '../components/BackButton';
-import { FullTheme } from '../types/theme';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnicos', value: 'technical' },

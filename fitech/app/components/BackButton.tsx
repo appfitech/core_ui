@@ -4,8 +4,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
+import { FullTheme } from '@/types/theme';
 
 export function BackButton() {
   const { theme } = useTheme();

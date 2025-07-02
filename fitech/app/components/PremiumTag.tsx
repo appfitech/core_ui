@@ -3,8 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
+import { FullTheme } from '@/types/theme';
 
 export function PremiumTag() {
   const { theme } = useTheme();

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { Trainer } from '@/app/types/trainer';
+import { Trainer } from '@/types/trainer';
 
 import { api } from '../api';
 

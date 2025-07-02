@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Appearance } from 'react-native';
 
-import { FullTheme } from '@/app/types/theme';
 import { DARK_THEME, LIGHT_THEME } from '@/constants/theme';
+import { FullTheme } from '@/types/theme';
 
 type ThemeContextType = {
   theme: FullTheme;

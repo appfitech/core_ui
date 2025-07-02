@@ -9,12 +9,13 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useUserStore } from '@/stores/user';
+import { FitnessGoal } from '@/types/fitness-goals';
+
 import { useUpdateFitnessGoals } from '../api/mutations/use-update-fitness-goals';
 import { useGetAllFitnessGoalTypes } from '../api/queries/use-get-all-fitness-goal-types';
 import { BackButton } from '../components/BackButton';
 import { SelectableCard } from '../components/SelectableCard';
-import { useUserStore } from '../stores/user';
-import { FitnessGoal } from '../types/FitnessGoal';
 
 export default function FitnessGoalsScreen() {
   const insets = useSafeAreaInsets();

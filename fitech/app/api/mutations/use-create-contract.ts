@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
   CreateContractRequest,
   CreateContractResponse,
-} from '@/app/types/contracts';
+} from '@/types/contracts';
 
 import { api } from '../api';
 

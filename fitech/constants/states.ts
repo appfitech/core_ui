@@ -1,4 +1,4 @@
-import { UserDtoWritable } from '@/src/types/api/types.gen';
+import { UserDtoWritable } from '@/types/api/types.gen';
 
 export const emptyUserWritable: UserDtoWritable = {
   username: '',

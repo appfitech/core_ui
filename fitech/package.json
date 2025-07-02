@@ -14,6 +14,7 @@
     "format": "prettier --write .",
     "generate_apk": "eas build --platform android --profile apk",
     "generate_ios": "eas build --platform ios --profile production",
+    "generate_ios_autosubmit": "eas build --platform ios --profile production --auto-submit",
     "submit_ios": "eas submit --platform ios --latest",
     "codegen": "openapi-ts --file openapi/fitech.config.ts"
   },

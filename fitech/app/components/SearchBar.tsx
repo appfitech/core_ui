@@ -4,8 +4,7 @@ import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
 
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
+import { FullTheme } from '@/types/theme';
 
 type Props = { shouldHideEndIcon?: boolean } & TextInputProps;
 

@@ -13,11 +13,11 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
+import { Trainer } from '@/types/trainer';
 
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
 import { SearchBar } from '../components/SearchBar';
-import { FullTheme } from '../types/theme';
-import { Trainer } from '../types/trainer';
 
 export default function TrainersSearchScreen() {
   const insets = useSafeAreaInsets();

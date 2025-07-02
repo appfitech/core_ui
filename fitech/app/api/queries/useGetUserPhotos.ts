@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useUserStore } from '@/app/stores/user';
-import { Photo } from '@/app/types/photos';
+import { useUserStore } from '@/stores/user';
+import { Photo } from '@/types/photos';
 
 import { api } from '../api';
 

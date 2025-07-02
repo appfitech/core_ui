@@ -7,9 +7,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
-import { transparentize } from '../utils/style';
+import { FullTheme } from '@/types/theme';
+import { transparentize } from '@/utils/style';
 
 SplashScreen.preventAutoHideAsync();
 

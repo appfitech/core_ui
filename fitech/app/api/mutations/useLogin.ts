@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import {
   LoginRequestDto,
   LoginResponseDtoReadable,
-} from '@/src/types/api/types.gen';
+} from '@/types/api/types.gen';
 
 import { api } from '../api';
 

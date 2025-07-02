@@ -5,8 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-
-import { FullTheme } from '../types/theme';
+import { FullTheme } from '@/types/theme';
 
 type Props = {
   isOpen: boolean;

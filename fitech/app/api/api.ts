@@ -1,4 +1,4 @@
-import { useUserStore } from '../stores/user';
+import { useUserStore } from '@/stores/user';
 
 const API_BASE_URL = 'https://appfitech.com/v1/app';
 

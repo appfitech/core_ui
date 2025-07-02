@@ -12,14 +12,15 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useUserStore } from '@/stores/user';
+import { TrainerService } from '@/types/trainer';
+
 import { useCreateContract } from '../api/mutations/use-create-contract';
 import { useCheckContractAvailability } from '../api/queries/use-check-contract-availability';
 import { useGetTrainer } from '../api/queries/use-get-trainer';
 import { useGetTrainerPhotos } from '../api/queries/use-get-trainer-photos';
 import { useGetTrainerServices } from '../api/queries/use-get-trainer-services';
 import { ContractModal } from '../components/ContractModal';
-import { useUserStore } from '../stores/user';
-import { TrainerService } from '../types/trainer';
 
 export default function TrainerProfileScreen() {
   const insets = useSafeAreaInsets();

@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { LoginResponse, User } from '@/app/types/user';
+import { LoginResponse, User } from '@/types/user';
 
 import { api } from '../api';
 

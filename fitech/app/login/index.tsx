@@ -20,13 +20,13 @@ import Animated, {
 import { ROUTES } from '@/constants/routes';
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuthRedirect } from '@/hooks/use-auth-reditect';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../../constants/strings';
 import { useLogin } from '../api/mutations/useLogin';
 import { BackButton } from '../components/BackButton';
-import { useAuthRedirect } from '../hooks/use-auth-reditect';
-import { useUserStore } from '../stores/user';
-import { FullTheme } from '../types/theme';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
