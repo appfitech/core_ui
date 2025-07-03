@@ -7,4 +7,5 @@ export const ROUTES = {
   trainers: '/trainers',
   profile: '/profile',
   support: '/support',
+  subscription: '/subscription',
 } as const;

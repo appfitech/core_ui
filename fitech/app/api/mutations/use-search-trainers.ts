@@ -1,16 +1,15 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { Trainer } from '@/types/trainer';
+import {
+  PublicTrainerDtoReadable,
+  TrainerSearchDto,
+} from '@/types/api/types.gen';
 
 import { api } from '../api';
 
-type SearchRequest = {
-  query: string;
-};
-
 export const useSearchTrainers = () => {
-  return useMutation<Trainer[], Error, SearchRequest>({
-    mutationFn: async (request): Promise<Trainer[]> => {
+  return useMutation<PublicTrainerDtoReadable[], Error, TrainerSearchDto>({
+    mutationFn: async (request): Promise<PublicTrainerDtoReadable[]> => {
       return await api.post('/trainers/search', request);
     },
   });

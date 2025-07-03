@@ -6,7 +6,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -15,13 +14,15 @@ import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
 import { CREATE_USER_FORM } from '@/constants/forms';
 import { ROUTES } from '@/constants/routes';
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 import { useCreateUser } from '../api/mutations/useCreateUser';
+import { AnimatedAppText } from '../components/AnimatedAppText';
+import { AppText } from '../components/AppText';
 import { BackButton } from '../components/BackButton';
 import { Dropdown } from '../components/Dropdown';
 
@@ -69,18 +70,18 @@ export default function Register() {
       >
         <View style={styles.header}>
           <BackButton />
-          <Animated.Text
+          <AnimatedAppText
             entering={FadeInUp.delay(200)}
             style={styles.headerTitle}
           >
             {'Crear cuenta'}
-          </Animated.Text>
-          <Animated.Text
+          </AnimatedAppText>
+          <AnimatedAppText
             entering={FadeInUp.delay(300)}
             style={styles.headerSubtitle}
           >
             {'Ingresa tus datos para registrarte'}
-          </Animated.Text>
+          </AnimatedAppText>
         </View>
 
         <ScrollView
@@ -89,7 +90,7 @@ export default function Register() {
           keyboardShouldPersistTaps="handled"
         >
           <Animated.View entering={SlideInDown.springify()} style={styles.card}>
-            <Text style={styles.label}>{'Tipo de cuenta'}</Text>
+            <AppText style={styles.label}>{'Tipo de cuenta'}</AppText>
             <Dropdown
               options={accountTypes}
               isOpen={open}
@@ -108,7 +109,7 @@ export default function Register() {
 
               return (
                 <View key={field} style={styles.inputWrapper}>
-                  <Text style={styles.label}>{label}</Text>
+                  <AppText style={styles.label}>{label}</AppText>
                   <TextInput
                     style={styles.input}
                     placeholder={label}
@@ -130,7 +131,7 @@ export default function Register() {
               style={styles.submitButton}
               onPress={handleSubmit}
             >
-              <Text style={styles.submitText}>{'CREAR CUENTA'}</Text>
+              <AppText style={styles.submitText}>{'CREAR CUENTA'}</AppText>
             </TouchableOpacity>
           </Animated.View>
         </ScrollView>
@@ -156,15 +157,11 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 24,
     },
     headerTitle: {
-      fontSize: 24,
+      ...HEADING_STYLES(theme).title,
       fontWeight: '700',
-      color: theme.dark900,
-      textAlign: 'center',
     },
     headerSubtitle: {
-      fontSize: 16,
-      color: theme.dark700,
-      textAlign: 'center',
+      ...HEADING_STYLES(theme).subtitle,
       marginTop: 8,
     },
     scrollForm: {

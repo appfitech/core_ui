@@ -30,7 +30,6 @@ export default function PersonalInfoScreen() {
   const handleUpdate = useCallback(() => {
     updateUser(form, {
       onSuccess: async (response) => {
-        console.log('[K] response', response);
         await updateUserInfo(response);
         router.back();
       },

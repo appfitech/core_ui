@@ -17,8 +17,6 @@ export default function DietsScreen() {
 
   const { data: diets } = useGetDiets();
 
-  console.log('[K] diets', diets);
-
   const filteredDiets = useMemo(
     () => (filter === 'ACTIVE' ? diets : []),
     [diets, filter],

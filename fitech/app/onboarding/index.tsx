@@ -7,13 +7,14 @@ import {
   FlatList,
   Image,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+
+import { AppText } from '../components/AppText';
 
 const { width, height } = Dimensions.get('window');
 
@@ -106,8 +107,8 @@ export default function OnboardingScreen() {
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.description}>{item.description}</Text>
+            <AppText style={styles.title}>{item.title}</AppText>
+            <AppText style={styles.description}>{item.description}</AppText>
           </View>
         )}
       />
@@ -157,9 +158,9 @@ export default function OnboardingScreen() {
         style={styles.button}
         onPress={() => router.push('/home')}
       >
-        <Text style={styles.buttonText}>
+        <AppText style={styles.buttonText}>
           {currentIndex === slides.length - 1 ? 'Empezar' : 'Saltar'}
-        </Text>
+        </AppText>
       </TouchableOpacity>
     </View>
   );
@@ -214,7 +215,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 12,
     },
     description: {
-      fontSize: 18,
+      fontSize: 20,
       color: theme.secondary,
       textAlign: 'center',
       paddingHorizontal: 20,

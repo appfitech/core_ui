@@ -84,7 +84,6 @@ export default function ImageGalleryScreen() {
     deletePhoto(photo.id, {
       onSuccess: () => refetch(),
       onError: (error) => {
-        console.log('[K] error', error);
         Alert.alert('Error', 'No se pudo eliminar la foto.');
       },
     });
@@ -99,12 +98,10 @@ export default function ImageGalleryScreen() {
         {
           text: 'Sí, usar',
           onPress: () => {
-            console.log('[K] photoId', photoId);
             setProfilePhoto(
               { photoId },
               {
                 onSuccess: async (response) => {
-                  console.log('[K] response', response);
                   await updateProfilePhotoId(photoId);
                 },
                 onError: (err) => {

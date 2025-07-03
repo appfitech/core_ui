@@ -2,13 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import { transparentize } from '@/utils/style';
+
+import { AppText } from './AppText';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,14 +59,14 @@ export function NavBar() {
               size={28}
               color={isCurrentRoute ? theme.primary : theme.green900}
             />
-            <Text
+            <AppText
               style={{
                 color: isCurrentRoute ? theme.primary : theme.green900,
                 fontSize: 13,
               }}
             >
               {label}
-            </Text>
+            </AppText>
           </TouchableOpacity>
         );
       })}

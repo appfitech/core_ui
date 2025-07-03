@@ -5,7 +5,6 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,12 +12,15 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AvatarSvg from '@/assets/images/avatar.svg';
+import { ROUTES } from '@/constants/routes';
+import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
-import { PremiumTag } from '../components/PremiumTag';
+import { AppText } from '../components/AppText';
+import { Tag } from '../components/Tag';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
@@ -26,6 +28,7 @@ export default function ProfileScreen() {
   const router = useRouter();
   const person = useUserStore((s) => s.user?.user?.person);
   const user = useUserStore((s) => s.user?.user);
+
   const userType = useUserStore((s) => s.user?.user?.type);
 
   const styles = getStyles(theme);
@@ -33,6 +36,10 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     await useUserStore.getState().logout();
     router.replace('/');
+  };
+
+  const handleSubscriptionClick = async () => {
+    router.push(ROUTES.subscription);
   };
 
   const userAvatarURL = getUserAvatarURL(person);
@@ -61,22 +68,34 @@ export default function ProfileScreen() {
             <AvatarSvg width="100%" height="100%" />
           </View>
         )}
-        <Text style={styles.name}>
+        <AppText style={styles.name}>
           {`${person?.firstName ?? ''} ${person?.lastName ?? ''}`}
-        </Text>
-        <Text style={styles.email}>{person?.email}</Text>
+        </AppText>
+        <AppText style={styles.email}>{person?.email}</AppText>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginTop: 10,
-            columnGap: 10,
+            columnGap: 4,
           }}
         >
-          <Text style={styles.userType}>
-            {userType === 1 ? 'Trainer' : 'Usuario'}
-          </Text>
-          {user?.premium && <PremiumTag />}
+          <Tag
+            icon={'user'}
+            label={userType === 1 ? 'Trainer' : 'Usuario'}
+            textColor={theme.successText}
+            backgroundColor={theme.successBackground}
+          />
+          {user?.premium && (
+            <TouchableOpacity onPress={handleSubscriptionClick}>
+              <Tag
+                icon={'dollar-sign'}
+                label={`Premium ${user?.premiumBy === 'CONTRACT' ? '(Con Contrato)' : '(Por Pago)'}`}
+                textColor={theme.warningText}
+                backgroundColor={theme.warningBackground}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </Animated.View>
 
@@ -95,10 +114,17 @@ export default function ProfileScreen() {
           route={'image-gallery'}
         />
         <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
+        {user?.premium && (
+          <SectionItem
+            icon="dollar-sign"
+            label="Mi Suscripción"
+            route={'subscription'}
+          />
+        )}
       </Animated.View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Cerrar sesión</Text>
+        <AppText style={styles.logoutText}>Cerrar sesión</AppText>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -129,7 +155,7 @@ function SectionItem({
       <View style={styles.iconWrapper}>
         <Feather name={icon as any} size={23} color={theme.green800} />
       </View>
-      <Text style={styles.itemLabel}>{label}</Text>
+      <AppText style={styles.itemLabel}>{label}</AppText>
       <Feather name="chevron-right" size={20} color={theme.green700} />
     </TouchableOpacity>
   );
@@ -160,19 +186,17 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: '#fff',
     },
     name: {
-      fontSize: 24,
+      ...HEADING_STYLES(theme).title,
       fontWeight: '700',
-      color: theme.primary,
+    },
+    email: {
+      ...HEADING_STYLES(theme).subtitle,
+      marginTop: 4,
     },
     userType: {
       fontSize: 16,
-      fontWeight: '700',
-      color: theme.dark800,
-    },
-    email: {
-      fontSize: 20,
-      color: theme.secondary,
-      marginTop: 4,
+      fontWeight: '600',
+      color: theme.primary,
     },
     section: {
       backgroundColor: theme.card,

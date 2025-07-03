@@ -54,7 +54,6 @@ export default function FitnessGoalsScreen() {
       },
       {
         onSuccess: async (response) => {
-          console.log('[K] response', response);
           await updateUserInfo(response);
           router.back();
         },

@@ -38,14 +38,26 @@ const COLORS = {
     successText: '#2E7D32',
 
     warning: '#FFC107',
-    warningBackground: '#FFF8E1',
-    warningBorder: '#FFECB3',
-    warningText: '#FF8F00',
+    warningBackground: '#FFF8DC',
+    warningBorder: '#FFE082',
+    warningText: '#7C5700',
 
     error: '#F44336',
     errorBackground: '#FFEBEE',
     errorBorder: '#FFCDD2',
     errorText: '#C62828',
+
+    // Info (cool blue tones)
+    info: '#2196F3',
+    infoBackground: '#E3F2FD',
+    infoBorder: '#BBDEFB',
+    infoText: '#1565C0',
+
+    // Orange (for neutral attention or callouts)
+    orange: '#FB8C00',
+    orangeBackground: '#FFF3E0',
+    orangeBorder: '#FFB74D',
+    orangeText: '#E65100',
 
     // UI
     background: '#FFFFFF',
@@ -101,12 +113,24 @@ const COLORS = {
     warning: '#FFD54F',
     warningBackground: '#FF6F00',
     warningBorder: '#FFA000',
-    warningText: '#FFE082',
+    warningText: '#FFF59D',
 
     error: '#E57373',
     errorBackground: '#B71C1C',
     errorBorder: '#C62828',
     errorText: '#FFCDD2',
+
+    // Info (bright-to-deep blue tones)
+    info: '#64B5F6',
+    infoBackground: '#0D47A1',
+    infoBorder: '#1976D2',
+    infoText: '#90CAF9',
+
+    // Orange
+    orange: '#FF9800',
+    orangeBackground: '#EF6C00',
+    orangeBorder: '#F57C00',
+    orangeText: '#FFE0B2',
 
     // UI
     background: '#0B1927',
@@ -125,7 +149,7 @@ const COLORS = {
 };
 
 export const LIGHT_THEME: FullTheme = {
-  ...COLORS.light,
+  ...COLORS.dark,
 };
 
 export const DARK_THEME: FullTheme = {

@@ -22,8 +22,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     colorScheme === 'dark' ? DARK_THEME : LIGHT_THEME,
   );
 
-  console.log('[K] colorScheme', colorScheme);
-
   useEffect(() => {
     const listener = Appearance.addChangeListener(({ colorScheme }) => {
       setTheme(colorScheme === 'dark' ? DARK_THEME : LIGHT_THEME);

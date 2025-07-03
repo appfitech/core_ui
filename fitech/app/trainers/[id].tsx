@@ -39,12 +39,9 @@ export default function TrainerProfileScreen() {
     null,
   );
 
-  console.log('[K] clientId', clientId);
-
   const handleContract = async (service: TrainerService) => {
     const res = await checkContract({ clientId, serviceId: service?.id });
 
-    console.log('[K] res', res);
     if (res?.canContract) {
       setSelectedService(service);
       setModalVisible(true);
@@ -68,8 +65,6 @@ export default function TrainerProfileScreen() {
       termsAccepted: true,
       notes: `Contrato creado desde perfil del trainer ${selectedService.trainerId}`,
     });
-
-    console.log('[K]response', response);
 
     router.replace('/home');
   };

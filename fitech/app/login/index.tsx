@@ -6,7 +6,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
@@ -18,7 +17,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { ROUTES } from '@/constants/routes';
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-reditect';
 import { useUserStore } from '@/stores/user';
@@ -26,6 +25,8 @@ import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../../constants/strings';
 import { useLogin } from '../api/mutations/useLogin';
+import { AnimatedAppText } from '../components/AnimatedAppText';
+import { AppText } from '../components/AppText';
 import { BackButton } from '../components/BackButton';
 
 export default function LoginScreen() {
@@ -94,18 +95,18 @@ export default function LoginScreen() {
             style={styles.logo}
             resizeMode="contain"
           />
-          <Animated.Text
+          <AnimatedAppText
             entering={FadeInUp.delay(200)}
             style={styles.headerTitle}
           >
             {loginScreen.header}
-          </Animated.Text>
-          <Animated.Text
+          </AnimatedAppText>
+          <AnimatedAppText
             entering={FadeInUp.delay(300)}
             style={styles.headerSubtitle}
           >
             {loginScreen.subheader}
-          </Animated.Text>
+          </AnimatedAppText>
         </View>
 
         {showUI && (
@@ -150,9 +151,9 @@ export default function LoginScreen() {
 
             <View style={styles.optionsRow}>
               <TouchableOpacity>
-                <Text style={styles.forgotText}>
+                <AppText style={styles.forgotText}>
                   {'¿Olvidaste tu contraseña?'}
-                </Text>
+                </AppText>
               </TouchableOpacity>
             </View>
 
@@ -161,16 +162,22 @@ export default function LoginScreen() {
                 style={styles.submitButton}
                 onPress={handleLogin}
               >
-                <Text style={styles.submitText}>{'Iniciar sesión'}</Text>
+                <AppText style={styles.submitText}>{'Iniciar sesión'}</AppText>
               </TouchableOpacity>
             </Animated.View>
 
             <View style={styles.footerText}>
-              <Text style={{ color: theme.dark400, fontSize: 15 }}>
+              <AppText
+                style={{
+                  color: theme.dark400,
+                  fontSize: 18,
+                  fontWeight: '500',
+                }}
+              >
                 {'¿No tienes una cuenta?'}
-              </Text>
+              </AppText>
               <TouchableOpacity onPress={handleSignUp}>
-                <Text style={styles.signUp}>{'Regístrate'}</Text>
+                <AppText style={styles.signUp}>{'Regístrate'}</AppText>
               </TouchableOpacity>
             </View>
           </Animated.View>
@@ -200,16 +207,12 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 10,
     },
     headerTitle: {
-      fontSize: 30,
-      fontWeight: '700',
-      textAlign: 'center',
-      color: theme.dark900,
+      ...HEADING_STYLES(theme).header,
+      fontWeight: '600',
       marginTop: 40,
     },
     headerSubtitle: {
-      fontSize: 18,
-      color: theme.dark700,
-      textAlign: 'center',
+      ...HEADING_STYLES(theme).subheader,
       marginTop: 8,
     },
     card: {
@@ -239,7 +242,6 @@ const getStyles = (theme: FullTheme) =>
       color: '#999',
       fontSize: 12,
     },
-
     passwordWrapper: {
       backgroundColor: '#F5F7FA',
       borderRadius: 10,
@@ -260,14 +262,15 @@ const getStyles = (theme: FullTheme) =>
       fontWeight: '500',
     },
     footerText: {
-      marginTop: 40,
+      marginTop: 50,
       flexDirection: 'row',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
     },
     signUp: {
       color: theme.dark100,
-      fontWeight: '500',
+      fontWeight: '600',
       marginLeft: 10,
+      fontSize: 18,
     },
     gradient: {
       flex: 1,
@@ -276,14 +279,6 @@ const getStyles = (theme: FullTheme) =>
       marginRight: 8,
     },
     ...SHARED_STYLES(theme),
-    // input: {
-    //   backgroundColor: '#F5F7FA',
-    //   borderRadius: 10,
-    //   paddingHorizontal: 12,
-    //   paddingVertical: 14,
-    //   fontSize: 14,
-    //   color: '#1B1F23',
-    // },
     inputWrapper: {
       flexDirection: 'row',
       alignItems: 'center',

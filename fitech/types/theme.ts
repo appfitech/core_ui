@@ -44,6 +44,16 @@ export type FullTheme = {
   errorBorder: string;
   errorText: string;
 
+  info: string;
+  infoBackground: string;
+  infoBorder: string;
+  infoText: string;
+
+  orange: string;
+  orangeBackground: string;
+  orangeBorder: string;
+  orangeText: string;
+
   // UI
   background: string;
   backgroundInverted: string;

@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { RoutineResource } from '@/types/resources';
+import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 
 import { api } from '../api';
 
 export const useGetRoutines = () => {
-  return useQuery<RoutineResource[]>({
-    queryKey: ['get-user-diets'],
+  return useQuery<ClientResourceResponseDtoReadable[]>({
+    queryKey: ['get-user-routines'],
     queryFn: async () => {
       return api.get(`/client-resources/client/routines`);
     },

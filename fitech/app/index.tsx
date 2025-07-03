@@ -1,12 +1,14 @@
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-reditect';
 import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../constants/strings';
+import { AppText } from './components/AppText';
 
 export default function WelcomeScreen() {
   const { theme } = useTheme();
@@ -43,8 +45,8 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(200).duration(800)}
         style={styles.textContainer}
       >
-        <Text style={styles.title}>{welcomeScreen.header}</Text>
-        <Text style={styles.subtitle}>{welcomeScreen.subheader}</Text>
+        <AppText style={styles.title}>{welcomeScreen.header}</AppText>
+        <AppText style={styles.subtitle}>{welcomeScreen.subheader}</AppText>
       </Animated.View>
 
       <Animated.View
@@ -55,17 +57,17 @@ export default function WelcomeScreen() {
           style={styles.primaryButton}
           onPress={handleRegisterClick}
         >
-          <Text style={styles.primaryButtonText}>
+          <AppText style={styles.primaryButtonText}>
             {welcomeScreen.createAccountButton}
-          </Text>
+          </AppText>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={handleLoginClick}
         >
-          <Text style={styles.secondaryButtonText}>
+          <AppText style={styles.secondaryButtonText}>
             {welcomeScreen.logInButton}
-          </Text>
+          </AppText>
         </TouchableOpacity>
       </Animated.View>
     </View>
@@ -95,15 +97,12 @@ const getThemedStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     title: {
-      color: theme.textPrimary,
-      fontSize: 34,
-      fontFamily: 'Urbanist_700Bold',
+      ...HEADING_STYLES(theme).header,
+      fontWeight: '900',
       marginTop: 12,
-      letterSpacing: 1,
     },
     subtitle: {
-      fontSize: 18,
-      color: theme.textSecondary,
+      ...HEADING_STYLES(theme).subheader,
       marginTop: 8,
     },
     buttonContainer: {
