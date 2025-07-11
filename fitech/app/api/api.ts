@@ -29,7 +29,7 @@ async function handleResponse(res: Response) {
 
 export const api = {
   get: async (path: string) => {
-    const token = useUserStore.getState().user?.token;
+    const token = useUserStore.getState().getToken();
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
       headers: {
@@ -42,7 +42,7 @@ export const api = {
   },
 
   post: async (path: string, body: any, isFormData = false) => {
-    const token = useUserStore.getState().user?.token;
+    const token = useUserStore.getState().getToken();
 
     const headers: Record<string, string> = {
       ...(token && { Authorization: `Bearer ${token}` }),
@@ -62,7 +62,7 @@ export const api = {
   },
 
   put: async (path: string, body: any = {}) => {
-    const token = useUserStore.getState().user?.token;
+    const token = useUserStore.getState().getToken();
 
     const res = await fetch(`${API_BASE_URL}${path}`, {
       method: 'PUT',

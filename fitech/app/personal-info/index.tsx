@@ -2,13 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
-  ScrollView,
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -51,107 +53,112 @@ export default function PersonalInfoScreen() {
   );
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 60,
-          minHeight: '100%',
-        },
-      ]}
-    >
-      <View style={{ marginTop: 0, marginBottom: 60 }}>
-        <BackButton />
-      </View>
-
-      <Animated.Text
-        entering={FadeInDown.duration(500)}
-        style={styles.sectionTitle}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAwareScrollView
+        style={{ flex: 1, backgroundColor: '#F5F7FA' }}
+        contentContainerStyle={[
+          styles.container,
+          {
+            paddingTop: insets.top + 20,
+            paddingBottom: insets.bottom + 60,
+          },
+        ]}
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
+        extraScrollHeight={100}
       >
-        Editar Información Personal
-      </Animated.Text>
-
-      <Animated.View
-        entering={FadeInUp.delay(100).duration(500)}
-        style={styles.card}
-      >
-        <View style={styles.field}>
-          <Text style={styles.label}>Nombre</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('firstName')}
-            value={form?.person?.firstName}
-          />
+        <View style={{ marginTop: 0, marginBottom: 60 }}>
+          <BackButton />
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Apellido</Text>
-          <TextInput
-            style={styles.input}
-            onChangeText={handleChange('lastName')}
-            value={form?.person?.lastName}
-          />
-        </View>
+        <Animated.Text
+          entering={FadeInDown.duration(500)}
+          style={styles.sectionTitle}
+        >
+          Editar Información Personal
+        </Animated.Text>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Correo</Text>
-          <TextInput
-            readOnly
-            style={styles.input}
-            value={form?.person?.email}
-            keyboardType="email-address"
-          />
-          {user?.isEmailVerified && (
-            <View style={styles.verifiedTag}>
-              <Ionicons name="checkmark-circle" size={14} color="#4CAF50" />
-              <Text style={styles.verifiedText}>Email Verificado</Text>
-            </View>
-          )}
-        </View>
+        <Animated.View
+          entering={FadeInUp.delay(100).duration(500)}
+          style={styles.card}
+        >
+          <View style={styles.field}>
+            <Text style={styles.label}>Nombre</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('firstName')}
+              value={form?.person?.firstName}
+            />
+          </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Número de documento</Text>
-          <TextInput
-            style={styles.input}
-            readOnly
-            value={form?.person?.documentNumber}
-          />
-        </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Apellido</Text>
+            <TextInput
+              style={styles.input}
+              onChangeText={handleChange('lastName')}
+              value={form?.person?.lastName}
+            />
+          </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Teléfono</Text>
-          <TextInput
-            style={styles.input}
-            value={form?.person?.phoneNumber}
-            keyboardType="phone-pad"
-            onChangeText={handleChange('phoneNumber')}
-          />
-        </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Correo</Text>
+            <TextInput
+              readOnly
+              style={styles.input}
+              value={form?.person?.email}
+              keyboardType="email-address"
+            />
+            {user?.isEmailVerified && (
+              <View style={styles.verifiedTag}>
+                <Ionicons name="checkmark-circle" size={14} color="#4CAF50" />
+                <Text style={styles.verifiedText}>Email Verificado</Text>
+              </View>
+            )}
+          </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Biografía</Text>
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            defaultValue={form?.person?.bio ?? ''}
-            multiline
-            numberOfLines={4}
-            onChangeText={handleChange('bio')}
-            textAlignVertical="top"
-            placeholder="Cuéntanos sobre ti..."
-          />
-        </View>
-      </Animated.View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Número de documento</Text>
+            <TextInput
+              style={styles.input}
+              readOnly
+              value={form?.person?.documentNumber}
+            />
+          </View>
 
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-          <Text style={styles.updateText}>Actualizar</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <View style={styles.field}>
+            <Text style={styles.label}>Teléfono</Text>
+            <TextInput
+              style={styles.input}
+              value={form?.person?.phoneNumber}
+              keyboardType="phone-pad"
+              onChangeText={handleChange('phoneNumber')}
+            />
+          </View>
+
+          <View style={styles.field}>
+            <Text style={styles.label}>Biografía</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              defaultValue={form?.person?.bio ?? ''}
+              multiline
+              numberOfLines={4}
+              onChangeText={handleChange('bio')}
+              textAlignVertical="top"
+              placeholder="Cuéntanos sobre ti..."
+            />
+          </View>
+        </Animated.View>
+
+        <View style={styles.buttonRow}>
+          <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
+            <Text style={styles.cancelText}>Cancelar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
+            <Text style={styles.updateText}>Actualizar</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -160,17 +167,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: '#F5F7FA',
     paddingHorizontal: 20,
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backText: {
-    marginLeft: 8,
-    fontSize: 16,
-    color: '#0F4C81',
-    fontWeight: '600',
   },
   sectionTitle: {
     fontSize: 18,

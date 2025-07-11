@@ -32,6 +32,7 @@ import { Tag } from '../components/Tag';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const token = useUserStore((s) => s.getToken());
   const user = useUserStore((s) => s.user);
   const router = useRouter();
   const { theme } = useTheme();
@@ -42,9 +43,11 @@ export default function HomeScreen() {
   const { data: diets } = useGetDiets();
   const { mutate: searchTrainers } = useSearchTrainers();
 
-  console.log('[K] trainers', trainers);
-
   useEffect(() => {
+    if (!token) {
+      return;
+    }
+
     searchTrainers(
       { query: '' },
       {
@@ -53,7 +56,7 @@ export default function HomeScreen() {
         },
       },
     );
-  }, []);
+  }, [token]);
 
   const userAvatarURL = getUserAvatarURL(user?.user?.person);
 
@@ -276,6 +279,10 @@ export default function HomeScreen() {
               ]}
             >
               <View style={{ rowGap: 4 }}>
+                <Image
+                  source={{ uri: getUserAvatarURL(trainer?.person) }}
+                  style={[styles.avatar, { marginBottom: 4 }]}
+                />
                 <AppText
                   style={{
                     fontWeight: '600',
@@ -286,7 +293,7 @@ export default function HomeScreen() {
                   {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
                 </AppText>
                 <AppText style={{ color: theme.textSecondary }}>
-                  {truncateWords(trainer?.person?.bio ?? '', 30)}
+                  {truncateWords(trainer?.person?.bio ?? '', 20)}
                 </AppText>
               </View>
             </Animated.View>

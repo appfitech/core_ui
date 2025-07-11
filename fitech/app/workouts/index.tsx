@@ -30,13 +30,6 @@ export default function WorkoutsScreen() {
         'Revisa todos tus contratos con entrenadores: fechas, pagos, detalles del servicio y estado actual.',
       backgroundColor: '#81D4FA',
     },
-    {
-      key: 'trainers',
-      title: 'Buscar y Conectar con Entrenadores',
-      description:
-        'Explora perfiles de entrenadores, compara planes y encuentra el mejor apoyo para lograr tus metas.',
-      backgroundColor: '#4FC3F7',
-    },
   ];
 
   return (

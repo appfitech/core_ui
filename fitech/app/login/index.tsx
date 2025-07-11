@@ -1,15 +1,17 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView,
+  Keyboard,
   Platform,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, {
   FadeInUp,
   SlideInDown,
@@ -39,9 +41,9 @@ export default function LoginScreen() {
   const [showUI, setShowUI] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [displayPass, setDisplayPass] = useState(false);
 
   const router = useRouter();
-
   const setUser = useUserStore((s) => s.setUser);
 
   const { mutate: submitLogin } = useLogin();
@@ -56,7 +58,6 @@ export default function LoginScreen() {
         setUsername(text);
         return;
       }
-
       setPassword(text);
     },
     [],
@@ -68,7 +69,7 @@ export default function LoginScreen() {
       {
         onSuccess: (response) => {
           setUser(response);
-          router.replace(ROUTES.onboarding);
+          router.replace(ROUTES.home);
         },
       },
     );
@@ -78,123 +79,141 @@ export default function LoginScreen() {
     router.replace(ROUTES.register);
   };
 
+  const handleToggleDisplayPass = () => {
+    setDisplayPass((prev) => !prev);
+  };
+
   return (
     <LinearGradient
       colors={[theme.background, theme.background]}
       style={styles.gradient}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <BackButton />
-          <Animated.Image
-            entering={FadeInUp.duration(600)}
-            source={require('../../assets/images/logos/logo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <AnimatedAppText
-            entering={FadeInUp.delay(200)}
-            style={styles.headerTitle}
-          >
-            {loginScreen.header}
-          </AnimatedAppText>
-          <AnimatedAppText
-            entering={FadeInUp.delay(300)}
-            style={styles.headerSubtitle}
-          >
-            {loginScreen.subheader}
-          </AnimatedAppText>
-        </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAwareScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.scrollContainer}
+          enableOnAndroid
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={Platform.OS === 'android' ? 100 : 60}
+        >
+          <View style={styles.header}>
+            <BackButton />
+            <Animated.Image
+              entering={FadeInUp.duration(600)}
+              source={require('../../assets/images/logos/logo.png')}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <AnimatedAppText
+              entering={FadeInUp.delay(200)}
+              style={styles.headerTitle}
+            >
+              {loginScreen.header}
+            </AnimatedAppText>
+            <AnimatedAppText
+              entering={FadeInUp.delay(300)}
+              style={styles.headerSubtitle}
+            >
+              {loginScreen.subheader}
+            </AnimatedAppText>
+          </View>
 
-        {showUI && (
-          <Animated.View
-            entering={SlideInDown.springify().damping(15)}
-            style={styles.card}
-          >
-            <View style={styles.inputWrapper}>
-              <Ionicons
-                name="mail-outline"
-                size={20}
-                color={theme.dark700}
-                style={styles.iconLeft}
-              />
-              <TextInput
-                placeholder="Usuario"
-                placeholderTextColor="#888"
-                keyboardType="email-address"
-                style={styles.input}
-                value={username}
-                onChangeText={handleChange('username')}
-              />
-            </View>
+          {showUI && (
+            <Animated.View
+              entering={SlideInDown.springify().damping(15)}
+              style={styles.card}
+            >
+              <View style={styles.inputWrapper}>
+                <Feather
+                  name="at-sign"
+                  size={20}
+                  color={theme.dark800}
+                  style={styles.iconLeft}
+                />
+                <TextInput
+                  placeholder="Usuario"
+                  placeholderTextColor={theme.dark800}
+                  keyboardType="email-address"
+                  style={[styles.input, { flex: 1 }]}
+                  value={username}
+                  onChangeText={handleChange('username')}
+                />
+              </View>
 
-            <View style={styles.inputWrapper}>
-              <Ionicons
-                name="lock-closed-outline"
-                size={20}
-                color={theme.dark700}
-                style={styles.iconLeft}
-              />
-              <TextInput
-                placeholder={'Contraseña'}
-                placeholderTextColor="#888"
-                secureTextEntry
-                value={password}
-                style={[styles.input, { flex: 1, marginBottom: 0 }]}
-                onChangeText={handleChange('password')}
-              />
-              <Ionicons name="eye-outline" size={20} color="#888" />
-            </View>
+              <View style={styles.inputWrapper}>
+                <Feather
+                  name="lock"
+                  size={20}
+                  color={theme.dark800}
+                  style={styles.iconLeft}
+                />
+                <TextInput
+                  placeholder={'Contraseña'}
+                  placeholderTextColor={theme.dark800}
+                  secureTextEntry={!displayPass}
+                  value={password}
+                  style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                  onChangeText={handleChange('password')}
+                />
+                <TouchableOpacity onPress={handleToggleDisplayPass}>
+                  <Feather
+                    name={!displayPass ? 'eye' : 'eye-off'}
+                    size={20}
+                    color={theme.dark800}
+                  />
+                </TouchableOpacity>
+              </View>
 
-            <View style={styles.optionsRow}>
-              <TouchableOpacity>
-                <AppText style={styles.forgotText}>
-                  {'¿Olvidaste tu contraseña?'}
+              <View style={styles.optionsRow}>
+                <TouchableOpacity>
+                  <AppText style={styles.forgotText}>
+                    {'¿Olvidaste tu contraseña?'}
+                  </AppText>
+                </TouchableOpacity>
+              </View>
+
+              <Animated.View entering={ZoomIn.delay(200)}>
+                <TouchableOpacity
+                  style={styles.submitButton}
+                  onPress={handleLogin}
+                >
+                  <AppText style={styles.submitText}>
+                    {'Iniciar sesión'}
+                  </AppText>
+                </TouchableOpacity>
+              </Animated.View>
+
+              <View style={styles.footerText}>
+                <AppText
+                  style={{
+                    color: theme.dark400,
+                    fontSize: 18,
+                    fontWeight: '500',
+                  }}
+                >
+                  {'¿No tienes una cuenta?'}
                 </AppText>
-              </TouchableOpacity>
-            </View>
-
-            <Animated.View entering={ZoomIn.delay(200)}>
-              <TouchableOpacity
-                style={styles.submitButton}
-                onPress={handleLogin}
-              >
-                <AppText style={styles.submitText}>{'Iniciar sesión'}</AppText>
-              </TouchableOpacity>
+                <TouchableOpacity onPress={handleSignUp}>
+                  <AppText style={styles.signUp}>{'Regístrate'}</AppText>
+                </TouchableOpacity>
+              </View>
             </Animated.View>
-
-            <View style={styles.footerText}>
-              <AppText
-                style={{
-                  color: theme.dark400,
-                  fontSize: 18,
-                  fontWeight: '500',
-                }}
-              >
-                {'¿No tienes una cuenta?'}
-              </AppText>
-              <TouchableOpacity onPress={handleSignUp}>
-                <AppText style={styles.signUp}>{'Regístrate'}</AppText>
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-        )}
-      </KeyboardAvoidingView>
+          )}
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
     </LinearGradient>
   );
 }
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'flex-start',
-      paddingTop: 100,
+    scrollContainer: {
+      flexGrow: 1,
       paddingHorizontal: 24,
+      paddingTop: 100,
+      paddingBottom: 40,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
     },
     header: {
       width: '100%',
@@ -220,36 +239,12 @@ const getStyles = (theme: FullTheme) =>
       width: '100%',
       borderRadius: 16,
       padding: 24,
-      shadowColor: '#000',
+      shadowColor: theme.background,
       shadowOpacity: 0.1,
       shadowOffset: { width: 0, height: 4 },
       shadowRadius: 12,
       elevation: 6,
       marginTop: 20,
-    },
-    separator: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 20,
-    },
-    line: {
-      flex: 1,
-      height: 1,
-      backgroundColor: '#E4E6EB',
-    },
-    separatorText: {
-      marginHorizontal: 10,
-      color: '#999',
-      fontSize: 12,
-    },
-    passwordWrapper: {
-      backgroundColor: '#F5F7FA',
-      borderRadius: 10,
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingHorizontal: 12,
-      paddingVertical: 0,
-      marginBottom: 16,
     },
     optionsRow: {
       flexDirection: 'row',

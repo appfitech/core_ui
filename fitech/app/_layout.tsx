@@ -30,7 +30,7 @@ import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 import { NavBar } from './components/NavBar';
 SplashScreen.preventAutoHideAsync();
 
-const HIDE_NAV_ROUTES = ['login', 'onboarding', 'support', 'register'];
+const HIDE_NAV_ROUTES = ['login', 'support', 'register'];
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({

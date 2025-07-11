@@ -2,14 +2,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  KeyboardAvoidingView,
+  Keyboard,
   Platform,
-  ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
 import { CREATE_USER_FORM } from '@/constants/forms';
@@ -64,31 +65,30 @@ export default function Register() {
       colors={[theme.background, theme.background]}
       style={styles.gradient}
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <BackButton />
-          <AnimatedAppText
-            entering={FadeInUp.delay(200)}
-            style={styles.headerTitle}
-          >
-            {'Crear cuenta'}
-          </AnimatedAppText>
-          <AnimatedAppText
-            entering={FadeInUp.delay(300)}
-            style={styles.headerSubtitle}
-          >
-            {'Ingresa tus datos para registrarte'}
-          </AnimatedAppText>
-        </View>
-
-        <ScrollView
-          contentContainerStyle={styles.scrollForm}
-          showsVerticalScrollIndicator={false}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAwareScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.scrollContainer}
+          enableOnAndroid
           keyboardShouldPersistTaps="handled"
+          extraScrollHeight={Platform.OS === 'android' ? 100 : 60}
         >
+          <View style={styles.header}>
+            <BackButton />
+            <AnimatedAppText
+              entering={FadeInUp.delay(200)}
+              style={styles.headerTitle}
+            >
+              {'Crear cuenta'}
+            </AnimatedAppText>
+            <AnimatedAppText
+              entering={FadeInUp.delay(300)}
+              style={styles.headerSubtitle}
+            >
+              {'Ingresa tus datos para registrarte'}
+            </AnimatedAppText>
+          </View>
+
           <Animated.View entering={SlideInDown.springify()} style={styles.card}>
             <AppText style={styles.label}>{'Tipo de cuenta'}</AppText>
             <Dropdown
@@ -134,8 +134,8 @@ export default function Register() {
               <AppText style={styles.submitText}>{'CREAR CUENTA'}</AppText>
             </TouchableOpacity>
           </Animated.View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
+      </TouchableWithoutFeedback>
     </LinearGradient>
   );
 }
@@ -145,10 +145,12 @@ const getStyles = (theme: FullTheme) =>
     gradient: {
       flex: 1,
     },
-    container: {
-      flex: 1,
-      paddingTop: 60,
+    scrollContainer: {
+      flexGrow: 1,
       paddingHorizontal: 24,
+      paddingTop: 60,
+      paddingBottom: 80,
+      justifyContent: 'flex-start',
     },
     header: {
       width: '100%',
@@ -163,9 +165,6 @@ const getStyles = (theme: FullTheme) =>
     headerSubtitle: {
       ...HEADING_STYLES(theme).subtitle,
       marginTop: 8,
-    },
-    scrollForm: {
-      paddingBottom: 80,
     },
     card: {
       backgroundColor: theme.background,

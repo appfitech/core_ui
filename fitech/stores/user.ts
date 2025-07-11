@@ -13,6 +13,7 @@ type UserStore = {
   loadUser: () => Promise<void>;
   updateUserInfo: (data: UserResponseDtoReadable) => Promise<void>;
   updateProfilePhotoId: (photoId: number) => Promise<void>;
+  getToken: () => string | undefined;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -67,5 +68,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     await SecureStore.setItemAsync('user', JSON.stringify(updated));
     set({ user: updated });
+  },
+
+  getToken: () => {
+    return get().user?.token;
   },
 }));
