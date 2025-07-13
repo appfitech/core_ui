@@ -98,12 +98,14 @@ ios
 ## ⚠️ Troubleshooting
 
 - **Simulator won’t open?**  
-Make sure Xcode and its Command Line Tools are installed and configured (see step 4).
+  Make sure Xcode and its Command Line Tools are installed and configured (see step 4).
 
 - **Error about `xcodebuild` or developer directory?**
+
   ```
   xcodebuild: error: tool 'xcodebuild' requires Xcode, but active developer directory is a command line tools instance
   ```
+
   👉 Fix it:
 
   ```bash
@@ -119,12 +121,12 @@ Once EAS CLI is installed and you're logged into Expo:
 ```bash
 eas build --platform android --profile apk
 ```
+
 or
+
 ```bash
 eas build --platform ios --profile production
 eas submit --platform ios --latest
 ```
 
 ➡ Learn more at [Expo Application Services](https://expo.dev/eas).
-
-

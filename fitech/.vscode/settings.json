@@ -34,7 +34,7 @@
   "diffEditor.hideUnchangedRegions.enabled": true,
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.formatOnSave": true,
-   "editor.codeActionsOnSave": {
+  "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
   }
 }
