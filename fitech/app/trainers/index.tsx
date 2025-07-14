@@ -3,7 +3,6 @@ import { useRouter } from 'expo-router';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -16,7 +15,6 @@ import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 
 export default function TrainersSearchScreen() {
-  const insets = useSafeAreaInsets();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Trainer[]>([]);
   const { mutate } = useSearchTrainers();

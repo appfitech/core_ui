@@ -10,4 +10,5 @@ export const ROUTES = {
   subscription: '/subscription',
   premiumFeatures: '/premium-features',
   macrosCalculator: '/macros-calculator',
+  diets: '/diets',
 } as const;

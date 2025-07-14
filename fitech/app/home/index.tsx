@@ -205,27 +205,36 @@ export default function HomeScreen() {
                   { backgroundColor: theme.dark600, flex: 1 },
                 ]}
               >
-                <View style={styles.iconWrapper}>
-                  <DietSVG width={75} height={75} />
-                </View>
-                <View style={{ rowGap: 4, flex: 1 }}>
-                  <AppText style={[styles.cardTitle, { color: theme.dark100 }]}>
-                    {diets[0].resourceName?.split('-')?.[0]}
-                  </AppText>
+                {' '}
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push(`${ROUTES.diets}/${diets?.[0].id}`)
+                  }
+                >
+                  <View style={styles.iconWrapper}>
+                    <DietSVG width={75} height={75} />
+                  </View>
+                  <View style={{ rowGap: 4, flex: 1 }}>
+                    <AppText
+                      style={[styles.cardTitle, { color: theme.dark100 }]}
+                    >
+                      {diets[0].resourceName?.split('-')?.[0]}
+                    </AppText>
 
-                  <AppText
-                    style={[styles.cardSubBold, { color: theme.dark200 }]}
-                  >
-                    {`Entrenador: ${routines[0]?.trainerName}`}
-                  </AppText>
-                </View>
-                <View style={{ alignSelf: 'flex-end' }}>
-                  <Tag
-                    label={diets[0].resourceType}
-                    textColor={theme.backgroundInverted}
-                    backgroundColor={theme.background}
-                  />
-                </View>
+                    <AppText
+                      style={[styles.cardSubBold, { color: theme.dark200 }]}
+                    >
+                      {`Entrenador: ${routines[0]?.trainerName}`}
+                    </AppText>
+                  </View>
+                  <View style={{ alignSelf: 'flex-end' }}>
+                    <Tag
+                      label={diets[0].resourceType}
+                      textColor={theme.backgroundInverted}
+                      backgroundColor={theme.background}
+                    />
+                  </View>{' '}
+                </TouchableOpacity>
               </Animated.View>
             )}
           </View>
