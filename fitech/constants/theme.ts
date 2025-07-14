@@ -78,7 +78,7 @@ const COLORS = {
     isDark: true,
 
     // Core roles
-    primary: '#5BC236',
+    primary: '#3A8F29',
     secondary: '#FFFFFF',
     tertiary: '#A2E57E',
 

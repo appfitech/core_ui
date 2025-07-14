@@ -1,12 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { transparentize } from '@/utils/style';
 
@@ -16,9 +17,9 @@ SplashScreen.preventAutoHideAsync();
 
 const NAV_ITEMS_MAPPER = {
   home: { icon: 'home', route: ROUTES.home, label: 'Home' },
-  workouts: { icon: 'barbell', route: ROUTES.workouts, label: 'Actividad' },
-  trainers: { icon: 'people', route: ROUTES.trainers, label: 'Trainers' },
-  profile: { icon: 'person', route: ROUTES.profile, label: 'Perfil' },
+  workouts: { icon: 'activity', route: ROUTES.workouts, label: 'Actividad' },
+  trainers: { icon: 'users', route: ROUTES.trainers, label: 'Trainers' },
+  profile: { icon: 'user', route: ROUTES.profile, label: 'Perfil' },
 };
 
 export function NavBar() {
@@ -27,8 +28,10 @@ export function NavBar() {
   const styles = getStyles(theme);
   const insets = useSafeAreaInsets();
   const segments = useSegments();
+  const user = useUserStore((s) => s.user);
 
   const currentRoute = segments[0];
+  const isPremium = user?.user?.premium;
 
   const handleNavItemClick = useCallback(
     (route) => () => {
@@ -37,40 +40,69 @@ export function NavBar() {
     [router],
   );
 
-  return (
-    <View
-      style={[
-        styles.navBar,
-        { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
-      ]}
-    >
-      {Object.keys(NAV_ITEMS_MAPPER).map((navKey) => {
-        const { icon, route, label } = NAV_ITEMS_MAPPER[navKey];
-        const isCurrentRoute = currentRoute === navKey;
+  const handlePremiumClick = () => {
+    router.push(ROUTES.premiumFeatures);
+  };
 
-        return (
-          <TouchableOpacity
-            key={navKey}
-            style={styles.navItem}
-            onPress={handleNavItemClick(route)}
-          >
-            <Ionicons
-              name={icon}
-              size={28}
-              color={isCurrentRoute ? theme.primary : theme.green900}
-            />
-            <AppText
-              style={{
-                color: isCurrentRoute ? theme.primary : theme.green900,
-                fontSize: 13,
-              }}
-            >
-              {label}
-            </AppText>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
+  return (
+    <>
+      <View
+        style={[
+          styles.navBar,
+          { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
+        ]}
+      >
+        {Object.entries(NAV_ITEMS_MAPPER).map(
+          ([key, { icon, route, label }]) => {
+            const isCurrentRoute = currentRoute === key;
+
+            return (
+              <TouchableOpacity
+                key={key}
+                style={styles.navItem}
+                onPress={handleNavItemClick(route)}
+              >
+                <Feather
+                  name={icon}
+                  size={28}
+                  color={isCurrentRoute ? theme.primary : theme.green900}
+                />
+                <AppText
+                  style={{
+                    color: isCurrentRoute ? theme.primary : theme.green900,
+                    fontSize: 13,
+                  }}
+                >
+                  {label}
+                </AppText>
+              </TouchableOpacity>
+            );
+          },
+        )}
+      </View>
+
+      {isPremium && (
+        <TouchableOpacity
+          onPress={handlePremiumClick}
+          style={[
+            styles.fab,
+            {
+              bottom: (insets.bottom || 10) + 32,
+            },
+          ]}
+        >
+          <Image
+            source={
+              theme.isDark
+                ? require('../../assets/images/logos/logo_white.png')
+                : require('../../assets/images/logos/logo_black.png')
+            }
+            style={{ width: 40, height: '100%' }}
+            resizeMode={'contain'}
+          />
+        </TouchableOpacity>
+      )}
+    </>
   );
 }
 
@@ -87,9 +119,27 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 12,
       borderTopWidth: 3,
       borderTopColor: transparentize(theme.border, 0.8),
+      zIndex: 1,
     },
     navItem: {
+      flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    fab: {
+      position: 'absolute',
+      alignSelf: 'center',
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      backgroundColor: theme.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      elevation: 8,
+      shadowColor: theme.background,
+      shadowOffset: { width: 0, height: 3 },
+      shadowOpacity: 0.3,
+      shadowRadius: 6,
+      zIndex: 10,
     },
   });

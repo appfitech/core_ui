@@ -8,4 +8,5 @@ export const ROUTES = {
   profile: '/profile',
   support: '/support',
   subscription: '/subscription',
+  premiumFeatures: '/premium-features',
 } as const;
