@@ -232,7 +232,7 @@ export default function HomeScreen() {
                       textColor={theme.backgroundInverted}
                       backgroundColor={theme.background}
                     />
-                  </View>{' '}
+                  </View>
                 </TouchableOpacity>
               </Animated.View>
             )}

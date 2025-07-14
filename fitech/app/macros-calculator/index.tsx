@@ -7,13 +7,19 @@ import {
 import React, { useCallback, useRef, useState } from 'react';
 import {
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -243,196 +249,208 @@ export default function MacrosCalculatorScreen() {
           backgroundStyle={{
             backgroundColor: theme.backgroundInverted,
           }}
+          keyboardBehavior="interactive" // ← important
+          keyboardBlurBehavior="restore" // ← also important
           handleIndicatorStyle={{ backgroundColor: theme.dark200 }}
         >
           <BottomSheetView style={styles.bottomSheetContainer}>
-            <AppText
-              style={{
-                color: theme.dark100,
-                fontSize: 19,
-                fontWeight: '600',
-                marginBottom: 10,
-              }}
+            <ScrollView
+              keyboardDismissMode="on-drag"
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={[styles.bottomSheetContainer]}
             >
-              {'Calcula tus macros'}
-            </AppText>
-            {!selected.length && (
-              <AppText style={{ fontSize: 14, color: theme.dark200 }}>
-                {
-                  'Elige tus comidas favoritas de la lista para ver sus macronutrientes'
-                }
-              </AppText>
-            )}
-            <View
-              style={{
-                gap: 10,
-              }}
-            >
-              {selected.map((selectedItem) => {
-                const quantity = request?.find(
-                  (item) => item.foodId === selectedItem?.id,
-                )?.quantity;
-
-                return (
-                  <View
-                    key={selectedItem.id}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      columnGap: 16,
-                    }}
-                  >
-                    <AppText
-                      style={{
-                        color: theme.dark100,
-                        fontSize: 18,
-                        fontWeight: '400',
-                        flex: 1,
-                      }}
-                    >
-                      {selectedItem.name}
-                    </AppText>
-                    <View style={{ flex: 1, paddingLeft: 30 }}>
-                      <AppText
-                        style={{ color: theme.dark100, marginBottom: 2 }}
-                      >
-                        {'Porciones'}
-                      </AppText>
-                      <TextInput
-                        placeholderTextColor={theme.dark700}
-                        placeholder=""
-                        keyboardType="numeric"
-                        style={[styles.input]}
-                        value={quantity?.toString()}
-                        onChangeText={handleChange(selectedItem?.id)}
-                      />
-                    </View>
-                    <TouchableOpacity
-                      onPress={handleAddMacro(selectedItem.id)}
-                      style={{
-                        backgroundColor: theme.errorBackground,
-                        borderRadius: '50%',
-                        flexGrow: 0,
-                      }}
-                    >
-                      <Feather
-                        name="x-circle"
-                        size={24}
-                        color={theme.errorText}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                );
-              })}
-            </View>
-            {!!selected.length && (
-              <View style={{ alignItems: 'flex-end', marginTop: 10 }}>
-                <TouchableOpacity
-                  style={{
-                    padding: 10,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    backgroundColor: theme.primary,
-                    borderRadius: 12,
-                    columnGap: 10,
-                  }}
-                  onPress={handleCalculateMacros}
-                >
-                  <AppText
-                    style={{
-                      color: theme.background,
-                      fontSize: 17,
-                      fontWeight: '600',
-                    }}
-                  >
-                    {'Calcular'}
-                  </AppText>
-                  <Feather name="play" size={20} color={theme.background} />
-                </TouchableOpacity>
-              </View>
-            )}
-            {!!selected.length && !!calculation && (
-              <View
-                style={{
-                  backgroundColor: theme.background,
-                  padding: 14,
-                  borderRadius: 12,
-                  marginTop: 20,
-                  alignItems: 'center',
-                  rowGap: 10,
-                }}
-              >
+              {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+              <View>
                 <AppText
                   style={{
-                    color: theme.infoText,
-                    fontSize: 20,
-                    fontWeight: 900,
+                    color: theme.dark100,
+                    fontSize: 19,
+                    fontWeight: '600',
+                    marginBottom: 10,
                   }}
                 >
-                  {'Resumen nutricional'}
+                  {'Calcula tus macros'}
                 </AppText>
+                {!selected.length && (
+                  <AppText style={{ fontSize: 14, color: theme.dark200 }}>
+                    {
+                      'Elige tus comidas favoritas de la lista para ver sus macronutrientes'
+                    }
+                  </AppText>
+                )}
                 <View
                   style={{
-                    backgroundColor: theme.successBackground,
-                    borderRadius: '50%',
-                    padding: 30,
-                    alignItems: 'center',
+                    gap: 10,
                   }}
                 >
-                  <AppText
-                    style={{
-                      color: theme.successText,
-                      fontSize: 40,
-                      fontWeight: 900,
-                    }}
-                  >
-                    {calculation?.totalMacros?.calories}
-                  </AppText>
-                  <AppText
-                    style={{
-                      color: theme.successText,
-                      fontSize: 18,
-                    }}
-                  >
-                    {'kcal'}
-                  </AppText>
-                </View>
-                <View style={{ width: '100%', rowGap: 4 }}>
-                  {Object.keys(calculation?.totalMacros ?? []).map(
-                    (macroKey) => (
+                  {selected.map((selectedItem) => {
+                    const quantity = request?.find(
+                      (item) => item.foodId === selectedItem?.id,
+                    )?.quantity;
+
+                    return (
                       <View
-                        key={macroKey}
+                        key={selectedItem.id}
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          columnGap: 16,
                         }}
                       >
                         <AppText
                           style={{
-                            fontSize: 17,
-                            color: theme.dark500,
-                            fontWeight: 500,
-                            paddingLeft: 20,
+                            color: theme.dark100,
+                            fontSize: 18,
+                            fontWeight: '400',
+                            flex: 1,
                           }}
                         >
-                          {macroKey}
+                          {selectedItem.name}
                         </AppText>
-                        <AppText
+                        <View style={{ flex: 1, paddingLeft: 30 }}>
+                          <AppText
+                            style={{ color: theme.dark100, marginBottom: 2 }}
+                          >
+                            {'Porciones'}
+                          </AppText>
+                          <TextInput
+                            placeholderTextColor={theme.dark700}
+                            placeholder=""
+                            keyboardType="numeric"
+                            style={[styles.input]}
+                            value={quantity?.toString()}
+                            onChangeText={handleChange(selectedItem?.id)}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          onPress={handleAddMacro(selectedItem.id)}
                           style={{
-                            fontSize: 17,
-                            color: theme.infoText,
-                            fontWeight: 500,
-                            paddingLeft: 20,
+                            backgroundColor: theme.errorBackground,
+                            borderRadius: '50%',
+                            flexGrow: 0,
                           }}
                         >
-                          {`${calculation?.totalMacros?.[macroKey] ?? 0} g`}
-                        </AppText>
+                          <Feather
+                            name="x-circle"
+                            size={24}
+                            color={theme.errorText}
+                          />
+                        </TouchableOpacity>
                       </View>
-                    ),
-                  )}
+                    );
+                  })}
                 </View>
+                {!!selected.length && (
+                  <View style={{ alignItems: 'flex-end', marginTop: 10 }}>
+                    <TouchableOpacity
+                      style={{
+                        padding: 10,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        backgroundColor: theme.primary,
+                        borderRadius: 12,
+                        columnGap: 10,
+                      }}
+                      onPress={handleCalculateMacros}
+                    >
+                      <AppText
+                        style={{
+                          color: theme.background,
+                          fontSize: 17,
+                          fontWeight: '600',
+                        }}
+                      >
+                        {'Calcular'}
+                      </AppText>
+                      <Feather name="play" size={20} color={theme.background} />
+                    </TouchableOpacity>
+                  </View>
+                )}
+                {!!selected.length && !!calculation && (
+                  <View
+                    style={{
+                      backgroundColor: theme.background,
+                      padding: 14,
+                      borderRadius: 12,
+                      marginTop: 20,
+                      alignItems: 'center',
+                      rowGap: 10,
+                    }}
+                  >
+                    <AppText
+                      style={{
+                        color: theme.infoText,
+                        fontSize: 20,
+                        fontWeight: 900,
+                      }}
+                    >
+                      {'Resumen nutricional'}
+                    </AppText>
+                    <View
+                      style={{
+                        backgroundColor: theme.successBackground,
+                        borderRadius: '50%',
+                        padding: 30,
+                        alignItems: 'center',
+                      }}
+                    >
+                      <AppText
+                        style={{
+                          color: theme.successText,
+                          fontSize: 40,
+                          fontWeight: 900,
+                        }}
+                      >
+                        {calculation?.totalMacros?.calories}
+                      </AppText>
+                      <AppText
+                        style={{
+                          color: theme.successText,
+                          fontSize: 18,
+                        }}
+                      >
+                        {'kcal'}
+                      </AppText>
+                    </View>
+                    <View style={{ width: '100%', rowGap: 4 }}>
+                      {Object.keys(calculation?.totalMacros ?? []).map(
+                        (macroKey) => (
+                          <View
+                            key={macroKey}
+                            style={{
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <AppText
+                              style={{
+                                fontSize: 17,
+                                color: theme.dark500,
+                                fontWeight: 500,
+                                paddingLeft: 20,
+                              }}
+                            >
+                              {macroKey}
+                            </AppText>
+                            <AppText
+                              style={{
+                                fontSize: 17,
+                                color: theme.infoText,
+                                fontWeight: 500,
+                                paddingLeft: 20,
+                              }}
+                            >
+                              {`${calculation?.totalMacros?.[macroKey] ?? 0} g`}
+                            </AppText>
+                          </View>
+                        ),
+                      )}
+                    </View>
+                  </View>
+                )}
               </View>
-            )}
+              {/* </TouchableWithoutFeedback> */}
+            </ScrollView>
           </BottomSheetView>
         </BottomSheetModal>
       </BottomSheetModalProvider>
