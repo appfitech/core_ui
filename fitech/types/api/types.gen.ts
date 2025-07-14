@@ -4,5815 +4,6717 @@
  * DTO for fitness goal types and categories
  */
 export type FitnessGoalTypeDto = {
-  /**
-   * Goal type ID
-   */
-  id?: number;
-  /**
-   * Goal type name
-   */
-  name?: string;
-  /**
-   * Goal type description
-   */
-  description?: string;
-  /**
-   * Icon identifier for the goal type
-   */
-  icon?: string;
+    /**
+     * Goal type ID
+     */
+    id?: number;
+    /**
+     * Goal type name
+     */
+    name?: string;
+    /**
+     * Goal type description
+     */
+    description?: string;
+    /**
+     * Icon identifier for the goal type
+     */
+    icon?: string;
 };
 
 /**
  * DTO for person information and profile data
  */
 export type PersonDto = {
-  /**
-   * Person ID
-   */
-  id?: number;
-  /**
-   * First name
-   */
-  firstName?: string;
-  /**
-   * Last name
-   */
-  lastName?: string;
-  /**
-   * Document number
-   */
-  documentNumber?: string;
-  /**
-   * Phone number
-   */
-  phoneNumber?: string;
-  /**
-   * Email address
-   */
-  email?: string;
-  /**
-   * Document type
-   */
-  documentType?: 'DNI' | 'PASSPORT' | 'CE';
-  /**
-   * Profile photo ID
-   */
-  profilePhotoId?: number;
-  /**
-   * Presentation video ID
-   */
-  presentationVideoId?: number;
-  /**
-   * Biography or description
-   */
-  bio?: string;
-  /**
-   * Gender
-   */
-  gender?: 'M' | 'F' | 'OTHER';
-  /**
-   * Birth date
-   */
-  birthDate?: string;
-  /**
-   * List of fitness goal types
-   */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+    /**
+     * Person ID
+     */
+    id?: number;
+    /**
+     * First name
+     */
+    firstName?: string;
+    /**
+     * Last name
+     */
+    lastName?: string;
+    /**
+     * Document number
+     */
+    documentNumber?: string;
+    /**
+     * Phone number
+     */
+    phoneNumber?: string;
+    /**
+     * Email address
+     */
+    email?: string;
+    /**
+     * Document type
+     */
+    documentType?: 'DNI' | 'PASSPORT' | 'CE';
+    /**
+     * Profile photo ID
+     */
+    profilePhotoId?: number;
+    /**
+     * Presentation video ID
+     */
+    presentationVideoId?: number;
+    /**
+     * Biography or description
+     */
+    bio?: string;
+    /**
+     * Gender
+     */
+    gender?: 'M' | 'F' | 'OTHER';
+    /**
+     * Birth date
+     */
+    birthDate?: string;
+    /**
+     * List of fitness goal types
+     */
+    fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
  * DTO for complete user information including sensitive data
  */
 export type UserDtoReadable = {
-  /**
-   * User ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Account creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  /**
-   * Email verification token
-   */
-  readonly emailVerificationToken?: string;
-  /**
-   * Email token expiration timestamp
-   */
-  readonly emailTokenExpiresAt?: string;
-  person?: PersonDto;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
+    /**
+     * User ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Account creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    /**
+     * Email verification token
+     */
+    readonly emailVerificationToken?: string;
+    /**
+     * Email token expiration timestamp
+     */
+    readonly emailTokenExpiresAt?: string;
+    person?: PersonDto;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    /**
+     * Whether user is active
+     */
+    active?: boolean;
+    premium?: boolean;
 };
 
 /**
  * DTO for complete user information including sensitive data
  */
 export type UserDtoWritable = {
-  /**
-   * User ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Password
-   */
-  password?: string;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  person?: PersonDto;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
-};
-
-/**
- * DTO for user type categories
- */
-export type UserTypeDto = {
-  /**
-   * User type ID
-   */
-  id?: number;
-  /**
-   * User type name
-   */
-  name?: 'CLIENT' | 'TRAINER';
-};
-
-/**
- * DTO for units of measure used in fitness metrics
- */
-export type UnitOfMeasureDto = {
-  /**
-   * Unit of measure ID
-   */
-  id?: number;
-  /**
-   * Unit name
-   */
-  name: string;
-  /**
-   * Unit symbol
-   */
-  symbol: string;
-  /**
-   * Unit description
-   */
-  description?: string;
-};
-
-export type TrainerRecognitionDto = {
-  id?: number;
-  title?: string;
-  organization?: string;
-  date?: string;
-  type?: string;
-  level?: string;
-  description?: string;
-  isRecent?: boolean;
-};
-
-export type TrainerEducationDto = {
-  id?: number;
-  title?: string;
-  institution?: string;
-  year?: number;
-  type?: string;
-  description?: string;
-};
-
-export type TrainerCertificationDto = {
-  id?: number;
-  name?: string;
-  organization?: string;
-  issueDate?: string;
-  expirationDate?: string;
-  credentialId?: string;
-  description?: string;
-  isVerified?: boolean;
-  isExpired?: boolean;
-};
-
-/**
- * DTO for creating new trainer services
- */
-export type CreateTrainerServiceDto = {
-  /**
-   * Service type ID
-   */
-  serviceTypeId: number;
-  /**
-   * Service description
-   */
-  description?: string;
-  /**
-   * Total service price
-   */
-  totalPrice: number;
-  /**
-   * Whether the service is in-person
-   */
-  isInPerson: boolean;
-  /**
-   * Whether transport is included in the service
-   */
-  transportIncluded?: boolean;
-  /**
-   * Transport cost per session
-   */
-  transportCostPerSession?: number;
-  /**
-   * Country where service is offered
-   */
-  country?: string;
-  /**
-   * List of districts for in-person services
-   */
-  districts?: string[];
-};
-
-/**
- * DTO for service coverage districts
- */
-export type ServiceDistrictDtoReadable = {
-  /**
-   * District ID
-   */
-  id?: number;
-  /**
-   * District name
-   */
-  districtName?: string;
-  /**
-   * City name
-   */
-  city?: string;
-  /**
-   * State or region
-   */
-  state?: string;
-  /**
-   * Country
-   */
-  country?: string;
-  /**
-   * District creation timestamp
-   */
-  readonly createdAt?: string;
-};
-
-/**
- * DTO for service coverage districts
- */
-export type ServiceDistrictDtoWritable = {
-  /**
-   * District ID
-   */
-  id?: number;
-  /**
-   * District name
-   */
-  districtName?: string;
-  /**
-   * City name
-   */
-  city?: string;
-  /**
-   * State or region
-   */
-  state?: string;
-  /**
-   * Country
-   */
-  country?: string;
-};
-
-/**
- * DTO for trainer service information and details
- */
-export type TrainerServiceDtoReadable = {
-  /**
-   * Service ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the service
-   */
-  trainerId?: number;
-  /**
-   * Service name
-   */
-  name?: string;
-  /**
-   * Service description
-   */
-  description?: string;
-  /**
-   * Total service price
-   */
-  totalPrice?: number;
-  /**
-   * Price per session
-   */
-  pricePerSession?: number;
-  /**
-   * Platform commission rate (as decimal)
-   */
-  readonly platformCommissionRate?: number;
-  /**
-   * Platform commission amount
-   */
-  readonly platformCommissionAmount?: number;
-  /**
-   * Trainer earnings after commission
-   */
-  readonly trainerEarnings?: number;
-  /**
-   * Whether service is in-person
-   */
-  isInPerson?: boolean;
-  /**
-   * Whether transport is included
-   */
-  transportIncluded?: boolean;
-  /**
-   * Transport cost per session
-   */
-  transportCostPerSession?: number;
-  /**
-   * Number of enrolled users
-   */
-  readonly enrolledUsersCount?: number;
-  /**
-   * Country where service is offered
-   */
-  country?: string;
-  /**
-   * Whether service is active
-   */
-  isActive?: boolean;
-  /**
-   * Service creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * List of districts where service is available
-   */
-  districts?: ServiceDistrictDtoReadable[];
-};
-
-/**
- * DTO for trainer service information and details
- */
-export type TrainerServiceDtoWritable = {
-  /**
-   * Service ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the service
-   */
-  trainerId?: number;
-  /**
-   * Service name
-   */
-  name?: string;
-  /**
-   * Service description
-   */
-  description?: string;
-  /**
-   * Total service price
-   */
-  totalPrice?: number;
-  /**
-   * Price per session
-   */
-  pricePerSession?: number;
-  /**
-   * Whether service is in-person
-   */
-  isInPerson?: boolean;
-  /**
-   * Whether transport is included
-   */
-  transportIncluded?: boolean;
-  /**
-   * Transport cost per session
-   */
-  transportCostPerSession?: number;
-  /**
-   * Country where service is offered
-   */
-  country?: string;
-  /**
-   * Whether service is active
-   */
-  isActive?: boolean;
-  /**
-   * List of districts where service is available
-   */
-  districts?: ServiceDistrictDtoWritable[];
-};
-
-/**
- * DTO for updating user profile information
- */
-export type ProfileUpdateDtoReadable = {
-  /**
-   * User's first name
-   */
-  firstName: string;
-  /**
-   * User's last name
-   */
-  lastName: string;
-  /**
-   * User's phone number
-   */
-  phoneNumber: string;
-  /**
-   * User's email (read-only)
-   */
-  readonly email?: string;
-  /**
-   * User's biography or description
-   */
-  bio?: string;
-  /**
-   * List of fitness goal type IDs
-   */
-  fitnessGoalTypeIds?: number[];
-};
-
-/**
- * DTO for updating user profile information
- */
-export type ProfileUpdateDtoWritable = {
-  /**
-   * User's first name
-   */
-  firstName: string;
-  /**
-   * User's last name
-   */
-  lastName: string;
-  /**
-   * User's phone number
-   */
-  phoneNumber: string;
-  /**
-   * User's biography or description
-   */
-  bio?: string;
-  /**
-   * List of fitness goal type IDs
-   */
-  fitnessGoalTypeIds?: number[];
+    /**
+     * User ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Password
+     */
+    password?: string;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    person?: PersonDto;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    /**
+     * Whether user is active
+     */
+    active?: boolean;
+    premium?: boolean;
 };
 
 /**
  * DTO for user response information without sensitive data
  */
 export type UserResponseDtoReadable = {
-  /**
-   * User ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Account creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  person?: PersonDto;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
+    /**
+     * User ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Account creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    person?: PersonDto;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    /**
+     * Whether user is active
+     */
+    active?: boolean;
+    premium?: boolean;
 };
 
 /**
  * DTO for user response information without sensitive data
  */
 export type UserResponseDtoWritable = {
-  /**
-   * User ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  person?: PersonDto;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
+    /**
+     * User ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    person?: PersonDto;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    /**
+     * Whether user is active
+     */
+    active?: boolean;
+    premium?: boolean;
+};
+
+/**
+ * DTO for user type categories
+ */
+export type UserTypeDto = {
+    /**
+     * User type ID
+     */
+    id?: number;
+    /**
+     * User type name
+     */
+    name?: 'CLIENT' | 'TRAINER';
+};
+
+/**
+ * DTO for units of measure used in fitness metrics
+ */
+export type UnitOfMeasureDto = {
+    /**
+     * Unit of measure ID
+     */
+    id?: number;
+    /**
+     * Unit name
+     */
+    name: string;
+    /**
+     * Unit symbol
+     */
+    symbol: string;
+    /**
+     * Unit description
+     */
+    description?: string;
+};
+
+export type TrainerRecognitionDto = {
+    id?: number;
+    title?: string;
+    organization?: string;
+    date?: string;
+    type?: string;
+    level?: string;
+    description?: string;
+    isRecent?: boolean;
+};
+
+export type TrainerEducationDto = {
+    id?: number;
+    title?: string;
+    institution?: string;
+    year?: number;
+    type?: string;
+    description?: string;
+};
+
+export type TrainerCertificationDto = {
+    id?: number;
+    name?: string;
+    organization?: string;
+    issueDate?: string;
+    expirationDate?: string;
+    credentialId?: string;
+    description?: string;
+    isVerified?: boolean;
+    isExpired?: boolean;
+};
+
+/**
+ * DTO for creating new trainer services
+ */
+export type CreateTrainerServiceDto = {
+    /**
+     * Service type ID
+     */
+    serviceTypeId: number;
+    /**
+     * Service description
+     */
+    description?: string;
+    /**
+     * Total service price
+     */
+    totalPrice: number;
+    /**
+     * Whether the service is in-person
+     */
+    isInPerson: boolean;
+    /**
+     * Whether transport is included in the service
+     */
+    transportIncluded?: boolean;
+    /**
+     * Transport cost per session
+     */
+    transportCostPerSession?: number;
+    /**
+     * Country where service is offered
+     */
+    country?: string;
+    /**
+     * List of districts for in-person services
+     */
+    districts?: Array<string>;
+};
+
+/**
+ * DTO for service coverage districts
+ */
+export type ServiceDistrictDtoReadable = {
+    /**
+     * District ID
+     */
+    id?: number;
+    /**
+     * District name
+     */
+    districtName?: string;
+    /**
+     * City name
+     */
+    city?: string;
+    /**
+     * State or region
+     */
+    state?: string;
+    /**
+     * Country
+     */
+    country?: string;
+    /**
+     * District creation timestamp
+     */
+    readonly createdAt?: string;
+};
+
+/**
+ * DTO for service coverage districts
+ */
+export type ServiceDistrictDtoWritable = {
+    /**
+     * District ID
+     */
+    id?: number;
+    /**
+     * District name
+     */
+    districtName?: string;
+    /**
+     * City name
+     */
+    city?: string;
+    /**
+     * State or region
+     */
+    state?: string;
+    /**
+     * Country
+     */
+    country?: string;
+};
+
+/**
+ * DTO for trainer service information and details
+ */
+export type TrainerServiceDtoReadable = {
+    /**
+     * Service ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the service
+     */
+    trainerId?: number;
+    /**
+     * Service name
+     */
+    name?: string;
+    /**
+     * Service description
+     */
+    description?: string;
+    /**
+     * Total service price
+     */
+    totalPrice?: number;
+    /**
+     * Price per session
+     */
+    pricePerSession?: number;
+    /**
+     * Platform commission rate (as decimal)
+     */
+    readonly platformCommissionRate?: number;
+    /**
+     * Platform commission amount
+     */
+    readonly platformCommissionAmount?: number;
+    /**
+     * Trainer earnings after commission
+     */
+    readonly trainerEarnings?: number;
+    /**
+     * Whether service is in-person
+     */
+    isInPerson?: boolean;
+    /**
+     * Whether transport is included
+     */
+    transportIncluded?: boolean;
+    /**
+     * Transport cost per session
+     */
+    transportCostPerSession?: number;
+    /**
+     * Number of enrolled users
+     */
+    readonly enrolledUsersCount?: number;
+    /**
+     * Country where service is offered
+     */
+    country?: string;
+    /**
+     * Whether service is active
+     */
+    isActive?: boolean;
+    /**
+     * Service creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * List of districts where service is available
+     */
+    districts?: Array<ServiceDistrictDtoReadable>;
+};
+
+/**
+ * DTO for trainer service information and details
+ */
+export type TrainerServiceDtoWritable = {
+    /**
+     * Service ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the service
+     */
+    trainerId?: number;
+    /**
+     * Service name
+     */
+    name?: string;
+    /**
+     * Service description
+     */
+    description?: string;
+    /**
+     * Total service price
+     */
+    totalPrice?: number;
+    /**
+     * Price per session
+     */
+    pricePerSession?: number;
+    /**
+     * Whether service is in-person
+     */
+    isInPerson?: boolean;
+    /**
+     * Whether transport is included
+     */
+    transportIncluded?: boolean;
+    /**
+     * Transport cost per session
+     */
+    transportCostPerSession?: number;
+    /**
+     * Country where service is offered
+     */
+    country?: string;
+    /**
+     * Whether service is active
+     */
+    isActive?: boolean;
+    /**
+     * List of districts where service is available
+     */
+    districts?: Array<ServiceDistrictDtoWritable>;
+};
+
+/**
+ * DTO for updating user profile information
+ */
+export type ProfileUpdateDtoReadable = {
+    /**
+     * User's first name
+     */
+    firstName: string;
+    /**
+     * User's last name
+     */
+    lastName: string;
+    /**
+     * User's phone number
+     */
+    phoneNumber: string;
+    /**
+     * User's email (read-only)
+     */
+    readonly email?: string;
+    /**
+     * User's biography or description
+     */
+    bio?: string;
+    /**
+     * List of fitness goal type IDs
+     */
+    fitnessGoalTypeIds?: Array<number>;
+};
+
+/**
+ * DTO for updating user profile information
+ */
+export type ProfileUpdateDtoWritable = {
+    /**
+     * User's first name
+     */
+    firstName: string;
+    /**
+     * User's last name
+     */
+    lastName: string;
+    /**
+     * User's phone number
+     */
+    phoneNumber: string;
+    /**
+     * User's biography or description
+     */
+    bio?: string;
+    /**
+     * List of fitness goal type IDs
+     */
+    fitnessGoalTypeIds?: Array<number>;
 };
 
 /**
  * DTO for fitness and health metric types
  */
 export type MetricTypeDto = {
-  /**
-   * Metric type ID
-   */
-  id?: number;
-  /**
-   * Metric type name
-   */
-  name?:
-    | 'Peso Corporal'
-    | 'Altura'
-    | 'IMC'
-    | 'Grasa Corporal'
-    | 'Masa Muscular';
+    /**
+     * Metric type ID
+     */
+    id?: number;
+    /**
+     * Metric type name
+     */
+    name?: 'Peso Corporal' | 'Altura' | 'IMC' | 'Grasa Corporal' | 'Masa Muscular';
 };
 
 /**
  * DTO for associating metric types with units of measure
  */
 export type MetricTypeUomDto = {
-  /**
-   * Association ID
-   */
-  id?: number;
-  /**
-   * Metric type ID
-   */
-  metricTypeId: number;
-  /**
-   * Unit of measure ID
-   */
-  unitOfMeasureId: number;
-  default?: boolean;
+    /**
+     * Association ID
+     */
+    id?: number;
+    /**
+     * Metric type ID
+     */
+    metricTypeId: number;
+    /**
+     * Unit of measure ID
+     */
+    unitOfMeasureId: number;
+    default?: boolean;
 };
 
 /**
  * DTO for fitness goal status tracking
  */
 export type FitnessGoalStatusDto = {
-  /**
-   * Goal status ID
-   */
-  id?: number;
-  /**
-   * Status name
-   */
-  name?: 'PENDIENTE' | 'EN_PROGRESO' | 'COMPLETADO' | 'PAUSADO';
+    /**
+     * Goal status ID
+     */
+    id?: number;
+    /**
+     * Status name
+     */
+    name?: 'PENDIENTE' | 'EN_PROGRESO' | 'COMPLETADO' | 'PAUSADO';
 };
 
 /**
  * DTO for creating reviews and ratings for trainer services
  */
 export type CreateReviewDto = {
-  /**
-   * Service contract ID being reviewed
-   */
-  serviceContractId: number;
-  /**
-   * Rating from 1 to 5 stars
-   */
-  rating: number;
-  /**
-   * Review comment
-   */
-  comment?: string;
-  /**
-   * Whether the review should be anonymous
-   */
-  isAnonymous?: boolean;
+    /**
+     * Service contract ID being reviewed
+     */
+    serviceContractId: number;
+    /**
+     * Rating from 1 to 5 stars
+     */
+    rating: number;
+    /**
+     * Review comment
+     */
+    comment?: string;
+    /**
+     * Whether the review should be anonymous
+     */
+    isAnonymous?: boolean;
 };
 
 /**
  * DTO for service resources like diets and exercise routines
  */
 export type ServiceResourceDtoReadable = {
-  /**
-   * Resource ID
-   */
-  id?: number;
-  /**
-   * Service ID this resource belongs to
-   */
-  serviceId?: number;
-  /**
-   * Client ID this resource is for
-   */
-  clientId?: number;
-  /**
-   * Trainer ID who created the resource
-   */
-  trainerId?: number;
-  /**
-   * Resource name
-   */
-  resourceName?: string;
-  /**
-   * Type of resource
-   */
-  resourceType?:
-    | 'DIETA'
-    | 'RUTINA'
-    | 'DIET'
-    | 'EXERCISE_ROUTINE'
-    | 'TRAINING_PLAN';
-  /**
-   * Resource objective
-   */
-  resourceObjective?: string;
-  /**
-   * Detailed resource information
-   */
-  resourceDetails?: string;
-  /**
-   * Resource start date
-   */
-  startDate?: string;
-  /**
-   * Resource end date
-   */
-  endDate?: string;
-  /**
-   * Trainer notes about the resource
-   */
-  trainerNotes?: string;
-  /**
-   * Whether the resource is active
-   */
-  isActive?: boolean;
-  /**
-   * Resource creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
+    /**
+     * Resource ID
+     */
+    id?: number;
+    /**
+     * Service ID this resource belongs to
+     */
+    serviceId?: number;
+    /**
+     * Client ID this resource is for
+     */
+    clientId?: number;
+    /**
+     * Trainer ID who created the resource
+     */
+    trainerId?: number;
+    /**
+     * Resource name
+     */
+    resourceName?: string;
+    /**
+     * Type of resource
+     */
+    resourceType?: 'DIETA' | 'RUTINA' | 'DIET' | 'EXERCISE_ROUTINE' | 'TRAINING_PLAN';
+    /**
+     * Resource objective
+     */
+    resourceObjective?: string;
+    /**
+     * Detailed resource information
+     */
+    resourceDetails?: string;
+    /**
+     * Resource start date
+     */
+    startDate?: string;
+    /**
+     * Resource end date
+     */
+    endDate?: string;
+    /**
+     * Trainer notes about the resource
+     */
+    trainerNotes?: string;
+    /**
+     * Whether the resource is active
+     */
+    isActive?: boolean;
+    /**
+     * Resource creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
 };
 
 /**
  * DTO for service resources like diets and exercise routines
  */
 export type ServiceResourceDtoWritable = {
-  /**
-   * Resource ID
-   */
-  id?: number;
-  /**
-   * Service ID this resource belongs to
-   */
-  serviceId?: number;
-  /**
-   * Client ID this resource is for
-   */
-  clientId?: number;
-  /**
-   * Trainer ID who created the resource
-   */
-  trainerId?: number;
-  /**
-   * Resource name
-   */
-  resourceName?: string;
-  /**
-   * Type of resource
-   */
-  resourceType?:
-    | 'DIETA'
-    | 'RUTINA'
-    | 'DIET'
-    | 'EXERCISE_ROUTINE'
-    | 'TRAINING_PLAN';
-  /**
-   * Resource objective
-   */
-  resourceObjective?: string;
-  /**
-   * Detailed resource information
-   */
-  resourceDetails?: string;
-  /**
-   * Resource start date
-   */
-  startDate?: string;
-  /**
-   * Resource end date
-   */
-  endDate?: string;
-  /**
-   * Trainer notes about the resource
-   */
-  trainerNotes?: string;
-  /**
-   * Whether the resource is active
-   */
-  isActive?: boolean;
+    /**
+     * Resource ID
+     */
+    id?: number;
+    /**
+     * Service ID this resource belongs to
+     */
+    serviceId?: number;
+    /**
+     * Client ID this resource is for
+     */
+    clientId?: number;
+    /**
+     * Trainer ID who created the resource
+     */
+    trainerId?: number;
+    /**
+     * Resource name
+     */
+    resourceName?: string;
+    /**
+     * Type of resource
+     */
+    resourceType?: 'DIETA' | 'RUTINA' | 'DIET' | 'EXERCISE_ROUTINE' | 'TRAINING_PLAN';
+    /**
+     * Resource objective
+     */
+    resourceObjective?: string;
+    /**
+     * Detailed resource information
+     */
+    resourceDetails?: string;
+    /**
+     * Resource start date
+     */
+    startDate?: string;
+    /**
+     * Resource end date
+     */
+    endDate?: string;
+    /**
+     * Trainer notes about the resource
+     */
+    trainerNotes?: string;
+    /**
+     * Whether the resource is active
+     */
+    isActive?: boolean;
 };
 
 /**
  * DTO for bank account information management
  */
 export type BankAccountDtoReadable = {
-  /**
-   * Bank account ID
-   */
-  readonly id?: number;
-  /**
-   * ID of the person who owns the account
-   */
-  personId: number;
-  /**
-   * Name of the bank
-   */
-  bankName: string;
-  /**
-   * Bank account number
-   */
-  accountNumber: string;
-  /**
-   * Type of bank account
-   */
-  accountType: 'SAVINGS' | 'CHECKING' | 'BUSINESS';
-  /**
-   * Account currency
-   */
-  currency: 'PEN' | 'USD' | 'EUR';
-  /**
-   * Whether this is the preferred account for payments
-   */
-  isPreferred: boolean;
-  /**
-   * Full name of the account holder
-   */
-  accountHolderName: string;
-  /**
-   * SWIFT/BIC code for international transfers
-   */
-  swiftCode?: string;
-  /**
-   * Account creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
+    /**
+     * Bank account ID
+     */
+    readonly id?: number;
+    /**
+     * ID of the person who owns the account
+     */
+    personId: number;
+    /**
+     * Name of the bank
+     */
+    bankName: string;
+    /**
+     * Bank account number
+     */
+    accountNumber: string;
+    /**
+     * Type of bank account
+     */
+    accountType: 'SAVINGS' | 'CHECKING' | 'BUSINESS';
+    /**
+     * Account currency
+     */
+    currency: 'PEN' | 'USD' | 'EUR';
+    /**
+     * Whether this is the preferred account for payments
+     */
+    isPreferred: boolean;
+    /**
+     * Full name of the account holder
+     */
+    accountHolderName: string;
+    /**
+     * SWIFT/BIC code for international transfers
+     */
+    swiftCode?: string;
+    /**
+     * Account creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
 };
 
 /**
  * DTO for bank account information management
  */
 export type BankAccountDtoWritable = {
-  /**
-   * ID of the person who owns the account
-   */
-  personId: number;
-  /**
-   * Name of the bank
-   */
-  bankName: string;
-  /**
-   * Bank account number
-   */
-  accountNumber: string;
-  /**
-   * Type of bank account
-   */
-  accountType: 'SAVINGS' | 'CHECKING' | 'BUSINESS';
-  /**
-   * Account currency
-   */
-  currency: 'PEN' | 'USD' | 'EUR';
-  /**
-   * Whether this is the preferred account for payments
-   */
-  isPreferred: boolean;
-  /**
-   * Full name of the account holder
-   */
-  accountHolderName: string;
-  /**
-   * SWIFT/BIC code for international transfers
-   */
-  swiftCode?: string;
+    /**
+     * ID of the person who owns the account
+     */
+    personId: number;
+    /**
+     * Name of the bank
+     */
+    bankName: string;
+    /**
+     * Bank account number
+     */
+    accountNumber: string;
+    /**
+     * Type of bank account
+     */
+    accountType: 'SAVINGS' | 'CHECKING' | 'BUSINESS';
+    /**
+     * Account currency
+     */
+    currency: 'PEN' | 'USD' | 'EUR';
+    /**
+     * Whether this is the preferred account for payments
+     */
+    isPreferred: boolean;
+    /**
+     * Full name of the account holder
+     */
+    accountHolderName: string;
+    /**
+     * SWIFT/BIC code for international transfers
+     */
+    swiftCode?: string;
 };
 
 /**
  * DTO for trainer achievements and certifications
  */
 export type AchievementDtoReadable = {
-  /**
-   * Achievement ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the achievement
-   */
-  trainerId?: number;
-  /**
-   * Type of achievement
-   */
-  achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
-  /**
-   * Achievement title
-   */
-  title?: string;
-  /**
-   * Achievement description
-   */
-  description?: string;
-  /**
-   * Date when achievement was obtained
-   */
-  achievedAt?: string;
-  /**
-   * Achievement creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * List of files uploaded for this achievement
-   */
-  filesUpload?: AchievementFileDto[];
+    /**
+     * Achievement ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the achievement
+     */
+    trainerId?: number;
+    /**
+     * Type of achievement
+     */
+    achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
+    /**
+     * Achievement title
+     */
+    title?: string;
+    /**
+     * Achievement description
+     */
+    description?: string;
+    /**
+     * Date when achievement was obtained
+     */
+    achievedAt?: string;
+    /**
+     * Achievement creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * List of files uploaded for this achievement
+     */
+    filesUpload?: Array<AchievementFileDto>;
 };
 
 /**
  * DTO for trainer achievements and certifications
  */
 export type AchievementDtoWritable = {
-  /**
-   * Achievement ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the achievement
-   */
-  trainerId?: number;
-  /**
-   * Type of achievement
-   */
-  achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
-  /**
-   * Achievement title
-   */
-  title?: string;
-  /**
-   * Achievement description
-   */
-  description?: string;
-  /**
-   * Date when achievement was obtained
-   */
-  achievedAt?: string;
-  /**
-   * List of files uploaded for this achievement
-   */
-  filesUpload?: AchievementFileDto[];
+    /**
+     * Achievement ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the achievement
+     */
+    trainerId?: number;
+    /**
+     * Type of achievement
+     */
+    achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
+    /**
+     * Achievement title
+     */
+    title?: string;
+    /**
+     * Achievement description
+     */
+    description?: string;
+    /**
+     * Date when achievement was obtained
+     */
+    achievedAt?: string;
+    /**
+     * List of files uploaded for this achievement
+     */
+    filesUpload?: Array<AchievementFileDto>;
 };
 
 /**
  * DTO for achievement file upload information
  */
 export type AchievementFileDto = {
-  /**
-   * Achievement file ID
-   */
-  id?: number;
-  /**
-   * User file ID reference
-   */
-  userFileId?: number;
+    /**
+     * Achievement file ID
+     */
+    id?: number;
+    /**
+     * User file ID reference
+     */
+    userFileId?: number;
 };
 
 /**
  * DTO for user login requests
  */
 export type LoginRequestDto = {
-  /**
-   * Username for authentication
-   */
-  username: string;
-  /**
-   * Password for authentication
-   */
-  password: string;
+    /**
+     * Username for authentication
+     */
+    username: string;
+    /**
+     * Password for authentication
+     */
+    password: string;
 };
 
 /**
  * DTO for authentication response containing JWT token and user information
  */
 export type LoginResponseDtoReadable = {
-  /**
-   * JWT authentication token
-   */
-  token?: string;
-  user?: UserResponseDtoReadable;
+    /**
+     * JWT authentication token
+     */
+    token?: string;
+    user?: UserResponseDtoReadable;
 };
 
 /**
  * DTO for authentication response containing JWT token and user information
  */
 export type LoginResponseDtoWritable = {
-  /**
-   * JWT authentication token
-   */
-  token?: string;
-  user?: UserResponseDtoWritable;
+    /**
+     * JWT authentication token
+     */
+    token?: string;
+    user?: UserResponseDtoWritable;
 };
 
 /**
  * DTO for trainer search filters and criteria
  */
 export type TrainerSearchDto = {
-  /**
-   * List of fitness goal IDs to filter trainers
-   */
-  fitnessGoalIds?: number[];
-  /**
-   * Search query for trainer name
-   */
-  query?: string;
-  /**
-   * Location filter for trainers
-   */
-  location?: string;
-  /**
-   * Minimum rating filter
-   */
-  minRating?: number;
-  /**
-   * Maximum price filter
-   */
-  maxPrice?: number;
+    /**
+     * List of fitness goal IDs to filter trainers
+     */
+    fitnessGoalIds?: Array<number>;
+    /**
+     * Search query for trainer name
+     */
+    query?: string;
+    /**
+     * Location filter for trainers
+     */
+    location?: string;
+    /**
+     * Minimum rating filter
+     */
+    minRating?: number;
+    /**
+     * Maximum price filter
+     */
+    maxPrice?: number;
 };
 
 /**
  * DTO for public person information (privacy-safe)
  */
 export type PublicPersonDtoReadable = {
-  /**
-   * Person ID
-   */
-  id?: number;
-  /**
-   * First name
-   */
-  firstName?: string;
-  /**
-   * Last name
-   */
-  lastName?: string;
-  /**
-   * Document number
-   */
-  documentNumber?: string;
-  /**
-   * Document type
-   */
-  documentType?: 'DNI' | 'PASSPORT' | 'CE';
-  /**
-   * Biography or description
-   */
-  bio?: string;
-  /**
-   * Profile photo ID
-   */
-  profilePhotoId?: number;
-  /**
-   * Presentation video ID
-   */
-  presentationVideoId?: number;
-  /**
-   * Gender
-   */
-  gender?: 'M' | 'F' | 'OTHER';
-  /**
-   * Birth date
-   */
-  readonly birthDate?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * List of fitness goal types
-   */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+    /**
+     * Person ID
+     */
+    id?: number;
+    /**
+     * First name
+     */
+    firstName?: string;
+    /**
+     * Last name
+     */
+    lastName?: string;
+    /**
+     * Document number
+     */
+    documentNumber?: string;
+    /**
+     * Document type
+     */
+    documentType?: 'DNI' | 'PASSPORT' | 'CE';
+    /**
+     * Biography or description
+     */
+    bio?: string;
+    /**
+     * Profile photo ID
+     */
+    profilePhotoId?: number;
+    /**
+     * Presentation video ID
+     */
+    presentationVideoId?: number;
+    /**
+     * Gender
+     */
+    gender?: 'M' | 'F' | 'OTHER';
+    /**
+     * Birth date
+     */
+    readonly birthDate?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * List of fitness goal types
+     */
+    fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
  * DTO for public person information (privacy-safe)
  */
 export type PublicPersonDtoWritable = {
-  /**
-   * Person ID
-   */
-  id?: number;
-  /**
-   * First name
-   */
-  firstName?: string;
-  /**
-   * Last name
-   */
-  lastName?: string;
-  /**
-   * Document number
-   */
-  documentNumber?: string;
-  /**
-   * Document type
-   */
-  documentType?: 'DNI' | 'PASSPORT' | 'CE';
-  /**
-   * Biography or description
-   */
-  bio?: string;
-  /**
-   * Profile photo ID
-   */
-  profilePhotoId?: number;
-  /**
-   * Presentation video ID
-   */
-  presentationVideoId?: number;
-  /**
-   * Gender
-   */
-  gender?: 'M' | 'F' | 'OTHER';
-  /**
-   * List of fitness goal types
-   */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+    /**
+     * Person ID
+     */
+    id?: number;
+    /**
+     * First name
+     */
+    firstName?: string;
+    /**
+     * Last name
+     */
+    lastName?: string;
+    /**
+     * Document number
+     */
+    documentNumber?: string;
+    /**
+     * Document type
+     */
+    documentType?: 'DNI' | 'PASSPORT' | 'CE';
+    /**
+     * Biography or description
+     */
+    bio?: string;
+    /**
+     * Profile photo ID
+     */
+    profilePhotoId?: number;
+    /**
+     * Presentation video ID
+     */
+    presentationVideoId?: number;
+    /**
+     * Gender
+     */
+    gender?: 'M' | 'F' | 'OTHER';
+    /**
+     * List of fitness goal types
+     */
+    fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
  * DTO for public trainer information (privacy-safe)
  */
 export type PublicTrainerDtoReadable = {
-  /**
-   * Trainer ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Account creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  person?: PublicPersonDtoReadable;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
+    /**
+     * Trainer ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Account creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    person?: PublicPersonDtoReadable;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    premium?: boolean;
 };
 
 /**
  * DTO for public trainer information (privacy-safe)
  */
 export type PublicTrainerDtoWritable = {
-  /**
-   * Trainer ID
-   */
-  id?: number;
-  /**
-   * Username
-   */
-  username?: string;
-  /**
-   * User type
-   */
-  type?: 1 | 2;
-  /**
-   * Whether email is verified
-   */
-  isEmailVerified?: boolean;
-  person?: PublicPersonDtoWritable;
-  /**
-   * How premium access was obtained
-   */
-  premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
-  premium?: boolean;
+    /**
+     * Trainer ID
+     */
+    id?: number;
+    /**
+     * Username
+     */
+    username?: string;
+    /**
+     * User type
+     */
+    type?: 1 | 2;
+    /**
+     * Whether email is verified
+     */
+    isEmailVerified?: boolean;
+    person?: PublicPersonDtoWritable;
+    /**
+     * How premium access was obtained
+     */
+    premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+    premium?: boolean;
 };
 
 /**
  * DTO for customer support requests
  */
 export type SupportRequestDto = {
-  /**
-   * Full name of the person requesting support
-   */
-  name: string;
-  /**
-   * Email address for support response
-   */
-  email: string;
-  /**
-   * Phone number for contact
-   */
-  phone?: string;
-  /**
-   * Type of support request
-   */
-  type: 'TECHNICAL' | 'BILLING' | 'GENERAL' | 'ACCOUNT';
-  /**
-   * Subject of the support request
-   */
-  subject: string;
-  /**
-   * Detailed message describing the issue
-   */
-  message: string;
-  /**
-   * ID of the user making the request
-   */
-  userId?: number;
-  /**
-   * Type of user making the request
-   */
-  userType?: 'TRAINER' | 'CLIENT';
+    /**
+     * Full name of the person requesting support
+     */
+    name: string;
+    /**
+     * Email address for support response
+     */
+    email: string;
+    /**
+     * Phone number for contact
+     */
+    phone?: string;
+    /**
+     * Type of support request
+     */
+    type: 'TECHNICAL' | 'BILLING' | 'GENERAL' | 'ACCOUNT';
+    /**
+     * Subject of the support request
+     */
+    subject: string;
+    /**
+     * Detailed message describing the issue
+     */
+    message: string;
+    /**
+     * ID of the user making the request
+     */
+    userId?: number;
+    /**
+     * Type of user making the request
+     */
+    userType?: 'TRAINER' | 'CLIENT';
+};
+
+/**
+ * Lista de alimentos seleccionados con sus cantidades
+ */
+export type MacroCalculationRequestDto = {
+    selectedFoods?: Array<SelectedFoodDto>;
+};
+
+export type SelectedFoodDto = {
+    foodId?: number;
+    quantity?: number;
+};
+
+export type FoodCalculationDetailDto = {
+    foodId?: number;
+    foodName?: string;
+    category?: string;
+    quantity?: number;
+    totalWeight?: number;
+    macros?: MacroNutrientsDto;
+};
+
+export type MacroCalculationResponseDto = {
+    totalMacros?: MacroNutrientsDto;
+    foodDetails?: Array<FoodCalculationDetailDto>;
+    percentages?: MacroPercentagesDto;
+};
+
+export type MacroNutrientsDto = {
+    proteins?: number;
+    carbohydrates?: number;
+    fats?: number;
+    calories?: number;
+    fiber?: number;
+    sugar?: number;
+    sodium?: number;
+};
+
+export type MacroPercentagesDto = {
+    proteinPercentage?: number;
+    carbohydratePercentage?: number;
+    fatPercentage?: number;
 };
 
 /**
  * DTO for file upload and management information
  */
 export type UserFilesDtoReadable = {
-  /**
-   * File ID
-   */
-  id?: number;
-  /**
-   * User ID who uploaded the file
-   */
-  userId?: number;
-  /**
-   * Original file name
-   */
-  fileName?: string;
-  /**
-   * File MIME type
-   */
-  fileType?: 'image/jpeg' | 'image/png' | 'application/pdf' | 'video/mp4';
-  /**
-   * File upload timestamp
-   */
-  readonly uploadedAt?: string;
-  /**
-   * File storage path
-   */
-  file_path?: string;
+    /**
+     * File ID
+     */
+    id?: number;
+    /**
+     * User ID who uploaded the file
+     */
+    userId?: number;
+    /**
+     * Original file name
+     */
+    fileName?: string;
+    /**
+     * File MIME type
+     */
+    fileType?: 'image/jpeg' | 'image/png' | 'application/pdf' | 'video/mp4';
+    /**
+     * File upload timestamp
+     */
+    readonly uploadedAt?: string;
+    /**
+     * File storage path
+     */
+    file_path?: string;
 };
 
 /**
  * DTO for file upload and management information
  */
 export type UserFilesDtoWritable = {
-  /**
-   * File ID
-   */
-  id?: number;
-  /**
-   * User ID who uploaded the file
-   */
-  userId?: number;
-  /**
-   * Original file name
-   */
-  fileName?: string;
-  /**
-   * File MIME type
-   */
-  fileType?: 'image/jpeg' | 'image/png' | 'application/pdf' | 'video/mp4';
-  /**
-   * File storage path
-   */
-  file_path?: string;
+    /**
+     * File ID
+     */
+    id?: number;
+    /**
+     * User ID who uploaded the file
+     */
+    userId?: number;
+    /**
+     * Original file name
+     */
+    fileName?: string;
+    /**
+     * File MIME type
+     */
+    fileType?: 'image/jpeg' | 'image/png' | 'application/pdf' | 'video/mp4';
+    /**
+     * File storage path
+     */
+    file_path?: string;
+};
+
+export type FoodItemDto = {
+    id?: number;
+    name?: string;
+    description?: string;
+    category?: string;
+    imageUrl?: string;
+    servingSize?: number;
+    macros?: MacroNutrientsDto;
+    popular?: boolean;
 };
 
 export type UserSubscriptionResponse = {
-  id?: number;
-  membershipType?: string;
-  status?: string;
-  startDate?: string;
-  endDate?: string;
-  autoRenewal?: boolean;
-  planName?: string;
-  paymentAmount?: number;
-  currency?: string;
-  nextPaymentDate?: string;
-  trainerName?: string;
-  contractDetails?: string;
+    id?: number;
+    membershipType?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+    autoRenewal?: boolean;
+    planName?: string;
+    paymentAmount?: number;
+    currency?: string;
+    nextPaymentDate?: string;
+    trainerName?: string;
+    contractDetails?: string;
 };
 
 export type UserMembership = {
-  id?: number;
-  userId?: number;
-  membershipType?: 'PAYMENT' | 'CONTRACT';
-  status?: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PENDING';
-  startDate?: string;
-  endDate?: string;
-  createdAt?: string;
-  updatedAt?: string;
-  trainerId?: number;
-  contractDetails?: string;
-  planId?: number;
-  paymentAmount?: number;
-  currency?: string;
-  autoRenewal?: boolean;
-  active?: boolean;
-  expired?: boolean;
-  daysUntilExpiry?: number;
+    id?: number;
+    userId?: number;
+    membershipType?: 'PAYMENT' | 'CONTRACT';
+    status?: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PENDING';
+    startDate?: string;
+    endDate?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    trainerId?: number;
+    contractDetails?: string;
+    planId?: number;
+    paymentAmount?: number;
+    currency?: string;
+    autoRenewal?: boolean;
+    active?: boolean;
+    expired?: boolean;
+    daysUntilExpiry?: number;
 };
 
 /**
  * DTO for creating service contracts between trainers and clients
  */
 export type CreateContractDto = {
-  /**
-   * ID of the service to contract
-   */
-  serviceId: number;
-  /**
-   * ID of the client contracting the service
-   */
-  clientId: number;
-  /**
-   * Start date of the contract
-   */
-  startDate?: string;
-  /**
-   * Additional notes for the contract
-   */
-  notes?: string;
-  /**
-   * Whether terms and conditions are accepted
-   */
-  termsAccepted: boolean;
+    /**
+     * ID of the service to contract
+     */
+    serviceId: number;
+    /**
+     * ID of the client contracting the service
+     */
+    clientId: number;
+    /**
+     * Start date of the contract
+     */
+    startDate?: string;
+    /**
+     * Additional notes for the contract
+     */
+    notes?: string;
+    /**
+     * Whether terms and conditions are accepted
+     */
+    termsAccepted: boolean;
 };
 
 export type Pageable = {
-  page?: number;
-  size?: number;
-  sort?: string[];
+    page?: number;
+    size?: number;
+    sort?: Array<string>;
 };
 
 export type ResultPageUserTypeDto = {
-  pagesResult?: UserTypeDto[];
-  totalItems?: number;
-  totalPages?: number;
-  currentPage?: number;
+    pagesResult?: Array<UserTypeDto>;
+    totalItems?: number;
+    totalPages?: number;
+    currentPage?: number;
 };
 
 /**
  * DTO for individual payment transaction data
  */
 export type PaymentDataDto = {
-  /**
-   * Payment ID
-   */
-  id?: number;
-  /**
-   * User ID who made the payment
-   */
-  userId?: number;
-  /**
-   * Client name who made the payment
-   */
-  clientName?: string;
-  /**
-   * Service name that was paid for
-   */
-  serviceName?: string;
-  /**
-   * Total payment amount
-   */
-  totalAmount?: number;
-  /**
-   * Platform commission amount
-   */
-  platformCommission?: number;
-  /**
-   * Trainer earnings after commission
-   */
-  trainerEarnings?: number;
-  /**
-   * Payment date and time
-   */
-  paymentDate?: string;
-  /**
-   * Payment status
-   */
-  paymentStatus?: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
-  /**
-   * Payment method used
-   */
-  paymentMethod?:
-    | 'CREDIT_CARD'
-    | 'DEBIT_CARD'
-    | 'BANK_TRANSFER'
-    | 'DIGITAL_WALLET';
-  /**
-   * Transaction ID from payment processor
-   */
-  transactionId?: string;
-  /**
-   * Date when collection was requested
-   */
-  collectionRequestedAt?: string;
+    /**
+     * Payment ID
+     */
+    id?: number;
+    /**
+     * User ID who made the payment
+     */
+    userId?: number;
+    /**
+     * Client name who made the payment
+     */
+    clientName?: string;
+    /**
+     * Service name that was paid for
+     */
+    serviceName?: string;
+    /**
+     * Total payment amount
+     */
+    totalAmount?: number;
+    /**
+     * Platform commission amount
+     */
+    platformCommission?: number;
+    /**
+     * Trainer earnings after commission
+     */
+    trainerEarnings?: number;
+    /**
+     * Payment date and time
+     */
+    paymentDate?: string;
+    /**
+     * Payment status
+     */
+    paymentStatus?: 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED';
+    /**
+     * Payment method used
+     */
+    paymentMethod?: 'CREDIT_CARD' | 'DEBIT_CARD' | 'BANK_TRANSFER' | 'DIGITAL_WALLET';
+    /**
+     * Transaction ID from payment processor
+     */
+    transactionId?: string;
+    /**
+     * Date when collection was requested
+     */
+    collectionRequestedAt?: string;
 };
 
 /**
  * DTO for trainer payment summary and earnings overview
  */
 export type PaymentSummaryDto = {
-  /**
-   * Total amount collected to date
-   */
-  collectedToDate?: number;
-  /**
-   * Amount pending collection
-   */
-  pendingCollection?: number;
-  /**
-   * Amount available for collection
-   */
-  availableForCollection?: number;
+    /**
+     * Total amount collected to date
+     */
+    collectedToDate?: number;
+    /**
+     * Amount pending collection
+     */
+    pendingCollection?: number;
+    /**
+     * Amount available for collection
+     */
+    availableForCollection?: number;
 };
 
 /**
  * DTO for paginated payments response with summary
  */
 export type PaymentsResponseDto = {
-  /**
-   * List of payment transactions
-   */
-  payments?: PaymentDataDto[];
-  summary?: PaymentSummaryDto;
-  /**
-   * Total number of pages
-   */
-  totalPages?: number;
-  /**
-   * Current page number
-   */
-  currentPage?: number;
-  /**
-   * Total number of payment records
-   */
-  totalElements?: number;
+    /**
+     * List of payment transactions
+     */
+    payments?: Array<PaymentDataDto>;
+    summary?: PaymentSummaryDto;
+    /**
+     * Total number of pages
+     */
+    totalPages?: number;
+    /**
+     * Current page number
+     */
+    currentPage?: number;
+    /**
+     * Total number of payment records
+     */
+    totalElements?: number;
 };
 
 export type TrainerExperienceDto = {
-  education?: TrainerEducationDto[];
-  certifications?: TrainerCertificationDto[];
-  recognitions?: TrainerRecognitionDto[];
-  summary?: TrainerExperienceSummaryDto;
+    education?: Array<TrainerEducationDto>;
+    certifications?: Array<TrainerCertificationDto>;
+    recognitions?: Array<TrainerRecognitionDto>;
+    summary?: TrainerExperienceSummaryDto;
 };
 
 export type TrainerExperienceSummaryDto = {
-  totalEducation?: number;
-  totalCertifications?: number;
-  totalRecognitions?: number;
-  validCertifications?: number;
-  expiredCertifications?: number;
-  recentRecognitions?: number;
-  internationalRecognitions?: number;
+    totalEducation?: number;
+    totalCertifications?: number;
+    totalRecognitions?: number;
+    validCertifications?: number;
+    expiredCertifications?: number;
+    recentRecognitions?: number;
+    internationalRecognitions?: number;
 };
 
 export type Page = {
-  totalPages?: number;
-  totalElements?: number;
-  size?: number;
-  content?: {
-    [key: string]: unknown;
-  }[];
-  number?: number;
-  sort?: SortObject;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
+    totalPages?: number;
+    totalElements?: number;
+    size?: number;
+    content?: Array<{
+        [key: string]: unknown;
+    }>;
+    number?: number;
+    sort?: SortObject;
+    numberOfElements?: number;
+    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    empty?: boolean;
 };
 
 export type PageableObject = {
-  offset?: number;
-  sort?: SortObject;
-  pageNumber?: number;
-  pageSize?: number;
-  paged?: boolean;
-  unpaged?: boolean;
+    offset?: number;
+    sort?: SortObject;
+    pageNumber?: number;
+    pageSize?: number;
+    paged?: boolean;
+    unpaged?: boolean;
 };
 
 export type SortObject = {
-  empty?: boolean;
-  sorted?: boolean;
-  unsorted?: boolean;
+    empty?: boolean;
+    sorted?: boolean;
+    unsorted?: boolean;
 };
 
 /**
  * DTO for review response information
  */
 export type ReviewResponseDtoReadable = {
-  /**
-   * Review ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who was reviewed
-   */
-  trainerId?: number;
-  /**
-   * Trainer full name
-   */
-  trainerName?: string;
-  /**
-   * Trainer profile photo ID
-   */
-  trainerProfilePhotoId?: number;
-  /**
-   * Client ID who made the review
-   */
-  clientId?: number;
-  /**
-   * Client full name
-   */
-  clientName?: string;
-  /**
-   * Service ID that was reviewed
-   */
-  serviceId?: number;
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Service contract ID
-   */
-  serviceContractId?: number;
-  /**
-   * Rating from 1 to 5
-   */
-  rating?: number;
-  /**
-   * Review comment
-   */
-  comment?: string;
-  /**
-   * Whether the review is anonymous
-   */
-  isAnonymous?: boolean;
-  /**
-   * Trainer response to the review
-   */
-  trainerResponse?: string;
-  /**
-   * Trainer response timestamp
-   */
-  trainerResponseDate?: string;
-  /**
-   * Whether client can still edit the review
-   */
-  canEdit?: boolean;
-  /**
-   * Review creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
+    /**
+     * Review ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who was reviewed
+     */
+    trainerId?: number;
+    /**
+     * Trainer full name
+     */
+    trainerName?: string;
+    /**
+     * Trainer profile photo ID
+     */
+    trainerProfilePhotoId?: number;
+    /**
+     * Client ID who made the review
+     */
+    clientId?: number;
+    /**
+     * Client full name
+     */
+    clientName?: string;
+    /**
+     * Service ID that was reviewed
+     */
+    serviceId?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Service contract ID
+     */
+    serviceContractId?: number;
+    /**
+     * Rating from 1 to 5
+     */
+    rating?: number;
+    /**
+     * Review comment
+     */
+    comment?: string;
+    /**
+     * Whether the review is anonymous
+     */
+    isAnonymous?: boolean;
+    /**
+     * Trainer response to the review
+     */
+    trainerResponse?: string;
+    /**
+     * Trainer response timestamp
+     */
+    trainerResponseDate?: string;
+    /**
+     * Whether client can still edit the review
+     */
+    canEdit?: boolean;
+    /**
+     * Review creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
 };
 
 /**
  * DTO for review response information
  */
 export type ReviewResponseDtoWritable = {
-  /**
-   * Review ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who was reviewed
-   */
-  trainerId?: number;
-  /**
-   * Trainer full name
-   */
-  trainerName?: string;
-  /**
-   * Trainer profile photo ID
-   */
-  trainerProfilePhotoId?: number;
-  /**
-   * Client ID who made the review
-   */
-  clientId?: number;
-  /**
-   * Client full name
-   */
-  clientName?: string;
-  /**
-   * Service ID that was reviewed
-   */
-  serviceId?: number;
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Service contract ID
-   */
-  serviceContractId?: number;
-  /**
-   * Rating from 1 to 5
-   */
-  rating?: number;
-  /**
-   * Review comment
-   */
-  comment?: string;
-  /**
-   * Whether the review is anonymous
-   */
-  isAnonymous?: boolean;
-  /**
-   * Trainer response to the review
-   */
-  trainerResponse?: string;
-  /**
-   * Trainer response timestamp
-   */
-  trainerResponseDate?: string;
-  /**
-   * Whether client can still edit the review
-   */
-  canEdit?: boolean;
+    /**
+     * Review ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who was reviewed
+     */
+    trainerId?: number;
+    /**
+     * Trainer full name
+     */
+    trainerName?: string;
+    /**
+     * Trainer profile photo ID
+     */
+    trainerProfilePhotoId?: number;
+    /**
+     * Client ID who made the review
+     */
+    clientId?: number;
+    /**
+     * Client full name
+     */
+    clientName?: string;
+    /**
+     * Service ID that was reviewed
+     */
+    serviceId?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Service contract ID
+     */
+    serviceContractId?: number;
+    /**
+     * Rating from 1 to 5
+     */
+    rating?: number;
+    /**
+     * Review comment
+     */
+    comment?: string;
+    /**
+     * Whether the review is anonymous
+     */
+    isAnonymous?: boolean;
+    /**
+     * Trainer response to the review
+     */
+    trainerResponse?: string;
+    /**
+     * Trainer response timestamp
+     */
+    trainerResponseDate?: string;
+    /**
+     * Whether client can still edit the review
+     */
+    canEdit?: boolean;
 };
 
 export type TrainerRatingStatsDto = {
-  trainerId?: number;
-  averageRating?: number;
-  totalReviews?: number;
+    trainerId?: number;
+    averageRating?: number;
+    totalReviews?: number;
 };
 
 export type RatingBreakdownItemDto = {
-  stars?: number;
-  count?: number;
-  percentage?: number;
+    stars?: number;
+    count?: number;
+    percentage?: number;
 };
 
 export type TrainerRatingBreakdownDto = {
-  totalReviews?: number;
-  averageRating?: number;
-  breakdown?: RatingBreakdownItemDto[];
+    totalReviews?: number;
+    averageRating?: number;
+    breakdown?: Array<RatingBreakdownItemDto>;
 };
 
 export type PageReviewResponseDtoReadable = {
-  totalPages?: number;
-  totalElements?: number;
-  size?: number;
-  content?: ReviewResponseDtoReadable[];
-  number?: number;
-  sort?: SortObject;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
+    totalPages?: number;
+    totalElements?: number;
+    size?: number;
+    content?: Array<ReviewResponseDtoReadable>;
+    number?: number;
+    sort?: SortObject;
+    numberOfElements?: number;
+    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    empty?: boolean;
 };
 
 export type PageReviewResponseDtoWritable = {
-  totalPages?: number;
-  totalElements?: number;
-  size?: number;
-  content?: ReviewResponseDtoWritable[];
-  number?: number;
-  sort?: SortObject;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
+    totalPages?: number;
+    totalElements?: number;
+    size?: number;
+    content?: Array<ReviewResponseDtoWritable>;
+    number?: number;
+    sort?: SortObject;
+    numberOfElements?: number;
+    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    empty?: boolean;
 };
 
 /**
  * DTO for service type categories and classifications
  */
 export type ServiceTypeDto = {
-  /**
-   * Service type ID
-   */
-  id?: number;
-  /**
-   * Service type name
-   */
-  name?: string;
-  /**
-   * Service type description
-   */
-  description?: string;
-  /**
-   * Whether the service type is active
-   */
-  isActive?: boolean;
+    /**
+     * Service type ID
+     */
+    id?: number;
+    /**
+     * Service type name
+     */
+    name?: string;
+    /**
+     * Service type description
+     */
+    description?: string;
+    /**
+     * Whether the service type is active
+     */
+    isActive?: boolean;
+};
+
+export type FoodCategoryDto = {
+    id?: number;
+    name?: string;
+    description?: string;
+    icon?: string;
+    isActive?: boolean;
+};
+
+export type FoodSearchResponseDto = {
+    foods?: Array<FoodItemDto>;
+    categories?: Array<FoodCategoryDto>;
+    popularFoods?: Array<FoodItemDto>;
+    totalCount?: number;
 };
 
 export type ResultPageMetricTypeDto = {
-  pagesResult?: MetricTypeDto[];
-  totalItems?: number;
-  totalPages?: number;
-  currentPage?: number;
+    pagesResult?: Array<MetricTypeDto>;
+    totalItems?: number;
+    totalPages?: number;
+    currentPage?: number;
 };
 
 export type MembershipStatusResponse = {
-  hasActiveMembership?: boolean;
-  activeMembership?: UserMembership;
+    hasActiveMembership?: boolean;
+    activeMembership?: UserMembership;
 };
 
 export type MembershipPayment = {
-  id?: number;
-  membershipId?: number;
-  serviceContractId?: number;
-  userId?: number;
-  amount?: number;
-  currency?: string;
-  paymentMethod?: string;
-  status?: string;
-  collectionStatus?: string;
-  transactionId?: string;
-  paymentGateway?: string;
-  description?: string;
-  createdAt?: string;
-  processedAt?: string;
-  collectedAt?: string;
-  collectionRequestedAt?: string;
-  failureReason?: string;
-  cancelled?: boolean;
-  availableForCollection?: boolean;
-  collected?: boolean;
-  pending?: boolean;
-  observed?: boolean;
-  paymentCompleted?: boolean;
-  paymentPending?: boolean;
-  paymentRejected?: boolean;
-  pendingClientApproval?: boolean;
-  collectedByTrainer?: boolean;
-  cancelling?: boolean;
-  observedForCollection?: boolean;
-  processingCollection?: boolean;
+    id?: number;
+    membershipId?: number;
+    serviceContractId?: number;
+    userId?: number;
+    amount?: number;
+    currency?: string;
+    paymentMethod?: string;
+    status?: string;
+    collectionStatus?: string;
+    transactionId?: string;
+    paymentGateway?: string;
+    description?: string;
+    createdAt?: string;
+    processedAt?: string;
+    collectedAt?: string;
+    collectionRequestedAt?: string;
+    failureReason?: string;
+    cancelled?: boolean;
+    availableForCollection?: boolean;
+    collected?: boolean;
+    pending?: boolean;
+    observed?: boolean;
+    paymentCompleted?: boolean;
+    paymentPending?: boolean;
+    paymentRejected?: boolean;
+    pendingClientApproval?: boolean;
+    collectedByTrainer?: boolean;
+    cancelling?: boolean;
+    observedForCollection?: boolean;
+    processingCollection?: boolean;
 };
 
 export type MembershipPlan = {
-  id?: number;
-  name?: string;
-  description?: string;
-  price?: number;
-  currency?: string;
-  durationDays?: number;
-  billingCycle?:
-    | 'MONTHLY'
-    | 'QUARTERLY'
-    | 'SEMI_ANNUAL'
-    | 'ANNUAL'
-    | 'ONE_TIME';
-  isActive?: boolean;
-  features?: string;
-  maxContracts?: number;
-  maxResources?: number;
-  prioritySupport?: boolean;
-  displayOrder?: number;
-  createdAt?: string;
-  updatedAt?: string;
-  monthly?: boolean;
-  annual?: boolean;
-  monthlyPrice?: number;
-  formattedPrice?: string;
-  durationDescription?: string;
+    id?: number;
+    name?: string;
+    description?: string;
+    price?: number;
+    currency?: string;
+    durationDays?: number;
+    billingCycle?: 'MONTHLY' | 'QUARTERLY' | 'SEMI_ANNUAL' | 'ANNUAL' | 'ONE_TIME';
+    isActive?: boolean;
+    features?: string;
+    maxContracts?: number;
+    maxResources?: number;
+    prioritySupport?: boolean;
+    displayOrder?: number;
+    createdAt?: string;
+    updatedAt?: string;
+    annual?: boolean;
+    monthlyPrice?: number;
+    formattedPrice?: string;
+    durationDescription?: string;
+    monthly?: boolean;
 };
 
 export type ResultPageFitnessGoalTypeDto = {
-  pagesResult?: FitnessGoalTypeDto[];
-  totalItems?: number;
-  totalPages?: number;
-  currentPage?: number;
+    pagesResult?: Array<FitnessGoalTypeDto>;
+    totalItems?: number;
+    totalPages?: number;
+    currentPage?: number;
 };
 
 export type ResultPageFitnessGoalStatusDto = {
-  pagesResult?: FitnessGoalStatusDto[];
-  totalItems?: number;
-  totalPages?: number;
-  currentPage?: number;
+    pagesResult?: Array<FitnessGoalStatusDto>;
+    totalItems?: number;
+    totalPages?: number;
+    currentPage?: number;
 };
 
 /**
  * DTO for client profile information with service history
  */
 export type ClientProfileDto = {
-  /**
-   * Client ID
-   */
-  id?: number;
-  /**
-   * Client first name
-   */
-  firstName?: string;
-  /**
-   * Client last name
-   */
-  lastName?: string;
-  /**
-   * Document number
-   */
-  documentNumber?: string;
-  /**
-   * Document type
-   */
-  documentType?: 'DNI' | 'PASSPORT' | 'CE';
-  /**
-   * Client biography
-   */
-  bio?: string;
-  /**
-   * Profile photo ID
-   */
-  profilePhotoId?: number;
-  /**
-   * Gender
-   */
-  gender?: 'M' | 'F' | 'OTHER';
-  /**
-   * Birth date
-   */
-  birthDate?: string;
-  /**
-   * List of fitness goals
-   */
-  fitnessGoals?: string[];
-  /**
-   * List of contracted services
-   */
-  services?: ClientServiceInfo[];
+    /**
+     * Client ID
+     */
+    id?: number;
+    /**
+     * Client first name
+     */
+    firstName?: string;
+    /**
+     * Client last name
+     */
+    lastName?: string;
+    /**
+     * Document number
+     */
+    documentNumber?: string;
+    /**
+     * Document type
+     */
+    documentType?: 'DNI' | 'PASSPORT' | 'CE';
+    /**
+     * Client biography
+     */
+    bio?: string;
+    /**
+     * Profile photo ID
+     */
+    profilePhotoId?: number;
+    /**
+     * Gender
+     */
+    gender?: 'M' | 'F' | 'OTHER';
+    /**
+     * Birth date
+     */
+    birthDate?: string;
+    /**
+     * List of fitness goals
+     */
+    fitnessGoals?: Array<string>;
+    /**
+     * List of contracted services
+     */
+    services?: Array<ClientServiceInfo>;
 };
 
 /**
  * Information about a service contracted by the client
  */
 export type ClientServiceInfo = {
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Trainer name
-   */
-  trainerName?: string;
-  /**
-   * Contract status
-   */
-  contractStatus?: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
-  /**
-   * Service modality
-   */
-  modality?: 'PRESENCIAL' | 'VIRTUAL' | 'HIBRIDO';
-  /**
-   * Service start date
-   */
-  startDate?: string;
-  /**
-   * Total amount paid
-   */
-  totalAmount?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Trainer name
+     */
+    trainerName?: string;
+    /**
+     * Contract status
+     */
+    contractStatus?: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+    /**
+     * Service modality
+     */
+    modality?: 'PRESENCIAL' | 'VIRTUAL' | 'HIBRIDO';
+    /**
+     * Service start date
+     */
+    startDate?: string;
+    /**
+     * Total amount paid
+     */
+    totalAmount?: number;
 };
 
 /**
  * DTO for contracts that can be reviewed by clients
  */
 export type ReviewableContractDto = {
-  /**
-   * Contract ID
-   */
-  contractId?: number;
-  /**
-   * Trainer ID
-   */
-  trainerId?: number;
-  /**
-   * Trainer full name
-   */
-  trainerName?: string;
-  /**
-   * Trainer profile photo ID
-   */
-  trainerProfilePhotoId?: number;
-  /**
-   * Service ID
-   */
-  serviceId?: number;
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Service description
-   */
-  serviceDescription?: string;
-  /**
-   * Contract status
-   */
-  contractStatus?: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
-  /**
-   * Contract completion timestamp
-   */
-  completionDate?: string;
-  /**
-   * Contract end date
-   */
-  endDate?: string;
-  /**
-   * Whether client has already reviewed this contract
-   */
-  hasReview?: boolean;
-  /**
-   * ID of existing review if any
-   */
-  existingReviewId?: number;
+    /**
+     * Contract ID
+     */
+    contractId?: number;
+    /**
+     * Trainer ID
+     */
+    trainerId?: number;
+    /**
+     * Trainer full name
+     */
+    trainerName?: string;
+    /**
+     * Trainer profile photo ID
+     */
+    trainerProfilePhotoId?: number;
+    /**
+     * Service ID
+     */
+    serviceId?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Service description
+     */
+    serviceDescription?: string;
+    /**
+     * Contract status
+     */
+    contractStatus?: 'PENDING' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+    /**
+     * Contract completion timestamp
+     */
+    completionDate?: string;
+    /**
+     * Contract end date
+     */
+    endDate?: string;
+    /**
+     * Whether client has already reviewed this contract
+     */
+    hasReview?: boolean;
+    /**
+     * ID of existing review if any
+     */
+    existingReviewId?: number;
 };
 
 /**
  * DTO for grouping client resources by client
  */
 export type ClientResourceGroupDtoReadable = {
-  /**
-   * Client ID
-   */
-  clientId?: number;
-  /**
-   * Client full name
-   */
-  clientName?: string;
-  /**
-   * List of resources created for this client
-   */
-  resources?: ClientResourceResponseDtoReadable[];
+    /**
+     * Client ID
+     */
+    clientId?: number;
+    /**
+     * Client full name
+     */
+    clientName?: string;
+    /**
+     * List of resources created for this client
+     */
+    resources?: Array<ClientResourceResponseDtoReadable>;
 };
 
 /**
  * DTO for grouping client resources by client
  */
 export type ClientResourceGroupDtoWritable = {
-  /**
-   * Client ID
-   */
-  clientId?: number;
-  /**
-   * Client full name
-   */
-  clientName?: string;
-  /**
-   * List of resources created for this client
-   */
-  resources?: ClientResourceResponseDtoWritable[];
+    /**
+     * Client ID
+     */
+    clientId?: number;
+    /**
+     * Client full name
+     */
+    clientName?: string;
+    /**
+     * List of resources created for this client
+     */
+    resources?: Array<ClientResourceResponseDtoWritable>;
 };
 
 /**
  * DTO for client resource response with service and trainer information
  */
 export type ClientResourceResponseDtoReadable = {
-  /**
-   * Resource ID
-   */
-  id?: number;
-  /**
-   * Service ID
-   */
-  serviceId?: number;
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Trainer name
-   */
-  trainerName?: string;
-  /**
-   * Client ID
-   */
-  clientId?: number;
-  /**
-   * Client name
-   */
-  clientName?: string;
-  /**
-   * Resource name
-   */
-  resourceName?: string;
-  /**
-   * Type of resource
-   */
-  resourceType?:
-    | 'DIETA'
-    | 'RUTINA'
-    | 'DIET'
-    | 'EXERCISE_ROUTINE'
-    | 'TRAINING_PLAN';
-  /**
-   * Resource objective
-   */
-  resourceObjective?: string;
-  /**
-   * Detailed resource information
-   */
-  resourceDetails?: string;
-  /**
-   * Resource start date
-   */
-  startDate?: string;
-  /**
-   * Resource end date
-   */
-  endDate?: string;
-  /**
-   * Trainer notes
-   */
-  trainerNotes?: string;
-  /**
-   * Resource creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * Whether the resource is active
-   */
-  isActive?: boolean;
+    /**
+     * Resource ID
+     */
+    id?: number;
+    /**
+     * Service ID
+     */
+    serviceId?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Trainer name
+     */
+    trainerName?: string;
+    /**
+     * Client ID
+     */
+    clientId?: number;
+    /**
+     * Client name
+     */
+    clientName?: string;
+    /**
+     * Resource name
+     */
+    resourceName?: string;
+    /**
+     * Type of resource
+     */
+    resourceType?: 'DIETA' | 'RUTINA' | 'DIET' | 'EXERCISE_ROUTINE' | 'TRAINING_PLAN';
+    /**
+     * Resource objective
+     */
+    resourceObjective?: string;
+    /**
+     * Detailed resource information
+     */
+    resourceDetails?: string;
+    /**
+     * Resource start date
+     */
+    startDate?: string;
+    /**
+     * Resource end date
+     */
+    endDate?: string;
+    /**
+     * Trainer notes
+     */
+    trainerNotes?: string;
+    /**
+     * Resource creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * Whether the resource is active
+     */
+    isActive?: boolean;
 };
 
 /**
  * DTO for client resource response with service and trainer information
  */
 export type ClientResourceResponseDtoWritable = {
-  /**
-   * Resource ID
-   */
-  id?: number;
-  /**
-   * Service ID
-   */
-  serviceId?: number;
-  /**
-   * Service name
-   */
-  serviceName?: string;
-  /**
-   * Trainer name
-   */
-  trainerName?: string;
-  /**
-   * Client ID
-   */
-  clientId?: number;
-  /**
-   * Client name
-   */
-  clientName?: string;
-  /**
-   * Resource name
-   */
-  resourceName?: string;
-  /**
-   * Type of resource
-   */
-  resourceType?:
-    | 'DIETA'
-    | 'RUTINA'
-    | 'DIET'
-    | 'EXERCISE_ROUTINE'
-    | 'TRAINING_PLAN';
-  /**
-   * Resource objective
-   */
-  resourceObjective?: string;
-  /**
-   * Detailed resource information
-   */
-  resourceDetails?: string;
-  /**
-   * Resource start date
-   */
-  startDate?: string;
-  /**
-   * Resource end date
-   */
-  endDate?: string;
-  /**
-   * Trainer notes
-   */
-  trainerNotes?: string;
-  /**
-   * Whether the resource is active
-   */
-  isActive?: boolean;
+    /**
+     * Resource ID
+     */
+    id?: number;
+    /**
+     * Service ID
+     */
+    serviceId?: number;
+    /**
+     * Service name
+     */
+    serviceName?: string;
+    /**
+     * Trainer name
+     */
+    trainerName?: string;
+    /**
+     * Client ID
+     */
+    clientId?: number;
+    /**
+     * Client name
+     */
+    clientName?: string;
+    /**
+     * Resource name
+     */
+    resourceName?: string;
+    /**
+     * Type of resource
+     */
+    resourceType?: 'DIETA' | 'RUTINA' | 'DIET' | 'EXERCISE_ROUTINE' | 'TRAINING_PLAN';
+    /**
+     * Resource objective
+     */
+    resourceObjective?: string;
+    /**
+     * Detailed resource information
+     */
+    resourceDetails?: string;
+    /**
+     * Resource start date
+     */
+    startDate?: string;
+    /**
+     * Resource end date
+     */
+    endDate?: string;
+    /**
+     * Trainer notes
+     */
+    trainerNotes?: string;
+    /**
+     * Whether the resource is active
+     */
+    isActive?: boolean;
 };
 
 export type PageClientResourceGroupDtoReadable = {
-  totalPages?: number;
-  totalElements?: number;
-  size?: number;
-  content?: ClientResourceGroupDtoReadable[];
-  number?: number;
-  sort?: SortObject;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
+    totalPages?: number;
+    totalElements?: number;
+    size?: number;
+    content?: Array<ClientResourceGroupDtoReadable>;
+    number?: number;
+    sort?: SortObject;
+    numberOfElements?: number;
+    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    empty?: boolean;
 };
 
 export type PageClientResourceGroupDtoWritable = {
-  totalPages?: number;
-  totalElements?: number;
-  size?: number;
-  content?: ClientResourceGroupDtoWritable[];
-  number?: number;
-  sort?: SortObject;
-  numberOfElements?: number;
-  pageable?: PageableObject;
-  first?: boolean;
-  last?: boolean;
-  empty?: boolean;
+    totalPages?: number;
+    totalElements?: number;
+    size?: number;
+    content?: Array<ClientResourceGroupDtoWritable>;
+    number?: number;
+    sort?: SortObject;
+    numberOfElements?: number;
+    pageable?: PageableObject;
+    first?: boolean;
+    last?: boolean;
+    empty?: boolean;
+};
+
+/**
+ * DTO for admin view of payment transaction data
+ */
+export type AdminPaymentDataDto = {
+    /**
+     * Payment ID
+     */
+    id?: number;
+    /**
+     * Client name who made the payment
+     */
+    clientName?: string;
+    /**
+     * Client email
+     */
+    clientEmail?: string;
+    /**
+     * Trainer name receiving payment
+     */
+    trainerName?: string;
+    /**
+     * Payment amount
+     */
+    amount?: number;
+    /**
+     * Payment status
+     */
+    status?: 'PENDING' | 'COMPLETED' | 'COLLECTED' | 'CANCELLED';
+    /**
+     * Payment method used
+     */
+    paymentMethod?: 'CREDIT_CARD' | 'DEBIT_CARD' | 'PAYPAL' | 'BANK_TRANSFER' | 'STRIPE';
+    /**
+     * Transaction ID
+     */
+    transactionId?: string;
+    /**
+     * Payment creation date and time
+     */
+    createdAt?: string;
+    /**
+     * Payment processing date and time
+     */
+    processedAt?: string;
+    /**
+     * Date when payment was collected by trainer
+     */
+    collectedAt?: string;
+    /**
+     * Whether payment has been transferred to trainer
+     */
+    paidToTrainer?: boolean;
+    /**
+     * Platform commission amount
+     */
+    commission?: number;
+    /**
+     * Payment description
+     */
+    description?: string;
+    /**
+     * Service name if applicable
+     */
+    serviceName?: string;
+    /**
+     * Collection status for trainer
+     */
+    collectionStatus?: string;
+};
+
+/**
+ * DTO for admin payment summary and platform revenue overview
+ */
+export type AdminPaymentSummaryDto = {
+    /**
+     * Total revenue generated by the platform
+     */
+    totalRevenue?: number;
+    /**
+     * Number of pending payments
+     */
+    pendingPayments?: number;
+    /**
+     * Revenue from completed but not yet collected payments
+     */
+    completedRevenue?: number;
+    /**
+     * Total commission earned by platform
+     */
+    totalCommission?: number;
+};
+
+/**
+ * DTO for paginated admin payments response with summary
+ */
+export type AdminPaymentsResponseDto = {
+    /**
+     * List of payment transactions
+     */
+    payments?: Array<AdminPaymentDataDto>;
+    summary?: AdminPaymentSummaryDto;
+    /**
+     * Total number of pages
+     */
+    totalPages?: number;
+    /**
+     * Current page number
+     */
+    currentPage?: number;
+    /**
+     * Total number of payment records
+     */
+    totalElements?: number;
 };
 
 /**
  * DTO for retrieving achievement information with files
  */
 export type GetAchievementDtoReadable = {
-  /**
-   * Achievement ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the achievement
-   */
-  trainerId?: number;
-  /**
-   * Type of achievement
-   */
-  achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
-  /**
-   * Achievement title
-   */
-  title?: string;
-  /**
-   * Achievement description
-   */
-  description?: string;
-  /**
-   * Date when achievement was obtained
-   */
-  achievedAt?: string;
-  /**
-   * Achievement creation timestamp
-   */
-  readonly createdAt?: string;
-  /**
-   * Last update timestamp
-   */
-  readonly updatedAt?: string;
-  /**
-   * List of files associated with this achievement
-   */
-  files?: GetAchievementFileDtoReadable[];
+    /**
+     * Achievement ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the achievement
+     */
+    trainerId?: number;
+    /**
+     * Type of achievement
+     */
+    achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
+    /**
+     * Achievement title
+     */
+    title?: string;
+    /**
+     * Achievement description
+     */
+    description?: string;
+    /**
+     * Date when achievement was obtained
+     */
+    achievedAt?: string;
+    /**
+     * Achievement creation timestamp
+     */
+    readonly createdAt?: string;
+    /**
+     * Last update timestamp
+     */
+    readonly updatedAt?: string;
+    /**
+     * List of files associated with this achievement
+     */
+    files?: Array<GetAchievementFileDtoReadable>;
 };
 
 /**
  * DTO for retrieving achievement information with files
  */
 export type GetAchievementDtoWritable = {
-  /**
-   * Achievement ID
-   */
-  id?: number;
-  /**
-   * Trainer ID who owns the achievement
-   */
-  trainerId?: number;
-  /**
-   * Type of achievement
-   */
-  achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
-  /**
-   * Achievement title
-   */
-  title?: string;
-  /**
-   * Achievement description
-   */
-  description?: string;
-  /**
-   * Date when achievement was obtained
-   */
-  achievedAt?: string;
-  /**
-   * List of files associated with this achievement
-   */
-  files?: GetAchievementFileDtoWritable[];
+    /**
+     * Achievement ID
+     */
+    id?: number;
+    /**
+     * Trainer ID who owns the achievement
+     */
+    trainerId?: number;
+    /**
+     * Type of achievement
+     */
+    achievementType?: 'CERTIFICATION' | 'AWARD' | 'COURSE' | 'DEGREE';
+    /**
+     * Achievement title
+     */
+    title?: string;
+    /**
+     * Achievement description
+     */
+    description?: string;
+    /**
+     * Date when achievement was obtained
+     */
+    achievedAt?: string;
+    /**
+     * List of files associated with this achievement
+     */
+    files?: Array<GetAchievementFileDtoWritable>;
 };
 
 /**
  * DTO for achievement file information retrieval
  */
 export type GetAchievementFileDtoReadable = {
-  /**
-   * Achievement file ID
-   */
-  id?: number;
-  userFile?: UserFiles;
-  /**
-   * File upload timestamp
-   */
-  readonly uploadedAt?: string;
+    /**
+     * Achievement file ID
+     */
+    id?: number;
+    userFile?: UserFiles;
+    /**
+     * File upload timestamp
+     */
+    readonly uploadedAt?: string;
 };
 
 /**
  * DTO for achievement file information retrieval
  */
 export type GetAchievementFileDtoWritable = {
-  /**
-   * Achievement file ID
-   */
-  id?: number;
-  userFile?: UserFiles;
+    /**
+     * Achievement file ID
+     */
+    id?: number;
+    userFile?: UserFiles;
 };
 
 /**
  * User file information
  */
 export type UserFiles = {
-  id?: number;
-  userId?: number;
-  fileName?: string;
-  fileType?: string;
-  filePath?: string;
-  uploadedAt?: string;
+    id?: number;
+    userId?: number;
+    fileName?: string;
+    fileType?: string;
+    filePath?: string;
+    uploadedAt?: string;
 };
 
 export type GetByIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/user/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}';
 };
 
 export type GetByIdResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
 export type GetByIdResponse = GetByIdResponses[keyof GetByIdResponses];
 
 export type UpdateData = {
-  body: UserDtoWritable;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/user/{id}';
+    body: UserDtoWritable;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}';
 };
 
 export type UpdateResponses = {
-  /**
-   * OK
-   */
-  200: UserDtoReadable;
+    /**
+     * OK
+     */
+    200: UserDtoReadable;
 };
 
 export type UpdateResponse = UpdateResponses[keyof UpdateResponses];
 
 export type UpgradeToPremiumData = {
-  body: {
-    [key: string]: string;
-  };
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/user/{id}/upgrade-premium';
+    body: {
+        [key: string]: string;
+    };
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/upgrade-premium';
 };
 
 export type UpgradeToPremiumResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type UpgradeToPremiumResponse =
-  UpgradeToPremiumResponses[keyof UpgradeToPremiumResponses];
+export type UpgradeToPremiumResponse = UpgradeToPremiumResponses[keyof UpgradeToPremiumResponses];
+
+export type UnverifyUserData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/unverify';
+};
+
+export type UnverifyUserResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type UnverifyUserResponse = UnverifyUserResponses[keyof UnverifyUserResponses];
+
+export type ResetPasswordData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/reset-password';
+};
+
+export type ResetPasswordResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type ResetPasswordResponse = ResetPasswordResponses[keyof ResetPasswordResponses];
+
+export type ResendVerificationEmailData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/resend-verification';
+};
+
+export type ResendVerificationEmailResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type ResendVerificationEmailResponse = ResendVerificationEmailResponses[keyof ResendVerificationEmailResponses];
+
+export type ForceVerifyEmailData = {
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/force-verify';
+};
+
+export type ForceVerifyEmailResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type ForceVerifyEmailResponse = ForceVerifyEmailResponses[keyof ForceVerifyEmailResponses];
+
+export type UpdateActiveStatusData = {
+    body: {
+        [key: string]: boolean;
+    };
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user/{id}/active';
+};
+
+export type UpdateActiveStatusResponses = {
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
+};
+
+export type UpdateActiveStatusResponse = UpdateActiveStatusResponses[keyof UpdateActiveStatusResponses];
 
 export type GetById1Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/user-type/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user-type/{id}';
 };
 
 export type GetById1Responses = {
-  /**
-   * OK
-   */
-  200: UserTypeDto;
+    /**
+     * OK
+     */
+    200: UserTypeDto;
 };
 
 export type GetById1Response = GetById1Responses[keyof GetById1Responses];
 
 export type Update1Data = {
-  body: UserTypeDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/user-type/{id}';
+    body: UserTypeDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/user-type/{id}';
 };
 
 export type Update1Responses = {
-  /**
-   * OK
-   */
-  200: UserTypeDto;
+    /**
+     * OK
+     */
+    200: UserTypeDto;
 };
 
 export type Update1Response = Update1Responses[keyof Update1Responses];
 
 export type DeleteData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/units-of-measure/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/units-of-measure/{id}';
 };
 
 export type DeleteResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type FindByIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/units-of-measure/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/units-of-measure/{id}';
 };
 
 export type FindByIdResponses = {
-  /**
-   * OK
-   */
-  200: UnitOfMeasureDto;
+    /**
+     * OK
+     */
+    200: UnitOfMeasureDto;
 };
 
 export type FindByIdResponse = FindByIdResponses[keyof FindByIdResponses];
 
 export type Update2Data = {
-  body: UnitOfMeasureDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/units-of-measure/{id}';
+    body: UnitOfMeasureDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/units-of-measure/{id}';
 };
 
 export type Update2Responses = {
-  /**
-   * OK
-   */
-  200: UnitOfMeasureDto;
+    /**
+     * OK
+     */
+    200: UnitOfMeasureDto;
 };
 
 export type Update2Response = Update2Responses[keyof Update2Responses];
 
 export type DeleteRecognitionData = {
-  body?: never;
-  path: {
-    trainerId: number;
-    recognitionId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/recognitions/{recognitionId}';
+    body?: never;
+    path: {
+        trainerId: number;
+        recognitionId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/recognitions/{recognitionId}';
 };
 
 export type DeleteRecognitionResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateRecognitionData = {
-  body: TrainerRecognitionDto;
-  path: {
-    trainerId: number;
-    recognitionId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/recognitions/{recognitionId}';
+    body: TrainerRecognitionDto;
+    path: {
+        trainerId: number;
+        recognitionId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/recognitions/{recognitionId}';
 };
 
 export type UpdateRecognitionResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRecognitionDto;
+    /**
+     * OK
+     */
+    200: TrainerRecognitionDto;
 };
 
-export type UpdateRecognitionResponse =
-  UpdateRecognitionResponses[keyof UpdateRecognitionResponses];
+export type UpdateRecognitionResponse = UpdateRecognitionResponses[keyof UpdateRecognitionResponses];
 
 export type DeleteEducationData = {
-  body?: never;
-  path: {
-    trainerId: number;
-    educationId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/education/{educationId}';
+    body?: never;
+    path: {
+        trainerId: number;
+        educationId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/education/{educationId}';
 };
 
 export type DeleteEducationResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateEducationData = {
-  body: TrainerEducationDto;
-  path: {
-    trainerId: number;
-    educationId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/education/{educationId}';
+    body: TrainerEducationDto;
+    path: {
+        trainerId: number;
+        educationId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/education/{educationId}';
 };
 
 export type UpdateEducationResponses = {
-  /**
-   * OK
-   */
-  200: TrainerEducationDto;
+    /**
+     * OK
+     */
+    200: TrainerEducationDto;
 };
 
-export type UpdateEducationResponse =
-  UpdateEducationResponses[keyof UpdateEducationResponses];
+export type UpdateEducationResponse = UpdateEducationResponses[keyof UpdateEducationResponses];
 
 export type DeleteCertificationData = {
-  body?: never;
-  path: {
-    trainerId: number;
-    certificationId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/certifications/{certificationId}';
+    body?: never;
+    path: {
+        trainerId: number;
+        certificationId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/certifications/{certificationId}';
 };
 
 export type DeleteCertificationResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateCertificationData = {
-  body: TrainerCertificationDto;
-  path: {
-    trainerId: number;
-    certificationId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/certifications/{certificationId}';
+    body: TrainerCertificationDto;
+    path: {
+        trainerId: number;
+        certificationId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/certifications/{certificationId}';
 };
 
 export type UpdateCertificationResponses = {
-  /**
-   * OK
-   */
-  200: TrainerCertificationDto;
+    /**
+     * OK
+     */
+    200: TrainerCertificationDto;
 };
 
-export type UpdateCertificationResponse =
-  UpdateCertificationResponses[keyof UpdateCertificationResponses];
+export type UpdateCertificationResponse = UpdateCertificationResponses[keyof UpdateCertificationResponses];
 
 export type DeleteServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}';
+    body?: never;
+    path: {
+        serviceId: number;
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}';
 };
 
 export type DeleteServiceResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateServiceData = {
-  body: CreateTrainerServiceDto;
-  path: {
-    serviceId: number;
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}';
+    body: CreateTrainerServiceDto;
+    path: {
+        serviceId: number;
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}';
 };
 
 export type UpdateServiceResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable;
+    /**
+     * OK
+     */
+    200: TrainerServiceDtoReadable;
 };
 
-export type UpdateServiceResponse =
-  UpdateServiceResponses[keyof UpdateServiceResponses];
+export type UpdateServiceResponse = UpdateServiceResponses[keyof UpdateServiceResponses];
 
 export type GetProfileData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}';
 };
 
 export type GetProfileResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
 export type GetProfileResponse = GetProfileResponses[keyof GetProfileResponses];
 
 export type UpdateProfileData = {
-  body: ProfileUpdateDtoWritable;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}';
+    body: ProfileUpdateDtoWritable;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}';
 };
 
 export type UpdateProfileResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
-export type UpdateProfileResponse =
-  UpdateProfileResponses[keyof UpdateProfileResponses];
+export type UpdateProfileResponse = UpdateProfileResponses[keyof UpdateProfileResponses];
 
 export type SetProfilePhotoData = {
-  body: {
-    [key: string]: number;
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/profile-photo';
+    body: {
+        [key: string]: number;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/profile-photo';
 };
 
 export type SetProfilePhotoResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateFitnessGoalsData = {
-  body: {
-    [key: string]: number[];
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/fitness-goals';
+    body: {
+        [key: string]: Array<number>;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/fitness-goals';
 };
 
 export type UpdateFitnessGoalsResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
-export type UpdateFitnessGoalsResponse =
-  UpdateFitnessGoalsResponses[keyof UpdateFitnessGoalsResponses];
+export type UpdateFitnessGoalsResponse = UpdateFitnessGoalsResponses[keyof UpdateFitnessGoalsResponses];
 
 export type UpdateFitnessGoalData = {
-  body: {
-    [key: string]: number;
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/fitness-goal';
+    body: {
+        [key: string]: number;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/fitness-goal';
 };
 
 export type UpdateFitnessGoalResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
-export type UpdateFitnessGoalResponse =
-  UpdateFitnessGoalResponses[keyof UpdateFitnessGoalResponses];
+export type UpdateFitnessGoalResponse = UpdateFitnessGoalResponses[keyof UpdateFitnessGoalResponses];
 
 export type GetById2Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/person/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/person/{id}';
 };
 
 export type GetById2Responses = {
-  /**
-   * OK
-   */
-  200: PersonDto;
+    /**
+     * OK
+     */
+    200: PersonDto;
 };
 
 export type GetById2Response = GetById2Responses[keyof GetById2Responses];
 
 export type Update3Data = {
-  body: PersonDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/person/{id}';
+    body: PersonDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/person/{id}';
 };
 
 export type Update3Responses = {
-  /**
-   * OK
-   */
-  200: PersonDto;
+    /**
+     * OK
+     */
+    200: PersonDto;
 };
 
 export type Update3Response = Update3Responses[keyof Update3Responses];
 
 export type GetById3Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/metric-type/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/metric-type/{id}';
 };
 
 export type GetById3Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeDto;
+    /**
+     * OK
+     */
+    200: MetricTypeDto;
 };
 
 export type GetById3Response = GetById3Responses[keyof GetById3Responses];
 
 export type Update4Data = {
-  body: MetricTypeDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/metric-type/{id}';
+    body: MetricTypeDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/metric-type/{id}';
 };
 
 export type Update4Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeDto;
+    /**
+     * OK
+     */
+    200: MetricTypeDto;
 };
 
 export type Update4Response = Update4Responses[keyof Update4Responses];
 
 export type Delete1Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/metric-type-uom/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/metric-type-uom/{id}';
 };
 
 export type Delete1Responses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type FindById1Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/metric-type-uom/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/metric-type-uom/{id}';
 };
 
 export type FindById1Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeUomDto;
+    /**
+     * OK
+     */
+    200: MetricTypeUomDto;
 };
 
 export type FindById1Response = FindById1Responses[keyof FindById1Responses];
 
 export type Update5Data = {
-  body: MetricTypeUomDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/metric-type-uom/{id}';
+    body: MetricTypeUomDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/metric-type-uom/{id}';
 };
 
 export type Update5Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeUomDto;
+    /**
+     * OK
+     */
+    200: MetricTypeUomDto;
 };
 
 export type Update5Response = Update5Responses[keyof Update5Responses];
 
 export type GetById4Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/fitness-goal-type/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/fitness-goal-type/{id}';
 };
 
 export type GetById4Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalTypeDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalTypeDto;
 };
 
 export type GetById4Response = GetById4Responses[keyof GetById4Responses];
 
 export type Update6Data = {
-  body: FitnessGoalTypeDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/fitness-goal-type/{id}';
+    body: FitnessGoalTypeDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/fitness-goal-type/{id}';
 };
 
 export type Update6Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalTypeDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalTypeDto;
 };
 
 export type Update6Response = Update6Responses[keyof Update6Responses];
 
 export type GetById5Data = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/fitness-goal-status/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/fitness-goal-status/{id}';
 };
 
 export type GetById5Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalStatusDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalStatusDto;
 };
 
 export type GetById5Response = GetById5Responses[keyof GetById5Responses];
 
 export type Update7Data = {
-  body: FitnessGoalStatusDto;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/fitness-goal-status/{id}';
+    body: FitnessGoalStatusDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/fitness-goal-status/{id}';
 };
 
 export type Update7Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalStatusDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalStatusDto;
 };
 
 export type Update7Response = Update7Responses[keyof Update7Responses];
 
 export type CompleteContractData = {
-  body?: never;
-  path: {
-    contractId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/{contractId}/complete';
+    body?: never;
+    path: {
+        contractId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/{contractId}/complete';
 };
 
 export type CompleteContractResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CompleteContractResponse =
-  CompleteContractResponses[keyof CompleteContractResponses];
+export type CompleteContractResponse = CompleteContractResponses[keyof CompleteContractResponses];
 
 export type CancelContractData = {
-  body?: never;
-  path: {
-    contractId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/{contractId}/cancel';
+    body?: never;
+    path: {
+        contractId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/{contractId}/cancel';
 };
 
 export type CancelContractResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CancelContractResponse =
-  CancelContractResponses[keyof CancelContractResponses];
+export type CancelContractResponse = CancelContractResponses[keyof CancelContractResponses];
 
 export type ActivateContractData = {
-  body?: never;
-  path: {
-    contractId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/{contractId}/activate';
+    body?: never;
+    path: {
+        contractId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/{contractId}/activate';
 };
 
 export type ActivateContractResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type ActivateContractResponse =
-  ActivateContractResponses[keyof ActivateContractResponses];
+export type ActivateContractResponse = ActivateContractResponses[keyof ActivateContractResponses];
 
 export type DeleteReviewData = {
-  body?: never;
-  path: {
-    reviewId: number;
-  };
-  query?: never;
-  url: '/v1/app/client/reviews/{reviewId}';
+    body?: never;
+    path: {
+        reviewId: number;
+    };
+    query?: never;
+    url: '/v1/app/client/reviews/{reviewId}';
 };
 
 export type DeleteReviewResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DeleteReviewResponse =
-  DeleteReviewResponses[keyof DeleteReviewResponses];
+export type DeleteReviewResponse = DeleteReviewResponses[keyof DeleteReviewResponses];
 
 export type UpdateReviewData = {
-  body: CreateReviewDto;
-  path: {
-    reviewId: number;
-  };
-  query?: never;
-  url: '/v1/app/client/reviews/{reviewId}';
+    body: CreateReviewDto;
+    path: {
+        reviewId: number;
+    };
+    query?: never;
+    url: '/v1/app/client/reviews/{reviewId}';
 };
 
 export type UpdateReviewResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type UpdateReviewResponse =
-  UpdateReviewResponses[keyof UpdateReviewResponses];
+export type UpdateReviewResponse = UpdateReviewResponses[keyof UpdateReviewResponses];
 
 export type DeleteResourceData = {
-  body?: never;
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}';
+    body?: never;
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}';
 };
 
 export type DeleteResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DeleteResourceResponse =
-  DeleteResourceResponses[keyof DeleteResourceResponses];
+export type DeleteResourceResponse = DeleteResourceResponses[keyof DeleteResourceResponses];
 
 export type GetResourceData = {
-  body?: never;
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}';
+    body?: never;
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}';
 };
 
 export type GetResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetResourceResponse =
-  GetResourceResponses[keyof GetResourceResponses];
+export type GetResourceResponse = GetResourceResponses[keyof GetResourceResponses];
 
 export type UpdateResourceData = {
-  body: ServiceResourceDtoWritable;
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}';
+    body: ServiceResourceDtoWritable;
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}';
 };
 
 export type UpdateResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type UpdateResourceResponse =
-  UpdateResourceResponses[keyof UpdateResourceResponses];
+export type UpdateResourceResponse = UpdateResourceResponses[keyof UpdateResourceResponses];
 
 export type DeleteBankAccountData = {
-  body?: never;
-  path: {
-    accountId: number;
-  };
-  query?: never;
-  url: '/v1/app/bank-accounts/{accountId}';
+    body?: never;
+    path: {
+        accountId: number;
+    };
+    query?: never;
+    url: '/v1/app/bank-accounts/{accountId}';
 };
 
 export type DeleteBankAccountResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateBankAccountData = {
-  body: BankAccountDtoWritable;
-  path: {
-    accountId: number;
-  };
-  query?: never;
-  url: '/v1/app/bank-accounts/{accountId}';
+    body: BankAccountDtoWritable;
+    path: {
+        accountId: number;
+    };
+    query?: never;
+    url: '/v1/app/bank-accounts/{accountId}';
 };
 
 export type UpdateBankAccountResponses = {
-  /**
-   * OK
-   */
-  200: BankAccountDtoReadable;
+    /**
+     * OK
+     */
+    200: BankAccountDtoReadable;
 };
 
-export type UpdateBankAccountResponse =
-  UpdateBankAccountResponses[keyof UpdateBankAccountResponses];
+export type UpdateBankAccountResponse = UpdateBankAccountResponses[keyof UpdateBankAccountResponses];
 
 export type SetPreferredAccountData = {
-  body?: never;
-  path: {
-    personId: number;
-    accountId: number;
-  };
-  query?: never;
-  url: '/v1/app/bank-accounts/person/{personId}/preferred/{accountId}';
+    body?: never;
+    path: {
+        personId: number;
+        accountId: number;
+    };
+    query?: never;
+    url: '/v1/app/bank-accounts/person/{personId}/preferred/{accountId}';
 };
 
 export type SetPreferredAccountResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type DeleteAchievementData = {
-  body?: never;
-  path: {
-    achievementId: number;
-  };
-  query?: never;
-  url: '/v1/app/achievements/{achievementId}';
+    body?: never;
+    path: {
+        achievementId: number;
+    };
+    query?: never;
+    url: '/v1/app/achievements/{achievementId}';
 };
 
 export type DeleteAchievementResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UpdateAchievementData = {
-  body: AchievementDtoWritable;
-  path: {
-    achievementId: number;
-  };
-  query?: never;
-  url: '/v1/app/achievements/{achievementId}';
+    body: AchievementDtoWritable;
+    path: {
+        achievementId: number;
+    };
+    query?: never;
+    url: '/v1/app/achievements/{achievementId}';
 };
 
 export type UpdateAchievementResponses = {
-  /**
-   * OK
-   */
-  200: AchievementDtoReadable;
+    /**
+     * OK
+     */
+    200: AchievementDtoReadable;
 };
 
-export type UpdateAchievementResponse =
-  UpdateAchievementResponses[keyof UpdateAchievementResponses];
+export type UpdateAchievementResponse = UpdateAchievementResponses[keyof UpdateAchievementResponses];
 
 export type GetAllData = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/user';
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/user';
 };
 
 export type GetAllResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
 export type GetAllResponse = GetAllResponses[keyof GetAllResponses];
 
 export type SaveData = {
-  body: UserDtoWritable;
-  path?: never;
-  query?: never;
-  url: '/v1/app/user';
+    body: UserDtoWritable;
+    path?: never;
+    query?: never;
+    url: '/v1/app/user';
 };
 
 export type SaveResponses = {
-  /**
-   * OK
-   */
-  200: UserDtoReadable;
+    /**
+     * OK
+     */
+    200: UserDtoReadable;
 };
 
 export type SaveResponse = SaveResponses[keyof SaveResponses];
 
 export type TestEmailData = {
-  body?: never;
-  path?: never;
-  query: {
-    email: string;
-  };
-  url: '/v1/app/user/test-email';
+    body?: never;
+    path?: never;
+    query: {
+        email: string;
+    };
+    url: '/v1/app/user/test-email';
 };
 
 export type TestEmailResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
 export type TestEmailResponse = TestEmailResponses[keyof TestEmailResponses];
 
 export type LoginData = {
-  body: LoginRequestDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/user/login';
+    body: LoginRequestDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/user/login';
 };
 
 export type LoginResponses = {
-  /**
-   * OK
-   */
-  200: LoginResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: LoginResponseDtoReadable;
 };
 
 export type LoginResponse = LoginResponses[keyof LoginResponses];
 
 export type GetAll1Data = {
-  body?: never;
-  path?: never;
-  query: {
-    paging: Pageable;
-  };
-  url: '/v1/app/user-type';
+    body?: never;
+    path?: never;
+    query: {
+        paging: Pageable;
+    };
+    url: '/v1/app/user-type';
 };
 
 export type GetAll1Responses = {
-  /**
-   * OK
-   */
-  200: ResultPageUserTypeDto;
+    /**
+     * OK
+     */
+    200: ResultPageUserTypeDto;
 };
 
 export type GetAll1Response = GetAll1Responses[keyof GetAll1Responses];
 
 export type CreateData = {
-  body: UserTypeDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/user-type';
+    body: UserTypeDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/user-type';
 };
 
 export type CreateResponses = {
-  /**
-   * OK
-   */
-  200: UserTypeDto;
+    /**
+     * OK
+     */
+    200: UserTypeDto;
 };
 
 export type CreateResponse = CreateResponses[keyof CreateResponses];
 
 export type FindAllData = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/units-of-measure';
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/units-of-measure';
 };
 
 export type FindAllResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
 export type FindAllResponse = FindAllResponses[keyof FindAllResponses];
 
 export type Create1Data = {
-  body: UnitOfMeasureDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/units-of-measure';
+    body: UnitOfMeasureDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/units-of-measure';
 };
 
 export type Create1Responses = {
-  /**
-   * OK
-   */
-  200: UnitOfMeasureDto;
+    /**
+     * OK
+     */
+    200: UnitOfMeasureDto;
 };
 
 export type Create1Response = Create1Responses[keyof Create1Responses];
 
 export type GetRecognitionsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/recognitions';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/recognitions';
 };
 
 export type GetRecognitionsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRecognitionDto[];
+    /**
+     * OK
+     */
+    200: Array<TrainerRecognitionDto>;
 };
 
-export type GetRecognitionsResponse =
-  GetRecognitionsResponses[keyof GetRecognitionsResponses];
+export type GetRecognitionsResponse = GetRecognitionsResponses[keyof GetRecognitionsResponses];
 
 export type CreateRecognitionData = {
-  body: TrainerRecognitionDto;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/recognitions';
+    body: TrainerRecognitionDto;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/recognitions';
 };
 
 export type CreateRecognitionResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRecognitionDto;
+    /**
+     * OK
+     */
+    200: TrainerRecognitionDto;
 };
 
-export type CreateRecognitionResponse =
-  CreateRecognitionResponses[keyof CreateRecognitionResponses];
+export type CreateRecognitionResponse = CreateRecognitionResponses[keyof CreateRecognitionResponses];
 
 export type GetEducationData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/education';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/education';
 };
 
 export type GetEducationResponses = {
-  /**
-   * OK
-   */
-  200: TrainerEducationDto[];
+    /**
+     * OK
+     */
+    200: Array<TrainerEducationDto>;
 };
 
-export type GetEducationResponse =
-  GetEducationResponses[keyof GetEducationResponses];
+export type GetEducationResponse = GetEducationResponses[keyof GetEducationResponses];
 
 export type CreateEducationData = {
-  body: TrainerEducationDto;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/education';
+    body: TrainerEducationDto;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/education';
 };
 
 export type CreateEducationResponses = {
-  /**
-   * OK
-   */
-  200: TrainerEducationDto;
+    /**
+     * OK
+     */
+    200: TrainerEducationDto;
 };
 
-export type CreateEducationResponse =
-  CreateEducationResponses[keyof CreateEducationResponses];
+export type CreateEducationResponse = CreateEducationResponses[keyof CreateEducationResponses];
 
 export type GetCertificationsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/certifications';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/certifications';
 };
 
 export type GetCertificationsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerCertificationDto[];
+    /**
+     * OK
+     */
+    200: Array<TrainerCertificationDto>;
 };
 
-export type GetCertificationsResponse =
-  GetCertificationsResponses[keyof GetCertificationsResponses];
+export type GetCertificationsResponse = GetCertificationsResponses[keyof GetCertificationsResponses];
 
 export type CreateCertificationData = {
-  body: TrainerCertificationDto;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/certifications';
+    body: TrainerCertificationDto;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/certifications';
 };
 
 export type CreateCertificationResponses = {
-  /**
-   * OK
-   */
-  200: TrainerCertificationDto;
+    /**
+     * OK
+     */
+    200: TrainerCertificationDto;
 };
 
-export type CreateCertificationResponse =
-  CreateCertificationResponses[keyof CreateCertificationResponses];
+export type CreateCertificationResponse = CreateCertificationResponses[keyof CreateCertificationResponses];
 
 export type SearchTrainersData = {
-  body: TrainerSearchDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/trainers/search';
+    body: TrainerSearchDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/trainers/search';
 };
 
 export type SearchTrainersResponses = {
-  /**
-   * OK
-   */
-  200: PublicTrainerDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<PublicTrainerDtoReadable>;
 };
 
-export type SearchTrainersResponse =
-  SearchTrainersResponses[keyof SearchTrainersResponses];
+export type SearchTrainersResponse = SearchTrainersResponses[keyof SearchTrainersResponses];
 
 export type CollectPaymentData = {
-  body?: never;
-  path: {
-    paymentId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/payments/{paymentId}/collect';
+    body?: never;
+    path: {
+        paymentId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/payments/{paymentId}/collect';
 };
 
 export type CollectPaymentResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CollectPaymentResponse =
-  CollectPaymentResponses[keyof CollectPaymentResponses];
+export type CollectPaymentResponse = CollectPaymentResponses[keyof CollectPaymentResponses];
 
 export type RespondToReviewData = {
-  body: {
-    [key: string]: string;
-  };
-  path: {
-    reviewId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer/my-reviews/{reviewId}/respond';
+    body: {
+        [key: string]: string;
+    };
+    path: {
+        reviewId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer/my-reviews/{reviewId}/respond';
 };
 
 export type RespondToReviewResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type RespondToReviewResponse =
-  RespondToReviewResponses[keyof RespondToReviewResponses];
+export type RespondToReviewResponse = RespondToReviewResponses[keyof RespondToReviewResponses];
 
 export type CreateServiceData = {
-  body: CreateTrainerServiceDto;
-  path: {
-    /**
-     * Trainer ID
-     */
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{trainerId}';
+    body: CreateTrainerServiceDto;
+    path: {
+        /**
+         * Trainer ID
+         */
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{trainerId}';
 };
 
 export type CreateServiceErrors = {
-  /**
-   * Invalid service data
-   */
-  400: unknown;
-  /**
-   * Unauthorized
-   */
-  401: unknown;
+    /**
+     * Invalid service data
+     */
+    400: unknown;
+    /**
+     * Unauthorized
+     */
+    401: unknown;
 };
 
 export type CreateServiceResponses = {
-  /**
-   * Service created successfully
-   */
-  201: TrainerServiceDtoReadable;
+    /**
+     * Service created successfully
+     */
+    201: TrainerServiceDtoReadable;
 };
 
-export type CreateServiceResponse =
-  CreateServiceResponses[keyof CreateServiceResponses];
+export type CreateServiceResponse = CreateServiceResponses[keyof CreateServiceResponses];
 
 export type SendSupportInquiryData = {
-  body: SupportRequestDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/support/send-inquiry';
+    body: SupportRequestDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/support/send-inquiry';
 };
 
 export type SendSupportInquiryResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type SendSupportInquiryResponse =
-  SendSupportInquiryResponses[keyof SendSupportInquiryResponses];
+export type SendSupportInquiryResponse = SendSupportInquiryResponses[keyof SendSupportInquiryResponses];
+
+export type CalculateMacrosData = {
+    body: MacroCalculationRequestDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/public/nutrition/foods/calculate-macros';
+};
+
+export type CalculateMacrosResponses = {
+    /**
+     * OK
+     */
+    200: MacroCalculationResponseDto;
+};
+
+export type CalculateMacrosResponse = CalculateMacrosResponses[keyof CalculateMacrosResponses];
 
 export type DeletePresentationVideoData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/presentation-video';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/presentation-video';
 };
 
 export type DeletePresentationVideoResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type UploadPresentationVideoData = {
-  body?: {
-    file: Blob | File;
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/presentation-video';
+    body?: {
+        file: Blob | File;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/presentation-video';
 };
 
 export type UploadPresentationVideoResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable;
+    /**
+     * OK
+     */
+    200: UserFilesDtoReadable;
 };
 
-export type UploadPresentationVideoResponse =
-  UploadPresentationVideoResponses[keyof UploadPresentationVideoResponses];
+export type UploadPresentationVideoResponse = UploadPresentationVideoResponses[keyof UploadPresentationVideoResponses];
 
 export type GetUserPhotosData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/photos';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/photos';
 };
 
 export type GetUserPhotosResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<UserFilesDtoReadable>;
 };
 
-export type GetUserPhotosResponse =
-  GetUserPhotosResponses[keyof GetUserPhotosResponses];
+export type GetUserPhotosResponse = GetUserPhotosResponses[keyof GetUserPhotosResponses];
 
 export type UploadPhotoData = {
-  body?: {
-    file: Blob | File;
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/photos';
+    body?: {
+        file: Blob | File;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/photos';
 };
 
 export type UploadPhotoResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable;
+    /**
+     * OK
+     */
+    200: UserFilesDtoReadable;
 };
 
-export type UploadPhotoResponse =
-  UploadPhotoResponses[keyof UploadPhotoResponses];
+export type UploadPhotoResponse = UploadPhotoResponses[keyof UploadPhotoResponses];
 
 export type UploadProfilePhotoData = {
-  body?: {
-    file: Blob | File;
-  };
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/photo';
+    body?: {
+        file: Blob | File;
+    };
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/photo';
 };
 
 export type UploadProfilePhotoResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable;
+    /**
+     * OK
+     */
+    200: UserFilesDtoReadable;
 };
 
-export type UploadProfilePhotoResponse =
-  UploadProfilePhotoResponses[keyof UploadProfilePhotoResponses];
+export type UploadProfilePhotoResponse = UploadProfilePhotoResponses[keyof UploadProfilePhotoResponses];
 
 export type GetAll3Data = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/person';
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/person';
 };
 
 export type GetAll3Responses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
 export type GetAll3Response = GetAll3Responses[keyof GetAll3Responses];
 
 export type Save1Data = {
-  body: PersonDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/person';
+    body: PersonDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/person';
 };
 
 export type Save1Responses = {
-  /**
-   * OK
-   */
-  200: PersonDto;
+    /**
+     * OK
+     */
+    200: PersonDto;
 };
 
 export type Save1Response = Save1Responses[keyof Save1Responses];
 
+export type CalculateMacros1Data = {
+    body: MacroCalculationRequestDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/nutrition/foods/calculate-macros';
+};
+
+export type CalculateMacros1Responses = {
+    /**
+     * OK
+     */
+    200: MacroCalculationResponseDto;
+};
+
+export type CalculateMacros1Response = CalculateMacros1Responses[keyof CalculateMacros1Responses];
+
+export type GetFoodsByIdsData = {
+    /**
+     * Lista de IDs de alimentos
+     */
+    body: Array<number>;
+    path?: never;
+    query?: never;
+    url: '/v1/app/nutrition/foods/batch';
+};
+
+export type GetFoodsByIdsResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type GetFoodsByIdsResponse = GetFoodsByIdsResponses[keyof GetFoodsByIdsResponses];
+
 export type GetAll4Data = {
-  body?: never;
-  path?: never;
-  query: {
-    paging: Pageable;
-  };
-  url: '/v1/app/metric-type';
+    body?: never;
+    path?: never;
+    query: {
+        paging: Pageable;
+    };
+    url: '/v1/app/metric-type';
 };
 
 export type GetAll4Responses = {
-  /**
-   * OK
-   */
-  200: ResultPageMetricTypeDto;
+    /**
+     * OK
+     */
+    200: ResultPageMetricTypeDto;
 };
 
 export type GetAll4Response = GetAll4Responses[keyof GetAll4Responses];
 
 export type Create2Data = {
-  body: MetricTypeDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/metric-type';
+    body: MetricTypeDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/metric-type';
 };
 
 export type Create2Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeDto;
+    /**
+     * OK
+     */
+    200: MetricTypeDto;
 };
 
 export type Create2Response = Create2Responses[keyof Create2Responses];
 
 export type FindAll1Data = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/metric-type-uom';
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/metric-type-uom';
 };
 
 export type FindAll1Responses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
 export type FindAll1Response = FindAll1Responses[keyof FindAll1Responses];
 
 export type Create3Data = {
-  body: MetricTypeUomDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/metric-type-uom';
+    body: MetricTypeUomDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/metric-type-uom';
 };
 
 export type Create3Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeUomDto;
+    /**
+     * OK
+     */
+    200: MetricTypeUomDto;
 };
 
 export type Create3Response = Create3Responses[keyof Create3Responses];
 
 export type UpdateExpiredMembershipsData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/update-expired';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/update-expired';
 };
 
 export type UpdateExpiredMembershipsResponses = {
-  /**
-   * OK
-   */
-  200: string;
+    /**
+     * OK
+     */
+    200: string;
 };
 
-export type UpdateExpiredMembershipsResponse =
-  UpdateExpiredMembershipsResponses[keyof UpdateExpiredMembershipsResponses];
+export type UpdateExpiredMembershipsResponse = UpdateExpiredMembershipsResponses[keyof UpdateExpiredMembershipsResponses];
 
 export type RenewSubscriptionData = {
-  body: {
-    [key: string]: string;
-  };
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/renew';
+    body: {
+        [key: string]: string;
+    };
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/renew';
 };
 
 export type RenewSubscriptionResponses = {
-  /**
-   * OK
-   */
-  200: UserSubscriptionResponse;
+    /**
+     * OK
+     */
+    200: UserSubscriptionResponse;
 };
 
-export type RenewSubscriptionResponse =
-  RenewSubscriptionResponses[keyof RenewSubscriptionResponses];
+export type RenewSubscriptionResponse = RenewSubscriptionResponses[keyof RenewSubscriptionResponses];
 
 export type FailPaymentData = {
-  body?: never;
-  path: {
-    paymentId: number;
-  };
-  query: {
-    reason: string;
-  };
-  url: '/v1/app/memberships/payments/{paymentId}/fail';
+    body?: never;
+    path: {
+        paymentId: number;
+    };
+    query: {
+        reason: string;
+    };
+    url: '/v1/app/memberships/payments/{paymentId}/fail';
 };
 
 export type FailPaymentResponses = {
-  /**
-   * OK
-   */
-  200: string;
+    /**
+     * OK
+     */
+    200: string;
 };
 
-export type FailPaymentResponse =
-  FailPaymentResponses[keyof FailPaymentResponses];
+export type FailPaymentResponse = FailPaymentResponses[keyof FailPaymentResponses];
 
 export type CompletePaymentData = {
-  body?: never;
-  path: {
-    paymentId: number;
-  };
-  query: {
-    transactionId: string;
-  };
-  url: '/v1/app/memberships/payments/{paymentId}/complete';
+    body?: never;
+    path: {
+        paymentId: number;
+    };
+    query: {
+        transactionId: string;
+    };
+    url: '/v1/app/memberships/payments/{paymentId}/complete';
 };
 
 export type CompletePaymentResponses = {
-  /**
-   * OK
-   */
-  200: string;
+    /**
+     * OK
+     */
+    200: string;
 };
 
-export type CompletePaymentResponse =
-  CompletePaymentResponses[keyof CompletePaymentResponses];
+export type CompletePaymentResponse = CompletePaymentResponses[keyof CompletePaymentResponses];
 
 export type RenewMembershipData = {
-  body?: never;
-  path: {
-    membershipId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/memberships/{membershipId}/renew';
+    body?: never;
+    path: {
+        membershipId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/memberships/{membershipId}/renew';
 };
 
 export type RenewMembershipResponses = {
-  /**
-   * OK
-   */
-  200: UserMembership;
+    /**
+     * OK
+     */
+    200: UserMembership;
 };
 
-export type RenewMembershipResponse =
-  RenewMembershipResponses[keyof RenewMembershipResponses];
+export type RenewMembershipResponse = RenewMembershipResponses[keyof RenewMembershipResponses];
 
 export type CancelMembershipData = {
-  body?: never;
-  path: {
-    membershipId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/memberships/{membershipId}/cancel';
+    body?: never;
+    path: {
+        membershipId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/memberships/{membershipId}/cancel';
 };
 
 export type CancelMembershipResponses = {
-  /**
-   * OK
-   */
-  200: string;
+    /**
+     * OK
+     */
+    200: string;
 };
 
-export type CancelMembershipResponse =
-  CancelMembershipResponses[keyof CancelMembershipResponses];
+export type CancelMembershipResponse = CancelMembershipResponses[keyof CancelMembershipResponses];
 
 export type GetAll6Data = {
-  body?: never;
-  path?: never;
-  query: {
-    paging: Pageable;
-  };
-  url: '/v1/app/fitness-goal-type';
+    body?: never;
+    path?: never;
+    query: {
+        paging: Pageable;
+    };
+    url: '/v1/app/fitness-goal-type';
 };
 
 export type GetAll6Responses = {
-  /**
-   * OK
-   */
-  200: ResultPageFitnessGoalTypeDto;
+    /**
+     * OK
+     */
+    200: ResultPageFitnessGoalTypeDto;
 };
 
 export type GetAll6Response = GetAll6Responses[keyof GetAll6Responses];
 
 export type Create4Data = {
-  body: FitnessGoalTypeDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/fitness-goal-type';
+    body: FitnessGoalTypeDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/fitness-goal-type';
 };
 
 export type Create4Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalTypeDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalTypeDto;
 };
 
 export type Create4Response = Create4Responses[keyof Create4Responses];
 
 export type GetAll8Data = {
-  body?: never;
-  path?: never;
-  query: {
-    paging: Pageable;
-  };
-  url: '/v1/app/fitness-goal-status';
+    body?: never;
+    path?: never;
+    query: {
+        paging: Pageable;
+    };
+    url: '/v1/app/fitness-goal-status';
 };
 
 export type GetAll8Responses = {
-  /**
-   * OK
-   */
-  200: ResultPageFitnessGoalStatusDto;
+    /**
+     * OK
+     */
+    200: ResultPageFitnessGoalStatusDto;
 };
 
 export type GetAll8Response = GetAll8Responses[keyof GetAll8Responses];
 
 export type Create5Data = {
-  body: FitnessGoalStatusDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/fitness-goal-status';
+    body: FitnessGoalStatusDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/fitness-goal-status';
 };
 
 export type Create5Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalStatusDto;
+    /**
+     * OK
+     */
+    200: FitnessGoalStatusDto;
 };
 
 export type Create5Response = Create5Responses[keyof Create5Responses];
 
 export type DeleteByUserIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/file-upload/user/{id}';
 };
 
 export type DeleteByUserIdResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DeleteByUserIdResponse =
-  DeleteByUserIdResponses[keyof DeleteByUserIdResponses];
+export type DeleteByUserIdResponse = DeleteByUserIdResponses[keyof DeleteByUserIdResponses];
 
 export type GetAllByUserData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/file-upload/user/{id}';
 };
 
 export type GetAllByUserResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<UserFilesDtoReadable>;
 };
 
-export type GetAllByUserResponse =
-  GetAllByUserResponses[keyof GetAllByUserResponses];
+export type GetAllByUserResponse = GetAllByUserResponses[keyof GetAllByUserResponses];
 
 export type UploadFileData = {
-  body?: {
-    file: Blob | File;
-  };
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+    body?: {
+        file: Blob | File;
+    };
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/file-upload/user/{id}';
 };
 
 export type UploadFileResponses = {
-  /**
-   * OK
-   */
-  200: UserFilesDtoReadable;
+    /**
+     * OK
+     */
+    200: UserFilesDtoReadable;
 };
 
 export type UploadFileResponse = UploadFileResponses[keyof UploadFileResponses];
 
 export type CreateContractData = {
-  body: CreateContractDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/contracts';
+    body: CreateContractDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/contracts';
 };
 
 export type CreateContractResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CreateContractResponse =
-  CreateContractResponses[keyof CreateContractResponses];
+export type CreateContractResponse = CreateContractResponses[keyof CreateContractResponses];
 
 export type CreateReviewData = {
-  body: CreateReviewDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client/reviews';
+    body: CreateReviewDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client/reviews';
 };
 
 export type CreateReviewResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CreateReviewResponse =
-  CreateReviewResponses[keyof CreateReviewResponses];
+export type CreateReviewResponse = CreateReviewResponses[keyof CreateReviewResponses];
 
 export type CreateResourceData = {
-  body: ServiceResourceDtoWritable;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client-resources';
+    body: ServiceResourceDtoWritable;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client-resources';
 };
 
 export type CreateResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CreateResourceResponse =
-  CreateResourceResponses[keyof CreateResourceResponses];
+export type CreateResourceResponse = CreateResourceResponses[keyof CreateResourceResponses];
 
 export type FixServiceResourcesClientIdData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client-resources/admin/fix-service-resources';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client-resources/admin/fix-service-resources';
 };
 
 export type FixServiceResourcesClientIdResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type FixServiceResourcesClientIdResponse =
-  FixServiceResourcesClientIdResponses[keyof FixServiceResourcesClientIdResponses];
+export type FixServiceResourcesClientIdResponse = FixServiceResourcesClientIdResponses[keyof FixServiceResourcesClientIdResponses];
 
 export type CreateBankAccountData = {
-  body: BankAccountDtoWritable;
-  path?: never;
-  query?: never;
-  url: '/v1/app/bank-accounts';
+    body: BankAccountDtoWritable;
+    path?: never;
+    query?: never;
+    url: '/v1/app/bank-accounts';
 };
 
 export type CreateBankAccountResponses = {
-  /**
-   * OK
-   */
-  200: BankAccountDtoReadable;
+    /**
+     * OK
+     */
+    200: BankAccountDtoReadable;
 };
 
-export type CreateBankAccountResponse =
-  CreateBankAccountResponses[keyof CreateBankAccountResponses];
+export type CreateBankAccountResponse = CreateBankAccountResponses[keyof CreateBankAccountResponses];
 
 export type Login1Data = {
-  body: LoginRequestDto;
-  path?: never;
-  query?: never;
-  url: '/v1/app/auth/login';
+    body: LoginRequestDto;
+    path?: never;
+    query?: never;
+    url: '/v1/app/auth/login';
 };
 
 export type Login1Errors = {
-  /**
-   * Invalid request format
-   */
-  400: unknown;
-  /**
-   * Invalid credentials
-   */
-  401: unknown;
+    /**
+     * Invalid request format
+     */
+    400: unknown;
+    /**
+     * Invalid credentials
+     */
+    401: unknown;
 };
 
 export type Login1Responses = {
-  /**
-   * Login successful
-   */
-  200: LoginResponseDtoReadable;
+    /**
+     * Login successful
+     */
+    200: LoginResponseDtoReadable;
 };
 
 export type Login1Response = Login1Responses[keyof Login1Responses];
 
+export type MarkPaymentAsPaidToTrainerData = {
+    body?: never;
+    path: {
+        /**
+         * Payment ID
+         */
+        paymentId: number;
+    };
+    query?: never;
+    url: '/v1/app/admin/payments/{paymentId}/mark-paid';
+};
+
+export type MarkPaymentAsPaidToTrainerErrors = {
+    /**
+     * Invalid payment ID or payment cannot be marked as paid
+     */
+    400: {
+        [key: string]: unknown;
+    };
+    /**
+     * Access denied - Admin role required
+     */
+    403: {
+        [key: string]: unknown;
+    };
+    /**
+     * Payment not found
+     */
+    404: {
+        [key: string]: unknown;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        [key: string]: unknown;
+    };
+};
+
+export type MarkPaymentAsPaidToTrainerError = MarkPaymentAsPaidToTrainerErrors[keyof MarkPaymentAsPaidToTrainerErrors];
+
+export type MarkPaymentAsPaidToTrainerResponses = {
+    /**
+     * Payment marked as paid successfully
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type MarkPaymentAsPaidToTrainerResponse = MarkPaymentAsPaidToTrainerResponses[keyof MarkPaymentAsPaidToTrainerResponses];
+
+export type CancelPaymentData = {
+    body?: never;
+    path: {
+        /**
+         * Payment ID
+         */
+        paymentId: number;
+    };
+    query?: never;
+    url: '/v1/app/admin/payments/{paymentId}/cancel';
+};
+
+export type CancelPaymentErrors = {
+    /**
+     * Invalid payment ID or payment cannot be cancelled
+     */
+    400: {
+        [key: string]: unknown;
+    };
+    /**
+     * Access denied - Admin role required
+     */
+    403: {
+        [key: string]: unknown;
+    };
+    /**
+     * Payment not found
+     */
+    404: {
+        [key: string]: unknown;
+    };
+    /**
+     * Internal server error
+     */
+    500: {
+        [key: string]: unknown;
+    };
+};
+
+export type CancelPaymentError = CancelPaymentErrors[keyof CancelPaymentErrors];
+
+export type CancelPaymentResponses = {
+    /**
+     * Payment cancelled successfully
+     */
+    200: {
+        [key: string]: unknown;
+    };
+};
+
+export type CancelPaymentResponse = CancelPaymentResponses[keyof CancelPaymentResponses];
+
 export type ListAchievementsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/achievements/trainers/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/achievements/trainers/{trainerId}';
 };
 
 export type ListAchievementsResponses = {
-  /**
-   * OK
-   */
-  200: GetAchievementDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<GetAchievementDtoReadable>;
 };
 
-export type ListAchievementsResponse =
-  ListAchievementsResponses[keyof ListAchievementsResponses];
+export type ListAchievementsResponse = ListAchievementsResponses[keyof ListAchievementsResponses];
 
 export type CreateAchievementData = {
-  body: AchievementDtoWritable;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/achievements/trainers/{trainerId}';
+    body: AchievementDtoWritable;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/achievements/trainers/{trainerId}';
 };
 
 export type CreateAchievementResponses = {
-  /**
-   * OK
-   */
-  200: AchievementDtoReadable;
+    /**
+     * OK
+     */
+    200: AchievementDtoReadable;
 };
 
-export type CreateAchievementResponse =
-  CreateAchievementResponses[keyof CreateAchievementResponses];
+export type CreateAchievementResponse = CreateAchievementResponses[keyof CreateAchievementResponses];
 
 export type DeactivateServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}/deactivate';
+    body?: never;
+    path: {
+        serviceId: number;
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}/deactivate';
 };
 
 export type DeactivateServiceResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type ActivateServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}/activate';
+    body?: never;
+    path: {
+        serviceId: number;
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{serviceId}/trainer/{trainerId}/activate';
 };
 
 export type ActivateServiceResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type ToggleResourceStatusData = {
-  body: {
-    [key: string]: boolean;
-  };
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}/status';
+    body: {
+        [key: string]: boolean;
+    };
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}/status';
 };
 
 export type ToggleResourceStatusResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type ToggleResourceStatusResponse =
-  ToggleResourceStatusResponses[keyof ToggleResourceStatusResponses];
+export type ToggleResourceStatusResponse = ToggleResourceStatusResponses[keyof ToggleResourceStatusResponses];
 
 export type DeactivateResourceData = {
-  body?: never;
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}/deactivate';
+    body?: never;
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}/deactivate';
 };
 
 export type DeactivateResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DeactivateResourceResponse =
-  DeactivateResourceResponses[keyof DeactivateResourceResponses];
+export type DeactivateResourceResponse = DeactivateResourceResponses[keyof DeactivateResourceResponses];
 
 export type ActivateResourceData = {
-  body?: never;
-  path: {
-    resourceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/{resourceId}/activate';
+    body?: never;
+    path: {
+        resourceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/{resourceId}/activate';
 };
 
 export type ActivateResourceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type ActivateResourceResponse =
-  ActivateResourceResponses[keyof ActivateResourceResponses];
+export type ActivateResourceResponse = ActivateResourceResponses[keyof ActivateResourceResponses];
 
 export type VerifyEmailData = {
-  body?: never;
-  path?: never;
-  query: {
-    token: string;
-  };
-  url: '/v1/app/user/verify-email';
+    body?: never;
+    path?: never;
+    query: {
+        token: string;
+    };
+    url: '/v1/app/user/verify-email';
 };
 
 export type VerifyEmailResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type VerifyEmailResponse =
-  VerifyEmailResponses[keyof VerifyEmailResponses];
+export type VerifyEmailResponse = VerifyEmailResponses[keyof VerifyEmailResponses];
 
 export type GetAll2Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/user-type/all';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/user-type/all';
 };
 
 export type GetAll2Responses = {
-  /**
-   * OK
-   */
-  200: UserTypeDto[];
+    /**
+     * OK
+     */
+    200: Array<UserTypeDto>;
 };
 
 export type GetAll2Response = GetAll2Responses[keyof GetAll2Responses];
 
 export type GetTrainerProfileData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}';
 };
 
 export type GetTrainerProfileResponses = {
-  /**
-   * OK
-   */
-  200: UserResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: UserResponseDtoReadable;
 };
 
-export type GetTrainerProfileResponse =
-  GetTrainerProfileResponses[keyof GetTrainerProfileResponses];
+export type GetTrainerProfileResponse = GetTrainerProfileResponses[keyof GetTrainerProfileResponses];
 
 export type GetTrainerPaymentsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: {
-    page?: number;
-    size?: number;
-    status?: string;
-    startDate?: string;
-    endDate?: string;
-  };
-  url: '/v1/app/trainers/{trainerId}/payments';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: {
+        page?: number;
+        size?: number;
+        status?: string;
+        startDate?: string;
+        endDate?: string;
+    };
+    url: '/v1/app/trainers/{trainerId}/payments';
 };
 
 export type GetTrainerPaymentsResponses = {
-  /**
-   * OK
-   */
-  200: PaymentsResponseDto;
+    /**
+     * OK
+     */
+    200: PaymentsResponseDto;
 };
 
-export type GetTrainerPaymentsResponse =
-  GetTrainerPaymentsResponses[keyof GetTrainerPaymentsResponses];
+export type GetTrainerPaymentsResponse = GetTrainerPaymentsResponses[keyof GetTrainerPaymentsResponses];
 
 export type GetPaymentSummaryData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/payments/summary';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/payments/summary';
 };
 
 export type GetPaymentSummaryResponses = {
-  /**
-   * OK
-   */
-  200: PaymentSummaryDto;
+    /**
+     * OK
+     */
+    200: PaymentSummaryDto;
 };
 
-export type GetPaymentSummaryResponse =
-  GetPaymentSummaryResponses[keyof GetPaymentSummaryResponses];
+export type GetPaymentSummaryResponse = GetPaymentSummaryResponses[keyof GetPaymentSummaryResponses];
 
 export type ExportPaymentsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: {
-    startDate?: string;
-    endDate?: string;
-  };
-  url: '/v1/app/trainers/{trainerId}/payments/export';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: {
+        startDate?: string;
+        endDate?: string;
+    };
+    url: '/v1/app/trainers/{trainerId}/payments/export';
 };
 
 export type ExportPaymentsResponses = {
-  /**
-   * OK
-   */
-  200: string[];
+    /**
+     * OK
+     */
+    200: Array<string>;
 };
 
-export type ExportPaymentsResponse =
-  ExportPaymentsResponses[keyof ExportPaymentsResponses];
+export type ExportPaymentsResponse = ExportPaymentsResponses[keyof ExportPaymentsResponses];
 
 export type GetTrainerExperienceData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience';
 };
 
 export type GetTrainerExperienceResponses = {
-  /**
-   * OK
-   */
-  200: TrainerExperienceDto;
+    /**
+     * OK
+     */
+    200: TrainerExperienceDto;
 };
 
-export type GetTrainerExperienceResponse =
-  GetTrainerExperienceResponses[keyof GetTrainerExperienceResponses];
+export type GetTrainerExperienceResponse = GetTrainerExperienceResponses[keyof GetTrainerExperienceResponses];
 
 export type GetSummaryData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/summary';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/summary';
 };
 
 export type GetSummaryResponses = {
-  /**
-   * OK
-   */
-  200: TrainerExperienceSummaryDto;
+    /**
+     * OK
+     */
+    200: TrainerExperienceSummaryDto;
 };
 
 export type GetSummaryResponse = GetSummaryResponses[keyof GetSummaryResponses];
 
 export type GetTopRecognitionsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/recognitions/top';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/recognitions/top';
 };
 
 export type GetTopRecognitionsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRecognitionDto[];
+    /**
+     * OK
+     */
+    200: Array<TrainerRecognitionDto>;
 };
 
-export type GetTopRecognitionsResponse =
-  GetTopRecognitionsResponses[keyof GetTopRecognitionsResponses];
+export type GetTopRecognitionsResponse = GetTopRecognitionsResponses[keyof GetTopRecognitionsResponses];
 
 export type GetExpiringSoonCertificationsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainers/{trainerId}/experience/certifications/expiring-soon';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainers/{trainerId}/experience/certifications/expiring-soon';
 };
 
 export type GetExpiringSoonCertificationsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerCertificationDto[];
+    /**
+     * OK
+     */
+    200: Array<TrainerCertificationDto>;
 };
 
-export type GetExpiringSoonCertificationsResponse =
-  GetExpiringSoonCertificationsResponses[keyof GetExpiringSoonCertificationsResponses];
+export type GetExpiringSoonCertificationsResponse = GetExpiringSoonCertificationsResponses[keyof GetExpiringSoonCertificationsResponses];
 
 export type GetTrainerClientsData = {
-  body?: never;
-  path: {
-    /**
-     * Trainer ID
-     */
-    trainerId: number;
-  };
-  query?: {
-    /**
-     * Page number (0-based)
-     */
-    page?: number;
-    /**
-     * Page size
-     */
-    size?: number;
-    /**
-     * Sort field
-     */
-    sortBy?: string;
-    /**
-     * Sort direction (asc/desc)
-     */
-    sortDir?: string;
-    /**
-     * Search term
-     */
-    search?: string;
-    /**
-     * Contract status filter
-     */
-    status?: string;
-    /**
-     * Service modality filter
-     */
-    modality?: string;
-  };
-  url: '/v1/app/trainers/{trainerId}/clients';
+    body?: never;
+    path: {
+        /**
+         * Trainer ID
+         */
+        trainerId: number;
+    };
+    query?: {
+        /**
+         * Page number (0-based)
+         */
+        page?: number;
+        /**
+         * Page size
+         */
+        size?: number;
+        /**
+         * Sort field
+         */
+        sortBy?: string;
+        /**
+         * Sort direction (asc/desc)
+         */
+        sortDir?: string;
+        /**
+         * Search term
+         */
+        search?: string;
+        /**
+         * Contract status filter
+         */
+        status?: string;
+        /**
+         * Service modality filter
+         */
+        modality?: string;
+    };
+    url: '/v1/app/trainers/{trainerId}/clients';
 };
 
 export type GetTrainerClientsErrors = {
-  /**
-   * Unauthorized
-   */
-  401: unknown;
-  /**
-   * Trainer not found
-   */
-  404: unknown;
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Trainer not found
+     */
+    404: unknown;
 };
 
 export type GetTrainerClientsResponses = {
-  /**
-   * Clients retrieved successfully
-   */
-  200: Page;
+    /**
+     * Clients retrieved successfully
+     */
+    200: Page;
 };
 
-export type GetTrainerClientsResponse =
-  GetTrainerClientsResponses[keyof GetTrainerClientsResponses];
+export type GetTrainerClientsResponse = GetTrainerClientsResponses[keyof GetTrainerClientsResponses];
 
 export type GetAllTrainersData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/trainers/all';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/trainers/all';
 };
 
 export type GetAllTrainersResponses = {
-  /**
-   * OK
-   */
-  200: PublicTrainerDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<PublicTrainerDtoReadable>;
 };
 
-export type GetAllTrainersResponse =
-  GetAllTrainersResponses[keyof GetAllTrainersResponses];
+export type GetAllTrainersResponse = GetAllTrainersResponses[keyof GetAllTrainersResponses];
 
 export type GetTrainerReviewsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer/reviews/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer/reviews/{trainerId}';
 };
 
 export type GetTrainerReviewsResponses = {
-  /**
-   * OK
-   */
-  200: ReviewResponseDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<ReviewResponseDtoReadable>;
 };
 
-export type GetTrainerReviewsResponse =
-  GetTrainerReviewsResponses[keyof GetTrainerReviewsResponses];
+export type GetTrainerReviewsResponse = GetTrainerReviewsResponses[keyof GetTrainerReviewsResponses];
 
 export type GetTrainerStatsData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer/reviews/{trainerId}/stats';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer/reviews/{trainerId}/stats';
 };
 
 export type GetTrainerStatsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRatingStatsDto;
+    /**
+     * OK
+     */
+    200: TrainerRatingStatsDto;
 };
 
-export type GetTrainerStatsResponse =
-  GetTrainerStatsResponses[keyof GetTrainerStatsResponses];
+export type GetTrainerStatsResponse = GetTrainerStatsResponses[keyof GetTrainerStatsResponses];
 
 export type GetTrainerRatingBreakdownData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer/reviews/{trainerId}/breakdown';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer/reviews/{trainerId}/breakdown';
 };
 
 export type GetTrainerRatingBreakdownResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRatingBreakdownDto;
+    /**
+     * OK
+     */
+    200: TrainerRatingBreakdownDto;
 };
 
-export type GetTrainerRatingBreakdownResponse =
-  GetTrainerRatingBreakdownResponses[keyof GetTrainerRatingBreakdownResponses];
+export type GetTrainerRatingBreakdownResponse = GetTrainerRatingBreakdownResponses[keyof GetTrainerRatingBreakdownResponses];
 
 export type GetMyReviewsData = {
-  body?: never;
-  path?: never;
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/trainer/my-reviews';
+    body?: never;
+    path?: never;
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/trainer/my-reviews';
 };
 
 export type GetMyReviewsResponses = {
-  /**
-   * OK
-   */
-  200: PageReviewResponseDtoReadable;
+    /**
+     * OK
+     */
+    200: PageReviewResponseDtoReadable;
 };
 
-export type GetMyReviewsResponse =
-  GetMyReviewsResponses[keyof GetMyReviewsResponses];
+export type GetMyReviewsResponse = GetMyReviewsResponses[keyof GetMyReviewsResponses];
 
 export type GetMyStatsData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/trainer/my-reviews/stats';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/trainer/my-reviews/stats';
 };
 
 export type GetMyStatsResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRatingStatsDto;
+    /**
+     * OK
+     */
+    200: TrainerRatingStatsDto;
 };
 
 export type GetMyStatsResponse = GetMyStatsResponses[keyof GetMyStatsResponses];
 
 export type GetMyRatingBreakdownData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/trainer/my-reviews/breakdown';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/trainer/my-reviews/breakdown';
 };
 
 export type GetMyRatingBreakdownResponses = {
-  /**
-   * OK
-   */
-  200: TrainerRatingBreakdownDto;
+    /**
+     * OK
+     */
+    200: TrainerRatingBreakdownDto;
 };
 
-export type GetMyRatingBreakdownResponse =
-  GetMyRatingBreakdownResponses[keyof GetMyRatingBreakdownResponses];
+export type GetMyRatingBreakdownResponse = GetMyRatingBreakdownResponses[keyof GetMyRatingBreakdownResponses];
 
 export type GetServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/{serviceId}';
+    body?: never;
+    path: {
+        serviceId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/{serviceId}';
 };
 
 export type GetServiceResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable;
+    /**
+     * OK
+     */
+    200: TrainerServiceDtoReadable;
 };
 
 export type GetServiceResponse = GetServiceResponses[keyof GetServiceResponses];
 
 export type GetServicesByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/trainer/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/trainer/{trainerId}';
 };
 
 export type GetServicesByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<TrainerServiceDtoReadable>;
 };
 
-export type GetServicesByTrainerResponse =
-  GetServicesByTrainerResponses[keyof GetServicesByTrainerResponses];
+export type GetServicesByTrainerResponse = GetServicesByTrainerResponses[keyof GetServicesByTrainerResponses];
 
 export type CountActiveServicesByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/trainer/{trainerId}/count';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/trainer/{trainerId}/count';
 };
 
 export type CountActiveServicesByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: number;
+    /**
+     * OK
+     */
+    200: number;
 };
 
-export type CountActiveServicesByTrainerResponse =
-  CountActiveServicesByTrainerResponses[keyof CountActiveServicesByTrainerResponses];
+export type CountActiveServicesByTrainerResponse = CountActiveServicesByTrainerResponses[keyof CountActiveServicesByTrainerResponses];
 
 export type GetActiveServicesByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/trainer-services/trainer/{trainerId}/active';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/trainer-services/trainer/{trainerId}/active';
 };
 
 export type GetActiveServicesByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<TrainerServiceDtoReadable>;
 };
 
-export type GetActiveServicesByTrainerResponse =
-  GetActiveServicesByTrainerResponses[keyof GetActiveServicesByTrainerResponses];
+export type GetActiveServicesByTrainerResponse = GetActiveServicesByTrainerResponses[keyof GetActiveServicesByTrainerResponses];
 
 export type GetServicesByTypeData = {
-  body?: never;
-  path?: never;
-  query: {
-    isInPerson: boolean;
-  };
-  url: '/v1/app/trainer-services/by-type';
+    body?: never;
+    path?: never;
+    query: {
+        isInPerson: boolean;
+    };
+    url: '/v1/app/trainer-services/by-type';
 };
 
 export type GetServicesByTypeResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<TrainerServiceDtoReadable>;
 };
 
-export type GetServicesByTypeResponse =
-  GetServicesByTypeResponses[keyof GetServicesByTypeResponses];
+export type GetServicesByTypeResponse = GetServicesByTypeResponses[keyof GetServicesByTypeResponses];
 
 export type GetServicesByDistrictData = {
-  body?: never;
-  path?: never;
-  query: {
-    district: string;
-  };
-  url: '/v1/app/trainer-services/by-district';
+    body?: never;
+    path?: never;
+    query: {
+        district: string;
+    };
+    url: '/v1/app/trainer-services/by-district';
 };
 
 export type GetServicesByDistrictResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<TrainerServiceDtoReadable>;
 };
 
-export type GetServicesByDistrictResponse =
-  GetServicesByDistrictResponses[keyof GetServicesByDistrictResponses];
+export type GetServicesByDistrictResponse = GetServicesByDistrictResponses[keyof GetServicesByDistrictResponses];
 
 export type GetAllActiveServicesData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/trainer-services/active';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/trainer-services/active';
 };
 
 export type GetAllActiveServicesResponses = {
-  /**
-   * OK
-   */
-  200: TrainerServiceDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<TrainerServiceDtoReadable>;
 };
 
-export type GetAllActiveServicesResponse =
-  GetAllActiveServicesResponses[keyof GetAllActiveServicesResponses];
+export type GetAllActiveServicesResponse = GetAllActiveServicesResponses[keyof GetAllActiveServicesResponses];
 
 export type TestSupportEmailData = {
-  body?: never;
-  path?: never;
-  query: {
-    email: string;
-  };
-  url: '/v1/app/support/test';
+    body?: never;
+    path?: never;
+    query: {
+        email: string;
+    };
+    url: '/v1/app/support/test';
 };
 
 export type TestSupportEmailResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type TestSupportEmailResponse =
-  TestSupportEmailResponses[keyof TestSupportEmailResponses];
+export type TestSupportEmailResponse = TestSupportEmailResponses[keyof TestSupportEmailResponses];
 
 export type GetAllActiveServiceTypesData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/service-types';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/service-types';
 };
 
 export type GetAllActiveServiceTypesResponses = {
-  /**
-   * OK
-   */
-  200: ServiceTypeDto[];
+    /**
+     * OK
+     */
+    200: Array<ServiceTypeDto>;
 };
 
-export type GetAllActiveServiceTypesResponse =
-  GetAllActiveServiceTypesResponses[keyof GetAllActiveServiceTypesResponses];
+export type GetAllActiveServiceTypesResponse = GetAllActiveServiceTypesResponses[keyof GetAllActiveServiceTypesResponses];
 
 export type GetServiceTypeByIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/service-types/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/service-types/{id}';
 };
 
 export type GetServiceTypeByIdResponses = {
-  /**
-   * OK
-   */
-  200: ServiceTypeDto;
+    /**
+     * OK
+     */
+    200: ServiceTypeDto;
 };
 
-export type GetServiceTypeByIdResponse =
-  GetServiceTypeByIdResponses[keyof GetServiceTypeByIdResponses];
+export type GetServiceTypeByIdResponse = GetServiceTypeByIdResponses[keyof GetServiceTypeByIdResponses];
 
 export type GetServiceTypeByNameData = {
-  body?: never;
-  path?: never;
-  query: {
-    name: string;
-  };
-  url: '/v1/app/service-types/by-name';
+    body?: never;
+    path?: never;
+    query: {
+        name: string;
+    };
+    url: '/v1/app/service-types/by-name';
 };
 
 export type GetServiceTypeByNameResponses = {
-  /**
-   * OK
-   */
-  200: ServiceTypeDto;
+    /**
+     * OK
+     */
+    200: ServiceTypeDto;
 };
 
-export type GetServiceTypeByNameResponse =
-  GetServiceTypeByNameResponses[keyof GetServiceTypeByNameResponses];
+export type GetServiceTypeByNameResponse = GetServiceTypeByNameResponses[keyof GetServiceTypeByNameResponses];
+
+export type GetAllFoodsWithCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/public/nutrition/foods';
+};
+
+export type GetAllFoodsWithCategoriesResponses = {
+    /**
+     * OK
+     */
+    200: FoodSearchResponseDto;
+};
+
+export type GetAllFoodsWithCategoriesResponse = GetAllFoodsWithCategoriesResponses[keyof GetAllFoodsWithCategoriesResponses];
+
+export type GetFoodByIdData = {
+    body?: never;
+    path: {
+        /**
+         * ID del alimento
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/public/nutrition/foods/{id}';
+};
+
+export type GetFoodByIdResponses = {
+    /**
+     * OK
+     */
+    200: FoodItemDto;
+};
+
+export type GetFoodByIdResponse = GetFoodByIdResponses[keyof GetFoodByIdResponses];
+
+export type SearchFoodsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+    };
+    url: '/v1/app/public/nutrition/foods/search';
+};
+
+export type SearchFoodsResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type SearchFoodsResponse = SearchFoodsResponses[keyof SearchFoodsResponses];
+
+export type SearchFoodsPaginatedData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/public/nutrition/foods/search/paginated';
+};
+
+export type SearchFoodsPaginatedResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type SearchFoodsPaginatedResponse = SearchFoodsPaginatedResponses[keyof SearchFoodsPaginatedResponses];
+
+export type GetPopularFoodsData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/public/nutrition/foods/popular';
+};
+
+export type GetPopularFoodsResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type GetPopularFoodsResponse = GetPopularFoodsResponses[keyof GetPopularFoodsResponses];
+
+export type GetAllFoodsPaginatedData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/public/nutrition/foods/paginated';
+};
+
+export type GetAllFoodsPaginatedResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type GetAllFoodsPaginatedResponse = GetAllFoodsPaginatedResponses[keyof GetAllFoodsPaginatedResponses];
+
+export type GetFoodsByCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: never;
+    url: '/v1/app/public/nutrition/foods/category/{categoryId}';
+};
+
+export type GetFoodsByCategoryResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type GetFoodsByCategoryResponse = GetFoodsByCategoryResponses[keyof GetFoodsByCategoryResponses];
+
+export type SearchFoodsByCategoryData = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+    };
+    url: '/v1/app/public/nutrition/foods/category/{categoryId}/search';
+};
+
+export type SearchFoodsByCategoryResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type SearchFoodsByCategoryResponse = SearchFoodsByCategoryResponses[keyof SearchFoodsByCategoryResponses];
+
+export type GetAllCategoriesData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/public/nutrition/foods/categories';
+};
+
+export type GetAllCategoriesResponses = {
+    /**
+     * OK
+     */
+    200: Array<FoodCategoryDto>;
+};
+
+export type GetAllCategoriesResponse = GetAllCategoriesResponses[keyof GetAllCategoriesResponses];
+
+export type GetAllFoodsWithCategories1Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/nutrition/foods';
+};
+
+export type GetAllFoodsWithCategories1Responses = {
+    /**
+     * OK
+     */
+    200: FoodSearchResponseDto;
+};
+
+export type GetAllFoodsWithCategories1Response = GetAllFoodsWithCategories1Responses[keyof GetAllFoodsWithCategories1Responses];
+
+export type GetFoodById1Data = {
+    body?: never;
+    path: {
+        /**
+         * ID del alimento
+         */
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/nutrition/foods/{id}';
+};
+
+export type GetFoodById1Responses = {
+    /**
+     * OK
+     */
+    200: FoodItemDto;
+};
+
+export type GetFoodById1Response = GetFoodById1Responses[keyof GetFoodById1Responses];
+
+export type SearchFoods1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+    };
+    url: '/v1/app/nutrition/foods/search';
+};
+
+export type SearchFoods1Responses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type SearchFoods1Response = SearchFoods1Responses[keyof SearchFoods1Responses];
+
+export type SearchFoodsPaginated1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/nutrition/foods/search/paginated';
+};
+
+export type SearchFoodsPaginated1Responses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type SearchFoodsPaginated1Response = SearchFoodsPaginated1Responses[keyof SearchFoodsPaginated1Responses];
+
+export type GetPopularFoods1Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/nutrition/foods/popular';
+};
+
+export type GetPopularFoods1Responses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type GetPopularFoods1Response = GetPopularFoods1Responses[keyof GetPopularFoods1Responses];
+
+export type GetAllFoodsPaginated1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/nutrition/foods/paginated';
+};
+
+export type GetAllFoodsPaginated1Responses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type GetAllFoodsPaginated1Response = GetAllFoodsPaginated1Responses[keyof GetAllFoodsPaginated1Responses];
+
+export type GetFoodsByCategory1Data = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: never;
+    url: '/v1/app/nutrition/foods/category/{categoryId}';
+};
+
+export type GetFoodsByCategory1Responses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type GetFoodsByCategory1Response = GetFoodsByCategory1Responses[keyof GetFoodsByCategory1Responses];
+
+export type SearchFoodsByCategory1Data = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+    };
+    url: '/v1/app/nutrition/foods/category/{categoryId}/search';
+};
+
+export type SearchFoodsByCategory1Responses = {
+    /**
+     * OK
+     */
+    200: Array<FoodItemDto>;
+};
+
+export type SearchFoodsByCategory1Response = SearchFoodsByCategory1Responses[keyof SearchFoodsByCategory1Responses];
+
+export type SearchFoodsByCategoryPaginatedData = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: {
+        /**
+         * Término de búsqueda
+         */
+        q?: string;
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/nutrition/foods/category/{categoryId}/search/paginated';
+};
+
+export type SearchFoodsByCategoryPaginatedResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type SearchFoodsByCategoryPaginatedResponse = SearchFoodsByCategoryPaginatedResponses[keyof SearchFoodsByCategoryPaginatedResponses];
+
+export type GetFoodsByCategoryPaginatedData = {
+    body?: never;
+    path: {
+        /**
+         * ID de la categoría
+         */
+        categoryId: number;
+    };
+    query?: {
+        /**
+         * Número de página (empezando en 1)
+         */
+        page?: number;
+        /**
+         * Tamaño de página
+         */
+        size?: number;
+    };
+    url: '/v1/app/nutrition/foods/category/{categoryId}/paginated';
+};
+
+export type GetFoodsByCategoryPaginatedResponses = {
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
+    };
+};
+
+export type GetFoodsByCategoryPaginatedResponse = GetFoodsByCategoryPaginatedResponses[keyof GetFoodsByCategoryPaginatedResponses];
+
+export type GetAllCategories1Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/nutrition/foods/categories';
+};
+
+export type GetAllCategories1Responses = {
+    /**
+     * OK
+     */
+    200: Array<FoodCategoryDto>;
+};
+
+export type GetAllCategories1Response = GetAllCategories1Responses[keyof GetAllCategories1Responses];
 
 export type GetAll5Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/metric-type/all';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/metric-type/all';
 };
 
 export type GetAll5Responses = {
-  /**
-   * OK
-   */
-  200: MetricTypeDto[];
+    /**
+     * OK
+     */
+    200: Array<MetricTypeDto>;
 };
 
 export type GetAll5Response = GetAll5Responses[keyof GetAll5Responses];
 
 export type FindByMetricTypeData = {
-  body?: never;
-  path: {
-    metricTypeId: number;
-  };
-  query?: {
-    page?: number;
-    size?: number;
-  };
-  url: '/v1/app/metric-type-uom/by-metric-type/{metricTypeId}';
+    body?: never;
+    path: {
+        metricTypeId: number;
+    };
+    query?: {
+        page?: number;
+        size?: number;
+    };
+    url: '/v1/app/metric-type-uom/by-metric-type/{metricTypeId}';
 };
 
 export type FindByMetricTypeResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
-export type FindByMetricTypeResponse =
-  FindByMetricTypeResponses[keyof FindByMetricTypeResponses];
+export type FindByMetricTypeResponse = FindByMetricTypeResponses[keyof FindByMetricTypeResponses];
 
 export type GetUserMembershipsData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/user/{userId}';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/user/{userId}';
 };
 
 export type GetUserMembershipsResponses = {
-  /**
-   * OK
-   */
-  200: UserMembership[];
+    /**
+     * OK
+     */
+    200: Array<UserMembership>;
 };
 
-export type GetUserMembershipsResponse =
-  GetUserMembershipsResponses[keyof GetUserMembershipsResponses];
+export type GetUserMembershipsResponse = GetUserMembershipsResponses[keyof GetUserMembershipsResponses];
 
 export type HasActiveContractWithTrainerData = {
-  body?: never;
-  path: {
-    userId: number;
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/user/{userId}/trainer/{trainerId}/contract';
+    body?: never;
+    path: {
+        userId: number;
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/user/{userId}/trainer/{trainerId}/contract';
 };
 
 export type HasActiveContractWithTrainerResponses = {
-  /**
-   * OK
-   */
-  200: boolean;
+    /**
+     * OK
+     */
+    200: boolean;
 };
 
-export type HasActiveContractWithTrainerResponse =
-  HasActiveContractWithTrainerResponses[keyof HasActiveContractWithTrainerResponses];
+export type HasActiveContractWithTrainerResponse = HasActiveContractWithTrainerResponses[keyof HasActiveContractWithTrainerResponses];
 
 export type GetMembershipStatusData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/user/{userId}/status';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/user/{userId}/status';
 };
 
 export type GetMembershipStatusResponses = {
-  /**
-   * OK
-   */
-  200: MembershipStatusResponse;
+    /**
+     * OK
+     */
+    200: MembershipStatusResponse;
 };
 
-export type GetMembershipStatusResponse =
-  GetMembershipStatusResponses[keyof GetMembershipStatusResponses];
+export type GetMembershipStatusResponse = GetMembershipStatusResponses[keyof GetMembershipStatusResponses];
 
 export type GetUserPaymentsData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/user/{userId}/payments';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/user/{userId}/payments';
 };
 
 export type GetUserPaymentsResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPayment[];
+    /**
+     * OK
+     */
+    200: Array<MembershipPayment>;
 };
 
-export type GetUserPaymentsResponse =
-  GetUserPaymentsResponses[keyof GetUserPaymentsResponses];
+export type GetUserPaymentsResponse = GetUserPaymentsResponses[keyof GetUserPaymentsResponses];
 
 export type GetActiveMembershipData = {
-  body?: never;
-  path: {
-    userId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/user/{userId}/active';
+    body?: never;
+    path: {
+        userId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/user/{userId}/active';
 };
 
 export type GetActiveMembershipResponses = {
-  /**
-   * OK
-   */
-  200: UserMembership;
+    /**
+     * OK
+     */
+    200: UserMembership;
 };
 
-export type GetActiveMembershipResponse =
-  GetActiveMembershipResponses[keyof GetActiveMembershipResponses];
+export type GetActiveMembershipResponse = GetActiveMembershipResponses[keyof GetActiveMembershipResponses];
 
 export type GetCurrentUserSubscriptionData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/user-subscription';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/user-subscription';
 };
 
 export type GetCurrentUserSubscriptionResponses = {
-  /**
-   * OK
-   */
-  200: UserSubscriptionResponse;
+    /**
+     * OK
+     */
+    200: UserSubscriptionResponse;
 };
 
-export type GetCurrentUserSubscriptionResponse =
-  GetCurrentUserSubscriptionResponses[keyof GetCurrentUserSubscriptionResponses];
+export type GetCurrentUserSubscriptionResponse = GetCurrentUserSubscriptionResponses[keyof GetCurrentUserSubscriptionResponses];
 
 export type GetActivePlansData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/plans';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/plans';
 };
 
 export type GetActivePlansResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPlan[];
+    /**
+     * OK
+     */
+    200: Array<MembershipPlan>;
 };
 
-export type GetActivePlansResponse =
-  GetActivePlansResponses[keyof GetActivePlansResponses];
+export type GetActivePlansResponse = GetActivePlansResponses[keyof GetActivePlansResponses];
 
 export type GetPlanByIdData = {
-  body?: never;
-  path: {
-    planId: number;
-  };
-  query?: never;
-  url: '/v1/app/memberships/plans/{planId}';
+    body?: never;
+    path: {
+        planId: number;
+    };
+    query?: never;
+    url: '/v1/app/memberships/plans/{planId}';
 };
 
 export type GetPlanByIdResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPlan;
+    /**
+     * OK
+     */
+    200: MembershipPlan;
 };
 
-export type GetPlanByIdResponse =
-  GetPlanByIdResponses[keyof GetPlanByIdResponses];
+export type GetPlanByIdResponse = GetPlanByIdResponses[keyof GetPlanByIdResponses];
 
 export type GetMonthlyPlansData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/plans/monthly';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/plans/monthly';
 };
 
 export type GetMonthlyPlansResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPlan[];
+    /**
+     * OK
+     */
+    200: Array<MembershipPlan>;
 };
 
-export type GetMonthlyPlansResponse =
-  GetMonthlyPlansResponses[keyof GetMonthlyPlansResponses];
+export type GetMonthlyPlansResponse = GetMonthlyPlansResponses[keyof GetMonthlyPlansResponses];
 
 export type GetAnnualPlansData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/plans/annual';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/plans/annual';
 };
 
 export type GetAnnualPlansResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPlan[];
+    /**
+     * OK
+     */
+    200: Array<MembershipPlan>;
 };
 
-export type GetAnnualPlansResponse =
-  GetAnnualPlansResponses[keyof GetAnnualPlansResponses];
+export type GetAnnualPlansResponse = GetAnnualPlansResponses[keyof GetAnnualPlansResponses];
 
 export type GetCurrentUserPaymentHistoryData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/payment-history';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/payment-history';
 };
 
 export type GetCurrentUserPaymentHistoryResponses = {
-  /**
-   * OK
-   */
-  200: MembershipPayment[];
+    /**
+     * OK
+     */
+    200: Array<MembershipPayment>;
 };
 
-export type GetCurrentUserPaymentHistoryResponse =
-  GetCurrentUserPaymentHistoryResponses[keyof GetCurrentUserPaymentHistoryResponses];
+export type GetCurrentUserPaymentHistoryResponse = GetCurrentUserPaymentHistoryResponses[keyof GetCurrentUserPaymentHistoryResponses];
 
 export type GetExpiringMembershipsData = {
-  body?: never;
-  path?: never;
-  query?: {
-    daysAhead?: number;
-  };
-  url: '/v1/app/memberships/expiring';
+    body?: never;
+    path?: never;
+    query?: {
+        daysAhead?: number;
+    };
+    url: '/v1/app/memberships/expiring';
 };
 
 export type GetExpiringMembershipsResponses = {
-  /**
-   * OK
-   */
-  200: UserMembership[];
+    /**
+     * OK
+     */
+    200: Array<UserMembership>;
 };
 
-export type GetExpiringMembershipsResponse =
-  GetExpiringMembershipsResponses[keyof GetExpiringMembershipsResponses];
+export type GetExpiringMembershipsResponse = GetExpiringMembershipsResponses[keyof GetExpiringMembershipsResponses];
 
 export type GetCurrentUserDebugData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/memberships/debug/current-user';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/memberships/debug/current-user';
 };
 
 export type GetCurrentUserDebugResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: {
-      [key: string]: unknown;
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: {
+            [key: string]: unknown;
+        };
     };
-  };
 };
 
-export type GetCurrentUserDebugResponse =
-  GetCurrentUserDebugResponses[keyof GetCurrentUserDebugResponses];
+export type GetCurrentUserDebugResponse = GetCurrentUserDebugResponses[keyof GetCurrentUserDebugResponses];
 
 export type GetAll7Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/fitness-goal-type/all';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/fitness-goal-type/all';
 };
 
 export type GetAll7Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalTypeDto[];
+    /**
+     * OK
+     */
+    200: Array<FitnessGoalTypeDto>;
 };
 
 export type GetAll7Response = GetAll7Responses[keyof GetAll7Responses];
 
 export type GetAll9Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/fitness-goal-status/all';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/fitness-goal-status/all';
 };
 
 export type GetAll9Responses = {
-  /**
-   * OK
-   */
-  200: FitnessGoalStatusDto[];
+    /**
+     * OK
+     */
+    200: Array<FitnessGoalStatusDto>;
 };
 
 export type GetAll9Response = GetAll9Responses[keyof GetAll9Responses];
 
 export type ViewFileData = {
-  body?: never;
-  path: {
-    fileId: number;
-  };
-  query?: never;
-  url: '/v1/app/file-upload/view/{fileId}';
+    body?: never;
+    path: {
+        fileId: number;
+    };
+    query?: never;
+    url: '/v1/app/file-upload/view/{fileId}';
 };
 
 export type ViewFileResponses = {
-  /**
-   * OK
-   */
-  200: Blob | File;
+    /**
+     * OK
+     */
+    200: Blob | File;
 };
 
 export type ViewFileResponse = ViewFileResponses[keyof ViewFileResponses];
 
 export type GetContractByIdData = {
-  body?: never;
-  path: {
-    id: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/{id}';
+    body?: never;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/{id}';
 };
 
 export type GetContractByIdResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetContractByIdResponse =
-  GetContractByIdResponses[keyof GetContractByIdResponses];
+export type GetContractByIdResponse = GetContractByIdResponses[keyof GetContractByIdResponses];
 
 export type GetContractsByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/trainer/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/trainer/{trainerId}';
 };
 
 export type GetContractsByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetContractsByTrainerResponse =
-  GetContractsByTrainerResponses[keyof GetContractsByTrainerResponses];
+export type GetContractsByTrainerResponse = GetContractsByTrainerResponses[keyof GetContractsByTrainerResponses];
 
 export type GetTrainerStats1Data = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/trainer/{trainerId}/stats';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/trainer/{trainerId}/stats';
 };
 
 export type GetTrainerStats1Responses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetTrainerStats1Response =
-  GetTrainerStats1Responses[keyof GetTrainerStats1Responses];
+export type GetTrainerStats1Response = GetTrainerStats1Responses[keyof GetTrainerStats1Responses];
 
 export type GetActiveContractsByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/trainer/{trainerId}/active';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/trainer/{trainerId}/active';
 };
 
 export type GetActiveContractsByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetActiveContractsByTrainerResponse =
-  GetActiveContractsByTrainerResponses[keyof GetActiveContractsByTrainerResponses];
+export type GetActiveContractsByTrainerResponse = GetActiveContractsByTrainerResponses[keyof GetActiveContractsByTrainerResponses];
 
 export type GetContractsByServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/service/{serviceId}';
+    body?: never;
+    path: {
+        serviceId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/service/{serviceId}';
 };
 
 export type GetContractsByServiceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetContractsByServiceResponse =
-  GetContractsByServiceResponses[keyof GetContractsByServiceResponses];
+export type GetContractsByServiceResponse = GetContractsByServiceResponses[keyof GetContractsByServiceResponses];
 
 export type GetContractsByClientData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/client/{clientId}';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/client/{clientId}';
 };
 
 export type GetContractsByClientResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetContractsByClientResponse =
-  GetContractsByClientResponses[keyof GetContractsByClientResponses];
+export type GetContractsByClientResponse = GetContractsByClientResponses[keyof GetContractsByClientResponses];
 
 export type GetContractsByClientAndStatusData = {
-  body?: never;
-  path: {
-    clientId: number;
-    status: string;
-  };
-  query?: never;
-  url: '/v1/app/contracts/client/{clientId}/status/{status}';
+    body?: never;
+    path: {
+        clientId: number;
+        status: string;
+    };
+    query?: never;
+    url: '/v1/app/contracts/client/{clientId}/status/{status}';
 };
 
 export type GetContractsByClientAndStatusResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetContractsByClientAndStatusResponse =
-  GetContractsByClientAndStatusResponses[keyof GetContractsByClientAndStatusResponses];
+export type GetContractsByClientAndStatusResponse = GetContractsByClientAndStatusResponses[keyof GetContractsByClientAndStatusResponses];
 
 export type GetInactiveContractsByClientData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/client/{clientId}/inactive';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/client/{clientId}/inactive';
 };
 
 export type GetInactiveContractsByClientResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetInactiveContractsByClientResponse =
-  GetInactiveContractsByClientResponses[keyof GetInactiveContractsByClientResponses];
+export type GetInactiveContractsByClientResponse = GetInactiveContractsByClientResponses[keyof GetInactiveContractsByClientResponses];
 
 export type GetActiveContractsByClientData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/contracts/client/{clientId}/active';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/contracts/client/{clientId}/active';
 };
 
 export type GetActiveContractsByClientResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetActiveContractsByClientResponse =
-  GetActiveContractsByClientResponses[keyof GetActiveContractsByClientResponses];
+export type GetActiveContractsByClientResponse = GetActiveContractsByClientResponses[keyof GetActiveContractsByClientResponses];
 
 export type CheckServiceAvailabilityData = {
-  body?: never;
-  path?: never;
-  query: {
-    clientId: number;
-    serviceId: number;
-  };
-  url: '/v1/app/contracts/check-availability';
+    body?: never;
+    path?: never;
+    query: {
+        clientId: number;
+        serviceId: number;
+    };
+    url: '/v1/app/contracts/check-availability';
 };
 
 export type CheckServiceAvailabilityResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CheckServiceAvailabilityResponse =
-  CheckServiceAvailabilityResponses[keyof CheckServiceAvailabilityResponses];
+export type CheckServiceAvailabilityResponse = CheckServiceAvailabilityResponses[keyof CheckServiceAvailabilityResponses];
 
 export type GetClientProfileData = {
-  body?: never;
-  path: {
-    /**
-     * Client ID
-     */
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/clients/{clientId}/profile';
+    body?: never;
+    path: {
+        /**
+         * Client ID
+         */
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/clients/{clientId}/profile';
 };
 
 export type GetClientProfileErrors = {
-  /**
-   * Unauthorized
-   */
-  401: unknown;
-  /**
-   * Client not found
-   */
-  404: unknown;
+    /**
+     * Unauthorized
+     */
+    401: unknown;
+    /**
+     * Client not found
+     */
+    404: unknown;
 };
 
 export type GetClientProfileResponses = {
-  /**
-   * Client profile retrieved successfully
-   */
-  200: ClientProfileDto;
+    /**
+     * Client profile retrieved successfully
+     */
+    200: ClientProfileDto;
 };
 
-export type GetClientProfileResponse =
-  GetClientProfileResponses[keyof GetClientProfileResponses];
+export type GetClientProfileResponse = GetClientProfileResponses[keyof GetClientProfileResponses];
 
 export type GetTrainerStats2Data = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/client/reviews/trainer/{trainerId}/stats';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/client/reviews/trainer/{trainerId}/stats';
 };
 
 export type GetTrainerStats2Responses = {
-  /**
-   * OK
-   */
-  200: TrainerRatingStatsDto;
+    /**
+     * OK
+     */
+    200: TrainerRatingStatsDto;
 };
 
-export type GetTrainerStats2Response =
-  GetTrainerStats2Responses[keyof GetTrainerStats2Responses];
+export type GetTrainerStats2Response = GetTrainerStats2Responses[keyof GetTrainerStats2Responses];
 
 export type GetReviewableContractsData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client/reviews/reviewable-contracts';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client/reviews/reviewable-contracts';
 };
 
 export type GetReviewableContractsResponses = {
-  /**
-   * OK
-   */
-  200: ReviewableContractDto[];
+    /**
+     * OK
+     */
+    200: Array<ReviewableContractDto>;
 };
 
-export type GetReviewableContractsResponse =
-  GetReviewableContractsResponses[keyof GetReviewableContractsResponses];
+export type GetReviewableContractsResponse = GetReviewableContractsResponses[keyof GetReviewableContractsResponses];
 
 export type GetMyReviews1Data = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client/reviews/my-reviews';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client/reviews/my-reviews';
 };
 
 export type GetMyReviews1Responses = {
-  /**
-   * OK
-   */
-  200: ReviewResponseDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<ReviewResponseDtoReadable>;
 };
 
-export type GetMyReviews1Response =
-  GetMyReviews1Responses[keyof GetMyReviews1Responses];
+export type GetMyReviews1Response = GetMyReviews1Responses[keyof GetMyReviews1Responses];
 
 export type GetResourcesByTrainerData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/trainer/{trainerId}';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/trainer/{trainerId}';
 };
 
 export type GetResourcesByTrainerResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetResourcesByTrainerResponse =
-  GetResourcesByTrainerResponses[keyof GetResourcesByTrainerResponses];
+export type GetResourcesByTrainerResponse = GetResourcesByTrainerResponses[keyof GetResourcesByTrainerResponses];
 
 export type GetTrainerClientResourcesData = {
-  body?: never;
-  path: {
-    trainerId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/trainer/{trainerId}/client-resources';
+    body?: never;
+    path: {
+        trainerId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/trainer/{trainerId}/client-resources';
 };
 
 export type GetTrainerClientResourcesResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetTrainerClientResourcesResponse =
-  GetTrainerClientResourcesResponses[keyof GetTrainerClientResourcesResponses];
+export type GetTrainerClientResourcesResponse = GetTrainerClientResourcesResponses[keyof GetTrainerClientResourcesResponses];
 
 export type GetTrainerClientsResourcesData = {
-  body?: never;
-  path?: never;
-  query?: {
-    resourceType?: 'DIETA' | 'RUTINA';
-  };
-  url: '/v1/app/client-resources/trainer/clients/resources';
+    body?: never;
+    path?: never;
+    query?: {
+        resourceType?: 'DIETA' | 'RUTINA';
+    };
+    url: '/v1/app/client-resources/trainer/clients/resources';
 };
 
 export type GetTrainerClientsResourcesResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetTrainerClientsResourcesResponse =
-  GetTrainerClientsResourcesResponses[keyof GetTrainerClientsResourcesResponses];
+export type GetTrainerClientsResourcesResponse = GetTrainerClientsResourcesResponses[keyof GetTrainerClientsResourcesResponses];
 
 export type GetResourcesByServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/service/{serviceId}';
+    body?: never;
+    path: {
+        serviceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/service/{serviceId}';
 };
 
 export type GetResourcesByServiceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetResourcesByServiceResponse =
-  GetResourcesByServiceResponses[keyof GetResourcesByServiceResponses];
+export type GetResourcesByServiceResponse = GetResourcesByServiceResponses[keyof GetResourcesByServiceResponses];
 
 export type GetResourcesByServiceAndTypeData = {
-  body?: never;
-  path: {
-    serviceId: number;
-    resourceType: 'DIETA' | 'RUTINA';
-  };
-  query?: never;
-  url: '/v1/app/client-resources/service/{serviceId}/type/{resourceType}';
+    body?: never;
+    path: {
+        serviceId: number;
+        resourceType: 'DIETA' | 'RUTINA';
+    };
+    query?: never;
+    url: '/v1/app/client-resources/service/{serviceId}/type/{resourceType}';
 };
 
 export type GetResourcesByServiceAndTypeResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetResourcesByServiceAndTypeResponse =
-  GetResourcesByServiceAndTypeResponses[keyof GetResourcesByServiceAndTypeResponses];
+export type GetResourcesByServiceAndTypeResponse = GetResourcesByServiceAndTypeResponses[keyof GetResourcesByServiceAndTypeResponses];
 
 export type CountResourcesByServiceData = {
-  body?: never;
-  path: {
-    serviceId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/service/{serviceId}/count';
+    body?: never;
+    path: {
+        serviceId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/service/{serviceId}/count';
 };
 
 export type CountResourcesByServiceResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CountResourcesByServiceResponse =
-  CountResourcesByServiceResponses[keyof CountResourcesByServiceResponses];
+export type CountResourcesByServiceResponse = CountResourcesByServiceResponses[keyof CountResourcesByServiceResponses];
 
 export type GetResourcesGroupedByClientData = {
-  body?: never;
-  path?: never;
-  query?: {
-    resourceType?: 'DIETA' | 'RUTINA';
-    page?: number;
-    size?: number;
-    sort?: string;
-  };
-  url: '/v1/app/client-resources/grouped-by-client';
+    body?: never;
+    path?: never;
+    query?: {
+        resourceType?: 'DIETA' | 'RUTINA';
+        page?: number;
+        size?: number;
+        sort?: string;
+    };
+    url: '/v1/app/client-resources/grouped-by-client';
 };
 
 export type GetResourcesGroupedByClientResponses = {
-  /**
-   * OK
-   */
-  200: PageClientResourceGroupDtoReadable;
+    /**
+     * OK
+     */
+    200: PageClientResourceGroupDtoReadable;
 };
 
-export type GetResourcesGroupedByClientResponse =
-  GetResourcesGroupedByClientResponses[keyof GetResourcesGroupedByClientResponses];
+export type GetResourcesGroupedByClientResponse = GetResourcesGroupedByClientResponses[keyof GetResourcesGroupedByClientResponses];
 
 export type GetResourcesGroupedByClientIncludingInactiveData = {
-  body?: never;
-  path?: never;
-  query?: {
-    resourceType?: 'DIETA' | 'RUTINA';
-    page?: number;
-    size?: number;
-    sort?: string;
-  };
-  url: '/v1/app/client-resources/grouped-by-client/all';
+    body?: never;
+    path?: never;
+    query?: {
+        resourceType?: 'DIETA' | 'RUTINA';
+        page?: number;
+        size?: number;
+        sort?: string;
+    };
+    url: '/v1/app/client-resources/grouped-by-client/all';
 };
 
 export type GetResourcesGroupedByClientIncludingInactiveResponses = {
-  /**
-   * OK
-   */
-  200: PageClientResourceGroupDtoReadable;
+    /**
+     * OK
+     */
+    200: PageClientResourceGroupDtoReadable;
 };
 
-export type GetResourcesGroupedByClientIncludingInactiveResponse =
-  GetResourcesGroupedByClientIncludingInactiveResponses[keyof GetResourcesGroupedByClientIncludingInactiveResponses];
+export type GetResourcesGroupedByClientIncludingInactiveResponse = GetResourcesGroupedByClientIncludingInactiveResponses[keyof GetResourcesGroupedByClientIncludingInactiveResponses];
 
 export type DebugContractsData = {
-  body?: never;
-  path: {
-    serviceId: number;
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/debug/contracts/{serviceId}/{clientId}';
+    body?: never;
+    path: {
+        serviceId: number;
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/debug/contracts/{serviceId}/{clientId}';
 };
 
 export type DebugContractsResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DebugContractsResponse =
-  DebugContractsResponses[keyof DebugContractsResponses];
+export type DebugContractsResponse = DebugContractsResponses[keyof DebugContractsResponses];
 
 export type DebugClientResourcesData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/debug/client-resources/{clientId}';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/debug/client-resources/{clientId}';
 };
 
 export type DebugClientResourcesResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DebugClientResourcesResponse =
-  DebugClientResourcesResponses[keyof DebugClientResourcesResponses];
+export type DebugClientResourcesResponse = DebugClientResourcesResponses[keyof DebugClientResourcesResponses];
 
 export type GetClientResourcesData = {
-  body?: never;
-  path?: never;
-  query?: {
-    resourceType?: 'DIETA' | 'RUTINA';
-  };
-  url: '/v1/app/client-resources/client';
+    body?: never;
+    path?: never;
+    query?: {
+        resourceType?: 'DIETA' | 'RUTINA';
+    };
+    url: '/v1/app/client-resources/client';
 };
 
 export type GetClientResourcesResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetClientResourcesResponse =
-  GetClientResourcesResponses[keyof GetClientResourcesResponses];
+export type GetClientResourcesResponse = GetClientResourcesResponses[keyof GetClientResourcesResponses];
 
 export type GetDirectResourcesByClientData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/client/{clientId}';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/client/{clientId}';
 };
 
 export type GetDirectResourcesByClientResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetDirectResourcesByClientResponse =
-  GetDirectResourcesByClientResponses[keyof GetDirectResourcesByClientResponses];
+export type GetDirectResourcesByClientResponse = GetDirectResourcesByClientResponses[keyof GetDirectResourcesByClientResponses];
 
 export type GetDirectResourcesByClientAndTypeData = {
-  body?: never;
-  path: {
-    clientId: number;
-    resourceType: 'DIETA' | 'RUTINA';
-  };
-  query?: never;
-  url: '/v1/app/client-resources/client/{clientId}/type/{resourceType}';
+    body?: never;
+    path: {
+        clientId: number;
+        resourceType: 'DIETA' | 'RUTINA';
+    };
+    query?: never;
+    url: '/v1/app/client-resources/client/{clientId}/type/{resourceType}';
 };
 
 export type GetDirectResourcesByClientAndTypeResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetDirectResourcesByClientAndTypeResponse =
-  GetDirectResourcesByClientAndTypeResponses[keyof GetDirectResourcesByClientAndTypeResponses];
+export type GetDirectResourcesByClientAndTypeResponse = GetDirectResourcesByClientAndTypeResponses[keyof GetDirectResourcesByClientAndTypeResponses];
 
 export type CountDirectResourcesByClientData = {
-  body?: never;
-  path: {
-    clientId: number;
-  };
-  query?: never;
-  url: '/v1/app/client-resources/client/{clientId}/count';
+    body?: never;
+    path: {
+        clientId: number;
+    };
+    query?: never;
+    url: '/v1/app/client-resources/client/{clientId}/count';
 };
 
 export type CountDirectResourcesByClientResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type CountDirectResourcesByClientResponse =
-  CountDirectResourcesByClientResponses[keyof CountDirectResourcesByClientResponses];
+export type CountDirectResourcesByClientResponse = CountDirectResourcesByClientResponses[keyof CountDirectResourcesByClientResponses];
 
 export type GetClientRoutinesData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client-resources/client/routines';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client-resources/client/routines';
 };
 
 export type GetClientRoutinesResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetClientRoutinesResponse =
-  GetClientRoutinesResponses[keyof GetClientRoutinesResponses];
+export type GetClientRoutinesResponse = GetClientRoutinesResponses[keyof GetClientRoutinesResponses];
 
 export type GetClientDietsData = {
-  body?: never;
-  path?: never;
-  query?: never;
-  url: '/v1/app/client-resources/client/diets';
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/client-resources/client/diets';
 };
 
 export type GetClientDietsResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type GetClientDietsResponse =
-  GetClientDietsResponses[keyof GetClientDietsResponses];
+export type GetClientDietsResponse = GetClientDietsResponses[keyof GetClientDietsResponses];
 
 export type GetBankAccountsByPersonData = {
-  body?: never;
-  path: {
-    personId: number;
-  };
-  query?: never;
-  url: '/v1/app/bank-accounts/person/{personId}';
+    body?: never;
+    path: {
+        personId: number;
+    };
+    query?: never;
+    url: '/v1/app/bank-accounts/person/{personId}';
 };
 
 export type GetBankAccountsByPersonResponses = {
-  /**
-   * OK
-   */
-  200: BankAccountDtoReadable[];
+    /**
+     * OK
+     */
+    200: Array<BankAccountDtoReadable>;
 };
 
-export type GetBankAccountsByPersonResponse =
-  GetBankAccountsByPersonResponses[keyof GetBankAccountsByPersonResponses];
+export type GetBankAccountsByPersonResponse = GetBankAccountsByPersonResponses[keyof GetBankAccountsByPersonResponses];
 
 export type CheckAvailabilityData = {
-  body?: never;
-  path?: never;
-  query: {
-    /**
-     * Username to check
-     */
-    username: string;
-    /**
-     * Email to check
-     */
-    email: string;
-  };
-  url: '/v1/app/auth/check-availability';
+    body?: never;
+    path?: never;
+    query: {
+        /**
+         * Username to check
+         */
+        username: string;
+        /**
+         * Email to check
+         */
+        email: string;
+    };
+    url: '/v1/app/auth/check-availability';
 };
 
 export type CheckAvailabilityErrors = {
-  /**
-   * Invalid parameters
-   */
-  400: unknown;
+    /**
+     * Invalid parameters
+     */
+    400: unknown;
 };
 
 export type CheckAvailabilityResponses = {
-  /**
-   * Availability check completed
-   */
-  200: unknown;
+    /**
+     * Availability check completed
+     */
+    200: unknown;
 };
 
+export type GetAllPaymentsData = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Page number (0-based)
+         */
+        page?: number;
+        /**
+         * Page size
+         */
+        size?: number;
+        /**
+         * Filter by payment status
+         */
+        status?: string;
+        /**
+         * Filter by payment method
+         */
+        paymentMethod?: string;
+        /**
+         * Filter from date (YYYY-MM-DD)
+         */
+        startDate?: string;
+        /**
+         * Filter to date (YYYY-MM-DD)
+         */
+        endDate?: string;
+    };
+    url: '/v1/app/admin/payments';
+};
+
+export type GetAllPaymentsErrors = {
+    /**
+     * Invalid request parameters
+     */
+    400: AdminPaymentsResponseDto;
+    /**
+     * Access denied - Admin role required
+     */
+    403: AdminPaymentsResponseDto;
+    /**
+     * Internal server error
+     */
+    500: AdminPaymentsResponseDto;
+};
+
+export type GetAllPaymentsError = GetAllPaymentsErrors[keyof GetAllPaymentsErrors];
+
+export type GetAllPaymentsResponses = {
+    /**
+     * Payments retrieved successfully
+     */
+    200: AdminPaymentsResponseDto;
+};
+
+export type GetAllPaymentsResponse = GetAllPaymentsResponses[keyof GetAllPaymentsResponses];
+
+export type GetPaymentSummary1Data = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/v1/app/admin/payments/summary';
+};
+
+export type GetPaymentSummary1Errors = {
+    /**
+     * Access denied - Admin role required
+     */
+    403: AdminPaymentSummaryDto;
+    /**
+     * Internal server error
+     */
+    500: AdminPaymentSummaryDto;
+};
+
+export type GetPaymentSummary1Error = GetPaymentSummary1Errors[keyof GetPaymentSummary1Errors];
+
+export type GetPaymentSummary1Responses = {
+    /**
+     * Summary retrieved successfully
+     */
+    200: AdminPaymentSummaryDto;
+};
+
+export type GetPaymentSummary1Response = GetPaymentSummary1Responses[keyof GetPaymentSummary1Responses];
+
+export type ExportPayments1Data = {
+    body?: never;
+    path?: never;
+    query?: {
+        /**
+         * Filter by payment status
+         */
+        status?: string;
+        /**
+         * Filter by payment method
+         */
+        paymentMethod?: string;
+        /**
+         * Filter from date (YYYY-MM-DD)
+         */
+        startDate?: string;
+        /**
+         * Filter to date (YYYY-MM-DD)
+         */
+        endDate?: string;
+    };
+    url: '/v1/app/admin/payments/export';
+};
+
+export type ExportPayments1Errors = {
+    /**
+     * Access denied - Admin role required
+     */
+    403: Array<string>;
+    /**
+     * Internal server error
+     */
+    500: Array<string>;
+};
+
+export type ExportPayments1Error = ExportPayments1Errors[keyof ExportPayments1Errors];
+
+export type ExportPayments1Responses = {
+    /**
+     * CSV file generated successfully
+     */
+    200: Array<string>;
+};
+
+export type ExportPayments1Response = ExportPayments1Responses[keyof ExportPayments1Responses];
+
 export type DeletePhotoData = {
-  body?: never;
-  path: {
-    userId: number;
-    photoId: number;
-  };
-  query?: never;
-  url: '/v1/app/profile/{userId}/photos/{photoId}';
+    body?: never;
+    path: {
+        userId: number;
+        photoId: number;
+    };
+    query?: never;
+    url: '/v1/app/profile/{userId}/photos/{photoId}';
 };
 
 export type DeletePhotoResponses = {
-  /**
-   * OK
-   */
-  200: unknown;
+    /**
+     * OK
+     */
+    200: unknown;
 };
 
 export type DeleteByFileIdData = {
-  body?: never;
-  path: {
-    fileId: number;
-  };
-  query?: never;
-  url: '/v1/app/file-upload/{fileId}';
+    body?: never;
+    path: {
+        fileId: number;
+    };
+    query?: never;
+    url: '/v1/app/file-upload/{fileId}';
 };
 
 export type DeleteByFileIdResponses = {
-  /**
-   * OK
-   */
-  200: {
-    [key: string]: unknown;
-  };
+    /**
+     * OK
+     */
+    200: {
+        [key: string]: unknown;
+    };
 };
 
-export type DeleteByFileIdResponse =
-  DeleteByFileIdResponses[keyof DeleteByFileIdResponses];
+export type DeleteByFileIdResponse = DeleteByFileIdResponses[keyof DeleteByFileIdResponses];
 
 export type ClientOptions = {
-  baseUrl: 'http://localhost:8081' | 'https://appfitech.com' | (string & {});
+    baseUrl: 'http://localhost:8081' | 'https://appfitech.com' | (string & {});
 };

@@ -69,6 +69,10 @@ export default function HomeScreen() {
     router.push(ROUTES.workouts);
   }, []);
 
+  const handleMacrosNav = useCallback(() => {
+    router.push(ROUTES.macrosCalculator);
+  }, []);
+
   return (
     <View style={[styles.wrapper, { paddingTop: insets.top }]}>
       <View style={styles.headerWrapper}>
@@ -107,6 +111,47 @@ export default function HomeScreen() {
 
       <PageContainer hasBackButton={false} hasNoTopPadding>
         <View style={styles.contentWrapper}>
+          {/* Macros Section */}
+          <TouchableOpacity onPress={handleMacrosNav}>
+            <View
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'row',
+                padding: 16,
+                backgroundColor: theme.backgroundInverted,
+                borderRadius: 20,
+                columnGap: 10,
+                alignItems: 'center',
+              }}
+            >
+              <View style={{ width: 120 }}>
+                <Image
+                  source={require('../../assets/images/vectors/macro_icon.png')}
+                  style={styles.image}
+                  resizeMode={'contain'}
+                />
+              </View>
+              <View style={{ flex: 1, rowGap: 8 }}>
+                <AppText
+                  style={{
+                    color: theme.background,
+                    fontSize: 19,
+                    fontWeight: '800',
+                  }}
+                >
+                  {'¿Este snack es fit o fat?'}
+                </AppText>
+                <AppText style={{ color: theme.dark100, fontSize: 16.5 }}>
+                  {
+                    'Busca tus alimentos favoritos y revisa sus macros sin juzgar 😌'
+                  }
+                </AppText>
+              </View>
+            </View>
+          </TouchableOpacity>
+
+          {/* My activity section */}
           <View style={styles.sectionHeader}>
             <AppText style={styles.sectionTitle}>{'Mis actividades'}</AppText>
             <TouchableOpacity
@@ -215,7 +260,7 @@ export default function HomeScreen() {
                 style={[
                   styles.card,
                   {
-                    backgroundColor: theme.infoBackground,
+                    backgroundColor: theme.dark200,
                     maxWidth: 200,
                     alignSelf: 'flex-start',
                   },
@@ -339,5 +384,9 @@ const getStyles = (theme: FullTheme) =>
       shadowRadius: 8,
       elevation: 4,
       rowGap: 8,
+    },
+    image: {
+      width: '100%',
+      height: 100,
     },
   });

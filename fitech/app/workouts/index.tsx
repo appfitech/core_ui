@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -13,7 +12,6 @@ import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 
 export default function WorkoutsScreen() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);

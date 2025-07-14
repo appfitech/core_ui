@@ -9,4 +9,5 @@ export const ROUTES = {
   support: '/support',
   subscription: '/subscription',
   premiumFeatures: '/premium-features',
+  macrosCalculator: '/macros-calculator',
 } as const;
