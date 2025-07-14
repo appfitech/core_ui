@@ -39,7 +39,8 @@ export default function MacrosCalculatorScreen() {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<FoodItemDto[]>([]);
   const [request, setRequest] = useState<SelectedFoodDto[]>([]);
-  const [calculation, setCalculation] = useState<MacroCalculationResponseDto>();
+  const [calculation, setCalculation] =
+    useState<MacroCalculationResponseDto | null>(null);
 
   const { data: macrosResults } = useSearchMacros(query);
   const { mutate: calculateMacros } = useCalculateMacros();
@@ -50,6 +51,8 @@ export default function MacrosCalculatorScreen() {
 
   const handleAddMacro = useCallback(
     (itemId: number) => () => {
+      setCalculation(null);
+
       const existing = selected.find((item) => item.id === itemId);
       if (existing) {
         setSelected((prev) => prev.filter((item) => item.id !== itemId));
@@ -75,7 +78,7 @@ export default function MacrosCalculatorScreen() {
         },
       },
     );
-  }, []);
+  }, [request]);
 
   const handleChange = useCallback(
     (foodId: number) => (text: string) => {
