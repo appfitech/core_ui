@@ -2,21 +2,17 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import { Trainer } from '@/types/trainer';
 
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
+import { AppText } from '../components/AppText';
+import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 
 export default function TrainersSearchScreen() {
@@ -50,20 +46,15 @@ export default function TrainersSearchScreen() {
   }, [query]);
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 40,
-          minHeight: '100%',
-        },
-      ]}
-    >
-      <Text style={styles.title}>{'Encuentra tu \nentrenador ideal'}</Text>
-      <Text style={styles.subtitle}>
-        {'Descubre entrenadores especializados en tus objetivos fitness'}
-      </Text>
+    <PageContainer hasBackButton={false} style={{ padding: 16 }}>
+      <View style={{ rowGap: 10, paddingVertical: 10 }}>
+        <AppText style={styles.title}>
+          {'Encuentra tu \nentrenador ideal'}
+        </AppText>
+        <AppText style={styles.subtitle}>
+          {'Descubre entrenadores especializados en tus objetivos fitness'}
+        </AppText>
+      </View>
 
       <View style={styles.searchRow}>
         <SearchBar
@@ -77,9 +68,9 @@ export default function TrainersSearchScreen() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.resultCount}>
+      <AppText style={styles.resultCount}>
         {results?.length} entrenadores encontrados
-      </Text>
+      </AppText>
 
       {results?.map((trainer) => (
         <View key={trainer.id} style={styles.card}>
@@ -89,29 +80,29 @@ export default function TrainersSearchScreen() {
             }}
             style={styles.avatar}
           />
-          <Text style={styles.name}>
+          <AppText style={styles.name}>
             {trainer.person.firstName} {trainer.person.lastName}
-          </Text>
-          <Text style={styles.bio} numberOfLines={2}>
+          </AppText>
+          <AppText style={styles.bio} numberOfLines={2}>
             {trainer.person.bio}
-          </Text>
+          </AppText>
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={styles.profileButton}
               onPress={() => router.push(`/trainers/${trainer.id}`)}
             >
-              <Text style={styles.profileText}>Ver Perfil</Text>
+              <Text style={styles.profileText}>{'Ver Perfil'}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.contactButton}
               onPress={() => router.push(`/trainers/${trainer.id}`)}
             >
-              <Text style={styles.contactText}>Contactar</Text>
+              <AppText style={styles.contactText}>{'Contactar'}</AppText>
             </TouchableOpacity>
           </View>
         </View>
       ))}
-    </ScrollView>
+    </PageContainer>
   );
 }
 
@@ -121,19 +112,7 @@ const getStyles = (theme: FullTheme) =>
       padding: 16,
       backgroundColor: theme.background,
     },
-    title: {
-      fontSize: 24,
-      fontWeight: '700',
-      color: theme.textPrimary,
-      marginBottom: 4,
-      textAlign: 'center',
-    },
-    subtitle: {
-      fontSize: 16,
-      color: theme.textSecondary,
-      textAlign: 'center',
-      marginBottom: 20,
-    },
+
     searchRow: {
       flexDirection: 'row',
       marginBottom: 20,
@@ -210,4 +189,5 @@ const getStyles = (theme: FullTheme) =>
       fontSize: 12,
       fontWeight: '600',
     },
+    ...HEADING_STYLES(theme),
   });

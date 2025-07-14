@@ -138,9 +138,7 @@ export default function HomeScreen() {
                   <AppText style={styles.cardTitle}>
                     {routines[0].resourceName?.split('-')?.[0]}
                   </AppText>
-                  <AppText style={styles.cardSub}>
-                    {routines[0].resourceDetails}
-                  </AppText>
+
                   <AppText style={styles.cardSubBold}>
                     {`Entrenador: ${routines[0]?.trainerName}`}
                   </AppText>
@@ -169,11 +167,9 @@ export default function HomeScreen() {
                   <AppText style={[styles.cardTitle, { color: theme.dark100 }]}>
                     {diets[0].resourceName?.split('-')?.[0]}
                   </AppText>
-                  <AppText style={[styles.cardSub, { color: theme.dark200 }]}>
-                    {diets[0].resourceDetails}
-                  </AppText>
+
                   <AppText
-                    style={[styles.cardSubBold, { color: theme.dark300 }]}
+                    style={[styles.cardSubBold, { color: theme.dark200 }]}
                   >
                     {`Entrenador: ${routines[0]?.trainerName}`}
                   </AppText>
@@ -219,7 +215,7 @@ export default function HomeScreen() {
                 style={[
                   styles.card,
                   {
-                    backgroundColor: theme.dark300,
+                    backgroundColor: theme.infoBackground,
                     maxWidth: 200,
                     alignSelf: 'flex-start',
                   },
@@ -233,13 +229,13 @@ export default function HomeScreen() {
                   <AppText
                     style={{
                       fontWeight: '600',
-                      fontSize: 15,
+                      fontSize: 17,
                       color: theme.dark900,
                     }}
                   >
                     {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
                   </AppText>
-                  <AppText style={{ color: theme.textSecondary }}>
+                  <AppText style={{ color: theme.textSecondary, fontSize: 16 }}>
                     {truncateWords(trainer?.person?.bio ?? '', 20)}
                   </AppText>
                 </View>
@@ -302,10 +298,11 @@ const getStyles = (theme: FullTheme) =>
     },
     cardTitle: {
       fontWeight: '600',
-      fontSize: 15,
+      fontSize: 17,
       color: theme.textPrimary,
     },
     cardSub: {
+      fontSize: 16,
       color: theme.textSecondary,
     },
     cardSubBold: {

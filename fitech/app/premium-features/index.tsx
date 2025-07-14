@@ -112,9 +112,11 @@ const getStyles = (theme: FullTheme) =>
     bannerTitle: {
       fontSize: 19,
       fontWeight: '600',
+      color: theme.backgroundInverted,
     },
     bannerDescription: {
       fontSize: 16,
+      color: theme.backgroundInverted,
     },
     image: {
       width: 120,
