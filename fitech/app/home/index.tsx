@@ -205,7 +205,6 @@ export default function HomeScreen() {
                   { backgroundColor: theme.dark600, flex: 1 },
                 ]}
               >
-                {' '}
                 <TouchableOpacity
                   onPress={() =>
                     router.push(`${ROUTES.diets}/${diets?.[0].id}`)

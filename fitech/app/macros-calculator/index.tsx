@@ -348,82 +348,88 @@ export default function MacrosCalculatorScreen() {
                 </TouchableOpacity>
               </View>
             )}
-            <View
-              style={{
-                backgroundColor: theme.background,
-                padding: 14,
-                borderRadius: 12,
-                marginTop: 20,
-                alignItems: 'center',
-                rowGap: 10,
-              }}
-            >
-              <AppText
-                style={{
-                  color: theme.infoText,
-                  fontSize: 20,
-                  fontWeight: 900,
-                }}
-              >
-                {'Resumen nutricional'}
-              </AppText>
+            {!!selected.length && !!calculation && (
               <View
                 style={{
-                  backgroundColor: theme.successBackground,
-                  borderRadius: '50%',
-                  padding: 30,
+                  backgroundColor: theme.background,
+                  padding: 14,
+                  borderRadius: 12,
+                  marginTop: 20,
                   alignItems: 'center',
+                  rowGap: 10,
                 }}
               >
                 <AppText
                   style={{
-                    color: theme.successText,
-                    fontSize: 40,
+                    color: theme.infoText,
+                    fontSize: 20,
                     fontWeight: 900,
                   }}
                 >
-                  {calculation?.totalMacros?.calories}
+                  {'Resumen nutricional'}
                 </AppText>
-                <AppText
+                <View
                   style={{
-                    color: theme.successText,
-                    fontSize: 18,
+                    backgroundColor: theme.successBackground,
+                    borderRadius: '50%',
+                    padding: 30,
+                    alignItems: 'center',
                   }}
                 >
-                  {'kcal'}
-                </AppText>
-              </View>
-              <View style={{ width: '100%', rowGap: 4 }}>
-                {Object.keys(calculation?.totalMacros ?? []).map((macroKey) => (
-                  <View
-                    key={macroKey}
+                  <AppText
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      color: theme.successText,
+                      fontSize: 40,
+                      fontWeight: 900,
                     }}
                   >
-                    <AppText
-                      style={{
-                        fontSize: 17,
-                        color: theme.dark500,
-                        fontWeight: 500,
-                        paddingLeft: 20,
-                      }}
-                    >
-                      {macroKey}
-                    </AppText>
-                    <AppText
-                      style={{
-                        fontSize: 17,
-                        color: theme.infoText,
-                        fontWeight: 500,
-                        paddingLeft: 20,
-                      }}
-                    >{`${calculation?.totalMacros?.[macroKey] ?? 0} g`}</AppText>
-                  </View>
-                ))}
+                    {calculation?.totalMacros?.calories}
+                  </AppText>
+                  <AppText
+                    style={{
+                      color: theme.successText,
+                      fontSize: 18,
+                    }}
+                  >
+                    {'kcal'}
+                  </AppText>
+                </View>
+                <View style={{ width: '100%', rowGap: 4 }}>
+                  {Object.keys(calculation?.totalMacros ?? []).map(
+                    (macroKey) => (
+                      <View
+                        key={macroKey}
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <AppText
+                          style={{
+                            fontSize: 17,
+                            color: theme.dark500,
+                            fontWeight: 500,
+                            paddingLeft: 20,
+                          }}
+                        >
+                          {macroKey}
+                        </AppText>
+                        <AppText
+                          style={{
+                            fontSize: 17,
+                            color: theme.infoText,
+                            fontWeight: 500,
+                            paddingLeft: 20,
+                          }}
+                        >
+                          {`${calculation?.totalMacros?.[macroKey] ?? 0} g`}
+                        </AppText>
+                      </View>
+                    ),
+                  )}
+                </View>
               </View>
-            </View>
+            )}
           </BottomSheetView>
         </BottomSheetModal>
       </BottomSheetModalProvider>
