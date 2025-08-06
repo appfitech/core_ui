@@ -176,25 +176,31 @@ export default function HomeScreen() {
                   { backgroundColor: theme.dark300, flex: 1 },
                 ]}
               >
-                <View style={styles.iconWrapper}>
-                  <RoutineSVG width={75} height={75} />
-                </View>
-                <View style={{ rowGap: 6, flex: 1 }}>
-                  <AppText style={styles.cardTitle}>
-                    {routines[0].resourceName?.split('-')?.[0]}
-                  </AppText>
+                <TouchableOpacity
+                  onPress={() =>
+                    router.push(`${ROUTES.routines}/${routines?.[0].id}`)
+                  }
+                >
+                  <View style={styles.iconWrapper}>
+                    <RoutineSVG width={75} height={75} />
+                  </View>
+                  <View style={{ rowGap: 6, flex: 1 }}>
+                    <AppText style={styles.cardTitle}>
+                      {routines[0].resourceName?.split('-')?.[0]}
+                    </AppText>
 
-                  <AppText style={styles.cardSubBold}>
-                    {`Entrenador: ${routines[0]?.trainerName}`}
-                  </AppText>
-                </View>
-                <View style={{ alignSelf: 'flex-end' }}>
-                  <Tag
-                    label={routines[0].resourceType}
-                    textColor={theme.background}
-                    backgroundColor={theme.backgroundInverted}
-                  />
-                </View>
+                    <AppText style={styles.cardSubBold}>
+                      {`Entrenador: ${routines[0]?.trainerName}`}
+                    </AppText>
+                  </View>
+                  <View style={{ alignSelf: 'flex-end' }}>
+                    <Tag
+                      label={routines?.[0].resourceType}
+                      textColor={theme.background}
+                      backgroundColor={theme.backgroundInverted}
+                    />
+                  </View>
+                </TouchableOpacity>
               </Animated.View>
             )}
             {!!diets?.[0] && (
@@ -223,7 +229,7 @@ export default function HomeScreen() {
                     <AppText
                       style={[styles.cardSubBold, { color: theme.dark200 }]}
                     >
-                      {`Entrenador: ${routines[0]?.trainerName}`}
+                      {`Entrenador: ${routines?.[0]?.trainerName}`}
                     </AppText>
                   </View>
                   <View style={{ alignSelf: 'flex-end' }}>

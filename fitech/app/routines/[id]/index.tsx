@@ -2,21 +2,20 @@ import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { useGetRoutineById } from '@/app/api/queries/use-get-routine-by-id';
+import { AppText } from '@/app/components/AppText';
+import PageContainer from '@/app/components/PageContainer';
+import { Tag } from '@/app/components/Tag';
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetDietById } from '../api/queries/use-get-diet-by-id';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { Tag } from '../components/Tag';
-
-export default function DietDetailScreen() {
+export default function RoutineDetailScreen() {
   const { theme } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const styles = getStyles(theme);
-  const diet = useGetDietById(Number(id));
+  const routine = useGetRoutineById(Number(id));
 
   return (
     <PageContainer style={{ padding: 16 }}>
@@ -27,7 +26,7 @@ export default function DietDetailScreen() {
             { textAlign: 'left', marginTop: 16, marginRight: 50 },
           ]}
         >
-          {diet?.resourceName}
+          {routine?.resourceName}
         </AppText>
       </View>
 
@@ -36,7 +35,7 @@ export default function DietDetailScreen() {
           <Tag
             backgroundColor={theme.successBackground}
             textColor={theme.successText}
-            label={diet?.isActive ? 'Activa' : 'Inactiva'}
+            label={routine?.isActive ? 'Activa' : 'Inactiva'}
           />
           <Tag
             backgroundColor={theme.infoBackground}
@@ -50,14 +49,16 @@ export default function DietDetailScreen() {
               <Feather name={'check-square'} size={16} />
               &nbsp;{'Objetivo'}
             </AppText>
-            <AppText style={styles.content}>{diet?.resourceObjective}</AppText>
+            <AppText style={styles.content}>
+              {routine?.resourceObjective}
+            </AppText>
           </View>
           <View style={styles.container}>
             <AppText style={styles.label}>
               <Feather name={'edit'} size={16} />
               &nbsp;{'Plan Nutricional Detallado'}
             </AppText>
-            <AppText style={styles.content}>{diet?.resourceDetails}</AppText>
+            <AppText style={styles.content}>{routine?.resourceDetails}</AppText>
           </View>
           <View style={styles.container}>
             <AppText style={styles.label}>
@@ -65,7 +66,7 @@ export default function DietDetailScreen() {
               &nbsp;{'Fecha creación'}
             </AppText>
             <AppText style={styles.content}>
-              {`Creada el: ${diet.createdAt}`}
+              {`Creada el: ${routine.createdAt}`}
             </AppText>
           </View>
           <View style={styles.container}>
@@ -73,7 +74,7 @@ export default function DietDetailScreen() {
               <Feather name={'play'} size={16} />
               &nbsp;{'Inicio del plan'}
             </AppText>
-            <AppText style={styles.content}>{diet.startDate}</AppText>
+            <AppText style={styles.content}>{routine.startDate}</AppText>
           </View>
         </View>
         <View style={[styles.card, { backgroundColor: theme.dark200 }]}>
@@ -82,7 +83,7 @@ export default function DietDetailScreen() {
               <Feather name={'file-minus'} size={16} />
               &nbsp;{'Notas del Trainer'}
             </AppText>
-            <AppText style={styles.content}>{diet?.trainerNotes}</AppText>
+            <AppText style={styles.content}>{routine?.trainerNotes}</AppText>
           </View>
         </View>
         <TouchableOpacity

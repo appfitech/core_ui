@@ -11,4 +11,6 @@ export const ROUTES = {
   premiumFeatures: '/premium-features',
   macrosCalculator: '/macros-calculator',
   diets: '/diets',
+  routines: '/routines',
+  contracts: '/contracts',
 } as const;
