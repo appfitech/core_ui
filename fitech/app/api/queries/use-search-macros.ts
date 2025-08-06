@@ -9,7 +9,7 @@ export const useSearchMacros = (query: string) => {
   const token = useUserStore((s) => s.getToken());
 
   return useQuery<FoodItemDto[]>({
-    queryKey: ['search-macros'],
+    queryKey: [`search-macros-${query}`],
     queryFn: async () => {
       return api.get(`/nutrition/foods/search?q=${query}`);
     },
