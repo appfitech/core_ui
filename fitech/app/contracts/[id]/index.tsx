@@ -73,19 +73,23 @@ export default function ContractDetailScreen() {
               <AppText style={styles.info}>
                 {parsedContract?.contractStatus === 'ACTIVE'
                   ? 'Activo'
-                  : 'Completado'}
+                  : parsedContract?.contractStatus === 'CANCELLED'
+                    ? 'Cancelado'
+                    : 'Completado'}
               </AppText>
             </View>
-            <View>
-              <AppText style={styles.label}>{'Monto Total'}</AppText>
-              <AppText
-                style={styles.info}
-              >{`S/. ${parsedContract.totalAmount.toFixed(2)}`}</AppText>
-            </View>
+            {parsedContract.totalAmount && (
+              <View>
+                <AppText style={styles.label}>{'Monto Total'}</AppText>
+                <AppText
+                  style={styles.info}
+                >{`S/. ${parsedContract.totalAmount.toFixed(2)}`}</AppText>
+              </View>
+            )}
             <View>
               <AppText style={styles.label}>{'Estado de Pago'}</AppText>
               <AppText style={styles.info}>
-                {parsedContract?.paymentStatus}
+                {parsedContract?.paymentStatus ?? '-'}
               </AppText>
             </View>
           </View>
@@ -141,11 +145,15 @@ export default function ContractDetailScreen() {
 
         <View>
           <AppText style={styles.label}>{'Fecha creación'}</AppText>
-          <AppText style={styles.info}>{parsedContract?.createdAt}</AppText>
+          <AppText style={styles.info}>
+            {parsedContract?.createdAt ?? '-'}
+          </AppText>
         </View>
         <View>
           <AppText style={styles.label}>{'Fecha inicio del plan'}</AppText>
-          <AppText style={styles.info}>{parsedContract?.startDate}</AppText>
+          <AppText style={styles.info}>
+            {parsedContract?.startDate ?? '-'}
+          </AppText>
         </View>
         <View>
           <AppText style={styles.label}>{'Descripción'}</AppText>

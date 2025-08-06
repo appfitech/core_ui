@@ -50,7 +50,6 @@ export default function SupportScreen() {
   };
 
   const handleSubmit = () => {
-    console.log(form);
     submitInquiry(form, {
       onSuccess: () => {
         alert('success');

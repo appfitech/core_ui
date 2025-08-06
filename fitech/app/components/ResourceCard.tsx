@@ -19,8 +19,6 @@ export function ResourceCard({ onClick, resource }: Props) {
 
   const styles = getStyles(theme);
 
-  console.log('[K] resource', resource);
-
   const handleClick = useCallback(() => {
     if (!resource?.id) {
       return;
