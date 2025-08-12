@@ -25,11 +25,15 @@ import RoutineSVG from '../../assets/images/vectors/routine.svg';
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
 import { useGetDiets } from '../api/queries/use-get-diets';
 import { useGetRoutines } from '../api/queries/use-get-routines';
+import { useTrainerGetReviews } from '../api/queries/use-trainer-get-reviews';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 import { SupportButton } from '../components/SupportButton';
 import { Tag } from '../components/Tag';
+
+const EMOJIS = ['😠', '😕', '😐', '🙂', '😄'];
+const EMOJIS_LABEL = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Muy bueno'];
 
 export default function HomeScreen() {
   const token = useUserStore((s) => s.getToken());
@@ -39,6 +43,11 @@ export default function HomeScreen() {
   const styles = getStyles(theme);
   const [trainers, setTrainers] = useState<PublicTrainerDtoReadable[]>([]);
   const insets = useSafeAreaInsets();
+  const { data: reviews } = useTrainerGetReviews();
+
+  console.log('[K] reviews', reviews);
+
+  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const { data: routines } = useGetRoutines();
   const { data: diets } = useGetDiets();
@@ -58,16 +67,16 @@ export default function HomeScreen() {
   const userAvatarURL = getUserAvatarURL(user?.user?.person);
 
   const handleTrainersClick = useCallback(() => {
-    router.push(ROUTES.trainers);
-  }, []);
+    router.push(isTrainer ? ROUTES.trainerClients : ROUTES.trainers);
+  }, [isTrainer]);
 
   const handleProfileClick = useCallback(() => {
     router.push(ROUTES.profile);
   }, []);
 
   const handleActivityViewAll = useCallback(() => {
-    router.push(ROUTES.workouts);
-  }, []);
+    router.push(isTrainer ? ROUTES.trainerReviews : ROUTES.workouts);
+  }, [isTrainer]);
 
   const handleMacrosNav = useCallback(() => {
     router.push(ROUTES.macrosCalculator);
@@ -102,7 +111,7 @@ export default function HomeScreen() {
           onPress={handleTrainersClick}
         >
           <SearchBar
-            placeholder="Buscar trainers…"
+            placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
             readOnly
             onPress={handleTrainersClick}
           />
@@ -112,48 +121,60 @@ export default function HomeScreen() {
       <PageContainer hasBackButton={false} hasNoTopPadding>
         <View style={styles.contentWrapper}>
           {/* Macros Section */}
-          <TouchableOpacity onPress={handleMacrosNav}>
-            <View
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'row',
-                padding: 16,
-                backgroundColor: theme.backgroundInverted,
-                borderRadius: 20,
-                columnGap: 10,
-                alignItems: 'center',
-              }}
-            >
-              <View style={{ width: 120 }}>
-                <Image
-                  source={require('../../assets/images/vectors/macro_icon.png')}
-                  style={styles.image}
-                  resizeMode={'contain'}
-                />
+          {!isTrainer && (
+            <TouchableOpacity onPress={handleMacrosNav}>
+              <View
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'row',
+                  padding: 16,
+                  backgroundColor: theme.backgroundInverted,
+                  borderRadius: 20,
+                  columnGap: 10,
+                  alignItems: 'center',
+                }}
+              >
+                <View style={{ width: 120 }}>
+                  <Image
+                    source={require('../../assets/images/vectors/macro_icon.png')}
+                    style={styles.image}
+                    resizeMode={'contain'}
+                  />
+                </View>
+                <View style={{ flex: 1, rowGap: 8 }}>
+                  <AppText
+                    style={{
+                      color: theme.background,
+                      fontSize: 19,
+                      fontWeight: '800',
+                    }}
+                  >
+                    {'¿Este snack es fit o fat?'}
+                  </AppText>
+                  <AppText style={{ color: theme.dark100, fontSize: 16.5 }}>
+                    {
+                      'Busca tus alimentos favoritos y revisa sus macros sin juzgar 😌'
+                    }
+                  </AppText>
+                </View>
               </View>
-              <View style={{ flex: 1, rowGap: 8 }}>
-                <AppText
-                  style={{
-                    color: theme.background,
-                    fontSize: 19,
-                    fontWeight: '800',
-                  }}
-                >
-                  {'¿Este snack es fit o fat?'}
-                </AppText>
-                <AppText style={{ color: theme.dark100, fontSize: 16.5 }}>
-                  {
-                    'Busca tus alimentos favoritos y revisa sus macros sin juzgar 😌'
-                  }
-                </AppText>
-              </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+
+          {isTrainer && (
+            <Image
+              source={require('../../assets/images/trainer.png')}
+              style={styles.image}
+              resizeMode={'cover'}
+            />
+          )}
 
           {/* My activity section */}
           <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>{'Mis actividades'}</AppText>
+            <AppText style={styles.sectionTitle}>
+              {isTrainer ? 'Mis calificaciones' : 'Mis actividades'}
+            </AppText>
             <TouchableOpacity
               onPress={handleActivityViewAll}
               style={styles.sectionAction}
@@ -167,140 +188,225 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <View style={{ flexDirection: 'row', columnGap: 10 }}>
-            {!!routines?.[0] && (
-              <Animated.View
-                entering={FadeInUp.delay(100).duration(500)}
-                style={[
-                  styles.card,
-                  { backgroundColor: theme.dark300, flex: 1 },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push(`${ROUTES.routines}/${routines?.[0].id}`)
-                  }
+          {!isTrainer ? (
+            <View style={{ flexDirection: 'row', columnGap: 10 }}>
+              {!!routines?.[0] && (
+                <Animated.View
+                  entering={FadeInUp.delay(100).duration(500)}
+                  style={[
+                    styles.card,
+                    { backgroundColor: theme.dark300, flex: 1 },
+                  ]}
                 >
-                  <View style={styles.iconWrapper}>
-                    <RoutineSVG width={75} height={75} />
-                  </View>
-                  <View style={{ rowGap: 6, flex: 1 }}>
-                    <AppText style={styles.cardTitle}>
-                      {routines[0].resourceName?.split('-')?.[0]}
-                    </AppText>
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(`${ROUTES.routines}/${routines?.[0].id}`)
+                    }
+                  >
+                    <View style={styles.iconWrapper}>
+                      <RoutineSVG width={75} height={75} />
+                    </View>
+                    <View style={{ rowGap: 6, flex: 1 }}>
+                      <AppText style={styles.cardTitle}>
+                        {routines[0].resourceName?.split('-')?.[0]}
+                      </AppText>
 
-                    <AppText style={styles.cardSubBold}>
-                      {`Entrenador: ${routines[0]?.trainerName}`}
-                    </AppText>
-                  </View>
-                  <View style={{ alignSelf: 'flex-end' }}>
-                    <Tag
-                      label={routines?.[0].resourceType}
-                      textColor={theme.background}
-                      backgroundColor={theme.backgroundInverted}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-            {!!diets?.[0] && (
-              <Animated.View
-                entering={FadeInUp.delay(100).duration(500)}
-                style={[
-                  styles.card,
-                  { backgroundColor: theme.dark600, flex: 1 },
-                ]}
-              >
-                <TouchableOpacity
-                  onPress={() =>
-                    router.push(`${ROUTES.diets}/${diets?.[0].id}`)
-                  }
+                      <AppText style={styles.cardSubBold}>
+                        {`Entrenador: ${routines[0]?.trainerName}`}
+                      </AppText>
+                    </View>
+                    <View style={{ alignSelf: 'flex-end' }}>
+                      <Tag
+                        label={routines?.[0].resourceType}
+                        textColor={theme.background}
+                        backgroundColor={theme.backgroundInverted}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+              {!!diets?.[0] && (
+                <Animated.View
+                  entering={FadeInUp.delay(100).duration(500)}
+                  style={[
+                    styles.card,
+                    { backgroundColor: theme.dark600, flex: 1 },
+                  ]}
                 >
-                  <View style={styles.iconWrapper}>
-                    <DietSVG width={75} height={75} />
-                  </View>
-                  <View style={{ rowGap: 4, flex: 1 }}>
-                    <AppText
-                      style={[styles.cardTitle, { color: theme.dark100 }]}
-                    >
-                      {diets[0].resourceName?.split('-')?.[0]}
-                    </AppText>
+                  <TouchableOpacity
+                    onPress={() =>
+                      router.push(`${ROUTES.diets}/${diets?.[0].id}`)
+                    }
+                  >
+                    <View style={styles.iconWrapper}>
+                      <DietSVG width={75} height={75} />
+                    </View>
+                    <View style={{ rowGap: 4, flex: 1 }}>
+                      <AppText
+                        style={[styles.cardTitle, { color: theme.dark100 }]}
+                      >
+                        {diets[0].resourceName?.split('-')?.[0]}
+                      </AppText>
 
-                    <AppText
-                      style={[styles.cardSubBold, { color: theme.dark200 }]}
-                    >
-                      {`Entrenador: ${routines?.[0]?.trainerName}`}
-                    </AppText>
-                  </View>
-                  <View style={{ alignSelf: 'flex-end' }}>
-                    <Tag
-                      label={diets[0].resourceType}
-                      textColor={theme.backgroundInverted}
-                      backgroundColor={theme.background}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </Animated.View>
-            )}
-          </View>
+                      <AppText
+                        style={[styles.cardSubBold, { color: theme.dark200 }]}
+                      >
+                        {`Entrenador: ${routines?.[0]?.trainerName}`}
+                      </AppText>
+                    </View>
+                    <View style={{ alignSelf: 'flex-end' }}>
+                      <Tag
+                        label={diets[0].resourceType}
+                        textColor={theme.backgroundInverted}
+                        backgroundColor={theme.background}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </Animated.View>
+              )}
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ columnGap: 8 }}
+            >
+              {reviews?.content?.slice(0, 4)?.map((review) => {
+                const emojiIndex = (review?.rating ?? 3) - 1;
+
+                return (
+                  <Animated.View
+                    key={review?.id}
+                    entering={FadeInUp.delay(100).duration(500)}
+                    style={[
+                      styles.card,
+                      {
+                        backgroundColor: theme.dark200,
+                        maxWidth: 200,
+                        alignSelf: 'flex-start',
+                        padding: 10,
+                      },
+                    ]}
+                  >
+                    <View style={{ rowGap: 6 }}>
+                      {/* Name */}
+                      <AppText
+                        style={{
+                          fontWeight: '600',
+                          fontSize: 17,
+                          color: theme.dark900,
+                        }}
+                      >
+                        {review?.clientName}
+                      </AppText>
+
+                      {/* Emoji + Label */}
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        <AppText style={{ fontSize: 18 }}>
+                          {EMOJIS[emojiIndex]}
+                        </AppText>
+                        <AppText
+                          style={{ color: theme.textSecondary, fontSize: 14 }}
+                        >
+                          {EMOJIS_LABEL[emojiIndex]}
+                        </AppText>
+                      </View>
+
+                      {/* Comment */}
+                      <AppText
+                        style={{
+                          fontWeight: '600',
+                          color: theme.textSecondary,
+                          fontSize: 14,
+                        }}
+                        numberOfLines={3}
+                      >
+                        {'Comentario:'}
+                      </AppText>
+                      <AppText
+                        style={{ color: theme.textSecondary, fontSize: 16 }}
+                        numberOfLines={3}
+                      >
+                        {truncateWords(review?.comment, 20)}
+                      </AppText>
+                    </View>
+                  </Animated.View>
+                );
+              })}
+            </ScrollView>
+          )}
 
           {/* Featured Trainers */}
-          <View style={styles.sectionHeader}>
-            <AppText style={styles.sectionTitle}>
-              {'Entrenadores destacados'}
-            </AppText>
-            <TouchableOpacity
-              onPress={handleTrainersClick}
-              style={styles.sectionAction}
-            >
-              <AppText style={styles.sectionActionText}>{'Ver todos'}</AppText>
-              <Feather
-                color={theme.successText}
-                size={16}
-                name="chevrons-right"
-              />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ columnGap: 8 }}
-          >
-            {trainers?.slice(0, 4)?.map((trainer) => (
-              <Animated.View
-                key={trainer?.id}
-                entering={FadeInUp.delay(100).duration(500)}
-                style={[
-                  styles.card,
-                  {
-                    backgroundColor: theme.dark200,
-                    maxWidth: 200,
-                    alignSelf: 'flex-start',
-                  },
-                ]}
-              >
-                <View style={{ rowGap: 4 }}>
-                  <Image
-                    source={{ uri: getUserAvatarURL(trainer?.person) }}
-                    style={[styles.avatar, { marginBottom: 4 }]}
+          {!isTrainer && (
+            <>
+              <View style={styles.sectionHeader}>
+                <AppText style={styles.sectionTitle}>
+                  {'Entrenadores destacados'}
+                </AppText>
+                <TouchableOpacity
+                  onPress={handleTrainersClick}
+                  style={styles.sectionAction}
+                >
+                  <AppText style={styles.sectionActionText}>
+                    {'Ver todos'}
+                  </AppText>
+                  <Feather
+                    color={theme.successText}
+                    size={16}
+                    name="chevrons-right"
                   />
-                  <AppText
-                    style={{
-                      fontWeight: '600',
-                      fontSize: 17,
-                      color: theme.dark900,
-                    }}
+                </TouchableOpacity>
+              </View>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ columnGap: 8 }}
+              >
+                {trainers?.slice(0, 4)?.map((trainer) => (
+                  <Animated.View
+                    key={trainer?.id}
+                    entering={FadeInUp.delay(100).duration(500)}
+                    style={[
+                      styles.card,
+                      {
+                        backgroundColor: theme.dark200,
+                        maxWidth: 200,
+                        alignSelf: 'flex-start',
+                      },
+                    ]}
                   >
-                    {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
-                  </AppText>
-                  <AppText style={{ color: theme.textSecondary, fontSize: 16 }}>
-                    {truncateWords(trainer?.person?.bio ?? '', 20)}
-                  </AppText>
-                </View>
-              </Animated.View>
-            ))}
-          </ScrollView>
+                    <View style={{ rowGap: 4 }}>
+                      <Image
+                        source={{ uri: getUserAvatarURL(trainer?.person) }}
+                        style={[styles.avatar, { marginBottom: 4 }]}
+                      />
+                      <AppText
+                        style={{
+                          fontWeight: '600',
+                          fontSize: 17,
+                          color: theme.dark900,
+                        }}
+                      >
+                        {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
+                      </AppText>
+                      <AppText
+                        style={{ color: theme.textSecondary, fontSize: 16 }}
+                      >
+                        {truncateWords(trainer?.person?.bio ?? '', 20)}
+                      </AppText>
+                    </View>
+                  </Animated.View>
+                ))}
+              </ScrollView>
+            </>
+          )}
         </View>
       </PageContainer>
     </View>
@@ -334,7 +440,7 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.dark100,
       padding: 16,
       rowGap: 20,
-      paddingBottom: 100,
+      paddingBottom: 300,
     },
     sectionHeader: {
       flexDirection: 'row',
@@ -401,6 +507,6 @@ const getStyles = (theme: FullTheme) =>
     },
     image: {
       width: '100%',
-      height: 100,
+      height: 200,
     },
   });

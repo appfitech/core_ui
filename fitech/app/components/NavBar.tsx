@@ -15,12 +15,16 @@ import { AppText } from './AppText';
 
 SplashScreen.preventAutoHideAsync();
 
-const NAV_ITEMS_MAPPER = {
+const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
   home: { icon: 'home', route: ROUTES.home, label: 'Home' },
   workouts: { icon: 'activity', route: ROUTES.workouts, label: 'Actividad' },
-  trainers: { icon: 'users', route: ROUTES.trainers, label: 'Trainers' },
+  trainers: {
+    icon: 'users',
+    route: isTrainer ? ROUTES.trainerClients : ROUTES.trainers,
+    label: isTrainer ? 'Clientes' : 'Trainers',
+  },
   profile: { icon: 'user', route: ROUTES.profile, label: 'Perfil' },
-};
+});
 
 export function NavBar() {
   const router = useRouter();
@@ -32,6 +36,7 @@ export function NavBar() {
 
   const currentRoute = segments[0];
   const isPremium = user?.user?.premium;
+  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const handleNavItemClick = useCallback(
     (route) => () => {
@@ -52,7 +57,7 @@ export function NavBar() {
           { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
         ]}
       >
-        {Object.entries(NAV_ITEMS_MAPPER).map(
+        {Object.entries(NAV_ITEMS_MAPPER(isTrainer)).map(
           ([key, { icon, route, label }]) => {
             const isCurrentRoute = currentRoute === key;
 

@@ -6,6 +6,11 @@ import {
   UserResponseDtoReadable,
 } from '@/types/api/types.gen';
 
+enum UserType {
+  CLIENT = 0,
+  TRAINER = 1,
+}
+
 type UserStore = {
   user: LoginResponseDtoReadable | null;
   setUser: (data: LoginResponseDtoReadable) => Promise<void>;
@@ -14,6 +19,7 @@ type UserStore = {
   updateUserInfo: (data: UserResponseDtoReadable) => Promise<void>;
   updateProfilePhotoId: (photoId: number) => Promise<void>;
   getToken: () => string | undefined;
+  getIsTrainer: () => boolean;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -73,4 +79,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   getToken: () => {
     return get().user?.token;
   },
+
+  getIsTrainer: () => get().user?.user?.type === UserType.TRAINER,
 }));

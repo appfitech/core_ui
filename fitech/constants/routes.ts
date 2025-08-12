@@ -13,4 +13,7 @@ export const ROUTES = {
   diets: '/diets',
   routines: '/routines',
   contracts: '/contracts',
+  trainerReviews: '/trainer-reviews',
+  trainerClients: '/trainer-clients',
+  trainerPayments: '/trainer-payments',
 } as const;
