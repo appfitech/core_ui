@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
@@ -25,12 +25,14 @@ import RoutineSVG from '../../assets/images/vectors/routine.svg';
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
 import { useGetDiets } from '../api/queries/use-get-diets';
 import { useGetRoutines } from '../api/queries/use-get-routines';
+import { useTrainerGetPaymentsSummary } from '../api/queries/use-trainer-get-payments';
 import { useTrainerGetReviews } from '../api/queries/use-trainer-get-reviews';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 import { SupportButton } from '../components/SupportButton';
 import { Tag } from '../components/Tag';
+import { SummaryCard } from '../trainer-payments';
 
 const EMOJIS = ['😠', '😕', '😐', '🙂', '😄'];
 const EMOJIS_LABEL = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Muy bueno'];
@@ -43,11 +45,11 @@ export default function HomeScreen() {
   const styles = getStyles(theme);
   const [trainers, setTrainers] = useState<PublicTrainerDtoReadable[]>([]);
   const insets = useSafeAreaInsets();
-  const { data: reviews } = useTrainerGetReviews();
-
-  console.log('[K] reviews', reviews);
 
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+
+  const { data: reviews } = useTrainerGetReviews(isTrainer);
+  const { data: paymentsSummary } = useTrainerGetPaymentsSummary(isTrainer);
 
   const { data: routines } = useGetRoutines();
   const { data: diets } = useGetDiets();
@@ -168,6 +170,38 @@ export default function HomeScreen() {
               style={styles.image}
               resizeMode={'cover'}
             />
+          )}
+
+          {isTrainer && (
+            <AppText style={styles.sectionTitle}>Mis Pagos</AppText>
+          )}
+          {isTrainer && (
+            <View style={{ gap: 12, marginVertical: 6 }}>
+              <SummaryCard
+                icon={<Ionicons name="checkmark-done" size={18} color="#FFF" />}
+                label="COBRADO HASTA LA FECHA"
+                amount={paymentsSummary?.collectedToDate}
+                tone="green"
+              />
+              <SummaryCard
+                icon={<Ionicons name="time-outline" size={18} color="#FFF" />}
+                label="PENDIENTE DE COBRO"
+                amount={paymentsSummary?.pendingCollection}
+                tone="blue"
+              />
+              <SummaryCard
+                icon={
+                  <MaterialCommunityIcons
+                    name="wallet-outline"
+                    size={18}
+                    color="#FFF"
+                  />
+                }
+                label="DISPONIBLE PARA COBRAR"
+                amount={paymentsSummary?.availableForCollection}
+                tone="orange"
+              />
+            </View>
           )}
 
           {/* My activity section */}
@@ -507,6 +541,6 @@ const getStyles = (theme: FullTheme) =>
     },
     image: {
       width: '100%',
-      height: 200,
+      height: 180,
     },
   });

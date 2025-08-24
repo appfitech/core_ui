@@ -21,6 +21,17 @@ import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 
+function extractErrorMessage(err: unknown): string {
+  const anyErr: any = err;
+  if (typeof anyErr === 'string') return anyErr;
+  if (anyErr?.response?.data?.message)
+    return String(anyErr.response.data.message);
+  if (anyErr?.response?.data?.error) return String(anyErr.response.data.error);
+  if (anyErr?.data?.message) return String(anyErr.data.message);
+  if (anyErr?.message) return String(anyErr.message);
+  return 'Ocurrió un error al iniciar sesión. Inténtalo nuevamente.';
+}
+
 export default function LoginScreen() {
   const { theme } = useTheme();
   useAuthRedirect();
@@ -32,6 +43,7 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayPass, setDisplayPass] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const router = useRouter();
   const setUser = useUserStore((s) => s.setUser);
@@ -39,8 +51,15 @@ export default function LoginScreen() {
   const { mutate: submitLogin } = useLogin();
 
   useEffect(() => {
-    setTimeout(() => setShowUI(true), 600);
+    const t = setTimeout(() => setShowUI(true), 600);
+    return () => clearTimeout(t);
   }, []);
+
+  useEffect(() => {
+    if (!errorMsg) return;
+    const t = setTimeout(() => setErrorMsg(null), 10000);
+    return () => clearTimeout(t);
+  }, [errorMsg]);
 
   const handleChange = useCallback(
     (key: string) => (text: string) => {
@@ -54,12 +73,17 @@ export default function LoginScreen() {
   );
 
   const handleLogin = useCallback(() => {
+    setErrorMsg(null);
     submitLogin(
       { username, password },
       {
         onSuccess: (response) => {
           setUser(response);
           router.replace(ROUTES.home);
+        },
+        onError: (error) => {
+          console.log('[Login] error', error);
+          setErrorMsg(extractErrorMessage(error));
         },
       },
     );
@@ -101,6 +125,30 @@ export default function LoginScreen() {
           entering={SlideInDown.springify().damping(15)}
           style={styles.card}
         >
+          {/* Error banner */}
+          {errorMsg && (
+            <Animated.View entering={FadeInUp} style={styles.errorBanner}>
+              <Feather
+                name="alert-triangle"
+                size={18}
+                color={styles.errorText.color as string}
+              />
+              <AppText style={styles.errorText} numberOfLines={3}>
+                {errorMsg}
+              </AppText>
+              <TouchableOpacity
+                onPress={() => setErrorMsg(null)}
+                hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+              >
+                <Feather
+                  name="x"
+                  size={18}
+                  color={styles.errorText.color as string}
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          )}
+
           <View style={styles.inputWrapper}>
             <Feather
               name="at-sign"
@@ -115,6 +163,8 @@ export default function LoginScreen() {
               style={[styles.input, { flex: 1 }]}
               value={username}
               onChangeText={handleChange('username')}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
           </View>
 
@@ -126,7 +176,7 @@ export default function LoginScreen() {
               style={styles.iconLeft}
             />
             <TextInput
-              placeholder={'Contraseña'}
+              placeholder="Contraseña"
               placeholderTextColor={theme.dark800}
               secureTextEntry={!displayPass}
               value={password}
@@ -158,11 +208,7 @@ export default function LoginScreen() {
 
           <View style={styles.footerText}>
             <AppText
-              style={{
-                color: theme.dark400,
-                fontSize: 18,
-                fontWeight: '500',
-              }}
+              style={{ color: theme.dark400, fontSize: 18, fontWeight: '500' }}
             >
               {'¿No tienes una cuenta?'}
             </AppText>
@@ -209,6 +255,26 @@ const getStyles = (theme: FullTheme) =>
       elevation: 6,
       marginTop: 20,
     },
+    // Error banner styles
+    errorBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderRadius: 10,
+      marginBottom: 12,
+      backgroundColor: theme.errorBackground,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.errorBorder,
+    },
+    errorText: {
+      flex: 1,
+      color: theme.errorText,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+
     optionsRow: {
       flexDirection: 'row',
       justifyContent: 'flex-end',

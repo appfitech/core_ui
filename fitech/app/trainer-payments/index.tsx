@@ -1,7 +1,14 @@
 // TrainerPaymentsScreen.tsx
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useMemo, useState } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -38,20 +45,12 @@ type Payment = {
   collectionRequestedAt: string | null;
 };
 
-type PaymentsResponse = {
-  payments: Payment[];
-  summary: PaymentsSummary;
-  totalPages: number;
-  currentPage: number;
-  totalElements: number;
-};
-
 const PEN = new Intl.NumberFormat('es-PE', {
   style: 'currency',
   currency: 'PEN',
   minimumFractionDigits: 2,
 });
-const formatPEN = (n: number) => PEN.format(n);
+const formatPEN = (n: number | undefined) => PEN.format(n ?? 0);
 
 const formatDate = (iso: string | null) =>
   iso
@@ -64,38 +63,69 @@ const formatDate = (iso: string | null) =>
         .replace('.', '')
     : '—';
 
-const SummaryCard = ({
+/* -------------------------- Summary Card -------------------------- */
+export const SummaryCard = ({
   icon,
   label,
   amount,
-  tone = 'purple',
+  tone,
 }: {
   icon: React.ReactNode;
   label: string;
-  amount: number;
-  tone?: 'purple' | 'orange' | 'green';
+  amount?: number;
+  tone: 'green' | 'blue' | 'orange';
 }) => {
-  const colorMap: Record<string, { bg: string; iconBg: string; text: string }> =
-    {
-      purple: { bg: '#F3E8FF', iconBg: '#7E57C2', text: '#4A148C' },
-      orange: { bg: '#FFF3E0', iconBg: '#FB8C00', text: '#E65100' },
-      green: { bg: '#E8F5E9', iconBg: '#2E7D32', text: '#1B5E20' },
-    };
-
-  const c = colorMap[tone];
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
+  const palette =
+    tone === 'green'
+      ? {
+          bg: theme.successBackground,
+          border: theme.successBorder,
+          text: theme.successText,
+          iconBg: theme.success,
+        }
+      : tone === 'blue'
+        ? {
+            bg: theme.infoBackground,
+            border: theme.infoBorder,
+            text: theme.infoText,
+            iconBg: theme.info,
+          }
+        : {
+            bg: theme.orangeBackground,
+            border: theme.orangeBorder,
+            text: theme.orangeText,
+            iconBg: theme.orange,
+          };
+
   return (
-    <View style={[styles.summaryCard, { backgroundColor: '#FFF' }]}>
-      <View style={[styles.summaryIconWrap, { backgroundColor: c.iconBg }]}>
+    <View
+      style={[
+        styles.summaryCard,
+        {
+          backgroundColor: theme.background,
+          borderColor: theme.border,
+        },
+      ]}
+    >
+      <View
+        style={[styles.summaryIconWrap, { backgroundColor: palette.iconBg }]}
+      >
         {icon}
       </View>
       <View style={{ flex: 1 }}>
-        <AppText style={[styles.summaryLabel, { color: '#5C5F62' }]}>
+        <AppText
+          style={[styles.summaryLabel, { color: theme.textSecondary }]}
+          numberOfLines={1}
+        >
           {label}
         </AppText>
-        <AppText style={[styles.summaryAmount, { color: c.text }]}>
+        <AppText
+          style={[styles.summaryAmount, { color: palette.text }]}
+          numberOfLines={1}
+        >
           {formatPEN(amount)}
         </AppText>
       </View>
@@ -103,7 +133,12 @@ const SummaryCard = ({
   );
 };
 
+/* --------------------------- Status Pill -------------------------- */
 const StatusPill = ({ status }: { status: Payment['paymentStatus'] }) => {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
+  // Shorter text so it doesn't wrap vertically
   const map: Record<
     Payment['paymentStatus'],
     {
@@ -114,64 +149,63 @@ const StatusPill = ({ status }: { status: Payment['paymentStatus'] }) => {
     }
   > = {
     PENDING_CLIENT_APPROVAL: {
-      label: 'Pendiente de aprobación del cliente',
-      bg: '#F3F4F6',
-      text: '#374151',
+      label: 'Pendiente aprobación',
+      bg: theme.backgroundInput,
+      text: theme.textPrimary,
       icon: 'time-outline',
     },
     AVAILABLE_FOR_COLLECTION: {
       label: 'Disponible para cobrar',
-      bg: '#EFE9FF',
-      text: '#5E35B1',
+      bg: theme.infoBackground,
+      text: theme.infoText,
       icon: 'time-outline',
     },
     COLLECTED: {
       label: 'Cobrado',
-      bg: '#E6F4EA',
-      text: '#1E7B4D',
+      bg: theme.successBackground,
+      text: theme.successText,
       icon: 'checkmark-circle-outline',
     },
   };
 
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-
-  const s = map[status] ?? {};
+  const s = map[status];
   return (
-    <View style={[styles.statusPill, { backgroundColor: s?.bg }]}>
+    <View style={[styles.statusPill, { backgroundColor: s.bg }]}>
       <Ionicons
         name={s.icon}
         size={14}
         color={s.text}
         style={{ marginRight: 6 }}
       />
-      <AppText style={[styles.statusText, { color: s.text }]}>
+      <AppText style={[styles.statusText, { color: s.text }]} numberOfLines={1}>
         {s.label}
       </AppText>
     </View>
   );
 };
 
+/* --------------------------- Table Header ------------------------- */
 const TableHeader = () => {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <View style={[styles.row, styles.headerRow]}>
-      <AppText style={[styles.th, { flex: 1.1 }]}>Fecha</AppText>
-      <AppText style={[styles.th, { flex: 1.1 }]}>Cliente</AppText>
-      <AppText style={[styles.th, { flex: 1.6 }]}>Servicio</AppText>
+      <AppText style={[styles.th, { flex: 1.0 }]}>Fecha</AppText>
+      <AppText style={[styles.th, { flex: 1.2 }]}>Cliente</AppText>
+      <AppText style={[styles.th, { flex: 1.8 }]}>Servicio</AppText>
       <AppText style={[styles.th, styles.numCol]}>Monto Total</AppText>
       <AppText style={[styles.th, styles.numCol]}>Comisión (5%)</AppText>
       <AppText style={[styles.th, styles.numCol]}>Tus Ganancias</AppText>
-      <AppText style={[styles.th, { flex: 1.4 }]}>Estado</AppText>
-      <AppText style={[styles.th, { width: 82, textAlign: 'center' }]}>
+      <AppText style={[styles.th, { flex: 1.8 }]}>Estado</AppText>
+      <AppText style={[styles.th, { width: 92, textAlign: 'center' }]}>
         Acciones
       </AppText>
     </View>
   );
 };
 
+/* ---------------------------- Table Row --------------------------- */
 const PaymentRow = ({
   item,
   onCollect,
@@ -179,19 +213,22 @@ const PaymentRow = ({
   item: Payment;
   onCollect: (p: Payment) => void;
 }) => {
-  const isCollectable = item.paymentStatus === 'AVAILABLE_FOR_COLLECTION';
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const isCollectable = item.paymentStatus === 'AVAILABLE_FOR_COLLECTION';
 
   return (
     <View style={[styles.row, styles.bodyRow]}>
-      <AppText style={[styles.td, { flex: 1.1 }]}>
+      <AppText style={[styles.td, { flex: 1.0 }]}>
         {formatDate(item.paymentDate)}
       </AppText>
-      <AppText style={[styles.td, { flex: 1.1 }]}>{item.clientName}</AppText>
-      <AppText style={[styles.td, { flex: 1.6 }]} numberOfLines={2}>
+      <AppText style={[styles.td, { flex: 1.2 }]} numberOfLines={1}>
+        {item.clientName}
+      </AppText>
+      <AppText style={[styles.td, { flex: 1.8 }]} numberOfLines={1}>
         {item.serviceName}
       </AppText>
+
       <AppText style={[styles.td, styles.numCol]}>
         {formatPEN(item.totalAmount)}
       </AppText>
@@ -201,16 +238,18 @@ const PaymentRow = ({
       <AppText
         style={[
           styles.td,
-          [styles.numCol, { color: '#1E7B4D', fontWeight: '700' }],
+          styles.numCol,
+          { color: theme.primaryText, fontWeight: '800' },
         ]}
       >
         {formatPEN(item.trainerEarnings)}
       </AppText>
-      <View style={[styles.td, { flex: 1.4 }]}>
+
+      <View style={[styles.td, { flex: 1.8, justifyContent: 'center' }]}>
         <StatusPill status={item.paymentStatus} />
       </View>
 
-      <View style={[styles.td, { width: 82, alignItems: 'center' }]}>
+      <View style={[styles.td, { width: 92, alignItems: 'center' }]}>
         {isCollectable ? (
           <TouchableOpacity
             style={styles.collectBtn}
@@ -226,9 +265,11 @@ const PaymentRow = ({
   );
 };
 
+/* --------------------------- Main Screen -------------------------- */
 export default function TrainerPaymentsScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { width } = useWindowDimensions();
 
   const { data: payments } = useTrainerGetPayments();
   const { data: paymentsSummary } = useTrainerGetPaymentsSummary();
@@ -249,30 +290,25 @@ export default function TrainerPaymentsScreen() {
       const endOk =
         !endDate || (d !== null && d <= new Date(endDate).getTime());
 
-      // If there is no paymentDate, we only include it when there is no date filter
       const dateOk = !startDate && !endDate ? true : startOk && endOk;
-
       return statusOk && dateOk;
     });
   }, [payments, status, startDate, endDate]);
 
-  const onApplyFilters = () => {
-    // In a real app, call your query with params:
-    // refetch({ status, startDate, endDate })
-  };
+  const onApplyFilters = () => {};
   const onClearFilters = () => {
     setStatus('ALL');
     setStartDate(null);
     setEndDate(null);
   };
-
   const onCollect = (p: Payment) => {
-    // Wire your "request collection" or "withdraw" action here.
     console.log('Collect pressed for payment:', p.id);
   };
 
+  const TABLE_MIN_WIDTH = 920; // give columns breathing room
+
   return (
-    <PageContainer hasBackButton={false} style={{ padding: 16 }}>
+    <PageContainer hasBackButton={true} style={{ padding: 16 }}>
       <View style={{ rowGap: 6, paddingVertical: 8 }}>
         <AppText style={styles.title}>Mis Pagos</AppText>
         <AppText style={styles.subtitle}>
@@ -292,7 +328,7 @@ export default function TrainerPaymentsScreen() {
           icon={<Ionicons name="time-outline" size={18} color="#FFF" />}
           label="PENDIENTE DE COBRO"
           amount={paymentsSummary?.pendingCollection}
-          tone="purple"
+          tone="blue"
         />
         <SummaryCard
           icon={
@@ -317,8 +353,7 @@ export default function TrainerPaymentsScreen() {
           <TouchableOpacity
             style={styles.inputLike}
             onPress={() => {
-              // Replace with ActionSheet or your dropdown.
-              // Quick cycle for demo:
+              // demo cycle
               setStatus((prev) =>
                 prev === 'ALL'
                   ? 'PENDING_CLIENT_APPROVAL'
@@ -332,16 +367,16 @@ export default function TrainerPaymentsScreen() {
           >
             <AppText style={styles.inputLabel}>Estado de Cobro</AppText>
             <View style={styles.inputValueRow}>
-              <AppText style={styles.inputValue}>
+              <AppText style={styles.inputValue} numberOfLines={1}>
                 {status === 'ALL'
                   ? 'Todos los estados'
                   : status === 'PENDING_CLIENT_APPROVAL'
-                    ? 'Pendiente de aprobación'
+                    ? 'Pendiente aprobación'
                     : status === 'AVAILABLE_FOR_COLLECTION'
                       ? 'Disponible para cobrar'
                       : 'Cobrado'}
               </AppText>
-              <Ionicons name="chevron-down" size={16} color="#6B7280" />
+              <Ionicons name="chevron-down" size={16} color={theme.dark400} />
             </View>
           </TouchableOpacity>
 
@@ -349,8 +384,6 @@ export default function TrainerPaymentsScreen() {
           <TouchableOpacity
             style={styles.inputLike}
             onPress={() => {
-              // Hook up a DateTimePicker
-              // For now, toggle a sample date:
               setStartDate((d) => (d ? null : new Date().toISOString()));
             }}
           >
@@ -359,7 +392,11 @@ export default function TrainerPaymentsScreen() {
               <AppText style={styles.inputValue}>
                 {formatDate(startDate)}
               </AppText>
-              <Ionicons name="calendar-outline" size={16} color="#6B7280" />
+              <Ionicons
+                name="calendar-outline"
+                size={16}
+                color={theme.dark400}
+              />
             </View>
           </TouchableOpacity>
 
@@ -373,7 +410,11 @@ export default function TrainerPaymentsScreen() {
             <AppText style={styles.inputLabel}>Fecha Fin</AppText>
             <View style={styles.inputValueRow}>
               <AppText style={styles.inputValue}>{formatDate(endDate)}</AppText>
-              <Ionicons name="calendar-outline" size={16} color="#6B7280" />
+              <Ionicons
+                name="calendar-outline"
+                size={16}
+                color={theme.dark400}
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -395,31 +436,41 @@ export default function TrainerPaymentsScreen() {
         </View>
       </View>
 
-      {/* Payment history (table-like) */}
+      {/* Payment history (horizontal-scroll table) */}
       <View style={styles.tableCard}>
         <AppText style={styles.tableTitle}>Historial de Pagos</AppText>
-        <TableHeader />
 
-        <FlatList
-          data={filtered}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => (
-            <PaymentRow item={item} onCollect={onCollect} />
-          )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          ListEmptyComponent={
-            <View style={{ paddingVertical: 18 }}>
-              <AppText style={styles.muted}>
-                No hay pagos que coincidan con los filtros.
-              </AppText>
-            </View>
-          }
-        />
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 4 }}
+        >
+          <View style={{ width: Math.max(TABLE_MIN_WIDTH, width - 32) }}>
+            <TableHeader />
+
+            <FlatList
+              data={filtered}
+              keyExtractor={(item) => String(item.id)}
+              renderItem={({ item }) => (
+                <PaymentRow item={item} onCollect={onCollect} />
+              )}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              ListEmptyComponent={
+                <View style={{ paddingVertical: 18 }}>
+                  <AppText style={styles.muted}>
+                    No hay pagos que coincidan con los filtros.
+                  </AppText>
+                </View>
+              }
+            />
+          </View>
+        </ScrollView>
       </View>
     </PageContainer>
   );
 }
 
+/* ------------------------------ Styles ---------------------------- */
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     summaryRow: {
@@ -428,44 +479,37 @@ const getStyles = (theme: FullTheme) =>
     },
     summaryCard: {
       flex: 1,
-      borderRadius: 10,
-      padding: 12,
-      shadowColor: '#000',
-      shadowOpacity: 0.06,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
+      borderRadius: 12,
+      padding: 14,
+      borderWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 10,
+      gap: 12,
     },
     summaryIconWrap: {
-      width: 34,
-      height: 34,
-      borderRadius: 8,
+      width: 36,
+      height: 36,
+      borderRadius: 10,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    summaryLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.2 },
-    summaryAmount: { fontSize: 18, fontWeight: '800', marginTop: 2 },
+    summaryLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.2 },
+    summaryAmount: { fontSize: 20, fontWeight: '900', marginTop: 2 },
 
     filtersCard: {
-      backgroundColor: '#FFF',
+      backgroundColor: theme.background,
       borderRadius: 12,
-      padding: 12,
+      padding: 14,
       marginTop: 8,
       marginBottom: 14,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     filtersTitle: {
-      fontSize: 15,
-      fontWeight: '700',
-      color: '#111',
-      marginBottom: 8,
+      fontSize: 16,
+      fontWeight: '800',
+      color: theme.textPrimary,
+      marginBottom: 10,
     },
     filtersRow: {
       flexDirection: 'row',
@@ -473,23 +517,25 @@ const getStyles = (theme: FullTheme) =>
     },
     inputLike: {
       flex: 1,
-      backgroundColor: '#F3F4F6',
+      backgroundColor: theme.backgroundInput,
       borderRadius: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
+      paddingHorizontal: 12,
+      paddingVertical: 10,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     inputLabel: {
-      fontSize: 11,
-      color: '#6B7280',
-      marginBottom: 2,
-      fontWeight: '600',
+      fontSize: 12,
+      color: theme.dark500,
+      marginBottom: 4,
+      fontWeight: '700',
     },
     inputValueRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    inputValue: { fontSize: 13, color: '#111', fontWeight: '600' },
+    inputValue: { fontSize: 14, color: theme.textPrimary, fontWeight: '700' },
 
     filtersActions: {
       flexDirection: 'row',
@@ -501,83 +547,88 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
       backgroundColor: theme.primary,
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 10,
+      borderRadius: 12,
+      paddingHorizontal: 14,
+      paddingVertical: 12,
+      shadowColor: theme.primary,
+      shadowOpacity: 0.25,
+      shadowRadius: 6,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 2,
     },
-    applyBtnText: { color: '#FFF', fontWeight: '800', fontSize: 13 },
-    clearText: { color: '#6B7280', fontWeight: '700' },
+    applyBtnText: { color: theme.background, fontWeight: '900', fontSize: 13 },
+    clearText: { color: theme.dark500, fontWeight: '800' },
 
     tableCard: {
-      backgroundColor: '#FFF',
+      backgroundColor: theme.background,
       borderRadius: 12,
       padding: 12,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     tableTitle: {
-      fontSize: 15,
-      fontWeight: '700',
-      color: '#111',
-      marginBottom: 6,
+      fontSize: 16,
+      fontWeight: '900',
+      color: theme.textPrimary,
+      marginBottom: 8,
     },
     headerRow: {
-      backgroundColor: '#F9FAFB',
+      backgroundColor: theme.backgroundInput,
       borderTopLeftRadius: 8,
       borderTopRightRadius: 8,
     },
     row: {
       flexDirection: 'row',
-      alignItems: 'stretch',
-      paddingVertical: 10,
-      paddingHorizontal: 6,
+      alignItems: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 8,
     },
     th: {
-      fontSize: 11,
-      fontWeight: '800',
-      color: '#4B5563',
-      paddingHorizontal: 4,
+      fontSize: 12,
+      fontWeight: '900',
+      color: theme.textSecondary,
+      paddingHorizontal: 6,
     },
     td: {
-      paddingHorizontal: 4,
-      fontSize: 12,
-      color: '#111',
+      paddingHorizontal: 6,
+      fontSize: 13,
+      color: theme.textPrimary,
     },
-    numCol: { flex: 1.1, textAlign: 'right' as const },
-    bodyRow: { backgroundColor: '#FFF' },
-    separator: {
-      height: 1,
-      backgroundColor: '#E5E7EB',
-    },
+    numCol: { flex: 1.2, textAlign: 'right' as const },
+    bodyRow: { backgroundColor: theme.background },
+    separator: { height: 1, backgroundColor: theme.border },
 
     statusPill: {
       flexDirection: 'row',
       alignItems: 'center',
       borderRadius: 999,
-      paddingHorizontal: 8,
-      paddingVertical: 4,
+      paddingHorizontal: 10,
+      paddingVertical: 6,
       alignSelf: 'flex-start',
     },
-    statusText: { fontSize: 11, fontWeight: '700' },
+    statusText: { fontSize: 12, fontWeight: '800' },
 
     collectBtn: {
-      backgroundColor: '#3F51B5',
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 8,
+      backgroundColor: theme.primary,
+      paddingVertical: 10,
+      paddingHorizontal: 14,
+      borderRadius: 10,
     },
-    collectBtnText: { color: '#FFF', fontWeight: '800', fontSize: 12 },
+    collectBtnText: {
+      color: theme.background,
+      fontWeight: '900',
+      fontSize: 12,
+    },
 
-    muted: { color: '#6B7280' },
+    muted: { color: theme.dark500 },
 
     ...HEADING_STYLES(theme),
     title: {
       ...HEADING_STYLES(theme).title,
+      color: theme.textPrimary,
     },
     subtitle: {
       ...HEADING_STYLES(theme).subtitle,
+      color: theme.dark600,
     },
   });

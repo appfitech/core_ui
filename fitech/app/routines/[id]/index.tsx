@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useGetRoutineById } from '@/app/api/queries/use-get-routine-by-id';
 import { AppText } from '@/app/components/AppText';
@@ -86,20 +86,6 @@ export default function RoutineDetailScreen() {
             <AppText style={styles.content}>{routine?.trainerNotes}</AppText>
           </View>
         </View>
-        <TouchableOpacity
-          style={{
-            alignSelf: 'flex-end',
-            padding: 16,
-            backgroundColor: theme.warningBackground,
-            borderRadius: 12,
-          }}
-        >
-          <AppText
-            style={{ color: theme.warningText, fontSize: 16, fontWeight: 600 }}
-          >
-            Descargar PDF
-          </AppText>
-        </TouchableOpacity>
       </View>
     </PageContainer>
   );

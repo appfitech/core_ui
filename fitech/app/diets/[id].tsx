@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -85,20 +85,6 @@ export default function DietDetailScreen() {
             <AppText style={styles.content}>{diet?.trainerNotes}</AppText>
           </View>
         </View>
-        <TouchableOpacity
-          style={{
-            alignSelf: 'flex-end',
-            padding: 16,
-            backgroundColor: theme.warningBackground,
-            borderRadius: 12,
-          }}
-        >
-          <AppText
-            style={{ color: theme.warningText, fontSize: 16, fontWeight: 600 }}
-          >
-            Descargar PDF
-          </AppText>
-        </TouchableOpacity>
       </View>
     </PageContainer>
   );

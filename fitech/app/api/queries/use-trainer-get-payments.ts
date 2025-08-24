@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/user';
 
 import { api } from '../api';
 
-export const useTrainerGetPayments = () => {
+export const useTrainerGetPayments = (enabled = true) => {
   const userId = useUserStore((s) => s?.user?.user?.id);
 
   return useQuery({
@@ -12,10 +12,11 @@ export const useTrainerGetPayments = () => {
     queryFn: async () => {
       return api.get(`/trainers/${userId}/payments`);
     },
+    enabled,
   });
 };
 
-export const useTrainerGetPaymentsSummary = () => {
+export const useTrainerGetPaymentsSummary = (enabled = true) => {
   const userId = useUserStore((s) => s?.user?.user?.id);
 
   return useQuery({
@@ -23,5 +24,6 @@ export const useTrainerGetPaymentsSummary = () => {
     queryFn: async () => {
       return api.get(`/trainers/${userId}/payments/summary`);
     },
+    enabled,
   });
 };

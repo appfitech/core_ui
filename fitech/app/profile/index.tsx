@@ -30,6 +30,7 @@ export default function ProfileScreen() {
   const user = useUserStore((s) => s.user?.user);
 
   const userType = useUserStore((s) => s.user?.user?.type);
+  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const styles = getStyles(theme);
 
@@ -86,7 +87,7 @@ export default function ProfileScreen() {
             textColor={theme.successText}
             backgroundColor={theme.successBackground}
           />
-          {user?.premium && (
+          {user?.premium && !isTrainer && (
             <TouchableOpacity onPress={handleSubscriptionClick}>
               <Tag
                 icon={'dollar-sign'}
@@ -113,8 +114,10 @@ export default function ProfileScreen() {
           label="Galería de Fotos"
           route={'image-gallery'}
         />
-        <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
-        {user?.premium && (
+        {!isTrainer && (
+          <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
+        )}
+        {user?.premium && !isTrainer && (
           <SectionItem
             icon="dollar-sign"
             label="Mi Suscripción"

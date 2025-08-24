@@ -22,11 +22,12 @@ export const useTrainerGetReviewsBreakdown = () => {
   });
 };
 
-export const useTrainerGetReviews = () => {
+export const useTrainerGetReviews = (enabled = true) => {
   return useQuery<Trainer>({
     queryKey: ['get-trainer-reviews'],
     queryFn: async () => {
       return api.get(`/trainer/my-reviews`);
     },
+    enabled,
   });
 };
