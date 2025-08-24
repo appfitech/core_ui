@@ -989,6 +989,16 @@ export type AchievementFileDto = {
 };
 
 /**
+ * DTO for refresh token request containing the expired token
+ */
+export type RefreshTokenRequestDto = {
+  /**
+   * Expired JWT token to be refreshed
+   */
+  token?: string;
+};
+
+/**
  * DTO for user login requests
  */
 export type LoginRequestDto = {
@@ -1855,7 +1865,6 @@ export type MembershipPayment = {
   collectionRequestedAt?: string;
   failureReason?: string;
   cancelled?: boolean;
-  availableForCollection?: boolean;
   collected?: boolean;
   pending?: boolean;
   observed?: boolean;
@@ -1867,6 +1876,7 @@ export type MembershipPayment = {
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
+  availableForCollection?: boolean;
 };
 
 export type MembershipPlan = {
@@ -2887,11 +2897,9 @@ export type UpdateServiceResponse =
 
 export type GetProfileData = {
   body?: never;
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}';
+  url: '/v1/app/profile';
 };
 
 export type GetProfileResponses = {
@@ -2905,11 +2913,9 @@ export type GetProfileResponse = GetProfileResponses[keyof GetProfileResponses];
 
 export type UpdateProfileData = {
   body: ProfileUpdateDtoWritable;
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}';
+  url: '/v1/app/profile';
 };
 
 export type UpdateProfileResponses = {
@@ -2922,7 +2928,45 @@ export type UpdateProfileResponses = {
 export type UpdateProfileResponse =
   UpdateProfileResponses[keyof UpdateProfileResponses];
 
-export type SetProfilePhotoData = {
+export type GetProfile1Data = {
+  body?: never;
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}';
+};
+
+export type GetProfile1Responses = {
+  /**
+   * OK
+   */
+  200: UserResponseDtoReadable;
+};
+
+export type GetProfile1Response =
+  GetProfile1Responses[keyof GetProfile1Responses];
+
+export type UpdateProfile1Data = {
+  body: ProfileUpdateDtoWritable;
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}';
+};
+
+export type UpdateProfile1Responses = {
+  /**
+   * OK
+   */
+  200: UserResponseDtoReadable;
+};
+
+export type UpdateProfile1Response =
+  UpdateProfile1Responses[keyof UpdateProfile1Responses];
+
+export type SetProfilePhotoByIdData = {
   body: {
     [key: string]: number;
   };
@@ -2931,6 +2975,64 @@ export type SetProfilePhotoData = {
   };
   query?: never;
   url: '/v1/app/profile/{userId}/profile-photo';
+};
+
+export type SetProfilePhotoByIdResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
+export type UpdateFitnessGoalsByIdData = {
+  body: {
+    [key: string]: number[];
+  };
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/fitness-goals';
+};
+
+export type UpdateFitnessGoalsByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserResponseDtoReadable;
+};
+
+export type UpdateFitnessGoalsByIdResponse =
+  UpdateFitnessGoalsByIdResponses[keyof UpdateFitnessGoalsByIdResponses];
+
+export type UpdateFitnessGoalByIdData = {
+  body: {
+    [key: string]: number;
+  };
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/fitness-goal';
+};
+
+export type UpdateFitnessGoalByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserResponseDtoReadable;
+};
+
+export type UpdateFitnessGoalByIdResponse =
+  UpdateFitnessGoalByIdResponses[keyof UpdateFitnessGoalByIdResponses];
+
+export type SetProfilePhotoData = {
+  body: {
+    [key: string]: number;
+  };
+  path?: never;
+  query?: never;
+  url: '/v1/app/profile/profile-photo';
 };
 
 export type SetProfilePhotoResponses = {
@@ -2944,11 +3046,9 @@ export type UpdateFitnessGoalsData = {
   body: {
     [key: string]: number[];
   };
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/fitness-goals';
+  url: '/v1/app/profile/fitness-goals';
 };
 
 export type UpdateFitnessGoalsResponses = {
@@ -2965,11 +3065,9 @@ export type UpdateFitnessGoalData = {
   body: {
     [key: string]: number;
   };
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/fitness-goal';
+  url: '/v1/app/profile/fitness-goal';
 };
 
 export type UpdateFitnessGoalResponses = {
@@ -3607,6 +3705,25 @@ export type TestEmailResponses = {
 
 export type TestEmailResponse = TestEmailResponses[keyof TestEmailResponses];
 
+export type RefreshTokenData = {
+  body: RefreshTokenRequestDto;
+  path?: never;
+  query?: never;
+  url: '/v1/app/user/refresh-token';
+};
+
+export type RefreshTokenResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type RefreshTokenResponse =
+  RefreshTokenResponses[keyof RefreshTokenResponses];
+
 export type LoginData = {
   body: LoginRequestDto;
   path?: never;
@@ -3940,13 +4057,109 @@ export type CalculateMacrosResponses = {
 export type CalculateMacrosResponse =
   CalculateMacrosResponses[keyof CalculateMacrosResponses];
 
-export type DeletePresentationVideoData = {
+export type DeletePresentationVideoByIdData = {
   body?: never;
   path: {
     userId: number;
   };
   query?: never;
   url: '/v1/app/profile/{userId}/presentation-video';
+};
+
+export type DeletePresentationVideoByIdResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
+export type UploadPresentationVideoByIdData = {
+  body?: {
+    file: Blob | File;
+  };
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/presentation-video';
+};
+
+export type UploadPresentationVideoByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable;
+};
+
+export type UploadPresentationVideoByIdResponse =
+  UploadPresentationVideoByIdResponses[keyof UploadPresentationVideoByIdResponses];
+
+export type GetUserPhotosByIdData = {
+  body?: never;
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/photos';
+};
+
+export type GetUserPhotosByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable[];
+};
+
+export type GetUserPhotosByIdResponse =
+  GetUserPhotosByIdResponses[keyof GetUserPhotosByIdResponses];
+
+export type UploadPhotoByIdData = {
+  body?: {
+    file: Blob | File;
+  };
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/photos';
+};
+
+export type UploadPhotoByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable;
+};
+
+export type UploadPhotoByIdResponse =
+  UploadPhotoByIdResponses[keyof UploadPhotoByIdResponses];
+
+export type UploadProfilePhotoByIdData = {
+  body?: {
+    file: Blob | File;
+  };
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/{userId}/photo';
+};
+
+export type UploadProfilePhotoByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable;
+};
+
+export type UploadProfilePhotoByIdResponse =
+  UploadProfilePhotoByIdResponses[keyof UploadProfilePhotoByIdResponses];
+
+export type DeletePresentationVideoData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/profile/presentation-video';
 };
 
 export type DeletePresentationVideoResponses = {
@@ -3960,11 +4173,9 @@ export type UploadPresentationVideoData = {
   body?: {
     file: Blob | File;
   };
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/presentation-video';
+  url: '/v1/app/profile/presentation-video';
 };
 
 export type UploadPresentationVideoResponses = {
@@ -3979,11 +4190,9 @@ export type UploadPresentationVideoResponse =
 
 export type GetUserPhotosData = {
   body?: never;
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/photos';
+  url: '/v1/app/profile/photos';
 };
 
 export type GetUserPhotosResponses = {
@@ -4000,11 +4209,9 @@ export type UploadPhotoData = {
   body?: {
     file: Blob | File;
   };
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/photos';
+  url: '/v1/app/profile/photos';
 };
 
 export type UploadPhotoResponses = {
@@ -4021,11 +4228,9 @@ export type UploadProfilePhotoData = {
   body?: {
     file: Blob | File;
   };
-  path: {
-    userId: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/profile/{userId}/photo';
+  url: '/v1/app/profile/photo';
 };
 
 export type UploadProfilePhotoResponses = {
@@ -4373,11 +4578,9 @@ export type Create5Response = Create5Responses[keyof Create5Responses];
 
 export type DeleteByUserIdData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+  url: '/v1/app/file-upload';
 };
 
 export type DeleteByUserIdResponses = {
@@ -4394,11 +4597,9 @@ export type DeleteByUserIdResponse =
 
 export type GetAllByUserData = {
   body?: never;
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+  url: '/v1/app/file-upload';
 };
 
 export type GetAllByUserResponses = {
@@ -4415,11 +4616,9 @@ export type UploadFileData = {
   body?: {
     file: Blob | File;
   };
-  path: {
-    id: number;
-  };
+  path?: never;
   query?: never;
-  url: '/v1/app/file-upload/user/{id}';
+  url: '/v1/app/file-upload';
 };
 
 export type UploadFileResponses = {
@@ -4430,6 +4629,67 @@ export type UploadFileResponses = {
 };
 
 export type UploadFileResponse = UploadFileResponses[keyof UploadFileResponses];
+
+export type DeleteByUserIdByIdData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/file-upload/user/{id}';
+};
+
+export type DeleteByUserIdByIdResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type DeleteByUserIdByIdResponse =
+  DeleteByUserIdByIdResponses[keyof DeleteByUserIdByIdResponses];
+
+export type GetAllByUserByIdData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/file-upload/user/{id}';
+};
+
+export type GetAllByUserByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable[];
+};
+
+export type GetAllByUserByIdResponse =
+  GetAllByUserByIdResponses[keyof GetAllByUserByIdResponses];
+
+export type UploadFileByIdData = {
+  body?: {
+    file: Blob | File;
+  };
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/file-upload/user/{id}';
+};
+
+export type UploadFileByIdResponses = {
+  /**
+   * OK
+   */
+  200: UserFilesDtoReadable;
+};
+
+export type UploadFileByIdResponse =
+  UploadFileByIdResponses[keyof UploadFileByIdResponses];
 
 export type CreateContractData = {
   body: CreateContractDto;
@@ -7186,7 +7446,7 @@ export type GetAllFoodCategoriesNoPaginationResponses = {
 export type GetAllFoodCategoriesNoPaginationResponse =
   GetAllFoodCategoriesNoPaginationResponses[keyof GetAllFoodCategoriesNoPaginationResponses];
 
-export type DeletePhotoData = {
+export type DeletePhotoByIdData = {
   body?: never;
   path: {
     userId: number;
@@ -7194,6 +7454,22 @@ export type DeletePhotoData = {
   };
   query?: never;
   url: '/v1/app/profile/{userId}/photos/{photoId}';
+};
+
+export type DeletePhotoByIdResponses = {
+  /**
+   * OK
+   */
+  200: unknown;
+};
+
+export type DeletePhotoData = {
+  body?: never;
+  path: {
+    photoId: number;
+  };
+  query?: never;
+  url: '/v1/app/profile/photos/{photoId}';
 };
 
 export type DeletePhotoResponses = {

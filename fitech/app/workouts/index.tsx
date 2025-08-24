@@ -64,6 +64,14 @@ export default function WorkoutsScreen() {
       ]
     : [
         {
+          key: 'exercises',
+          title: 'Mi Registro de Entrenamientos',
+          description:
+            'Lleva el control de tus workouts y alcanza tus metas fitness.',
+          backgroundColor: theme.dark200,
+          image: require('../../assets/images/vectors/exercises_icon.png'),
+        },
+        {
           key: 'diets',
           title: 'Mis Planes de Alimentación',
           description:
