@@ -1,5 +1,5 @@
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -11,20 +11,16 @@ import {
   View,
 } from 'react-native';
 
+import { useGetDailyWorkouts } from '@/app/api/queries/use-get-user-workouts';
 import { AppText } from '@/app/components/AppText';
 import PageContainer from '@/app/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 import {
-  addExercise,
-  type Exercise,
-  getDay,
-  MUSCLE_GROUPS,
-  type MuscleGroup,
-  type SetEntry,
-  type WorkoutDay,
-} from '../workoutStore';
+  CreateExerciseWithSetsRequest,
+  ExerciseSetDto,
+  WorkoutSessionDto,
+} from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 function formatDateLongEs(dISO: string) {
   try {
@@ -46,21 +42,87 @@ export default function WorkoutDayScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const [day, setDay] = useState<WorkoutDay>(() => getDay(date!));
-  const [showForm, setShowForm] = useState(false);
+  const [sessions, setSessions] = useState<WorkoutSessionDto[]>([]);
 
-  const exerciseCount = day.exercises.length;
-  const title = `Ejercicios del ${formatDateLongEs(day.dateISO)}`;
+  const [showForm, setShowForm] = useState<
+    null | { mode: 'add' } | { mode: 'edit'; session: WorkoutSessionDto }
+  >(null);
 
-  const handleSaveExercise = (payload: {
-    muscleGroup: MuscleGroup;
+  const { data: dailyData, isLoading } = useGetDailyWorkouts(date);
+
+  const title = `Entrenamientos del ${formatDateLongEs(date!)}`;
+  const exerciseCount = sessions.length;
+
+  useEffect(() => {
+    if (!isLoading && dailyData) {
+      setSessions(dailyData || []);
+    }
+  }, [dailyData]);
+
+  const handleDelete = async (id?: number) => {
+    if (!id) return;
+    await fetch(`https://appfitech.com/v1/app/workouts/exercises/${id}`, {
+      method: 'DELETE',
+    });
+    // await fetchDay();
+  };
+
+  const handleCreate = async (payload: {
     name: string;
-    sets: SetEntry[];
+    muscleGroup?: string;
     notes?: string;
+    sets: { repetitions: number; weightKg?: number }[];
   }) => {
-    const updated = addExercise(day.dateISO, payload);
-    setDay(updated);
-    setShowForm(false);
+    const req: CreateExerciseWithSetsRequest = {
+      exerciseName: payload.name,
+      workoutDate: String(date),
+      muscleGroup: payload.muscleGroup,
+      exerciseNotes: payload.notes,
+      sets: payload.sets.map((s, i) => ({
+        setNumber: i + 1,
+        repetitions: s.repetitions,
+        weightKg: s.weightKg,
+      })),
+    };
+    await fetch('https://appfitech.com/v1/app/workouts/exercises/with-sets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(req),
+    });
+    setShowForm(null);
+    // await fetchDay();
+  };
+
+  const handleEdit = async (
+    id: number,
+    payload: {
+      name: string;
+      muscleGroup?: string;
+      notes?: string;
+      sets: { repetitions: number; weightKg?: number }[];
+    },
+  ) => {
+    const req: CreateExerciseWithSetsRequest = {
+      exerciseName: payload.name,
+      workoutDate: String(date),
+      muscleGroup: payload.muscleGroup,
+      exerciseNotes: payload.notes,
+      sets: payload.sets.map((s, i) => ({
+        setNumber: i + 1,
+        repetitions: s.repetitions,
+        weightKg: s.weightKg,
+      })),
+    };
+    await fetch(
+      `https://appfitech.com/v1/app/workouts/exercises/${id}/with-sets`,
+      {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req),
+      },
+    );
+    setShowForm(null);
+    // await fetchDay();
   };
 
   return (
@@ -70,7 +132,6 @@ export default function WorkoutDayScreen() {
         <AppText style={styles.headerTitle}>{title}</AppText>
 
         <View style={styles.summaryRow}>
-          <SummaryPill icon="🕒" label={`${day.durationMin} min`} />
           <SummaryPill
             icon="🏋️"
             label={`${exerciseCount} ${exerciseCount === 1 ? 'ejercicio' : 'ejercicios'}`}
@@ -78,14 +139,23 @@ export default function WorkoutDayScreen() {
         </View>
 
         <FlatList
-          data={day.exercises}
-          keyExtractor={(item) => item.id}
+          data={sessions}
+          keyExtractor={(item) => String(item.id)}
           contentContainerStyle={{ paddingBottom: 120 }}
-          renderItem={({ item }) => <ExerciseCard ex={item} theme={theme} />}
+          renderItem={({ item }) => (
+            <ExerciseCard
+              session={item}
+              theme={theme}
+              onDelete={() => handleDelete(item.id)}
+              onEdit={() => setShowForm({ mode: 'edit', session: item })}
+            />
+          )}
           ListEmptyComponent={
-            <AppText style={{ opacity: 0.7, marginTop: 12 }}>
-              No hay ejercicios para este día.
-            </AppText>
+            !isLoading ? (
+              <AppText style={{ opacity: 0.7, marginTop: 12 }}>
+                No hay ejercicios para este día.
+              </AppText>
+            ) : null
           }
         />
 
@@ -100,7 +170,7 @@ export default function WorkoutDayScreen() {
           </Pressable>
           <Pressable
             style={[styles.button, styles.btnPrimary]}
-            onPress={() => setShowForm(true)}
+            onPress={() => setShowForm({ mode: 'add' })}
           >
             <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
               + Agregar Ejercicio
@@ -110,11 +180,16 @@ export default function WorkoutDayScreen() {
       </PageContainer>
 
       {showForm && (
-        <AddExerciseModal
-          onClose={() => setShowForm(false)}
-          onSave={handleSaveExercise}
+        <AddEditExerciseModal
+          mode={showForm.mode}
+          initial={showForm.mode === 'edit' ? showForm.session : undefined}
+          onClose={() => setShowForm(null)}
+          onSave={async (payload) => {
+            if (showForm.mode === 'add') return handleCreate(payload);
+            return handleEdit(showForm.session!.id!, payload);
+          }}
           theme={theme}
-          dateISO={day.dateISO}
+          dateISO={String(date)}
         />
       )}
     </>
@@ -155,7 +230,18 @@ function Badge({ label }: { label: string }) {
   );
 }
 
-function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
+function ExerciseCard({
+  session,
+  theme,
+  onDelete,
+  onEdit,
+}: {
+  session: WorkoutSessionDto;
+  theme: FullTheme;
+  onDelete: () => void;
+  onEdit: () => void;
+}) {
+  const sets = (session.exerciseSets || []) as ExerciseSetDto[];
   return (
     <View
       style={{
@@ -174,12 +260,14 @@ function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
           alignItems: 'center',
         }}
       >
-        <AppText style={{ fontSize: 18, fontWeight: '700' }}>{ex.name}</AppText>
-        <Badge label={ex.muscleGroup} />
+        <AppText style={{ fontSize: 18, fontWeight: '700' }}>
+          {session.exerciseName}
+        </AppText>
+        {!!session.muscleGroup && <Badge label={session.muscleGroup} />}
       </View>
 
       <View style={{ marginTop: 8 }}>
-        {ex.sets.map((s, idx) => (
+        {sets.map((s, idx) => (
           <View
             key={idx}
             style={{
@@ -190,7 +278,7 @@ function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
             }}
           >
             <AppText style={{ color: '#1A73E8', fontWeight: '700' }}>
-              Serie {idx + 1}:
+              Serie {s.setNumber ?? idx + 1}:
             </AppText>
             <View
               style={{
@@ -201,7 +289,8 @@ function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
               }}
             >
               <AppText>
-                {s.reps} {s.reps === 1 ? 'repetición' : 'repeticiones'}
+                {s.repetitions ?? 0}{' '}
+                {(s.repetitions ?? 0) === 1 ? 'repetición' : 'repeticiones'}
               </AppText>
             </View>
             {typeof s.weightKg === 'number' && (
@@ -220,7 +309,7 @@ function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
         ))}
       </View>
 
-      {!!ex.notes && (
+      {!!session.exerciseNotes && (
         <View
           style={{
             backgroundColor: '#F7F7F7',
@@ -232,57 +321,91 @@ function ExerciseCard({ ex, theme }: { ex: Exercise; theme: FullTheme }) {
           <AppText style={{ fontWeight: '600', marginBottom: 4 }}>
             Notas del entrenamiento:
           </AppText>
-          <AppText>{ex.notes}</AppText>
+          <AppText>{session.exerciseNotes}</AppText>
         </View>
       )}
+
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          gap: 16,
+          marginTop: 10,
+        }}
+      >
+        <Pressable onPress={onEdit}>
+          <AppText style={{ color: '#1A73E8', fontWeight: '700' }}>
+            ✎ Editar
+          </AppText>
+        </Pressable>
+        <Pressable onPress={() => onDelete()}>
+          <AppText style={{ color: '#D9534F', fontWeight: '700' }}>
+            🗑️ Eliminar
+          </AppText>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
-function AddExerciseModal({
+function AddEditExerciseModal({
+  mode,
+  initial,
   onClose,
   onSave,
   theme,
   dateISO,
 }: {
+  mode: 'add' | 'edit';
+  initial?: WorkoutSessionDto;
   onClose: () => void;
   onSave: (payload: {
-    muscleGroup: MuscleGroup;
     name: string;
-    sets: SetEntry[];
+    muscleGroup?: string;
     notes?: string;
+    sets: { repetitions: number; weightKg?: number }[];
   }) => void;
   theme: FullTheme;
   dateISO: string;
 }) {
-  const [name, setName] = useState('');
-  const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | null>(null);
-  const [notes, setNotes] = useState('');
-  const [sets, setSets] = useState<SetEntry[]>([{ reps: 10 }]);
-  const [showSelect, setShowSelect] = useState(false);
+  const [name, setName] = useState(initial?.exerciseName || '');
+  const [muscleGroup, setMuscleGroup] = useState<string | undefined>(
+    initial?.muscleGroup || undefined,
+  );
+  const [notes, setNotes] = useState(initial?.exerciseNotes || '');
+  const [sets, setSets] = useState<
+    { repetitions: number; weightKg?: number }[]
+  >(
+    (initial?.exerciseSets || [])?.map((s) => ({
+      repetitions: s.repetitions ?? 10,
+      weightKg: s.weightKg,
+    })) || [{ repetitions: 10 }],
+  );
 
   const styles = getStyles(theme);
-
-  const addSet = () => setSets((prev) => [...prev, { reps: 10 }]);
+  const addSet = () => setSets((prev) => [...prev, { repetitions: 10 }]);
   const removeSet = (idx: number) =>
     setSets((prev) => prev.filter((_, i) => i !== idx));
-  const updateSet = (idx: number, field: keyof SetEntry, value: string) => {
+  const updateSet = (
+    idx: number,
+    field: 'repetitions' | 'weightKg',
+    value: string,
+  ) => {
     setSets((prev) => {
       const next = [...prev];
       const num = value ? Number(value) : undefined;
       next[idx] = {
         ...next[idx],
-        [field]: field === 'reps' ? Number(value || 0) : num,
-      };
+        [field]: field === 'repetitions' ? Number(value || 0) : num,
+      } as any;
       return next;
     });
   };
 
   const canSave =
-    !!muscleGroup &&
     name.trim().length > 0 &&
     sets.length > 0 &&
-    sets.every((s) => s.reps > 0);
+    sets.every((s) => (s.repetitions ?? 0) > 0);
 
   return (
     <Modal animationType="slide" transparent>
@@ -292,19 +415,10 @@ function AddExerciseModal({
       >
         <View style={styles.modalCard}>
           <AppText style={styles.modalTitle}>
-            Agregar Ejercicio - {formatDateLongEs(dateISO)}
+            {mode === 'add' ? '+ Agregar Ejercicio' : 'Editar Ejercicio'} -{' '}
+            {formatDateLongEs(dateISO)}
           </AppText>
 
-          {/* Grupo muscular (custom select) */}
-          <Pressable onPress={() => setShowSelect(true)} style={styles.input}>
-            <AppText
-              style={{ color: muscleGroup ? theme.textPrimary : '#808080' }}
-            >
-              {muscleGroup ?? 'Grupo Muscular*'}
-            </AppText>
-          </Pressable>
-
-          {/* Nombre del ejercicio */}
           <TextInput
             placeholder="Nombre del Ejercicio*"
             placeholderTextColor="#808080"
@@ -313,7 +427,14 @@ function AddExerciseModal({
             style={styles.input}
           />
 
-          {/* Series */}
+          <TextInput
+            placeholder="Grupo Muscular"
+            placeholderTextColor="#808080"
+            value={muscleGroup || ''}
+            onChangeText={setMuscleGroup}
+            style={styles.input}
+          />
+
           <View
             style={{
               marginTop: 8,
@@ -340,8 +461,8 @@ function AddExerciseModal({
                 keyboardType="numeric"
                 placeholder="Repeticiones"
                 placeholderTextColor="#808080"
-                value={String(s.reps || '')}
-                onChangeText={(t) => updateSet(idx, 'reps', t)}
+                value={String(s.repetitions || '')}
+                onChangeText={(t) => updateSet(idx, 'repetitions', t)}
                 style={[styles.input, styles.inputSmall]}
               />
               <TextInput
@@ -363,7 +484,6 @@ function AddExerciseModal({
             </View>
           ))}
 
-          {/* Notas */}
           <TextInput
             placeholder="Notas (opcional)"
             placeholderTextColor="#808080"
@@ -373,7 +493,6 @@ function AddExerciseModal({
             multiline
           />
 
-          {/* Footer */}
           <View style={styles.modalFooter}>
             <Pressable
               onPress={onClose}
@@ -388,12 +507,7 @@ function AddExerciseModal({
             <Pressable
               onPress={() =>
                 canSave &&
-                onSave({
-                  muscleGroup: muscleGroup!,
-                  name,
-                  sets,
-                  notes: notes || undefined,
-                })
+                onSave({ name, muscleGroup, notes: notes || undefined, sets })
               }
               style={[
                 styles.button,
@@ -403,46 +517,12 @@ function AddExerciseModal({
               disabled={!canSave}
             >
               <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
-                Guardar Ejercicio
+                {mode === 'add' ? 'Guardar Ejercicio' : 'Guardar Cambios'}
               </AppText>
             </Pressable>
           </View>
         </View>
       </KeyboardAvoidingView>
-
-      <Modal visible={showSelect} transparent animationType="fade">
-        <Pressable
-          style={styles.selectOverlay}
-          onPress={() => setShowSelect(false)}
-        >
-          <View style={styles.selectCard}>
-            <FlatList
-              data={MUSCLE_GROUPS}
-              keyExtractor={(it) => it}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => {
-                    setMuscleGroup(item);
-                    setShowSelect(false);
-                  }}
-                  style={({ pressed }) => [
-                    {
-                      paddingVertical: 12,
-                      paddingHorizontal: 16,
-                      backgroundColor: pressed ? '#F3F4F6' : 'white',
-                    },
-                  ]}
-                >
-                  <AppText>{item}</AppText>
-                </Pressable>
-              )}
-              ItemSeparatorComponent={() => (
-                <View style={{ height: 1, backgroundColor: '#EEE' }} />
-              )}
-            />
-          </View>
-        </Pressable>
-      </Modal>
     </Modal>
   );
 }
@@ -468,8 +548,6 @@ const getStyles = (theme: FullTheme) =>
     btnPrimary: { backgroundColor: theme.backgroundInverted },
     btnGhost: { backgroundColor: '#EFEFEF' },
     buttonText: { fontSize: 16, fontWeight: '700' },
-
-    // Modal
     modalOverlay: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.35)',
@@ -502,18 +580,4 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 8,
     },
     modalFooter: { flexDirection: 'row', gap: 10, marginTop: 8 },
-
-    // Select
-    selectOverlay: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.4)',
-      justifyContent: 'center',
-      padding: 24,
-    },
-    selectCard: {
-      backgroundColor: 'white',
-      borderRadius: 12,
-      overflow: 'hidden',
-      maxHeight: '70%',
-    },
   });

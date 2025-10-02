@@ -117,6 +117,13 @@ export default function ProfileScreen() {
         {!isTrainer && (
           <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
         )}
+        {!isTrainer && user?.premium && (
+          <SectionItem
+            icon="heart"
+            label="Preferencias de match"
+            route={'match-preferences'}
+          />
+        )}
         {user?.premium && !isTrainer && (
           <SectionItem
             icon="dollar-sign"

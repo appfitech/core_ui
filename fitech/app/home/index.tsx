@@ -40,6 +40,8 @@ const EMOJIS_LABEL = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Muy bueno'];
 export default function HomeScreen() {
   const token = useUserStore((s) => s.getToken());
   const user = useUserStore((s) => s.user);
+
+  console.log('[K] user', user);
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);

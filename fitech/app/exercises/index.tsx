@@ -1,18 +1,18 @@
-// app/(tabs)/exercises.tsx
+// FILE: app/(tabs)/exercises.tsx
 import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { ExerciseSetDto, WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
+import { useGetMonthlyWorkouts } from '../api/queries/use-get-user-workouts';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
-import { listAll } from './workoutStore';
 
-// --- Spanish locale for calendar ---
 LocaleConfig.locales.es = {
   monthNames: [
     'Enero',
@@ -59,7 +59,6 @@ LocaleConfig.defaultLocale = 'es';
 type DayObj = { dateString: string; day: number; month: number; year: number };
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
-// ===== Helpers for week math & stats =====
 const pad = (n: number) => String(n).padStart(2, '0');
 const toISO = (d: Date) =>
   `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
@@ -67,8 +66,8 @@ const fromISO = (iso: string) => new Date(`${iso}T00:00:00`);
 
 function startOfWeekMonday(iso: string) {
   const d = fromISO(iso);
-  const dow = d.getDay(); // 0=Sun..6=Sat
-  const offset = (dow + 6) % 7; // convert to 0=Mon..6=Sun
+  const dow = d.getDay();
+  const offset = (dow + 6) % 7;
   d.setDate(d.getDate() - offset);
   return toISO(d);
 }
@@ -80,25 +79,39 @@ function weekDates(weekStartISO: string) {
     return toISO(d);
   });
 }
+const monthRange = (year: number, month1to12: number) => {
+  const start = `${year}-${pad(month1to12)}-01`;
+  const lastDay = new Date(year, month1to12, 0).getDate();
+  const end = `${year}-${pad(month1to12)}-${pad(lastDay)}`;
+  return { start, end };
+};
+
+// Map YYYY-MM-DD -> sessions[]
+const groupByDate = (arr: WorkoutSessionDto[]) => {
+  const m: Record<string, WorkoutSessionDto[]> = {};
+  for (const s of arr || []) {
+    const k = s.workoutDate as string;
+    if (!k) continue;
+    (m[k] ||= []).push(s);
+  }
+  return m;
+};
 
 type WeeklyStats = { trainings: number; reps: number; weightKg: number };
 function computeWeeklyStats(
-  workoutsByDate: Record<string, any>,
+  byDate: Record<string, WorkoutSessionDto[]>,
   weekStartISO: string,
 ): WeeklyStats {
   const days = weekDates(weekStartISO);
   let trainings = 0,
     reps = 0,
     weightKg = 0;
-
   for (const dayISO of days) {
-    const day = workoutsByDate[dayISO];
-    const exercises = day?.exercises ?? [];
-    if (exercises.length) trainings += 1;
-
-    for (const ex of exercises) {
-      for (const set of ex.sets ?? []) {
-        const r = Number(set.reps || 0);
+    const sessions = byDate[dayISO] || [];
+    if (sessions.length) trainings += 1;
+    for (const s of sessions) {
+      for (const set of (s.exerciseSets || []) as ExerciseSetDto[]) {
+        const r = Number(set.repetitions || 0);
         const w = Number(set.weightKg || 0);
         reps += r;
         if (!isNaN(w)) weightKg += r * w;
@@ -109,14 +122,31 @@ function computeWeeklyStats(
 }
 const fmtKg = (n: number) => `${n.toLocaleString('es-PE')}kg`;
 
-// ===== Screen =====
 export default function ExercisesScreen() {
   const [selectedDate, setSelectedDate] = useState<string>(todayISO());
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme);
 
-  const workoutsByDate = useMemo(() => listAll(), []);
+  const [visibleYM, setVisibleYM] = useState(() => {
+    const d = fromISO(selectedDate);
+    return { y: d.getFullYear(), m: d.getMonth() + 1 };
+  });
+  const [monthData, setMonthData] = useState<
+    Record<string, WorkoutSessionDto[]>
+  >({});
+
+  const { y, m } = visibleYM;
+  const { start, end } = monthRange(y, m);
+
+  const { data: monthlyData, isLoading } = useGetMonthlyWorkouts(start, end);
+
+  useEffect(() => {
+    if (!isLoading && monthlyData) {
+      setMonthData(groupByDate(monthlyData || []));
+    }
+  }, [monthlyData, isLoading]);
+
   const markedDates = useMemo(() => {
     const marked: Record<string, any> = {};
     marked[selectedDate] = {
@@ -136,7 +166,6 @@ export default function ExercisesScreen() {
     });
   };
 
-  // 👉 weekly comparison (based on selected day)
   const weekStart = useMemo(
     () => startOfWeekMonday(selectedDate),
     [selectedDate],
@@ -148,12 +177,12 @@ export default function ExercisesScreen() {
   }, [weekStart]);
 
   const currentStats = useMemo(
-    () => computeWeeklyStats(workoutsByDate, weekStart),
-    [workoutsByDate, weekStart],
+    () => computeWeeklyStats(monthData, weekStart),
+    [monthData, weekStart],
   );
   const prevStats = useMemo(
-    () => computeWeeklyStats(workoutsByDate, prevWeekStart),
-    [workoutsByDate, prevWeekStart],
+    () => computeWeeklyStats(monthData, prevWeekStart),
+    [monthData, prevWeekStart],
   );
 
   return (
@@ -163,42 +192,27 @@ export default function ExercisesScreen() {
         Lleva el control de tus workouts y alcanza tus metas fitness
       </AppText>
 
-      <View
-        style={{
-          marginTop: 16,
-          borderRadius: 12,
-          overflow: 'hidden',
-        }}
-      >
+      <View style={{ marginTop: 16, borderRadius: 12, overflow: 'hidden' }}>
         <Calendar
           onDayPress={(d: DayObj) => handleOpenDay(d.dateString)}
+          onMonthChange={(m: any) => setVisibleYM({ y: m.year, m: m.month })}
           markedDates={markedDates}
           firstDay={1}
           enableSwipeMonths
           theme={calendarTheme(theme)}
-          /** 👉 Disable future dates */
           maxDate={todayISO()}
-          /** 👉 Custom day cell: background + up to 3 dots */
           dayComponent={({ date, state }) => {
-            const ds = date?.dateString!;
-            const w = workoutsByDate[ds];
-            const count = w?.exercises?.length ?? 0;
+            const ds = date?.dateString as string;
+            const count = monthData[ds]?.length || 0;
             const isSelected = ds === selectedDate;
             const isDisabled = state === 'disabled';
-
-            // soft highlight for days that have workouts
             const hasWorkoutBg =
-              count > 0
-                ? 'rgba(91, 194, 54, 0.15)' // light FITECH green
-                : 'transparent';
-
+              count > 0 ? 'rgba(91, 194, 54, 0.15)' : 'transparent';
             const textColor = isSelected
               ? theme.dark100
               : isDisabled
                 ? (theme.dark300 ?? '#A0A0A0')
                 : theme.textPrimary;
-
-            // build 1..3 dots
             const dots = Array(Math.min(count, 3))
               .fill(0)
               .map((_, i) => (
@@ -215,7 +229,6 @@ export default function ExercisesScreen() {
                   }}
                 />
               ));
-
             return (
               <TouchableOpacity
                 style={{ paddingVertical: 4, paddingHorizontal: 2 }}
@@ -243,7 +256,6 @@ export default function ExercisesScreen() {
                   >
                     {date.day}
                   </AppText>
-
                   {count > 0 && (
                     <View style={{ flexDirection: 'row', marginTop: 4 }}>
                       {dots}
@@ -260,7 +272,6 @@ export default function ExercisesScreen() {
         <AppText style={styles.compareTitle}>
           Comparación con Semana Anterior
         </AppText>
-
         <View style={styles.metricPanel}>
           <AppText style={styles.metricHeading}>Entrenamientos</AppText>
           <View style={styles.metricRow}>
@@ -271,7 +282,6 @@ export default function ExercisesScreen() {
             <AppText style={styles.metricPrev}>{prevStats.trainings}</AppText>
           </View>
         </View>
-
         <View style={styles.metricPanel}>
           <AppText style={styles.metricHeading}>Repeticiones</AppText>
           <View style={styles.metricRow}>
@@ -280,7 +290,6 @@ export default function ExercisesScreen() {
             <AppText style={styles.metricPrev}>{prevStats.reps}</AppText>
           </View>
         </View>
-
         <View style={styles.metricPanel}>
           <AppText style={styles.metricHeading}>Peso Movido</AppText>
           <View style={styles.metricRow}>
@@ -294,7 +303,6 @@ export default function ExercisesScreen() {
           </View>
         </View>
       </View>
-      {/* === end comparison block === */}
     </PageContainer>
   );
 }
@@ -319,31 +327,6 @@ const calendarTheme = (theme: FullTheme) => ({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    tabRow: {
-      flexDirection: 'row',
-      marginVertical: 20,
-      overflow: 'hidden',
-      columnGap: 16,
-    },
-    tabButton: {
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      alignItems: 'center',
-      borderRadius: 20,
-    },
-    tabButtonActive: {
-      backgroundColor: theme.backgroundInverted,
-    },
-    tabText: {
-      fontSize: 16,
-      color: theme.textPrimary,
-      fontWeight: '600',
-    },
-    tabTextActive: {
-      color: theme.dark100,
-    },
-
-    // --- Comparison card styles ---
     compareCard: {
       marginTop: 16,
       borderRadius: 12,
@@ -353,11 +336,7 @@ const getStyles = (theme: FullTheme) =>
       borderColor: '#E6E6E6',
       marginBottom: 100,
     },
-    compareTitle: {
-      fontSize: 20,
-      fontWeight: '800',
-      marginBottom: 10,
-    },
+    compareTitle: { fontSize: 20, fontWeight: '800', marginBottom: 10 },
     metricPanel: {
       backgroundColor: '#F7F7F7',
       borderRadius: 12,
@@ -365,21 +344,13 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 16,
       marginTop: 10,
     },
-    metricHeading: {
-      textAlign: 'center',
-      fontWeight: '700',
-      marginBottom: 6,
-    },
+    metricHeading: { textAlign: 'center', fontWeight: '700', marginBottom: 6 },
     metricRow: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    metricCurrent: {
-      color: '#1A73E8',
-      fontWeight: '800',
-      fontSize: 18,
-    },
+    metricCurrent: { color: '#1A73E8', fontWeight: '800', fontSize: 18 },
     arrow: {
       marginHorizontal: 8,
       fontSize: 16,
@@ -387,6 +358,5 @@ const getStyles = (theme: FullTheme) =>
       color: '#F39C12',
     },
     metricPrev: { color: theme.textSecondary, fontSize: 18, fontWeight: '700' },
-
     ...HEADING_STYLES(theme),
   });

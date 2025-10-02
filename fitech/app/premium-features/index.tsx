@@ -1,14 +1,17 @@
+import { router } from 'expo-router';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
+import { useGetUserMatchPreferences } from '../api/queries/use-get-user-match-preferences';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 
 export default function PremiumFeaturesScreen() {
   const { theme } = useTheme();
+  const { data: matchPreferences } = useGetUserMatchPreferences();
 
   const styles = getStyles(theme);
 
@@ -49,41 +52,50 @@ export default function PremiumFeaturesScreen() {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.banner, { backgroundColor: theme.infoBackground }]}
-          >
-            <View style={styles.bannerContent}>
-              <AppText style={styles.bannerTitle}>{'GymBro'}</AppText>
-              <AppText style={styles.bannerDescription}>
-                {
-                  'Porque entrenar acompañado siempre es mejor. Conecta con alguien que entrene a tu ritmo y comparte la motivación.'
-                }
-              </AppText>
-            </View>
-            <Image
-              source={require('../../assets/images/vectors/gym_bro.png')}
-              style={styles.image}
-              resizeMode={'contain'}
-            />
-          </TouchableOpacity>
+          {matchPreferences?.showInGymBro && (
+            <TouchableOpacity
+              onPress={() => router.push('/gymbro')}
+              style={[styles.banner, { backgroundColor: theme.infoBackground }]}
+            >
+              <View style={styles.bannerContent}>
+                <AppText style={styles.bannerTitle}>{'GymBro'}</AppText>
+                <AppText style={styles.bannerDescription}>
+                  {
+                    'Porque entrenar acompañado siempre es mejor. Conecta con alguien que entrene a tu ritmo y comparte la motivación.'
+                  }
+                </AppText>
+              </View>
+              <Image
+                source={require('../../assets/images/vectors/gym_bro.png')}
+                style={styles.image}
+                resizeMode={'contain'}
+              />
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity
-            style={[styles.banner, { backgroundColor: theme.orangeBackground }]}
-          >
-            <Image
-              source={require('../../assets/images/vectors/gym_crush.png')}
-              style={styles.image}
-              resizeMode={'contain'}
-            />
-            <View style={styles.bannerContent}>
-              <AppText style={styles.bannerTitle}>{'GymCrush'}</AppText>
-              <AppText style={styles.bannerDescription}>
-                {
-                  'Descubre entrenadores que se alinean con tus metas, estilo de vida y forma de entrenar. Swipea, conecta y empieza a trabajar con el coach perfecto para ti.'
-                }
-              </AppText>
-            </View>
-          </TouchableOpacity>
+          {matchPreferences?.showInGymCrush && (
+            <TouchableOpacity
+              style={[
+                styles.banner,
+                { backgroundColor: theme.orangeBackground },
+              ]}
+              onPress={() => router.push('/gymcrush')}
+            >
+              <Image
+                source={require('../../assets/images/vectors/gym_crush.png')}
+                style={styles.image}
+                resizeMode={'contain'}
+              />
+              <View style={styles.bannerContent}>
+                <AppText style={styles.bannerTitle}>{'GymCrush'}</AppText>
+                <AppText style={styles.bannerDescription}>
+                  {
+                    'Descubre entrenadores que se alinean con tus metas, estilo de vida y forma de entrenar. Swipea, conecta y empieza a trabajar con el coach perfecto para ti.'
+                  }
+                </AppText>
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </PageContainer>
