@@ -4,7 +4,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAuthRedirect } from '@/hooks/use-auth-reditect';
+import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../constants/strings';

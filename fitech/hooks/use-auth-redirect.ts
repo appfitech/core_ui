@@ -6,11 +6,11 @@ import { useUserStore } from '@/stores/user';
 
 export const useAuthRedirect = (redirectPath: string = ROUTES.home) => {
   const router = useRouter();
-  const { loadUser } = useUserStore();
+  const { loadSession } = useUserStore();
 
   useEffect(() => {
     const checkAuth = async () => {
-      await loadUser();
+      await loadSession();
 
       const currentUser = useUserStore.getState().user;
 

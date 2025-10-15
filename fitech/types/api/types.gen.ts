@@ -1529,9 +1529,15 @@ export type UserMembership = {
   expired?: boolean;
 };
 
-export type SwipeRequestDto = {
+export type MatchActionDto = {
   targetUserId?: number;
-  action?: string;
+  actionType?: string;
+  matchSystem?: string;
+  like?: boolean;
+  pass?: boolean;
+  block?: boolean;
+  validActionType?: boolean;
+  validMatchSystem?: boolean;
 };
 
 /**
@@ -1741,9 +1747,9 @@ export type Page = {
   }[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -1928,9 +1934,9 @@ export type PageReviewResponseDtoReadable = {
   content?: ReviewResponseDtoReadable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -1942,9 +1948,9 @@ export type PageReviewResponseDtoWritable = {
   content?: ReviewResponseDtoWritable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -2392,9 +2398,9 @@ export type PageClientResourceGroupDtoReadable = {
   content?: ClientResourceGroupDtoReadable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -2406,9 +2412,9 @@ export type PageClientResourceGroupDtoWritable = {
   content?: ClientResourceGroupDtoWritable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -4945,14 +4951,14 @@ export type CancelMembershipResponses = {
 export type CancelMembershipResponse =
   CancelMembershipResponses[keyof CancelMembershipResponses];
 
-export type ProcessSwipeData = {
-  body: SwipeRequestDto;
+export type ProcessGymCrushActionData = {
+  body: MatchActionDto;
   path?: never;
   query?: never;
-  url: '/v1/app/match/swipe';
+  url: '/v1/app/matches/gymcrush/action';
 };
 
-export type ProcessSwipeResponses = {
+export type ProcessGymCrushActionResponses = {
   /**
    * OK
    */
@@ -4963,21 +4969,17 @@ export type ProcessSwipeResponses = {
   };
 };
 
-export type ProcessSwipeResponse =
-  ProcessSwipeResponses[keyof ProcessSwipeResponses];
+export type ProcessGymCrushActionResponse =
+  ProcessGymCrushActionResponses[keyof ProcessGymCrushActionResponses];
 
-export type RespondToMatchData = {
-  body?: never;
-  path: {
-    matchId: number;
-  };
-  query: {
-    accept: boolean;
-  };
-  url: '/v1/app/match/respond/{matchId}';
+export type ProcessGymBroActionData = {
+  body: MatchActionDto;
+  path?: never;
+  query?: never;
+  url: '/v1/app/matches/gymbro/action';
 };
 
-export type RespondToMatchResponses = {
+export type ProcessGymBroActionResponses = {
   /**
    * OK
    */
@@ -4988,8 +4990,8 @@ export type RespondToMatchResponses = {
   };
 };
 
-export type RespondToMatchResponse =
-  RespondToMatchResponses[keyof RespondToMatchResponses];
+export type ProcessGymBroActionResponse =
+  ProcessGymBroActionResponses[keyof ProcessGymBroActionResponses];
 
 export type GetAll6Data = {
   body?: never;
@@ -7213,14 +7215,16 @@ export type GetCurrentUserDebugResponses = {
 export type GetCurrentUserDebugResponse =
   GetCurrentUserDebugResponses[keyof GetCurrentUserDebugResponses];
 
-export type GetPendingMatchesData = {
+export type GetMutualMatchesData = {
   body?: never;
-  path?: never;
+  path: {
+    matchSystem: string;
+  };
   query?: never;
-  url: '/v1/app/match/pending';
+  url: '/v1/app/matches/mutual/{matchSystem}';
 };
 
-export type GetPendingMatchesResponses = {
+export type GetMutualMatchesResponses = {
   /**
    * OK
    */
@@ -7231,17 +7235,17 @@ export type GetPendingMatchesResponses = {
   };
 };
 
-export type GetPendingMatchesResponse =
-  GetPendingMatchesResponses[keyof GetPendingMatchesResponses];
+export type GetMutualMatchesResponse =
+  GetMutualMatchesResponses[keyof GetMutualMatchesResponses];
 
-export type GetUserMatchesData = {
+export type GetGymCrushMatchesData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/v1/app/match/matches';
+  url: '/v1/app/matches/gymcrush/matches';
 };
 
-export type GetUserMatchesResponses = {
+export type GetGymCrushMatchesResponses = {
   /**
    * OK
    */
@@ -7252,17 +7256,17 @@ export type GetUserMatchesResponses = {
   };
 };
 
-export type GetUserMatchesResponse =
-  GetUserMatchesResponses[keyof GetUserMatchesResponses];
+export type GetGymCrushMatchesResponse =
+  GetGymCrushMatchesResponses[keyof GetGymCrushMatchesResponses];
 
-export type GetMatchCandidatesData = {
+export type GetGymCrushCandidatesData = {
   body?: never;
   path?: never;
   query?: never;
-  url: '/v1/app/match/candidates';
+  url: '/v1/app/matches/gymcrush/candidates';
 };
 
-export type GetMatchCandidatesResponses = {
+export type GetGymCrushCandidatesResponses = {
   /**
    * OK
    */
@@ -7273,8 +7277,50 @@ export type GetMatchCandidatesResponses = {
   };
 };
 
-export type GetMatchCandidatesResponse =
-  GetMatchCandidatesResponses[keyof GetMatchCandidatesResponses];
+export type GetGymCrushCandidatesResponse =
+  GetGymCrushCandidatesResponses[keyof GetGymCrushCandidatesResponses];
+
+export type GetGymBroMatchesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/matches/gymbro/matches';
+};
+
+export type GetGymBroMatchesResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type GetGymBroMatchesResponse =
+  GetGymBroMatchesResponses[keyof GetGymBroMatchesResponses];
+
+export type GetGymBroCandidatesData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/matches/gymbro/candidates';
+};
+
+export type GetGymBroCandidatesResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type GetGymBroCandidatesResponse =
+  GetGymBroCandidatesResponses[keyof GetGymBroCandidatesResponses];
 
 export type GetGymCrushUsersData = {
   body?: never;

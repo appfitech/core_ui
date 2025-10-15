@@ -25,6 +25,7 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 import { NavBar } from './components/NavBar';
@@ -53,6 +54,8 @@ export default function RootLayout() {
     Urbanist_800ExtraBold_Italic,
     Urbanist_900Black_Italic,
   });
+
+  useAutoRefreshToken();
 
   const segments = useSegments();
   const currentRoute = segments[0];

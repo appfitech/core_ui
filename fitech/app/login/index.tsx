@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeInUp,
   SlideInDown,
@@ -11,26 +11,17 @@ import Animated, {
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useAuthRedirect } from '@/hooks/use-auth-reditect';
+import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
+import { extractErrorMessage } from '@/utils/errors';
 
 import { TRANSLATIONS } from '../../constants/strings';
 import { useLogin } from '../api/mutations/useLogin';
 import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
-
-function extractErrorMessage(err: unknown): string {
-  const anyErr: any = err;
-  if (typeof anyErr === 'string') return anyErr;
-  if (anyErr?.response?.data?.message)
-    return String(anyErr.response.data.message);
-  if (anyErr?.response?.data?.error) return String(anyErr.response.data.error);
-  if (anyErr?.data?.message) return String(anyErr.data.message);
-  if (anyErr?.message) return String(anyErr.message);
-  return 'Ocurrió un error al iniciar sesión. Inténtalo nuevamente.';
-}
+import { TextInput } from '../components/TextInput';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
@@ -82,7 +73,6 @@ export default function LoginScreen() {
           router.replace(ROUTES.home);
         },
         onError: (error) => {
-          console.log('[Login] error', error);
           setErrorMsg(extractErrorMessage(error));
         },
       },
@@ -160,11 +150,8 @@ export default function LoginScreen() {
               placeholder="Usuario"
               placeholderTextColor={theme.dark800}
               keyboardType="email-address"
-              style={[styles.input, { flex: 1 }]}
               value={username}
               onChangeText={handleChange('username')}
-              autoCapitalize="none"
-              autoCorrect={false}
             />
           </View>
 
@@ -177,10 +164,9 @@ export default function LoginScreen() {
             />
             <TextInput
               placeholder="Contraseña"
-              placeholderTextColor={theme.dark800}
               secureTextEntry={!displayPass}
               value={password}
-              style={[styles.input, { flex: 1, marginBottom: 0 }]}
+              style={{ marginBottom: 0 }}
               onChangeText={handleChange('password')}
             />
             <TouchableOpacity onPress={handleToggleDisplayPass}>
@@ -255,7 +241,6 @@ const getStyles = (theme: FullTheme) =>
       elevation: 6,
       marginTop: 20,
     },
-    // Error banner styles
     errorBanner: {
       flexDirection: 'row',
       alignItems: 'center',
