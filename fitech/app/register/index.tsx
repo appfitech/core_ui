@@ -1,45 +1,44 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import {
-  Keyboard,
-  Platform,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
-import { CREATE_USER_FORM } from '@/constants/forms';
+import {
+  CREATE_USER_FORM,
+  DOCUMENT_TYPES,
+  GENDER_TYPES,
+  USER_TYPES,
+} from '@/constants/forms';
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useCreateUser } from '../api/mutations/useCreateUser';
+import { useCreateUser } from '../api/mutations/user/use-create-user';
 import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
-import { BackButton } from '../components/BackButton';
-import { Dropdown } from '../components/Dropdown';
+import { DatePicker } from '../components/DatePicker';
+import { DropdownWrapper } from '../components/DropdownWrapper';
+import { FormWrapper } from '../components/FormWrapper';
+import { InputWrapper } from '../components/InputWrapper';
+import PageContainer from '../components/PageContainer';
 
 export default function Register() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const [open, setOpen] = useState(false);
+
+  const { isOpen: isUserTypeOpen, setIsOpen: setIsUserTypeOpen } =
+    useOpenable();
+  const { isOpen: isDocTypeOpen, setIsOpen: setIsDocTypeOpen } = useOpenable();
+  const { isOpen: isGenderOpen, setIsOpen: setIsGenderOpen } = useOpenable();
   const [form, setForm] = useState<UserDtoWritable>(emptyUserWritable);
+  console.log('[K] form', form);
 
   const router = useRouter();
   const { mutate: createUser } = useCreateUser();
-
-  const [accountTypes] = useState([
-    { label: 'Trainer', value: 1 },
-    { label: 'Usuario', value: 2 },
-  ]);
 
   const handlePersonChange = (field: string, value: string) => {
     setForm((prev) => ({
@@ -61,82 +60,120 @@ export default function Register() {
   };
 
   return (
-    <LinearGradient
-      colors={[theme.background, theme.background]}
-      style={styles.gradient}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <KeyboardAwareScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={styles.scrollContainer}
-          enableOnAndroid
-          keyboardShouldPersistTaps="handled"
-          extraScrollHeight={Platform.OS === 'android' ? 100 : 60}
+    <PageContainer style={{ padding: 16 }}>
+      <View style={styles.header}>
+        <AnimatedAppText
+          entering={FadeInUp.delay(200)}
+          style={styles.headerTitle}
         >
-          <View style={styles.header}>
-            <BackButton />
-            <AnimatedAppText
-              entering={FadeInUp.delay(200)}
-              style={styles.headerTitle}
-            >
-              {'Crear cuenta'}
-            </AnimatedAppText>
-            <AnimatedAppText
-              entering={FadeInUp.delay(300)}
-              style={styles.headerSubtitle}
-            >
-              {'Ingresa tus datos para registrarte'}
-            </AnimatedAppText>
-          </View>
+          {'Crear cuenta'}
+        </AnimatedAppText>
+        <AnimatedAppText
+          entering={FadeInUp.delay(300)}
+          style={styles.headerSubtitle}
+        >
+          {'Ingresa tus datos para registrarte'}
+        </AnimatedAppText>
+      </View>
 
-          <Animated.View entering={SlideInDown.springify()} style={styles.card}>
-            <AppText style={styles.label}>{'Tipo de cuenta'}</AppText>
-            <Dropdown
-              options={accountTypes}
-              isOpen={open}
-              setIsOpen={setOpen}
-              value={form.type}
-              onChange={(callback) =>
-                setForm((prev) => ({
-                  ...prev,
-                  type: callback(prev.type),
-                }))
+      <Animated.View entering={SlideInDown.springify()} style={styles.card}>
+        <DropdownWrapper
+          id={'type'}
+          label={'Tipo de cuenta'}
+          options={USER_TYPES}
+          isOpen={isUserTypeOpen}
+          setIsOpen={setIsUserTypeOpen}
+          value={form.type}
+          onChange={(value) =>
+            setForm((prev) => ({
+              ...prev,
+              type: value,
+            }))
+          }
+          zIndex={3000}
+        />
+
+        <DropdownWrapper
+          id={'documentType'}
+          label={'Tipo de documento'}
+          options={DOCUMENT_TYPES}
+          isOpen={isDocTypeOpen}
+          setIsOpen={setIsDocTypeOpen}
+          value={form.person?.documentType}
+          onChange={(value) =>
+            setForm((prev) => ({
+              ...prev,
+              person: {
+                ...prev.person,
+                documentType: value,
+              },
+            }))
+          }
+          zIndex={2000}
+        />
+
+        <DropdownWrapper
+          id={'gender'}
+          label={'Genero'}
+          options={GENDER_TYPES}
+          isOpen={isGenderOpen}
+          setIsOpen={setIsGenderOpen}
+          value={form.person?.gender}
+          onChange={(value) =>
+            setForm((prev) => ({
+              ...prev,
+              person: {
+                ...prev.person,
+                gender: value,
+              },
+            }))
+          }
+          zIndex={1000}
+        />
+
+        {CREATE_USER_FORM.map(({ label, field, type, ...rest }) => {
+          const isBase = rest?.isBase ?? false;
+
+          return (
+            <InputWrapper
+              key={field}
+              id={field}
+              label={label}
+              placeholder={label}
+              secureTextEntry={rest?.secureTextEntry}
+              keyboardType={rest?.keyboardType}
+              value={isBase ? form?.[field] : form?.person?.[field]}
+              onChangeText={(text) =>
+                isBase
+                  ? handleBaseChange(field, text)
+                  : handlePersonChange(field, text)
               }
+              multiline={type === 'text-area' ? true : false}
+              numberOfLines={type === 'text-area' ? 10 : 1}
             />
+          );
+        })}
 
-            {CREATE_USER_FORM.map(({ label, field, ...rest }) => {
-              const isBase = rest?.isBase ?? false;
+        <FormWrapper label={'Fecha de Nacimiento'}>
+          <DatePicker
+            value={form?.person?.birthDate ?? ''}
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                person: {
+                  ...prev.person,
+                  birthDate: value ?? '',
+                },
+              }))
+            }
+          />
+        </FormWrapper>
 
-              return (
-                <View key={field} style={styles.inputWrapper}>
-                  <AppText style={styles.label}>{label}</AppText>
-                  <TextInput
-                    style={styles.input}
-                    placeholder={label}
-                    placeholderTextColor={theme.dark700}
-                    secureTextEntry={rest?.secureTextEntry}
-                    keyboardType={rest?.keyboardType}
-                    value={isBase ? form?.[field] : form?.person?.[field]}
-                    onChangeText={(text) =>
-                      isBase
-                        ? handleBaseChange(field, text)
-                        : handlePersonChange(field, text)
-                    }
-                  />
-                </View>
-              );
-            })}
-
-            <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleSubmit}
-            >
-              <AppText style={styles.submitText}>{'CREAR CUENTA'}</AppText>
-            </TouchableOpacity>
-          </Animated.View>
-        </KeyboardAwareScrollView>
-      </TouchableWithoutFeedback>
-    </LinearGradient>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <AppText style={styles.submitText}>{'CREAR CUENTA'}</AppText>
+        </TouchableOpacity>
+      </Animated.View>
+    </PageContainer>
   );
 }
 
@@ -155,8 +192,7 @@ const getStyles = (theme: FullTheme) =>
     header: {
       width: '100%',
       alignItems: 'center',
-      marginBottom: 24,
-      marginTop: 24,
+      marginBottom: 12,
     },
     headerTitle: {
       ...HEADING_STYLES(theme).title,

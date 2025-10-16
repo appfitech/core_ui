@@ -8,14 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
 
 import { useSendInquiry } from '../api/mutations/useSendInquiry';
 import { BackButton } from '../components/BackButton';
+import { Dropdown } from '../components/Dropdown';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnicos', value: 'technical' },
@@ -34,7 +35,8 @@ const initialState = {
 export default function SupportScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const [open, setOpen] = useState(false);
+  const { isOpen, setIsOpen } = useOpenable();
+
   const [form, setForm] = useState(initialState);
 
   const { mutate: submitInquiry } = useSendInquiry();
@@ -103,24 +105,19 @@ export default function SupportScreen() {
       </View>
 
       <View style={styles.form}>
-        <DropDownPicker
-          open={open}
+        <Dropdown
+          isOpen={isOpen}
           value={form.type}
-          items={SUPPORT_TYPES}
-          setOpen={setOpen}
-          setValue={(callback) =>
+          options={SUPPORT_TYPES}
+          setIsOpen={setIsOpen}
+          onChange={(value) =>
             setForm((prev) => ({
               ...prev,
-              type: callback(prev.type),
+              type: value,
             }))
           }
-          listMode="SCROLLVIEW"
-          style={styles.dropdown}
-          dropDownContainerStyle={{
-            backgroundColor: '#F5F7FA',
-            borderColor: '#ccc',
-          }}
         />
+
         <TextInput
           placeholder="Asunto*"
           style={styles.input}

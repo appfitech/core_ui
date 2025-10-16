@@ -52,17 +52,6 @@ export default function LoginScreen() {
     return () => clearTimeout(t);
   }, [errorMsg]);
 
-  const handleChange = useCallback(
-    (key: string) => (text: string) => {
-      if (key === 'username') {
-        setUsername(text);
-        return;
-      }
-      setPassword(text);
-    },
-    [],
-  );
-
   const handleLogin = useCallback(() => {
     setErrorMsg(null);
     submitLogin(
@@ -151,7 +140,7 @@ export default function LoginScreen() {
               placeholderTextColor={theme.dark800}
               keyboardType="email-address"
               value={username}
-              onChangeText={handleChange('username')}
+              onChangeText={setUsername}
             />
           </View>
 
@@ -167,7 +156,7 @@ export default function LoginScreen() {
               secureTextEntry={!displayPass}
               value={password}
               style={{ marginBottom: 0 }}
-              onChangeText={handleChange('password')}
+              onChangeText={setPassword}
             />
             <TouchableOpacity onPress={handleToggleDisplayPass}>
               <Feather
@@ -280,9 +269,6 @@ const getStyles = (theme: FullTheme) =>
       fontWeight: '600',
       marginLeft: 10,
       fontSize: 18,
-    },
-    gradient: {
-      flex: 1,
     },
     iconLeft: {
       marginRight: 8,

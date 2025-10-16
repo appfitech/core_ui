@@ -4,9 +4,6 @@ export const emptyUserWritable: UserDtoWritable = {
   username: '',
   type: 2,
   password: '',
-  //   isEmailVerified: false,
-  //   premiumBy: 'NONE',
-  //   premium: false,
   person: {
     firstName: '',
     lastName: '',
@@ -14,11 +11,8 @@ export const emptyUserWritable: UserDtoWritable = {
     phoneNumber: '',
     email: '',
     documentType: 'DNI',
-    // profilePhotoId: undefined,
-    // presentationVideoId: undefined,
-    // bio: '',
-    // gender: 'OTHER', F o M nomas
-    // birthDate: '',
-    // fitnessGoalTypes: [],
+    birthDate: undefined,
+    bio: '',
+    gender: undefined,
   },
 };
