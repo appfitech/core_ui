@@ -1,4 +1,3 @@
-// src/features/auth/useRefreshToken.ts
 import { useMutation } from '@tanstack/react-query';
 
 import { RefreshTokenRequestDto } from '@/types/api/types.gen';
@@ -9,8 +8,8 @@ export const useRefreshToken = () => {
   return useMutation<{ token: string }, Error, RefreshTokenRequestDto>({
     mutationFn: async (request) => {
       const data = await api.post('/user/refresh-token', request, false, {
-        auth: false, // do NOT send Bearer
-        retryOn401: false, // do NOT try refreshing this call
+        auth: false,
+        retryOn401: false,
       });
       const token: string | undefined =
         data?.token ?? data?.result?.token ?? data?.data?.token;

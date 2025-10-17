@@ -28,6 +28,7 @@ type UserStore = {
   updateUserInfo: (data: UserResponseDtoReadable) => Promise<void>;
   updateProfilePhotoId: (photoId: number) => Promise<void>;
 
+  getUserId: () => number | null;
   getToken: () => string | null;
   getIsTrainer: () => boolean;
 
@@ -77,7 +78,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   loadSession: async () => {
-    console.log('[K] loadSession');
     const userJson = await SecureStore.getItemAsync(SECURE_USER_KEY);
     if (userJson) {
       const user = JSON.parse(userJson) as LoginResponseDtoReadable;
@@ -120,6 +120,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     await SecureStore.setItemAsync(SECURE_USER_KEY, JSON.stringify(updated));
     set({ user: updated });
   },
+
+  getUserId: () => get().user?.user?.id ?? null,
 
   getToken: () => get().token,
 
