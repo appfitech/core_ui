@@ -71,7 +71,8 @@
     "react-native-webview": "13.12.5",
     "zustand": "^5.0.8",
     "expo-notifications": "~0.29.14",
-    "expo-device": "~7.0.3"
+    "expo-device": "~7.0.3",
+    "lottie-react-native": "7.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

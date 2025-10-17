@@ -1,5 +1,5 @@
 // app/gymbro/index.tsx
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
@@ -34,6 +34,8 @@ import { Profile, useGymBroStore } from '@/stores/gymBroStore';
 import type { FullTheme } from '@/types/theme';
 
 import { useGetGymBroList } from '../api/queries/matches/use-get-gymbro-list';
+import DiscardLottieButton from '../components/lottie/DiscardLottieButton';
+import MuscleLottieButton from '../components/lottie/MuscleLottieButton';
 import { MOCK_PROFILES } from './mockProfiles';
 
 type Preferences = {
@@ -632,13 +634,7 @@ export default function GymBroScreen() {
                 pointerEvents="box-none"
               >
                 {/* ✕ */}
-                <CircleButton
-                  onPress={handlePass}
-                  bg={theme.backgroundHeader}
-                  size={68}
-                >
-                  <Ionicons name="close" size={34} color={theme.textPrimary} />
-                </CircleButton>
+                <DiscardLottieButton onPress={handlePass} />
 
                 {/* Reset */}
                 <CircleButton onPress={resetCard} bg={theme.card} size={56}>
@@ -650,13 +646,7 @@ export default function GymBroScreen() {
                 </CircleButton>
 
                 {/* Dumbbell */}
-                <CircleButton onPress={handleSave} bg={theme.primary} size={68}>
-                  <MaterialCommunityIcons
-                    name="dumbbell"
-                    size={34}
-                    color={theme.primaryText}
-                  />
-                </CircleButton>
+                <MuscleLottieButton onPress={handleSave} />
               </View>
             )}
           </View>

@@ -33,6 +33,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { CoachProfile, useGymCrushStore } from '@/stores/gymcrushStore';
 import type { FullTheme } from '@/types/theme';
 
+import DiscardLottieButton from '../components/lottie/DiscardLottieButton';
+import HeartLottieButton from '../components/lottie/HeartLottieButton';
 import { MOCK_PROFILES } from './mockProfiles';
 
 type Preferences = {
@@ -633,13 +635,7 @@ export default function GymCrushScreen() {
                 pointerEvents="box-none"
               >
                 {/* ✕ */}
-                <CircleButton
-                  onPress={handlePass}
-                  bg={theme.backgroundHeader}
-                  size={68}
-                >
-                  <Ionicons name="close" size={34} color={theme.textPrimary} />
-                </CircleButton>
+                <DiscardLottieButton onPress={handlePass} />
 
                 {/* Reset */}
                 <CircleButton onPress={resetCard} bg={theme.card} size={56}>
@@ -650,10 +646,11 @@ export default function GymCrushScreen() {
                   />
                 </CircleButton>
 
+                <HeartLottieButton onPress={handleSave} />
                 {/* Heart (save) */}
-                <CircleButton onPress={handleSave} bg={theme.primary} size={68}>
+                {/* <CircleButton onPress={handleSave} bg={theme.primary} size={68}>
                   <Ionicons name="heart" size={34} color={theme.primaryText} />
-                </CircleButton>
+                </CircleButton> */}
               </View>
             )}
           </View>
