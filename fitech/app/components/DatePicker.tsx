@@ -16,7 +16,6 @@ type Props = {
 };
 
 const toISODate = (d: Date) => {
-  // calendar date, no timezone shift
   const y = d.getFullYear();
   const m = `${d.getMonth() + 1}`.padStart(2, '0');
   const day = `${d.getDate()}`.padStart(2, '0');
@@ -46,8 +45,8 @@ export function DatePicker({
     () =>
       new Intl.DateTimeFormat('es-PE', {
         day: '2-digit',
-        month: 'long',
-        year: 'numeric',
+        month: '2-digit',
+        year: 'numeric', // -> DD/MM/YYYY in es-PE
       }),
     [],
   );

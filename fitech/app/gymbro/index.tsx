@@ -1,4 +1,5 @@
 // app/gymbro/index.tsx
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
@@ -15,10 +16,13 @@ import {
 } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
+  FadeInUp,
+  FadeOutUp,
   runOnJS,
   useAnimatedGestureHandler,
   useAnimatedStyle,
   useSharedValue,
+  withSequence,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
@@ -49,8 +53,9 @@ const MOCK_PREFS: Preferences = {
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const CARD_W = SCREEN_W * 0.9;
-const CARD_H = Math.min(420, SCREEN_H * 0.55);
-const IMAGE_H = Math.round(CARD_H * 0.58);
+// Shorter card so sticky actions are clear
+const CARD_H = Math.min(320, SCREEN_H * 0.45);
+const IMAGE_H = Math.round(CARD_H * 0.52);
 const SWIPE_THRESHOLD = CARD_W * 0.35;
 
 function filterByPreferences(list: Profile[], prefs: Preferences) {
@@ -84,31 +89,70 @@ function Pill({
   );
 }
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 function CircleButton({
   onPress,
   children,
   bg,
   border,
+  size = 68, // bigger buttons
 }: {
   onPress: () => void;
   children: React.ReactNode;
   bg: string;
   border?: string;
+  size?: number;
 }) {
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  // Animate on press in/out so it feels responsive immediately
+  const handlePressIn = () => {
+    scale.value = withTiming(0.94, { duration: 80 });
+  };
+  const handlePressOut = () => {
+    scale.value = withTiming(1, { duration: 120 });
+  };
+  const handlePress = () => {
+    // fire action immediately so user doesn't need to hold
+    onPress();
+    // quick pulse that plays even if state changes
+    scale.value = withSequence(
+      withTiming(1.08, { duration: 100, easing: Easing.out(Easing.quad) }),
+      withSpring(1, { damping: 14, stiffness: 180 }),
+    );
+  };
+
   return (
-    <Pressable
-      onPress={onPress}
+    <AnimatedPressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={handlePress}
+      hitSlop={12}
       style={[
-        styles.circleBtn,
+        animatedStyle,
         {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
           backgroundColor: bg,
           borderColor: border ?? 'transparent',
           borderWidth: border ? 1 : 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+          shadowOpacity: 0.08,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 4 },
+          elevation: 2,
         },
       ]}
     >
       {children}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
@@ -119,7 +163,7 @@ function ProfileCard({ p, theme }: { p: Profile; theme: FullTheme }) {
     : p.photo;
 
   return (
-    <View style={[styles.card, { width: CARD_W }]}>
+    <View style={[styles.card, { width: CARD_W, height: CARD_H }]}>
       <ImageBackground
         source={{ uri }}
         style={{ height: IMAGE_H }}
@@ -134,6 +178,7 @@ function ProfileCard({ p, theme }: { p: Profile; theme: FullTheme }) {
             backgroundColor: theme.card,
             borderBottomLeftRadius: 24,
             borderBottomRightRadius: 24,
+            flex: 1,
           },
         ]}
       >
@@ -167,6 +212,7 @@ function ProfileCard({ p, theme }: { p: Profile; theme: FullTheme }) {
         {!!p.bio && (
           <AppText
             style={{ color: theme.textSecondary, fontSize: 13, lineHeight: 18 }}
+            numberOfLines={3}
           >
             {p.bio}
           </AppText>
@@ -190,6 +236,9 @@ export default function GymBroScreen() {
   const [index, setIndex] = useState(0);
   const [mode, setMode] = useState<Mode>('discover');
   const current = available[index];
+
+  // Local removed IDs to **guarantee** Guardados updates instantly
+  const [removedIds, setRemovedIds] = useState<Set<string>>(new Set());
 
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
@@ -234,9 +283,7 @@ export default function GymBroScreen() {
           duration: 220,
         });
       } else {
-        translateX.value = withSpring(0);
-        translateY.value = withSpring(0);
-        rotation.value = withSpring(0);
+        resetCard();
       }
     },
   });
@@ -263,7 +310,16 @@ export default function GymBroScreen() {
   const handlePass = () => onSwiped('left');
   const handleSave = () => onSwiped('right');
 
-  const savedList = useMemo(() => Object.values(saved), [saved]);
+  // Saved list filters out locally removed and store-discarded items
+  const savedList = useMemo(
+    () =>
+      Object.values(saved).filter(
+        (it) =>
+          !removedIds.has(String(it.id)) &&
+          !(String(it.id) in (discarded as any)),
+      ),
+    [saved, removedIds, discarded],
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -353,7 +409,15 @@ export default function GymBroScreen() {
           {/* Content + sticky actions */}
           <View style={{ flex: 1 }}>
             {mode === 'discover' ? (
-              <View style={[styles.center, { paddingBottom: 70 }]}>
+              <View
+                style={[
+                  styles.center,
+                  {
+                    // extra room so sticky buttons don't overlap
+                    paddingBottom: 140,
+                  },
+                ]}
+              >
                 {current ? (
                   <PanGestureHandler onGestureEvent={gestureHandler}>
                     <Animated.View style={[cardStyle]}>
@@ -401,116 +465,141 @@ export default function GymBroScreen() {
             ) : (
               <FlatList
                 data={savedList}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => String(item.id)}
                 contentContainerStyle={{
                   padding: 16,
                   gap: 12,
-                  paddingBottom: 16,
+                  paddingBottom: 24,
                 }}
                 renderItem={({ item }) => (
-                  <View
-                    style={{
-                      borderRadius: 16,
-                      overflow: 'hidden',
-                      borderWidth: 1,
-                      borderColor: theme.border,
-                      backgroundColor: theme.card,
-                    }}
-                  >
-                    <ImageBackground
-                      source={{ uri: item.photo }}
-                      style={{ height: 160, justifyContent: 'flex-end' }}
-                      imageStyle={{
-                        borderTopLeftRadius: 16,
-                        borderTopRightRadius: 16,
+                  <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+                    <View
+                      style={{
+                        borderRadius: 16,
+                        overflow: 'hidden',
+                        borderWidth: 1,
+                        borderColor: theme.border,
+                        backgroundColor: theme.card,
                       }}
-                      resizeMode="cover"
                     >
-                      <View
-                        style={{
-                          backgroundColor: theme.isDark
-                            ? 'rgba(0,0,0,0.35)'
-                            : 'rgba(0,0,0,0.2)',
-                          padding: 12,
+                      <ImageBackground
+                        source={{ uri: item.photo }}
+                        style={{ height: 140, justifyContent: 'flex-end' }}
+                        imageStyle={{
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
                         }}
+                        resizeMode="cover"
                       >
-                        <AppText
+                        <View
                           style={{
-                            color: theme.backgroundInverted || '#fff',
-                            fontWeight: '800',
+                            backgroundColor: theme.isDark
+                              ? 'rgba(0,0,0,0.35)'
+                              : 'rgba(0,0,0,0.2)',
+                            padding: 12,
                           }}
                         >
-                          {item.name}
-                          {item.age ? `, ${item.age}` : ''} • {item.level}
-                        </AppText>
-                        <AppText
-                          style={{ color: theme.backgroundInverted || '#fff' }}
-                        >
-                          {item.distanceKm != null
-                            ? `${item.distanceKm.toFixed(1)} km cerca`
-                            : ''}
-                        </AppText>
-                      </View>
-                    </ImageBackground>
-
-                    <View style={{ padding: 12, gap: 8 }}>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          flexWrap: 'wrap',
-                          gap: 8,
-                        }}
-                      >
-                        {item.goals.map((g) => (
-                          <Pill
-                            key={g}
-                            bg={theme.backgroundHeader}
-                            color={theme.textPrimary}
-                          >
-                            {g}
-                          </Pill>
-                        ))}
-                      </View>
-
-                      {!!item.bio && (
-                        <AppText
-                          style={{ color: theme.textSecondary, lineHeight: 18 }}
-                        >
-                          {item.bio}
-                        </AppText>
-                      )}
-
-                      <View
-                        style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}
-                      >
-                        <CircleButton onPress={() => {}} bg={theme.primary}>
                           <AppText
                             style={{
-                              fontWeight: '700',
-                              color: theme.primaryText,
+                              color: theme.backgroundInverted || '#fff',
+                              fontWeight: '800',
                             }}
                           >
-                            Contactar
+                            {item.name}
+                            {item.age ? `, ${item.age}` : ''} • {item.level}
                           </AppText>
-                        </CircleButton>
-
-                        <CircleButton
-                          onPress={() => markDiscarded(item)}
-                          bg={theme.background}
-                          border={theme.border}
-                        >
                           <AppText
                             style={{
-                              fontWeight: '700',
-                              color: theme.textPrimary,
+                              color: theme.backgroundInverted || '#fff',
                             }}
                           >
-                            Quitar
+                            {item.distanceKm != null
+                              ? `${item.distanceKm.toFixed(1)} km cerca`
+                              : ''}
                           </AppText>
-                        </CircleButton>
+                        </View>
+                      </ImageBackground>
+
+                      <View style={{ padding: 12, gap: 8 }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            flexWrap: 'wrap',
+                            gap: 8,
+                          }}
+                        >
+                          {item.goals.map((g) => (
+                            <Pill
+                              key={g}
+                              bg={theme.backgroundHeader}
+                              color={theme.textPrimary}
+                            >
+                              {g}
+                            </Pill>
+                          ))}
+                        </View>
+
+                        {!!item.bio && (
+                          <AppText
+                            style={{
+                              color: theme.textSecondary,
+                              lineHeight: 18,
+                            }}
+                          >
+                            {item.bio}
+                          </AppText>
+                        )}
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            gap: 12,
+                            marginTop: 4,
+                          }}
+                        >
+                          <CircleButton
+                            onPress={() => {}}
+                            bg={theme.primary}
+                            size={56}
+                          >
+                            <AppText
+                              style={{
+                                fontWeight: '700',
+                                color: theme.primaryText,
+                              }}
+                            >
+                              Contactar
+                            </AppText>
+                          </CircleButton>
+
+                          <CircleButton
+                            onPress={() => {
+                              // Store update
+                              markDiscarded(item);
+                              // Local instant removal (works even if store batching delays)
+                              setRemovedIds((prev) => {
+                                const next = new Set(prev);
+                                next.add(String(item.id));
+                                return next;
+                              });
+                            }}
+                            bg={theme.background}
+                            border={theme.border}
+                            size={56}
+                          >
+                            <AppText
+                              style={{
+                                fontWeight: '700',
+                                color: theme.textPrimary,
+                              }}
+                            >
+                              Quitar
+                            </AppText>
+                          </CircleButton>
+                        </View>
                       </View>
                     </View>
-                  </View>
+                  </Animated.View>
                 )}
                 ListEmptyComponent={
                   <View style={{ padding: 24, alignItems: 'center' }}>
@@ -524,37 +613,45 @@ export default function GymBroScreen() {
             )}
 
             {/* Sticky actions */}
-            {mode === 'discover' && (
+            {mode === 'discover' && !!current && (
               <View
                 style={{
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  bottom: 10,
+                  bottom: 22,
                   flexDirection: 'row',
                   justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                  zIndex: 20,
                 }}
+                pointerEvents="box-none"
               >
-                <CircleButton onPress={handlePass} bg={theme.backgroundHeader}>
-                  <AppText
-                    style={{ fontWeight: '700', color: theme.textPrimary }}
-                  >
-                    ✕
-                  </AppText>
+                {/* ✕ */}
+                <CircleButton
+                  onPress={handlePass}
+                  bg={theme.backgroundHeader}
+                  size={68}
+                >
+                  <Ionicons name="close" size={34} color={theme.textPrimary} />
                 </CircleButton>
-                <CircleButton onPress={resetCard} bg={theme.card}>
-                  <AppText
-                    style={{ fontWeight: '700', color: theme.textPrimary }}
-                  >
-                    ↺
-                  </AppText>
+
+                {/* Reset */}
+                <CircleButton onPress={resetCard} bg={theme.card} size={56}>
+                  <Ionicons
+                    name="refresh"
+                    size={28}
+                    color={theme.textPrimary}
+                  />
                 </CircleButton>
-                <CircleButton onPress={handleSave} bg={theme.primary}>
-                  <AppText
-                    style={{ fontWeight: '700', color: theme.primaryText }}
-                  >
-                    ❤
-                  </AppText>
+
+                {/* Dumbbell */}
+                <CircleButton onPress={handleSave} bg={theme.primary} size={68}>
+                  <MaterialCommunityIcons
+                    name="dumbbell"
+                    size={34}
+                    color={theme.primaryText}
+                  />
                 </CircleButton>
               </View>
             )}
@@ -588,18 +685,6 @@ const styles = StyleSheet.create({
   cardOverlay: { ...StyleSheet.absoluteFillObject },
   cardContent: { gap: 10, padding: 16 },
   pillsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  pill: { paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999 },
-  circleBtn: {
-    paddingHorizontal: 18,
-    height: 44,
-    borderRadius: 999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-  },
   empty: {
     borderWidth: 1,
     borderRadius: 24,

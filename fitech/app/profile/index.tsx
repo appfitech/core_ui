@@ -131,6 +131,11 @@ export default function ProfileScreen() {
             route={'subscription'}
           />
         )}
+        <SectionItem
+          icon="information"
+          label="Testing tools"
+          route={'test-tools'}
+        />
       </Animated.View>
 
       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
