@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
+import { StyleSheet } from 'react-native';
+import Animated, { SlideInDown } from 'react-native-reanimated';
 
 import {
   CREATE_USER_FORM,
@@ -10,16 +10,15 @@ import {
   USER_TYPES,
 } from '@/constants/forms';
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+import { getDOBMaxDate } from '@/utils/dates';
 
 import { useCreateUser } from '../api/mutations/user/use-create-user';
-import { AnimatedAppText } from '../components/AnimatedAppText';
-import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
 import { DatePicker } from '../components/DatePicker';
 import { DropdownWrapper } from '../components/DropdownWrapper';
 import { FormWrapper } from '../components/FormWrapper';
@@ -35,7 +34,6 @@ export default function Register() {
   const { isOpen: isDocTypeOpen, setIsOpen: setIsDocTypeOpen } = useOpenable();
   const { isOpen: isGenderOpen, setIsOpen: setIsGenderOpen } = useOpenable();
   const [form, setForm] = useState<UserDtoWritable>(emptyUserWritable);
-  console.log('[K] form', form);
 
   const router = useRouter();
   const { mutate: createUser } = useCreateUser();
@@ -60,22 +58,11 @@ export default function Register() {
   };
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <View style={styles.header}>
-        <AnimatedAppText
-          entering={FadeInUp.delay(200)}
-          style={styles.headerTitle}
-        >
-          {'Crear cuenta'}
-        </AnimatedAppText>
-        <AnimatedAppText
-          entering={FadeInUp.delay(300)}
-          style={styles.headerSubtitle}
-        >
-          {'Ingresa tus datos para registrarte'}
-        </AnimatedAppText>
-      </View>
-
+    <PageContainer
+      header={'Crear cuenta'}
+      subheader={'Ingresa tus datos para registrarte'}
+      style={{ padding: 16 }}
+    >
       <Animated.View entering={SlideInDown.springify()} style={styles.card}>
         <DropdownWrapper
           id={'type'}
@@ -131,6 +118,23 @@ export default function Register() {
           zIndex={1000}
         />
 
+        <FormWrapper label={'Fecha de nacimiento'}>
+          <DatePicker
+            placeholder="Fecha de nacimiento"
+            value={form?.person?.birthDate ?? ''}
+            maxDate={getDOBMaxDate()}
+            onChange={(value) =>
+              setForm((prev) => ({
+                ...prev,
+                person: {
+                  ...prev.person,
+                  birthDate: value ?? '',
+                },
+              }))
+            }
+          />
+        </FormWrapper>
+
         {CREATE_USER_FORM.map(({ label, field, type, ...rest }) => {
           const isBase = rest?.isBase ?? false;
 
@@ -154,24 +158,11 @@ export default function Register() {
           );
         })}
 
-        <FormWrapper label={'Fecha de Nacimiento'}>
-          <DatePicker
-            value={form?.person?.birthDate ?? ''}
-            onChange={(value) =>
-              setForm((prev) => ({
-                ...prev,
-                person: {
-                  ...prev.person,
-                  birthDate: value ?? '',
-                },
-              }))
-            }
-          />
-        </FormWrapper>
-
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <AppText style={styles.submitText}>{'CREAR CUENTA'}</AppText>
-        </TouchableOpacity>
+        <Button
+          label={'Crear cuenta'}
+          style={{ marginTop: 30 }}
+          onPress={handleSubmit}
+        />
       </Animated.View>
     </PageContainer>
   );
@@ -179,29 +170,6 @@ export default function Register() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    gradient: {
-      flex: 1,
-    },
-    scrollContainer: {
-      flexGrow: 1,
-      paddingHorizontal: 24,
-      paddingTop: 60,
-      paddingBottom: 80,
-      justifyContent: 'flex-start',
-    },
-    header: {
-      width: '100%',
-      alignItems: 'center',
-      marginBottom: 12,
-    },
-    headerTitle: {
-      ...HEADING_STYLES(theme).title,
-      fontWeight: '700',
-    },
-    headerSubtitle: {
-      ...HEADING_STYLES(theme).subtitle,
-      marginTop: 8,
-    },
     card: {
       backgroundColor: theme.background,
       width: '100%',
@@ -209,5 +177,4 @@ const getStyles = (theme: FullTheme) =>
       padding: 16,
       elevation: 6,
     },
-    ...SHARED_STYLES(theme),
   });

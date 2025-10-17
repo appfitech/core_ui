@@ -1,63 +1,53 @@
-// src/components/DOBPicker.tsx
 import { Ionicons } from '@expo/vector-icons';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
+import { formatToDDMMYYYY, fromISODate, today, toISODate } from '@/utils/dates';
 
-import { AppText } from './AppText'; // your styled text component
+import { AppText } from './AppText';
 
 type Props = {
-  value: string | null; // 'YYYY-MM-DD'
+  value: string | null;
   onChange: (isoDate: string | null) => void;
   placeholder?: string;
-};
-
-const toISODate = (d: Date) => {
-  const y = d.getFullYear();
-  const m = `${d.getMonth() + 1}`.padStart(2, '0');
-  const day = `${d.getDate()}`.padStart(2, '0');
-  return `${y}-${m}-${day}`;
+  minDate?: Date | undefined;
+  maxDate?: Date | undefined;
 };
 
 export function DatePicker({
   value,
   onChange,
-  placeholder = 'Fecha de nacimiento',
+  placeholder = '',
+  minDate = undefined,
+  maxDate = undefined,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const [visible, setVisible] = useState(false);
 
-  const today = useMemo(() => new Date(), []);
-  const minDate = useMemo(() => new Date(1900, 0, 1), []);
+  const { isOpen, open, close } = useOpenable();
+
   const initialDate = useMemo(() => {
     if (value) {
-      const [y, m, d] = value.split('-').map(Number);
-      return new Date(y, (m ?? 1) - 1, d ?? 1);
+      return fromISODate(value);
     }
-    return new Date();
+
+    return today();
   }, [value]);
 
-  const formatter = useMemo(
-    () =>
-      new Intl.DateTimeFormat('es-PE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric', // -> DD/MM/YYYY in es-PE
-      }),
-    [],
+  const displayText = useMemo(
+    () => (value ? formatToDDMMYYYY(value) : placeholder),
+    [value, placeholder],
   );
-
-  const displayText = value ? formatter.format(initialDate) : placeholder;
 
   return (
     <>
       <TouchableOpacity
         style={styles.inputRow}
-        onPress={() => setVisible(true)}
+        onPress={open}
         activeOpacity={0.8}
       >
         <Ionicons
@@ -80,17 +70,16 @@ export function DatePicker({
       </TouchableOpacity>
 
       <DateTimePickerModal
-        isVisible={visible}
+        isVisible={isOpen}
         mode="date"
         date={initialDate}
-        maximumDate={today}
+        maximumDate={maxDate}
         minimumDate={minDate}
         onConfirm={(picked) => {
-          setVisible(false);
+          close();
           onChange(toISODate(picked));
         }}
-        onCancel={() => setVisible(false)}
-        // Nice iOS look; Android uses native 'default'
+        onCancel={close}
         display={Platform.OS === 'ios' ? 'inline' : 'default'}
         locale="es-PE"
       />
@@ -103,7 +92,7 @@ const getStyles = (theme: FullTheme) =>
     inputRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.backgroundInput, // same as your inputs
+      backgroundColor: theme.backgroundInput,
       borderRadius: 10,
       paddingHorizontal: 12,
       height: 52,

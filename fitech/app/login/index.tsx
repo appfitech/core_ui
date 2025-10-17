@@ -2,11 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, {
-  FadeInUp,
-  SlideInDown,
-  ZoomIn,
-} from 'react-native-reanimated';
+import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
 
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
@@ -20,6 +16,8 @@ import { TRANSLATIONS } from '../../constants/strings';
 import { useLogin } from '../api/mutations/useLogin';
 import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
+import { ErrorBanner } from '../components/ErrorBanner';
 import PageContainer from '../components/PageContainer';
 import { TextInput } from '../components/TextInput';
 
@@ -48,7 +46,9 @@ export default function LoginScreen() {
 
   useEffect(() => {
     if (!errorMsg) return;
+
     const t = setTimeout(() => setErrorMsg(null), 10000);
+
     return () => clearTimeout(t);
   }, [errorMsg]);
 
@@ -77,8 +77,8 @@ export default function LoginScreen() {
   };
 
   return (
-    <PageContainer style={{ paddingHorizontal: 24 }}>
-      <View style={styles.header}>
+    <PageContainer hasBottomPadding={false} style={{ paddingHorizontal: 24 }}>
+      <View style={styles.headerWrapper}>
         <Animated.Image
           entering={FadeInUp.duration(600)}
           source={require('../../assets/images/logos/logo.png')}
@@ -104,29 +104,10 @@ export default function LoginScreen() {
           entering={SlideInDown.springify().damping(15)}
           style={styles.card}
         >
-          {/* Error banner */}
-          {errorMsg && (
-            <Animated.View entering={FadeInUp} style={styles.errorBanner}>
-              <Feather
-                name="alert-triangle"
-                size={18}
-                color={styles.errorText.color as string}
-              />
-              <AppText style={styles.errorText} numberOfLines={3}>
-                {errorMsg}
-              </AppText>
-              <TouchableOpacity
-                onPress={() => setErrorMsg(null)}
-                hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-              >
-                <Feather
-                  name="x"
-                  size={18}
-                  color={styles.errorText.color as string}
-                />
-              </TouchableOpacity>
-            </Animated.View>
-          )}
+          <ErrorBanner
+            errorMessage={errorMsg}
+            onClear={() => setErrorMsg(null)}
+          />
 
           <View style={styles.inputWrapper}>
             <Feather
@@ -175,11 +156,11 @@ export default function LoginScreen() {
             </TouchableOpacity>
           </View>
 
-          <Animated.View entering={ZoomIn.delay(200)}>
-            <TouchableOpacity style={styles.submitButton} onPress={handleLogin}>
-              <AppText style={styles.submitText}>{'Iniciar sesión'}</AppText>
-            </TouchableOpacity>
-          </Animated.View>
+          <Button
+            label={'Iniciar sesión'}
+            onPress={handleLogin}
+            style={{ marginTop: 24 }}
+          />
 
           <View style={styles.footerText}>
             <AppText
@@ -199,7 +180,7 @@ export default function LoginScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    header: {
+    headerWrapper: {
       width: '100%',
       alignItems: 'center',
       marginBottom: 32,
@@ -211,7 +192,6 @@ const getStyles = (theme: FullTheme) =>
     },
     headerTitle: {
       ...HEADING_STYLES(theme).header,
-      fontWeight: '600',
       marginTop: 40,
     },
     headerSubtitle: {
@@ -229,24 +209,6 @@ const getStyles = (theme: FullTheme) =>
       shadowRadius: 12,
       elevation: 6,
       marginTop: 20,
-    },
-    errorBanner: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-      borderRadius: 10,
-      marginBottom: 12,
-      backgroundColor: theme.errorBackground,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.errorBorder,
-    },
-    errorText: {
-      flex: 1,
-      color: theme.errorText,
-      fontSize: 14,
-      fontWeight: '600',
     },
 
     optionsRow: {

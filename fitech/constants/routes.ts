@@ -16,4 +16,6 @@ export const ROUTES = {
   trainerReviews: '/trainer-reviews',
   trainerClients: '/trainer-clients',
   trainerPayments: '/trainer-payments',
+  gymbro: '/gymbro',
+  gymcrush: '/gymcrush',
 } as const;

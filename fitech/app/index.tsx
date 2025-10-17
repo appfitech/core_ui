@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
@@ -9,6 +9,7 @@ import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../constants/strings';
 import { AppText } from './components/AppText';
+import { Button } from './components/Button';
 
 export default function WelcomeScreen() {
   const { theme } = useTheme();
@@ -53,22 +54,15 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(400).duration(800)}
         style={styles.buttonContainer}
       >
-        <TouchableOpacity
-          style={styles.primaryButton}
+        <Button
+          label={welcomeScreen.createAccountButton}
           onPress={handleRegisterClick}
-        >
-          <AppText style={styles.primaryButtonText}>
-            {welcomeScreen.createAccountButton}
-          </AppText>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.secondaryButton}
+        />
+        <Button
+          label={welcomeScreen.logInButton}
           onPress={handleLoginClick}
-        >
-          <AppText style={styles.secondaryButtonText}>
-            {welcomeScreen.logInButton}
-          </AppText>
-        </TouchableOpacity>
+          type={'secondary'}
+        />
       </Animated.View>
     </View>
   );
@@ -108,28 +102,5 @@ const getThemedStyles = (theme: FullTheme) =>
     buttonContainer: {
       width: '100%',
       gap: 16,
-    },
-    primaryButton: {
-      backgroundColor: theme.green500,
-      paddingVertical: 14,
-      borderRadius: 12,
-      alignItems: 'center',
-    },
-    primaryButtonText: {
-      color: theme.textPrimary,
-      fontSize: 18,
-      fontWeight: '600',
-    },
-    secondaryButton: {
-      borderColor: theme.green700,
-      borderWidth: 2,
-      paddingVertical: 14,
-      borderRadius: 12,
-      alignItems: 'center',
-    },
-    secondaryButtonText: {
-      color: theme.green700,
-      fontSize: 18,
-      fontWeight: '600',
     },
   });

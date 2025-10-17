@@ -42,7 +42,6 @@ export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
     paddingVertical: 18,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 24,
   },
   submitText: {
     color: theme.textPrimary,
@@ -59,6 +58,7 @@ export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
     color: theme.textPrimary,
     fontSize: 34,
     textAlign: 'center',
+    fontWeight: '600',
   },
   subheader: {
     fontSize: 22,

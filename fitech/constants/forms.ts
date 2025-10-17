@@ -19,7 +19,6 @@ export const CREATE_USER_FORM = [
     secureTextEntry: true,
     isBase: true,
   },
-  { label: 'Bio', field: 'bio', type: 'text-area' },
 ];
 
 export const USER_TYPES = [
