@@ -1,30 +1,26 @@
-import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import AvatarSvg from '@/assets/images/avatar.svg';
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES } from '@/constants/shared_styles';
+import { PROFILE_LIST_ITEMS } from '@/constants/user';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
+import { ListItem } from '../components/ListItem';
+import PageContainer from '../components/PageContainer';
 import { Tag } from '../components/Tag';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();
-  const insets = useSafeAreaInsets();
+
   const router = useRouter();
   const person = useUserStore((s) => s.user?.user?.person);
   const user = useUserStore((s) => s.user?.user);
@@ -46,16 +42,7 @@ export default function ProfileScreen() {
   const userAvatarURL = getUserAvatarURL(person);
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 40,
-          minHeight: '100%',
-        },
-      ]}
-    >
+    <PageContainer hasBackButton={false}>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {userAvatarURL ? (
           <Image
@@ -104,75 +91,26 @@ export default function ProfileScreen() {
         entering={FadeInUp.delay(100).duration(500)}
         style={styles.section}
       >
-        <SectionItem
-          icon="user"
-          label="Información Personal"
-          route={'personal-info'}
-        />
-        <SectionItem
-          icon="image"
-          label="Galería de Fotos"
-          route={'image-gallery'}
-        />
-        {!isTrainer && (
-          <SectionItem icon="list" label="Objetivos Fitness" route={'goals'} />
-        )}
-        {!isTrainer && user?.premium && (
-          <SectionItem
-            icon="heart"
-            label="Preferencias de match"
-            route={'match-preferences'}
-          />
-        )}
-        {user?.premium && !isTrainer && (
-          <SectionItem
-            icon="dollar-sign"
-            label="Mi Suscripción"
-            route={'subscription'}
-          />
-        )}
-        <SectionItem
-          icon="information"
-          label="Testing tools"
-          route={'test-tools'}
-        />
+        {PROFILE_LIST_ITEMS.map((item) => {
+          if (item?.userOnly && isTrainer) {
+            return null;
+          }
+
+          if (item?.premiumOnly && !user?.premium) {
+            return null;
+          }
+
+          return <ListItem key={item.route} {...item} />;
+        })}
       </Animated.View>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-        <AppText style={styles.logoutText}>Cerrar sesión</AppText>
-      </TouchableOpacity>
-    </ScrollView>
-  );
-}
-
-function SectionItem({
-  icon,
-  label,
-  route,
-}: {
-  icon: string;
-  label: string;
-  route: string;
-}) {
-  const router = useRouter();
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-
-  const handleClick = useCallback(
-    (route: string) => () => {
-      router.push(`/${route}`);
-    },
-    [],
-  );
-
-  return (
-    <TouchableOpacity style={styles.item} onPress={handleClick(route)}>
-      <View style={styles.iconWrapper}>
-        <Feather name={icon as any} size={23} color={theme.green800} />
-      </View>
-      <AppText style={styles.itemLabel}>{label}</AppText>
-      <Feather name="chevron-right" size={20} color={theme.green700} />
-    </TouchableOpacity>
+      <Button
+        label={'Cerrar sesión'}
+        style={{ marginTop: 30 }}
+        onPress={handleLogout}
+        type={'destructive'}
+      />
+    </PageContainer>
   );
 }
 
@@ -186,6 +124,7 @@ const getStyles = (theme: FullTheme) =>
     header: {
       alignItems: 'center',
       marginBottom: 32,
+      marginTop: 10,
     },
     avatar: {
       width: 80,
@@ -242,17 +181,5 @@ const getStyles = (theme: FullTheme) =>
       fontWeight: '500',
       color: theme.dark900,
       paddingVertical: 10,
-    },
-    logoutButton: {
-      marginTop: 40,
-      backgroundColor: theme.errorText,
-      paddingVertical: 16,
-      borderRadius: 12,
-      alignItems: 'center',
-    },
-    logoutText: {
-      color: theme.errorBackground,
-      fontWeight: '700',
-      fontSize: 16,
     },
   });

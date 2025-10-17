@@ -10,7 +10,7 @@ import { AppText } from './AppText';
 type Props = {
   label: string;
   onPress: () => void;
-  type?: 'primary' | 'secondary';
+  type?: 'primary' | 'secondary' | 'destructive';
   style?: StyleProp<ViewStyle>;
 };
 
@@ -54,4 +54,21 @@ const STYLES_MAP = (theme: FullTheme) => ({
     color: theme.green700,
     backgroundColor: 'transparent',
   },
+  destructive: {
+    backgroundColor: theme.errorText,
+    color: theme.errorBackground,
+  },
 });
+
+//  logoutButton: {
+//     marginTop: 40,
+//     backgroundColor: theme.errorText,
+//     paddingVertical: 16,
+//     borderRadius: 12,
+//     alignItems: 'center',
+//   },
+//   logoutText: {
+//     color: theme.errorBackground,
+//     fontWeight: '700',
+//     fontSize: 16,
+//   },

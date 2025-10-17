@@ -1,3 +1,5 @@
+import type { Href } from 'expo-router';
+
 export const ROUTES = {
   login: '/login',
   register: '/register',
@@ -18,4 +20,13 @@ export const ROUTES = {
   trainerPayments: '/trainer-payments',
   gymbro: '/gymbro',
   gymcrush: '/gymcrush',
+  personalInfo: '/personal-info',
+  imageGallery: '/image-gallery',
+  goals: '/goals',
+  matchPreferences: '/match-preferences',
+  testTools: '/test-tools',
 } as const;
+
+type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
+
+export type AllowedPath = Extract<RoutePath, Href>;
