@@ -33,6 +33,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { Profile, useGymBroStore } from '@/stores/gymBroStore';
 import type { FullTheme } from '@/types/theme';
 
+import { useGetGymBroList } from '../api/queries/matches/use-get-gymbro-list';
 import { MOCK_PROFILES } from './mockProfiles';
 
 type Preferences = {
@@ -227,6 +228,9 @@ type Mode = 'discover' | 'saved';
 export default function GymBroScreen() {
   const theme = useTheme() as FullTheme;
   const { saved, discarded, markSaved, markDiscarded } = useGymBroStore();
+
+  const { data: candidates } = useGetGymBroList();
+  console.log('[K] data', candidates?.data);
 
   const available = useMemo(() => {
     const filtered = filterByPreferences(MOCK_PROFILES, MOCK_PREFS);

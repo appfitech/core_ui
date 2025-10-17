@@ -77,6 +77,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   loadSession: async () => {
+    console.log('[K] loadSession');
     const userJson = await SecureStore.getItemAsync(SECURE_USER_KEY);
     if (userJson) {
       const user = JSON.parse(userJson) as LoginResponseDtoReadable;
@@ -84,6 +85,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
 
     const token = (await SecureStore.getItemAsync(SECURE_TOKEN_KEY)) ?? null;
+
     set({ token });
   },
 
@@ -125,11 +127,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   refreshToken: async () => {
     const currentToken = get().token;
+
     if (!currentToken) return null;
 
     try {
       const res = await fetch(
-        `${process.env.EXPO_PUBLIC_API_BASE_URL}/v1/app/user/refresh-token`,
+        `https://appfitech.com/v1/app/user/refresh-token`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

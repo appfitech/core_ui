@@ -28,9 +28,9 @@ export default function Register() {
       body: JSON.stringify({
         to: expoPushToken,
         sound: 'default',
-        title: 'Hello 👋',
-        body: 'This is a test push from Expo',
-        data: { foo: 'bar' },
+        title: '¡Tienes un nuevo gymbro! ❤️',
+        body: 'Alguien hizo match contigo. Entra a FITECH y dile hola.',
+        data: { navigateTo: '/gymbro' },
       }),
     });
   }
