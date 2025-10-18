@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
 import { useUserStore } from '@/stores/user';
+import { getDeviceId } from '@/utils/device';
 import { registerForPushNotificationsAsync } from '@/utils/register-for-push-notification';
 
 import { useSavePushToken } from '../api/mutations/user/use-save-push-token';
@@ -60,11 +61,9 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
       }
 
       let expoToken = expoPushTokenRef.current;
-
       if (!expoToken) {
         expoToken = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
       }
-
       if (!expoToken) {
         return;
       }
@@ -76,8 +75,10 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
         return;
       }
 
+      const deviceId = await getDeviceId();
+
       try {
-        await savePushToken({ expoToken });
+        await savePushToken({ expoToken, deviceId });
         await AsyncStorage.setItem(sentKey, expoToken);
       } catch (e) {
         console.warn('[Push] failed to sync token', e);
@@ -126,7 +127,6 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
       };
 
       const sub = AppState.addEventListener('change', onAppStateChange);
-
       return () => sub.remove();
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn, markerId]);
@@ -140,7 +140,7 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
       }
 
       if (isLoggedIn && markerId) {
-        syncExpoTokenToApiIfNeeded();
+        void syncExpoTokenToApiIfNeeded();
       }
 
       prevLoggedInRef.current = isLoggedIn;
@@ -152,6 +152,5 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
   };
 
   WithPush.displayName = `WithPushNotifications(${Wrapped.displayName || Wrapped.name || 'Component'})`;
-
-  return WithPush;
+  return WithPush as React.ComponentType<P>;
 }

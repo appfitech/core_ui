@@ -192,7 +192,7 @@ export default function GymCrushScreen() {
     <PageContainer
       header={'GymCrush'}
       subheader={
-        'Tu dupla de entrenamiento te espera. Entrena acompañado y llega más lejos.'
+        'Conecta con tu crush fitness. Coincidan, queden y vean si hay química.'
       }
     >
       <SafeAreaView style={{ flex: 1, rowGap: 12, marginTop: 10 }}>
