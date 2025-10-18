@@ -50,7 +50,12 @@ export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
   },
 });
 
-type HeadingStyleKeys = 'header' | 'subheader' | 'title' | 'subtitle';
+type HeadingStyleKeys =
+  | 'header'
+  | 'subheader'
+  | 'title'
+  | 'subtitle'
+  | 'content';
 type HeadingStyles = Record<HeadingStyleKeys, TextStyle>;
 
 export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
@@ -75,5 +80,10 @@ export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
     fontSize: 16,
     color: theme.textSecondary,
     textAlign: 'center',
+  },
+  content: {
+    fontSize: 14,
+    color: theme.textPrimary,
+    textAlign: 'left',
   },
 });

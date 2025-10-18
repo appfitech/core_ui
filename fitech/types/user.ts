@@ -30,15 +30,3 @@ export type LoginResponse = {
   token: string;
   user: User;
 };
-
-export type LoginRequest = {
-  username: string;
-  password: string;
-};
-
-export type CreateUserRequest = {
-  username: string;
-  password: string;
-  person: Person;
-  type: number;
-};

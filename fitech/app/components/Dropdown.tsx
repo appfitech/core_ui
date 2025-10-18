@@ -5,11 +5,12 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
 
 export type Props = {
   isOpen: boolean;
-  options: { label: string; value: any }[];
+  options: Option[];
   value: any;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   onChange: (value: any) => void;

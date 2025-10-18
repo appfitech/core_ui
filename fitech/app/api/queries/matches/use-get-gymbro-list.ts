@@ -1,17 +1,33 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { useUserStore } from '@/stores/user';
-import { CandidatesResponse } from '@/types/candidates';
+import { GymBroCandidateResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
 
-export const useGetGymBroList = () => {
+export const useGetGymBroCandidates = () => {
   const token = useUserStore((s) => s.getToken());
 
-  return useQuery<CandidatesResponse>({
+  return useQuery<GymBroCandidateResponseDto[]>({
     queryKey: ['get-gymbro-candidates'],
     queryFn: async () => {
-      return api.get(`/matches/gymbro/candidates`);
+      const result = await api.get(`/matches/gymbro/candidates`);
+
+      return result?.data ?? [];
+    },
+    enabled: !!token,
+  });
+};
+
+export const useGetGymBroMutuals = () => {
+  const token = useUserStore((s) => s.getToken());
+
+  return useQuery<GymBroCandidateResponseDto[]>({
+    queryKey: ['get-gymbro-mutuals'],
+    queryFn: async () => {
+      const result = await api.get(`/matches/mutual/GYMBRO`);
+
+      return result?.data ?? [];
     },
     enabled: !!token,
   });

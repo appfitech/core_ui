@@ -1,3 +1,5 @@
+import { Option } from '@/types/forms';
+
 import { AllowedPath, ROUTES } from './routes';
 
 export const PROFILE_LIST_ITEMS: {
@@ -41,5 +43,16 @@ export const PROFILE_LIST_ITEMS: {
     icon: 'github',
     route: ROUTES.testTools,
     label: 'Testing tools',
+  },
+];
+
+export const MATCH_SCREEN_TABS: Option[] = [
+  {
+    label: 'Descubre',
+    value: 'discover',
+  },
+  {
+    label: 'Matches',
+    value: 'matches',
   },
 ];

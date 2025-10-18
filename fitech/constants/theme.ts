@@ -153,5 +153,6 @@ export const LIGHT_THEME: FullTheme = {
 };
 
 export const DARK_THEME: FullTheme = {
-  ...COLORS.dark,
+  //TODO: reactivate dark when ready
+  ...COLORS.light,
 };

@@ -121,7 +121,11 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <PageContainer hasBackButton={false} hasNoTopPadding>
+      <PageContainer
+        hasBackButton={false}
+        hasNoTopPadding
+        style={{ padding: 0, paddingBottom: 0 }}
+      >
         <View style={styles.contentWrapper}>
           {/* Macros Section */}
           {!isTrainer && (

@@ -23,6 +23,7 @@ import { Stack, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
@@ -85,10 +86,12 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <ThemeProvider>
-      <ReactQueryProvider>
-        <RoutedAppWithPush />
-      </ReactQueryProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <ReactQueryProvider>
+          <RoutedAppWithPush />
+        </ReactQueryProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

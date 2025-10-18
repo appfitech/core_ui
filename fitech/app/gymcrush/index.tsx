@@ -333,7 +333,12 @@ export default function GymCrushScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <PageContainer>
+      <PageContainer
+        header={'GymCrush'}
+        subheader={
+          'Conecta con tu crush fitness. Coincidan, queden y vean si hay química.'
+        }
+      >
         <SafeAreaView style={{ flex: 1 }}>
           {/* Banner */}
           <View

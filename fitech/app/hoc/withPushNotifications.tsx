@@ -8,8 +8,8 @@ import { registerForPushNotificationsAsync } from '@/utils/register-for-push-not
 
 import { useSavePushToken } from '../api/mutations/user/use-save-push-token';
 
-const PUSH_TOKEN_KEY = '@push_token_v1'; // Expo push token (device)
-const SENT_KEY = (id: string) => `@push_token_sent_v1:${id}`; // per-user/session marker
+export const PUSH_TOKEN_KEY = '@push_token_v1';
+const SENT_KEY = (id: string) => `@push_token_sent_v1:${id}`;
 
 export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
   const WithPush: React.FC<P> = (props) => {
@@ -115,7 +115,6 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // ---- Foreground/background: re-check on app becoming active ----
     useEffect(() => {
       const onAppStateChange = async (state: AppStateStatus) => {
         if (state !== 'active') {
@@ -136,11 +135,8 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
       const prevLoggedIn = prevLoggedInRef.current;
       const prevMarkerId = prevMarkerIdRef.current;
 
-      // Logout detection: was logged in, now not
       if (prevLoggedIn === true && !isLoggedIn && prevMarkerId) {
         AsyncStorage.removeItem(SENT_KEY(prevMarkerId)).catch(() => {});
-        if (__DEV__)
-          console.log('[Push] cleared sent marker for', prevMarkerId);
       }
 
       if (isLoggedIn && markerId) {

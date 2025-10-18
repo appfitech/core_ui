@@ -8,39 +8,46 @@ import { FullTheme } from '@/types/theme';
 import { AppText } from './AppText';
 
 type Props = {
-  label: string;
+  label?: string;
   onPress: () => void;
-  type?: 'primary' | 'secondary' | 'destructive';
+  type?: 'primary' | 'secondary' | 'destructive' | 'tertiary';
   style?: StyleProp<ViewStyle>;
+  buttonStyle?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
 };
 
 export function Button({
-  label,
+  label = '',
+  children = null,
   onPress,
   type = 'primary',
   style = {},
+  buttonStyle = {},
 }: Props) {
   const { theme } = useTheme();
 
   return (
-    <Animated.View entering={ZoomIn.delay(200)}>
+    <Animated.View entering={ZoomIn.delay(200)} style={style}>
       <TouchableOpacity
         style={[
           SHARED_STYLES(theme).submitButton,
           STYLES_MAP(theme)[type] ?? {},
-          style,
+          buttonStyle,
         ]}
         onPress={onPress}
       >
-        <AppText
-          style={[
-            SHARED_STYLES(theme).submitText,
-            STYLES_MAP(theme)[type] ?? {},
-            { borderWidth: 0 },
-          ]}
-        >
-          {label}
-        </AppText>
+        {label && (
+          <AppText
+            style={[
+              SHARED_STYLES(theme).submitText,
+              STYLES_MAP(theme)[type] ?? {},
+              { borderWidth: 0 },
+            ]}
+          >
+            {label}
+          </AppText>
+        )}
+        {children}
       </TouchableOpacity>
     </Animated.View>
   );
@@ -58,17 +65,8 @@ const STYLES_MAP = (theme: FullTheme) => ({
     backgroundColor: theme.errorText,
     color: theme.errorBackground,
   },
+  tertiary: {
+    backgroundColor: theme.dark600,
+    color: theme.dark200,
+  },
 });
-
-//  logoutButton: {
-//     marginTop: 40,
-//     backgroundColor: theme.errorText,
-//     paddingVertical: 16,
-//     borderRadius: 12,
-//     alignItems: 'center',
-//   },
-//   logoutText: {
-//     color: theme.errorBackground,
-//     fontWeight: '700',
-//     fontSize: 16,
-//   },

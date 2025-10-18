@@ -5,8 +5,8 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 import AvatarSvg from '@/assets/images/avatar.svg';
 import { ROUTES } from '@/constants/routes';
+import { PROFILE_LIST_ITEMS } from '@/constants/screens';
 import { HEADING_STYLES } from '@/constants/shared_styles';
-import { PROFILE_LIST_ITEMS } from '@/constants/user';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
