@@ -1,6 +1,7 @@
+// hoc/withPushNotifications.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
-import React, { useEffect, useRef } from 'react';
+import React, { createElement, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
 import { useUserStore } from '@/stores/user';
@@ -10,21 +11,20 @@ import { registerForPushNotificationsAsync } from '@/utils/register-for-push-not
 import { useSavePushToken } from '../api/mutations/user/use-save-push-token';
 
 export const PUSH_TOKEN_KEY = '@push_token_v1';
-const SENT_KEY = (id: string) => `@push_token_sent_v1:${id}`;
 
-export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
+export function withPushNotifications<P extends Record<string, unknown>>(
+  Wrapped: React.ComponentType<P>,
+) {
   const WithPush: React.FC<P> = (props) => {
-    const authToken = useUserStore((s) => s.getToken());
-    const userId = useUserStore((s) => s.getUserId());
-    const isLoggedIn = !!authToken;
+    const authToken = useUserStore((s) => s.token);
+    const userId = useUserStore((s) => (s.user as any)?.user?.id ?? null);
 
-    const markerId = (userId ?? authToken ?? 'unknown') as string;
+    const isLoggedIn = !!authToken;
 
     const { mutateAsync: savePushToken } = useSavePushToken();
 
-    const prevLoggedInRef = useRef<boolean | null>(null);
-    const prevMarkerIdRef = useRef<string | null>(null);
     const expoPushTokenRef = useRef<string | null>(null);
+    const syncInFlightRef = useRef(false);
 
     const ensureAndroidChannel = async () => {
       if (Platform.OS === 'android') {
@@ -37,51 +37,50 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
 
     const cacheExpoToken = async (pushToken: string) => {
       const prev = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
-
       if (prev !== pushToken) {
         await AsyncStorage.setItem(PUSH_TOKEN_KEY, pushToken);
       }
-
       expoPushTokenRef.current = pushToken;
     };
 
     const fetchAndCacheExpoTokenIfAvailable = async () => {
       await ensureAndroidChannel();
-
       const pushToken = await registerForPushNotificationsAsync();
 
       if (pushToken) {
         await cacheExpoToken(pushToken);
+      } else {
+        expoPushTokenRef.current = null;
+
+        await AsyncStorage.removeItem(PUSH_TOKEN_KEY).catch(() => {});
       }
     };
 
-    const syncExpoTokenToApiIfNeeded = async () => {
-      if (!isLoggedIn || !markerId) {
+    const syncNow = async () => {
+      if (!isLoggedIn) {
         return;
       }
 
-      let expoToken = expoPushTokenRef.current;
-      if (!expoToken) {
-        expoToken = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
-      }
-      if (!expoToken) {
+      if (syncInFlightRef.current) {
         return;
       }
 
-      const sentKey = SENT_KEY(markerId);
-      const lastSent = await AsyncStorage.getItem(sentKey);
-
-      if (lastSent === expoToken) {
-        return;
-      }
-
-      const deviceId = await getDeviceId();
+      syncInFlightRef.current = true;
 
       try {
+        const stored = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
+        const expoToken = expoPushTokenRef.current ?? stored ?? null;
+        const deviceId = await getDeviceId();
+
+        if (!expoToken) {
+          return;
+        }
+
         await savePushToken({ expoToken, deviceId });
-        await AsyncStorage.setItem(sentKey, expoToken);
       } catch (e) {
-        console.warn('[Push] failed to sync token', e);
+        console.warn('[Push] savePushToken failed', e);
+      } finally {
+        syncInFlightRef.current = false;
       }
     };
 
@@ -98,7 +97,10 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
 
       (async () => {
         await fetchAndCacheExpoTokenIfAvailable();
-        if (!cancelled) await syncExpoTokenToApiIfNeeded();
+
+        if (!cancelled) {
+          await syncNow();
+        }
       })();
 
       const subReceived = Notifications.addNotificationReceivedListener(
@@ -123,34 +125,29 @@ export function withPushNotifications<P>(Wrapped: React.ComponentType<P>) {
         }
 
         await fetchAndCacheExpoTokenIfAvailable();
-        await syncExpoTokenToApiIfNeeded();
+        await syncNow();
       };
 
       const sub = AppState.addEventListener('change', onAppStateChange);
+
       return () => sub.remove();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoggedIn, markerId]);
+    }, [isLoggedIn, userId]);
 
+    // Auth transitions (login / user switch): sync
     useEffect(() => {
-      const prevLoggedIn = prevLoggedInRef.current;
-      const prevMarkerId = prevMarkerIdRef.current;
-
-      if (prevLoggedIn === true && !isLoggedIn && prevMarkerId) {
-        AsyncStorage.removeItem(SENT_KEY(prevMarkerId)).catch(() => {});
+      if (isLoggedIn) {
+        void syncNow();
       }
-
-      if (isLoggedIn && markerId) {
-        void syncExpoTokenToApiIfNeeded();
-      }
-
-      prevLoggedInRef.current = isLoggedIn;
-      prevMarkerIdRef.current = markerId ?? null;
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoggedIn, markerId]);
+    }, [isLoggedIn, userId]);
 
-    return <Wrapped {...(props as P)} />;
+    return createElement(Wrapped, props as P);
   };
 
-  WithPush.displayName = `WithPushNotifications(${Wrapped.displayName || Wrapped.name || 'Component'})`;
+  WithPush.displayName = `WithPushNotifications(${
+    (Wrapped as any).displayName || Wrapped.name || 'Component'
+  })`;
+
   return WithPush as React.ComponentType<P>;
 }
