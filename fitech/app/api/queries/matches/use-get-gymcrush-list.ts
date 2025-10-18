@@ -11,7 +11,9 @@ export const useGetGymCrushCandidates = () => {
   return useQuery<GymCrushCandidateResponseDto[]>({
     queryKey: ['get-gymcrush-candidates'],
     queryFn: async () => {
-      return api.get(`/matches/gymcrush/candidates`);
+      const result = await api.get(`/matches/gymcrush/candidates`);
+
+      return result?.data ?? [];
     },
     enabled: !!token,
   });

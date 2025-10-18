@@ -39,10 +39,13 @@ async function refreshTokenOnce(): Promise<string | null> {
         retryOn401: false,
       })
       .then(async (data) => {
-        console.log('[K] data', data);
         const newToken: string | undefined =
           data?.token ?? data?.result?.token ?? data?.data?.token;
-        if (!newToken) return null;
+
+        if (!newToken) {
+          return null;
+        }
+
         await useUserStore.getState().setToken(newToken);
         return newToken;
       })

@@ -5,7 +5,7 @@ import { api } from '../../api';
 export const useResetMatchList = () => {
   return useMutation({
     mutationFn: async () => {
-      return api.post(`/matches/clear-history`, {});
+      return api.get(`/matches/clear-history`);
     },
   });
 };

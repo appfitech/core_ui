@@ -50,7 +50,7 @@ export default function TrainerServicesScreen() {
   const { width } = useWindowDimensions();
 
   const { data: services } = useTrainerGetServices();
-  console.log('[K] services', services);
+
   const list: Service[] = (services as Service[]) ?? [];
 
   // ------- Summary metrics -------

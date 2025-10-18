@@ -54,9 +54,6 @@ export default function GymBroScreen() {
   const { mutate: discardGymBro } = useDiscardGymBro();
   const { mutate: matchGymBro } = useMatchGymBro();
 
-  console.log('[K] candidates', candidates);
-  console.log('[K] mutuals', mutuals);
-
   const [savedMap, setSavedMap] = useState<
     Record<string, GymBroCandidateResponseDto>
   >({});

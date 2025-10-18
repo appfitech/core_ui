@@ -9,7 +9,6 @@ export const useSavePushToken = () => {
     mutationFn: async (request) => {
       const data = await api.post('/user/register-push-token', request);
 
-      console.log('[K] data', data);
       return true;
     },
   });
