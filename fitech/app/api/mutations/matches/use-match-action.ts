@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { MatchActionDto } from '@/types/api/types.gen';
+import { MatchActionDto, MatchActionResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
 
 export const useDiscardGymBro = () => {
-  return useMutation<any, Error, number>({
+  return useMutation<MatchActionResponseDto, Error, number>({
     mutationFn: async (targetUserId: number) => {
       return api.post(`/matches/gymbro/action`, {
         targetUserId,
@@ -17,7 +17,7 @@ export const useDiscardGymBro = () => {
 };
 
 export const useMatchGymBro = () => {
-  return useMutation<any, Error, number>({
+  return useMutation<MatchActionResponseDto, Error, number>({
     mutationFn: async (targetUserId: number) => {
       return api.post(`/matches/gymbro/action`, {
         targetUserId,
@@ -29,7 +29,7 @@ export const useMatchGymBro = () => {
 };
 
 export const useDiscardGymCrush = () => {
-  return useMutation<any, Error, number>({
+  return useMutation<MatchActionResponseDto, Error, number>({
     mutationFn: async (targetUserId: number) => {
       return api.post(`/matches/gymcrush/action`, {
         targetUserId,
@@ -41,7 +41,7 @@ export const useDiscardGymCrush = () => {
 };
 
 export const useMatchGymCrush = () => {
-  return useMutation<any, Error, number>({
+  return useMutation<MatchActionResponseDto, Error, number>({
     mutationFn: async (targetUserId: number) => {
       return api.post(`/matches/gymcrush/action`, {
         targetUserId,

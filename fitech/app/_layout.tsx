@@ -24,14 +24,15 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 import { NavBar } from './components/NavBar';
+import { toastConfig } from './components/Toast';
 import { withPushNotifications } from './hoc/withPushNotifications';
-
 SplashScreen.preventAutoHideAsync();
 
 const HIDE_NAV_ROUTES = ['login', 'support', 'register'];
@@ -48,6 +49,7 @@ function RoutedApp() {
   return (
     <View style={{ flex: 1 }}>
       <Stack screenOptions={{ headerShown: false }} />
+      <Toast config={toastConfig} />
       {!shouldHideNav && <NavBar />}
     </View>
   );

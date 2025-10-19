@@ -38,6 +38,7 @@ import { MatchButtonSection } from '../components/MatchButtonSection';
 import { MatchContactCard } from '../components/MatchContactCard';
 import { MatchProfileCard } from '../components/MatchProfileCard';
 import { Tabs } from '../components/Tabs';
+import { showMatchToast } from '../components/Toast';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const CARD_W = SCREEN_W * 0.9;
@@ -94,8 +95,15 @@ export default function GymBroScreen() {
         setSavedMap((prev) => ({ ...prev, [idStr]: current }));
 
         matchGymBro(current.userId, {
-          onSuccess: () => {
+          onSuccess: (response) => {
             refetchMutuals();
+
+            if (response.hasMatch) {
+              showMatchToast({
+                type: 'gymbro',
+                name: response?.matchedUserName ?? '',
+              });
+            }
           },
         });
       } else {
