@@ -95,14 +95,6 @@ export default function GymCrushScreen() {
         setSavedMap((prev) => ({ ...prev, [idStr]: current }));
 
         matchGymCrush(current.userId, {
-          onSuccess: () => {
-            refetchMutuals();
-          },
-        });
-      } else {
-        setDiscardedIds((prev) => new Set(prev).add(idStr));
-
-        discardGymCrush(current.userId, {
           onSuccess: (response) => {
             refetchMutuals();
 
@@ -112,6 +104,14 @@ export default function GymCrushScreen() {
                 name: response?.matchedUserName ?? '',
               });
             }
+          },
+        });
+      } else {
+        setDiscardedIds((prev) => new Set(prev).add(idStr));
+
+        discardGymCrush(current.userId, {
+          onSuccess: () => {
+            refetchMutuals();
           },
         });
       }
