@@ -6,7 +6,6 @@ import {
   LoginResponseDtoReadable,
   UserResponseDtoReadable,
 } from '@/types/api/types.gen';
-import { clearSecureOnFreshInstall } from '@/utils/clear-secure-on-fresh-install';
 
 enum UserType {
   CLIENT = 0,
@@ -79,8 +78,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   loadSession: async () => {
-    await clearSecureOnFreshInstall();
-
     const userJson = await SecureStore.getItemAsync(SECURE_USER_KEY);
     if (userJson) {
       const user = JSON.parse(userJson) as LoginResponseDtoReadable;
