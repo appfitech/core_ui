@@ -147,9 +147,8 @@ export default function ExercisesScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      // When screen gets focus, refetch the current month
       refetch();
-    }, [refetch, start, end]),
+    }, [refetch]),
   );
 
   useEffect(() => {

@@ -10,7 +10,7 @@ import { AppText } from './AppText';
 type Props = {
   label?: string;
   onPress: () => void;
-  type?: 'primary' | 'secondary' | 'destructive' | 'tertiary';
+  type?: 'primary' | 'secondary' | 'destructive' | 'tertiary' | 'link';
   style?: StyleProp<ViewStyle>;
   buttonStyle?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
@@ -71,5 +71,12 @@ const STYLES_MAP = (theme: FullTheme) => ({
   tertiary: {
     backgroundColor: theme.dark600,
     color: theme.dark200,
+  },
+  link: {
+    backgroundColor: 'transparent',
+    textDecorationStyle: 'solid',
+    paddingVertical: 4,
+    color: theme.primary,
+    textDecorationLine: 'underline',
   },
 });

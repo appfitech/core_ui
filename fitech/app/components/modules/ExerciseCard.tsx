@@ -1,25 +1,31 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useDeleteWorkout } from '@/app/api/mutations/workouts/use-actions-user-workouts';
 import { useGetWorkoutSeries } from '@/app/api/queries/workouts/use-get-user-workouts';
 import { AppText } from '@/app/components/AppText';
 import { Tag } from '@/app/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 
 import { Button } from '../Button';
+import { Card } from '../Card';
+import { AddEditExerciseModal } from './AddEditWorkoutModal';
 
 type Props = {
   session: WorkoutSessionDto;
   refetchCallback: () => void;
-  onEdit: () => void;
 };
 
-export function ExerciseCard({ session, refetchCallback, onEdit }: Props) {
+export function ExerciseCard({ session, refetchCallback }: Props) {
   const { theme } = useTheme();
-  const { data: series } = useGetWorkoutSeries(session?.id);
+  const { data: series, refetch: refetchSeries } = useGetWorkoutSeries(
+    session?.id,
+  );
   const { mutate: deleteWorkout } = useDeleteWorkout();
+
+  const { isOpen, close, open } = useOpenable();
 
   const handleDelete = useCallback(() => {
     if (!session.id) {
@@ -33,14 +39,18 @@ export function ExerciseCard({ session, refetchCallback, onEdit }: Props) {
     });
   }, [refetchCallback, session]);
 
+  const handleCallback = useCallback(() => {
+    close();
+    refetchSeries();
+    refetchCallback();
+  }, [refetchCallback]);
+
   return (
-    <View
+    <Card
       style={{
-        borderRadius: 12,
-        padding: 12,
-        marginVertical: 8,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: '#DDD',
+        backgroundColor: theme.background,
+        borderColor: theme.primary,
+        borderWidth: 1,
       }}
     >
       <View
@@ -132,7 +142,7 @@ export function ExerciseCard({ session, refetchCallback, onEdit }: Props) {
         <Button
           label={'Editar'}
           buttonStyle={{ paddingHorizontal: 12, paddingVertical: 8 }}
-          onPress={onEdit}
+          onPress={open}
           type={'tertiary'}
         />
         <Button
@@ -142,6 +152,16 @@ export function ExerciseCard({ session, refetchCallback, onEdit }: Props) {
           type={'destructive'}
         />
       </View>
-    </View>
+
+      {isOpen && (
+        <AddEditExerciseModal
+          mode={'edit'}
+          initial={session}
+          onClose={handleCallback}
+          refetchCallback={handleCallback}
+          dateISO={String(session.workoutDate)}
+        />
+      )}
+    </Card>
   );
 }

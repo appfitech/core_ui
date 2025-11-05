@@ -28,6 +28,7 @@ type Props = {
   subheader?: string;
   includeLogo?: boolean;
   hasBottomPadding?: boolean;
+  styleContainer?: ViewStyle;
 };
 
 export default function PageContainer({
@@ -39,13 +40,14 @@ export default function PageContainer({
   subheader = '',
   includeLogo = false,
   hasBottomPadding = true,
+  styleContainer = {},
 }: Props) {
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styleContainer]}>
       {hasBackButton && (
         <View style={[styles.backButtonContainer, { paddingTop: insets.top }]}>
           <BackButton />

@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { useGetDailyWorkouts } from '@/app/api/queries/workouts/use-get-user-workouts';
@@ -10,22 +10,8 @@ import { ExerciseCard } from '@/app/components/modules/ExerciseCard';
 import PageContainer from '@/app/components/PageContainer';
 import { Tag } from '@/app/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
-import { WorkoutSessionDto } from '@/types/api/types.gen';
+import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
-
-function formatDateLongEs(dISO: string) {
-  try {
-    const d = new Date(dISO + 'T00:00:00');
-    return new Intl.DateTimeFormat('es-PE', {
-      weekday: 'long',
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    }).format(d);
-  } catch {
-    return dISO;
-  }
-}
 
 export default function WorkoutDayScreen() {
   const { date } = useLocalSearchParams<{ date: string }>();
@@ -33,9 +19,7 @@ export default function WorkoutDayScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const [showForm, setShowForm] = useState<
-    null | { mode: 'add' } | { mode: 'edit'; session: WorkoutSessionDto }
-  >(null);
+  const { isOpen, open, close } = useOpenable();
 
   const {
     data: sessions,
@@ -45,13 +29,17 @@ export default function WorkoutDayScreen() {
 
   const exerciseCount = sessions?.length;
 
+  const handleCallback = useCallback(() => {
+    close();
+    refetchDailyWorkouts();
+  }, []);
+
   return (
     <>
-      {/* <Stack.Screen options={{ title: 'Detalle', headerShown: false }} /> */}
       <PageContainer
         header={moment(date).format('DD/MM/YYYY')}
         subheader={'Entrenamientos registrados'}
-        style={{ padding: 16, rowGap: 10 }}
+        style={{ padding: 16, rowGap: 10, flex: 1 }}
       >
         {exerciseCount && (
           <View style={styles.summaryRow}>
@@ -63,13 +51,13 @@ export default function WorkoutDayScreen() {
           </View>
         )}
         <FlatList
+          style={{ flex: 1 }}
           data={sessions}
           keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={{ paddingBottom: 120 }}
+          contentContainerStyle={{ paddingBottom: 120, rowGap: 12 }}
           renderItem={({ item }) => (
             <ExerciseCard
               session={item}
-              onEdit={() => setShowForm({ mode: 'edit', session: item })}
               refetchCallback={refetchDailyWorkouts}
             />
           )}
@@ -99,10 +87,7 @@ export default function WorkoutDayScreen() {
               Cerrar
             </AppText>
           </Pressable>
-          <Pressable
-            style={[styles.button, styles.btnPrimary]}
-            onPress={() => setShowForm({ mode: 'add' })}
-          >
+          <Pressable style={[styles.button, styles.btnPrimary]} onPress={open}>
             <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
               + Agregar Ejercicio
             </AppText>
@@ -110,18 +95,12 @@ export default function WorkoutDayScreen() {
         </View>
       </PageContainer>
 
-      {showForm && (
+      {isOpen && (
         <AddEditExerciseModal
-          mode={showForm.mode}
-          initial={showForm.mode === 'edit' ? showForm.session : undefined}
-          onClose={() => {
-            setShowForm(null);
-            refetchDailyWorkouts();
-          }}
-          refetchCallback={() => {
-            setShowForm(null);
-            refetchDailyWorkouts();
-          }}
+          mode={'add'}
+          initial={undefined}
+          onClose={handleCallback}
+          refetchCallback={handleCallback}
           dateISO={String(date)}
         />
       )}
@@ -137,9 +116,11 @@ const getStyles = (theme: FullTheme) =>
       position: 'absolute',
       left: 16,
       right: 16,
-      bottom: 150,
+      bottom: 140,
       flexDirection: 'row',
       gap: 12,
+      paddingTop: 20,
+      backgroundColor: theme.background,
     },
     button: {
       flex: 1,

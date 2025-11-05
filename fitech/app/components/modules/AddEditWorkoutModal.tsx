@@ -1,10 +1,9 @@
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
-  KeyboardAvoidingView,
   Modal,
-  Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   TextInput,
   View,
@@ -29,6 +28,7 @@ import { FullTheme } from '@/types/theme';
 
 import { Button } from '../Button';
 import { Dropdown } from '../Dropdown';
+import PageContainer from '../PageContainer';
 
 type Props = {
   mode: 'add' | 'edit';
@@ -150,9 +150,10 @@ export function AddEditExerciseModal({
 
   return (
     <Modal animationType="slide" transparent>
-      <KeyboardAvoidingView
-        behavior={Platform.select({ ios: 'padding', android: undefined })}
-        style={styles.modalOverlay}
+      <PageContainer
+        hasBackButton={false}
+        styleContainer={{ backgroundColor: 'transparent' }}
+        style={[styles.modalOverlay, { padding: 0, paddingBottom: 0 }]}
       >
         <View style={styles.modalCard}>
           <AppText style={styles.modalTitle}>
@@ -198,37 +199,41 @@ export function AddEditExerciseModal({
             </Pressable>
           </View>
 
-          {sets.map((s, idx) => (
-            <View key={idx} style={styles.setRow}>
-              <AppText style={{ fontWeight: '600', width: 64 }}>
-                Serie {idx + 1}
-              </AppText>
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Repeticiones"
-                placeholderTextColor="#808080"
-                value={String(s.repetitions || '')}
-                onChangeText={(t) => updateSet(idx, 'repetitions', t)}
-                style={[styles.input, styles.inputSmall]}
-              />
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Peso (kg)"
-                placeholderTextColor="#808080"
-                value={typeof s.weightKg === 'number' ? String(s.weightKg) : ''}
-                onChangeText={(t) => updateSet(idx, 'weightKg', t)}
-                style={[styles.input, styles.inputSmall]}
-              />
-              <Pressable
-                onPress={() => removeSet(idx)}
-                style={{ paddingHorizontal: 8 }}
-              >
-                <AppText style={{ color: '#D9534F', fontWeight: '700' }}>
-                  🗑️
+          <ScrollView>
+            {sets.map((s, idx) => (
+              <View key={idx} style={styles.setRow}>
+                <AppText style={{ fontWeight: '600', width: 64 }}>
+                  Serie {idx + 1}
                 </AppText>
-              </Pressable>
-            </View>
-          ))}
+                <TextInput
+                  keyboardType="numeric"
+                  placeholder="Repeticiones"
+                  placeholderTextColor="#808080"
+                  value={String(s.repetitions || '')}
+                  onChangeText={(t) => updateSet(idx, 'repetitions', t)}
+                  style={[styles.input, styles.inputSmall]}
+                />
+                <TextInput
+                  keyboardType="numeric"
+                  placeholder="Peso (kg)"
+                  placeholderTextColor="#808080"
+                  value={
+                    typeof s.weightKg === 'number' ? String(s.weightKg) : ''
+                  }
+                  onChangeText={(t) => updateSet(idx, 'weightKg', t)}
+                  style={[styles.input, styles.inputSmall]}
+                />
+                <Pressable
+                  onPress={() => removeSet(idx)}
+                  style={{ paddingHorizontal: 8 }}
+                >
+                  <AppText style={{ color: '#D9534F', fontWeight: '700' }}>
+                    🗑️
+                  </AppText>
+                </Pressable>
+              </View>
+            ))}
+          </ScrollView>
 
           <TextInput
             placeholder="Notas (opcional)"
@@ -256,7 +261,7 @@ export function AddEditExerciseModal({
             />
           </View>
         </View>
-      </KeyboardAvoidingView>
+      </PageContainer>
     </Modal>
   );
 }
