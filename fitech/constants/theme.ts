@@ -5,7 +5,7 @@ const COLORS = {
     isDark: false,
 
     // Core roles
-    primary: '#5BC236',
+    primary: '#48ba26',
     secondary: '#0B1927', // deep blue-black for contrast
     tertiary: '#A2E57E',
 
@@ -14,7 +14,7 @@ const COLORS = {
     green200: '#D1F0AA',
     green300: '#B9E47D',
     green400: '#9FD752',
-    green500: '#5BC236',
+    green500: '#48ba26',
     green600: '#4AA22D',
     green700: '#3A8124',
     green800: '#2A611A',

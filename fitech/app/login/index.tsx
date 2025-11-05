@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInUp, SlideInDown } from 'react-native-reanimated';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
@@ -17,6 +17,7 @@ import { useLogin } from '../api/mutations/useLogin';
 import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
 import { Button } from '../components/Button';
+import { Card } from '../components/Card';
 import { ErrorBanner } from '../components/ErrorBanner';
 import PageContainer from '../components/PageContainer';
 import { TextInput } from '../components/TextInput';
@@ -81,7 +82,7 @@ export default function LoginScreen() {
       <View style={styles.headerWrapper}>
         <Animated.Image
           entering={FadeInUp.duration(600)}
-          source={require('../../assets/images/logos/logo.png')}
+          source={require('../../assets/images/logos/rounded_logo.webp')}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -100,10 +101,7 @@ export default function LoginScreen() {
       </View>
 
       {showUI && (
-        <Animated.View
-          entering={SlideInDown.springify().damping(15)}
-          style={styles.card}
-        >
+        <Card style={{ marginTop: 20 }}>
           <ErrorBanner
             errorMessage={errorMsg}
             onClear={() => setErrorMsg(null)}
@@ -172,7 +170,7 @@ export default function LoginScreen() {
               <AppText style={styles.signUp}>{'Regístrate'}</AppText>
             </TouchableOpacity>
           </View>
-        </Animated.View>
+        </Card>
       )}
     </PageContainer>
   );
@@ -192,23 +190,11 @@ const getStyles = (theme: FullTheme) =>
     },
     headerTitle: {
       ...HEADING_STYLES(theme).header,
-      marginTop: 40,
+      marginTop: 30,
     },
     headerSubtitle: {
       ...HEADING_STYLES(theme).subheader,
       marginTop: 8,
-    },
-    card: {
-      backgroundColor: theme.backgroundInverted,
-      width: '100%',
-      borderRadius: 16,
-      padding: 24,
-      shadowColor: theme.background,
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 4 },
-      shadowRadius: 12,
-      elevation: 6,
-      marginTop: 20,
     },
 
     optionsRow: {

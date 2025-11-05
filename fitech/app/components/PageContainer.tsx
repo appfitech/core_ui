@@ -67,7 +67,7 @@ export default function PageContainer({
                   : hasBackButton
                     ? 110
                     : insets.top,
-                paddingBottom: hasBottomPadding ? 200 : 80,
+                paddingBottom: hasBottomPadding ? 150 : 80,
                 flexGrow: 1,
               },
               style,
@@ -80,7 +80,7 @@ export default function PageContainer({
                 {includeLogo && (
                   <Animated.Image
                     entering={FadeInUp.duration(600)}
-                    source={require('../../assets/images/logos/logo.png')}
+                    source={require('../../assets/images/logos/logo.webp')}
                     style={styles.logo}
                     resizeMode="contain"
                   />

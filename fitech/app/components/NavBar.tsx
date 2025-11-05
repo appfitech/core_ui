@@ -99,8 +99,8 @@ export function NavBar() {
           <Image
             source={
               theme.isDark
-                ? require('../../assets/images/logos/logo_white.png')
-                : require('../../assets/images/logos/logo_black.png')
+                ? require('../../assets/images/logos/rounded_logo.webp')
+                : require('../../assets/images/logos/rounded_logo.webp')
             }
             style={{ width: 40, height: '100%' }}
             resizeMode={'contain'}

@@ -13,7 +13,6 @@ export function SearchBar({
   onChangeText,
   readOnly,
   placeholder,
-  shouldHideEndIcon = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -29,9 +28,6 @@ export function SearchBar({
         onPress={onPress}
         onChangeText={onChangeText}
       />
-      {!shouldHideEndIcon && (
-        <Feather name="sliders" size={20} color={theme.dark700} />
-      )}
     </View>
   );
 }

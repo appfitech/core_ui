@@ -36,7 +36,7 @@ export default function WelcomeScreen() {
         style={styles.logoContainer}
       >
         <Image
-          source={require('../assets/images/logos/logo.png')}
+          source={require('../assets/images/logos/rounded_logo.webp')}
           style={styles.logo}
           resizeMode={'contain'}
         />
