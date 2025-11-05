@@ -240,7 +240,7 @@ export function AddEditExerciseModal({
             placeholderTextColor="#808080"
             value={notes}
             onChangeText={setNotes}
-            style={[styles.input, { height: 80 }]}
+            style={[styles.input, { height: 50 }]}
             multiline
           />
 
@@ -250,12 +250,16 @@ export function AddEditExerciseModal({
               onPress={onClose}
               style={{ flex: 1 }}
               type={'tertiary'}
+              buttonStyle={{ paddingVertical: 10 }}
             />
 
             <Button
               label={mode === 'add' ? 'Guardar Ejercicio' : 'Guardar Cambios'}
               disabled={!canSave}
-              buttonStyle={[!canSave && { opacity: 0.5 }]}
+              buttonStyle={[
+                { paddingVertical: 10 },
+                !canSave && { opacity: 0.5 },
+              ]}
               onPress={handleSave}
               style={{ flex: 1 }}
             />
@@ -268,8 +272,6 @@ export function AddEditExerciseModal({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    headerTitle: { fontSize: 20, fontWeight: '800', marginBottom: 12 },
-    summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
     bottomBar: {
       position: 'absolute',
       left: 16,
@@ -278,15 +280,6 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
       gap: 12,
     },
-    button: {
-      flex: 1,
-      paddingVertical: 14,
-      borderRadius: 12,
-      alignItems: 'center',
-    },
-    btnPrimary: { backgroundColor: theme.backgroundInverted },
-    btnGhost: { backgroundColor: '#EFEFEF' },
-    buttonText: { fontSize: 16, fontWeight: '700' },
     modalOverlay: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.35)',

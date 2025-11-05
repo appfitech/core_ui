@@ -54,12 +54,14 @@ export default function WorkoutDayScreen() {
           style={{ flex: 1 }}
           data={sessions}
           keyExtractor={(item) => String(item.id)}
-          contentContainerStyle={{ paddingBottom: 120, rowGap: 12 }}
+          contentContainerStyle={{ paddingBottom: 120 }}
           renderItem={({ item }) => (
-            <ExerciseCard
-              session={item}
-              refetchCallback={refetchDailyWorkouts}
-            />
+            <View style={{ marginBottom: 12 }}>
+              <ExerciseCard
+                session={item}
+                refetchCallback={refetchDailyWorkouts}
+              />
+            </View>
           )}
           ListEmptyComponent={
             !isLoading ? (
