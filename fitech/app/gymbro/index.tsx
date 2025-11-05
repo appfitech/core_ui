@@ -171,7 +171,7 @@ export default function GymBroScreen() {
 
   const pan = Gesture.Pan()
     .activeOffsetX([-12, 12])
-    .failOffsetY([-10, 10])
+    // .failOffsetY([-10, 10])
     .onUpdate((e) => {
       'worklet';
       translateX.value = e.translationX;
@@ -202,15 +202,16 @@ export default function GymBroScreen() {
       subheader={
         'Tu dupla de entrenamiento te espera. Entrena acompañado y llega más lejos.'
       }
+      style={{ flex: 1, paddingBottom: 0 }}
     >
-      <SafeAreaView style={{ flex: 1, rowGap: 12, marginTop: 10 }}>
+      <SafeAreaView style={{ flex: 1, rowGap: 20, marginTop: 10 }}>
         <Tabs
           options={MATCH_SCREEN_TABS}
           value={selectedTab}
           onSelect={setSelectedTab}
         />
 
-        <View style={{ flex: 1 }}>
+        <View style={{}}>
           {selectedTab === 'discover' ? (
             <View style={[styles.center, { paddingBottom: 140 }]}>
               {current ? (
@@ -269,17 +270,17 @@ export default function GymBroScreen() {
               }
             />
           )}
-
-          {selectedTab === 'discover' && (
-            <MatchButtonSection
-              onDiscard={handlePass}
-              onMatch={handleSave}
-              type="gymbro"
-              hideRefresh={!!current}
-              onRefresh={handleRefetchAll}
-            />
-          )}
         </View>
+
+        {selectedTab === 'discover' && (
+          <MatchButtonSection
+            onDiscard={handlePass}
+            onMatch={handleSave}
+            type="gymbro"
+            hideRefresh={!!current}
+            onRefresh={handleRefetchAll}
+          />
+        )}
       </SafeAreaView>
     </PageContainer>
   );

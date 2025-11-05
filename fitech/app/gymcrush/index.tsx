@@ -202,15 +202,16 @@ export default function GymCrushScreen() {
       subheader={
         'Conecta con tu crush fitness. Coincidan, queden y vean si hay química.'
       }
+      style={{ flex: 1, paddingBottom: 0 }}
     >
-      <SafeAreaView style={{ flex: 1, rowGap: 12, marginTop: 10 }}>
+      <SafeAreaView style={{ flex: 1, rowGap: 20, marginTop: 10 }}>
         <Tabs
           options={MATCH_SCREEN_TABS}
           value={selectedTab}
           onSelect={setSelectedTab}
         />
 
-        <View style={{ flex: 1 }}>
+        <View style={{}}>
           {selectedTab === 'discover' ? (
             <View style={[styles.center, { paddingBottom: 140 }]}>
               {current ? (
@@ -269,17 +270,16 @@ export default function GymCrushScreen() {
               }
             />
           )}
-
-          {selectedTab === 'discover' && (
-            <MatchButtonSection
-              onDiscard={handlePass}
-              onMatch={handleSave}
-              type="gymcrush"
-              hideRefresh={!!current}
-              onRefresh={handleRefetchAll}
-            />
-          )}
         </View>
+        {selectedTab === 'discover' && (
+          <MatchButtonSection
+            onDiscard={handlePass}
+            onMatch={handleSave}
+            type="gymcrush"
+            hideRefresh={!!current}
+            onRefresh={handleRefetchAll}
+          />
+        )}
       </SafeAreaView>
     </PageContainer>
   );
