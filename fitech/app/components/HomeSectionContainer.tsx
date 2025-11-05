@@ -34,7 +34,7 @@ export function HomeSectionContainer({ children, title, onClick }: Props) {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     container: {
-      rowGap: 4,
+      rowGap: 8,
     },
     sectionHeader: {
       flexDirection: 'row',
@@ -43,7 +43,7 @@ const getStyles = (theme: FullTheme) =>
     },
     sectionTitle: {
       color: theme.textPrimary,
-      fontSize: 17,
+      fontSize: 15,
     },
     sectionAction: {
       flexDirection: 'row',
@@ -51,7 +51,7 @@ const getStyles = (theme: FullTheme) =>
     },
     sectionActionText: {
       color: theme.successText,
-      fontSize: 15,
+      fontSize: 14,
       fontWeight: '700',
     },
   });

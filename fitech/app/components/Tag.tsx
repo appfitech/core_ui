@@ -1,9 +1,11 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+
+import { AppText } from './AppText';
 
 type Props = {
   icon?: string;
@@ -19,7 +21,7 @@ export function Tag({ backgroundColor, icon = '', label, textColor }: Props) {
   return (
     <View style={[styles.tagContainer, { backgroundColor }]}>
       {icon && <Feather name={icon} size={16} color={textColor} />}
-      <Text style={[styles.text, { color: textColor }]}>{label}</Text>
+      <AppText style={[styles.text, { color: textColor }]}>{label}</AppText>
     </View>
   );
 }

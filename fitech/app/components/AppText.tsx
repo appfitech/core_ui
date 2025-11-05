@@ -3,7 +3,7 @@ import { Text as RNText, Text, TextProps, TextStyle } from 'react-native';
 
 type Props = TextProps;
 
-const getUrbanistFont = (
+const getPlusJakartaSansFont = (
   weight?: TextStyle['fontWeight'],
   style?: TextStyle['fontStyle'],
 ) => {
@@ -13,27 +13,24 @@ const getUrbanistFont = (
   const key = `${weightStr}${isItalic ? '_italic' : ''}`.toLowerCase();
 
   const map: Record<string, string> = {
-    '100': 'Urbanist_100Thin',
-    '100_italic': 'Urbanist_100Thin_Italic',
-    '200': 'Urbanist_200ExtraLight',
-    '200_italic': 'Urbanist_200ExtraLight_Italic',
-    '300': 'Urbanist_300Light',
-    '300_italic': 'Urbanist_300Light_Italic',
-    '400': 'Urbanist_400Regular',
-    '400_italic': 'Urbanist_400Regular_Italic',
-    '500': 'Urbanist_500Medium',
-    '500_italic': 'Urbanist_500Medium_Italic',
-    '600': 'Urbanist_600SemiBold',
-    '600_italic': 'Urbanist_600SemiBold_Italic',
-    '700': 'Urbanist_700Bold',
-    '700_italic': 'Urbanist_700Bold_Italic',
-    '800': 'Urbanist_800ExtraBold',
-    '800_italic': 'Urbanist_800ExtraBold_Italic',
-    '900': 'Urbanist_900Black',
-    '900_italic': 'Urbanist_900Black_Italic',
+    '200': 'PlusJakartaSans_200ExtraLight',
+    '200_italic': 'PlusJakartaSans_200ExtraLight_Italic',
+    '300': 'PlusJakartaSans_300Light',
+    '300_italic': 'PlusJakartaSans_300Light_Italic',
+    '400': 'PlusJakartaSans_400Regular',
+    '400_italic': 'PlusJakartaSans_400Regular_Italic',
+    '500': 'PlusJakartaSans_500Medium',
+    '500_italic': 'PlusJakartaSans_500Medium_Italic',
+    '600': 'PlusJakartaSans_600SemiBold',
+    '600_italic': 'PlusJakartaSans_600SemiBold_Italic',
+    '700': 'PlusJakartaSans_700Bold',
+    '700_italic': 'PlusJakartaSans_700Bold_Italic',
+    '800': 'PlusJakartaSans_800ExtraBold',
+    '800_italic': 'PlusJakartaSans_800ExtraBold_Italic',
   };
 
-  return map[key] ?? 'Urbanist_400Regular';
+  // fallback if some weight isn't mapped
+  return map[key] ?? 'PlusJakartaSans_400Regular';
 };
 
 export const AppText = forwardRef<RNText, Props>(
@@ -43,7 +40,7 @@ export const AppText = forwardRef<RNText, Props>(
       : style || {};
     const fontWeight = flattened?.fontWeight;
     const fontStyle = flattened?.fontStyle;
-    const fontFamily = getUrbanistFont(fontWeight, fontStyle);
+    const fontFamily = getPlusJakartaSansFont(fontWeight, fontStyle);
 
     return (
       <Text ref={ref} {...props} style={[{ fontFamily }, style]}>

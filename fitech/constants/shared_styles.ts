@@ -14,7 +14,7 @@ type SharedStyles = Record<SharedStyleKeys, ViewStyle | TextStyle>;
 
 export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
   label: {
-    fontSize: 16,
+    fontSize: 14,
     color: theme.green700,
     fontWeight: '600',
     marginBottom: 6,
@@ -28,7 +28,7 @@ export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 14,
-    fontSize: 17,
+    fontSize: 15,
     color: theme.dark900,
   },
   dropdown: {
@@ -36,6 +36,7 @@ export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
     borderColor: 'transparent',
     borderRadius: 10,
     color: theme.dark900,
+    fontSize: 15,
   },
   submitButton: {
     backgroundColor: theme.primary,
@@ -46,7 +47,7 @@ export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
   submitText: {
     color: theme.textPrimary,
     fontWeight: '700',
-    fontSize: 18,
+    fontSize: 16,
   },
 });
 
@@ -61,28 +62,28 @@ type HeadingStyles = Record<HeadingStyleKeys, TextStyle>;
 export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
   header: {
     color: theme.textPrimary,
-    fontSize: 34,
+    fontSize: 30,
     textAlign: 'center',
     fontWeight: '600',
   },
   subheader: {
-    fontSize: 22,
+    fontSize: 20,
     color: theme.textSecondary,
     textAlign: 'center',
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '700',
     color: theme.textPrimary,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: theme.textSecondary,
     textAlign: 'center',
   },
   content: {
-    fontSize: 14,
+    fontSize: 13,
     color: theme.textPrimary,
     textAlign: 'left',
   },

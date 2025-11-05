@@ -40,7 +40,7 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 14,
       flexDirection: 'row',
       alignItems: 'center',
-      flex: 1,
+      width: '100%',
     },
     ...SHARED_STYLES(theme),
   });

@@ -4,7 +4,7 @@
     "slug": "fitech",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.webp",
+    "icon": "./assets/images/icon_2.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon.webp",
+        "foregroundImage": "./assets/images/icon_2.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.fitech"
@@ -25,7 +25,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/icon.webp"
+      "favicon": "./assets/images/icon_2.png"
     },
     "plugins": [
       "expo-router",
@@ -33,7 +33,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon.webp",
+          "image": "./assets/images/icon_2.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

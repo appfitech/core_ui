@@ -14,6 +14,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   buttonStyle?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  disabled?: boolean;
 };
 
 export function Button({
@@ -23,6 +24,7 @@ export function Button({
   type = 'primary',
   style = {},
   buttonStyle = {},
+  disabled = false,
 }: Props) {
   const { theme } = useTheme();
 
@@ -34,6 +36,7 @@ export function Button({
           STYLES_MAP(theme)[type] ?? {},
           buttonStyle,
         ]}
+        disabled={disabled}
         onPress={onPress}
       >
         {label && (

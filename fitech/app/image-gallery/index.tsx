@@ -53,10 +53,10 @@ export default function ImageGalleryScreen() {
     if (!result.canceled) {
       const file = result.assets[0];
 
-      if (file.fileSize && file.fileSize > MAX_SIZE) {
-        Alert.alert('Imagen demasiado grande', 'Debe ser menor a 500kb.');
-        return;
-      }
+      // if (file.fileSize && file.fileSize > MAX_SIZE) {
+      //   Alert.alert('Imagen demasiado grande', 'Debe ser menor a 500kb.');
+      //   return;
+      // }
 
       if (photos.length >= MAX_PHOTOS) {
         Alert.alert('Límite alcanzado', 'Solo puedes subir hasta 10 fotos.');

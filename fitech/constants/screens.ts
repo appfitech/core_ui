@@ -40,6 +40,17 @@ export const PROFILE_LIST_ITEMS: {
     premiumOnly: true,
   },
   {
+    icon: 'bell',
+    route: ROUTES.notifications,
+    label: 'Notificaciones',
+    userOnly: true,
+  },
+  {
+    icon: 'help-circle',
+    route: ROUTES.support,
+    label: 'Soporte',
+  },
+  {
     icon: 'github',
     route: ROUTES.testTools,
     label: 'Testing tools',

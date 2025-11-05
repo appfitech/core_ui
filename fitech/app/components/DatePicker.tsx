@@ -59,7 +59,7 @@ export function DatePicker({
         <AppText
           style={{
             color: value ? theme.textPrimary : theme.dark700,
-            fontSize: 17,
+            fontSize: 15,
             flex: 1,
           }}
           numberOfLines={1}

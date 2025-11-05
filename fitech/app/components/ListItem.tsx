@@ -12,26 +12,47 @@ import { AppText } from './AppText';
 type Props = {
   icon?: string;
   label: string;
-  route: AllowedPath;
+  route?: AllowedPath;
+  hasChevron?: boolean;
+  description?: string;
 };
 
-export function ListItem({ icon, label, route }: Props) {
+export function ListItem({
+  icon,
+  label,
+  description,
+  route,
+  hasChevron = true,
+}: Props) {
   const router = useRouter();
   const { theme } = useTheme();
 
   const styles = getStyles(theme);
 
   const handleClick = useCallback(() => {
+    if (!route) {
+      return;
+    }
+
     router.push(route);
   }, [route]);
 
   return (
     <TouchableOpacity style={styles.listItem} onPress={handleClick}>
-      <View style={styles.iconWrapper}>
-        <Feather name={icon as any} size={23} color={theme.green800} />
+      {!!icon && (
+        <View style={styles.iconWrapper}>
+          <Feather name={icon as any} size={23} color={theme.green800} />
+        </View>
+      )}
+      <View style={{ flex: 1 }}>
+        <AppText style={styles.label}>{label}</AppText>
+        {description && (
+          <AppText style={{ color: theme.dark500 }}>{description}</AppText>
+        )}
       </View>
-      <AppText style={styles.label}>{label}</AppText>
-      <Feather name="chevron-right" size={20} color={theme.green700} />
+      {hasChevron && (
+        <Feather name="chevron-right" size={20} color={theme.green700} />
+      )}
     </TouchableOpacity>
   );
 }
@@ -44,6 +65,7 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 12,
       borderBottomWidth: 1,
       borderBottomColor: theme.dark300,
+      columnGap: 12,
     },
     iconWrapper: {
       width: 40,
@@ -51,7 +73,6 @@ const getStyles = (theme: FullTheme) =>
     },
     label: {
       flex: 1,
-      marginLeft: 12,
       fontSize: 16,
       fontWeight: '500',
       color: theme.dark900,

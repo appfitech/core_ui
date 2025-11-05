@@ -663,6 +663,13 @@ export type MatchPreferredLocationDto = {
   location?: LocationDto;
 };
 
+export type MarkNotificationResponseDto = {
+  success?: boolean;
+  message?: string;
+  updatedCount?: number;
+  error?: string;
+};
+
 /**
  * DTO for fitness and health metric types
  */
@@ -1983,6 +1990,20 @@ export type PageReviewResponseDtoWritable = {
   empty?: boolean;
 };
 
+export type MatchHistoryTestDto = {
+  id?: number;
+  userName?: string;
+  userEmail?: string;
+  userId?: number;
+  action?: string;
+  targetUserName?: string;
+  targetUserEmail?: string;
+  targetUserId?: number;
+  matchSystem?: string;
+  actionDate?: string;
+  actionDescription?: string;
+};
+
 /**
  * DTO for service type categories and classifications
  */
@@ -2018,6 +2039,37 @@ export type FoodSearchResponseDto = {
   categories?: FoodCategoryDto[];
   popularFoods?: FoodItemDto[];
   totalCount?: number;
+};
+
+export type NotificationDto = {
+  id?: number;
+  title?: string;
+  message?: string;
+  type?: string;
+  redirectUrl?: string;
+  isRead?: boolean;
+  createdAt?: string;
+  timeAgo?: string;
+  typeLabel?: string;
+  icon?: string;
+};
+
+export type NotificationListResponseDto = {
+  success?: boolean;
+  data?: NotificationDto[];
+  error?: string;
+};
+
+export type NotificationSummaryDto = {
+  unreadCount?: number;
+  recent?: NotificationDto[];
+  hasMore?: boolean;
+};
+
+export type NotificationSummaryResponseDto = {
+  success?: boolean;
+  data?: NotificationSummaryDto;
+  error?: string;
 };
 
 export type ResultPageMetricTypeDto = {
@@ -3506,6 +3558,41 @@ export type Update3Responses = {
 };
 
 export type Update3Response = Update3Responses[keyof Update3Responses];
+
+export type MarkAsReadData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/notifications/{id}/read';
+};
+
+export type MarkAsReadResponses = {
+  /**
+   * OK
+   */
+  200: MarkNotificationResponseDto;
+};
+
+export type MarkAsReadResponse = MarkAsReadResponses[keyof MarkAsReadResponses];
+
+export type MarkAllAsReadData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/notifications/read-all';
+};
+
+export type MarkAllAsReadResponses = {
+  /**
+   * OK
+   */
+  200: MarkNotificationResponseDto;
+};
+
+export type MarkAllAsReadResponse =
+  MarkAllAsReadResponses[keyof MarkAllAsReadResponses];
 
 export type GetById3Data = {
   body?: never;
@@ -6467,6 +6554,48 @@ export type GetTestUsersWikiHtmlResponses = {
 export type GetTestUsersWikiHtmlResponse =
   GetTestUsersWikiHtmlResponses[keyof GetTestUsersWikiHtmlResponses];
 
+export type GetMatchHistoryData = {
+  body?: never;
+  path?: never;
+  query?: {
+    system?: string;
+    userId?: number;
+    limit?: number;
+  };
+  url: '/v1/app/testing/match-history';
+};
+
+export type GetMatchHistoryResponses = {
+  /**
+   * OK
+   */
+  200: MatchHistoryTestDto[];
+};
+
+export type GetMatchHistoryResponse =
+  GetMatchHistoryResponses[keyof GetMatchHistoryResponses];
+
+export type GetMatchHistoryHtmlData = {
+  body?: never;
+  path?: never;
+  query?: {
+    system?: string;
+    userId?: number;
+    limit?: number;
+  };
+  url: '/v1/app/testing/match-history-html';
+};
+
+export type GetMatchHistoryHtmlResponses = {
+  /**
+   * OK
+   */
+  200: string;
+};
+
+export type GetMatchHistoryHtmlResponse =
+  GetMatchHistoryHtmlResponses[keyof GetMatchHistoryHtmlResponses];
+
 export type GetTestingEndpointsHtmlData = {
   body?: never;
   path?: never;
@@ -7106,6 +7235,40 @@ export type GetAllCategories1Responses = {
 
 export type GetAllCategories1Response =
   GetAllCategories1Responses[keyof GetAllCategories1Responses];
+
+export type GetUnreadNotificationsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/notifications/unread';
+};
+
+export type GetUnreadNotificationsResponses = {
+  /**
+   * OK
+   */
+  200: NotificationListResponseDto;
+};
+
+export type GetUnreadNotificationsResponse =
+  GetUnreadNotificationsResponses[keyof GetUnreadNotificationsResponses];
+
+export type GetNotificationSummaryData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/notifications/summary';
+};
+
+export type GetNotificationSummaryResponses = {
+  /**
+   * OK
+   */
+  200: NotificationSummaryResponseDto;
+};
+
+export type GetNotificationSummaryResponse =
+  GetNotificationSummaryResponses[keyof GetNotificationSummaryResponses];
 
 export type GetAll5Data = {
   body?: never;

@@ -50,11 +50,12 @@ export function Dropdown({
         placeholder={placeholder}
         placeholderStyle={{
           color: theme.dark700,
+          fontSize: 15,
         }}
         zIndex={zIndex}
         textStyle={{
           color: theme.textPrimary,
-          fontSize: 17,
+          fontSize: 15,
         }}
         dropDownContainerStyle={{
           backgroundColor: theme.backgroundDropdown,

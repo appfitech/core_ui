@@ -1,24 +1,20 @@
 import {
-  Urbanist_100Thin,
-  Urbanist_100Thin_Italic,
-  Urbanist_200ExtraLight,
-  Urbanist_200ExtraLight_Italic,
-  Urbanist_300Light,
-  Urbanist_300Light_Italic,
-  Urbanist_400Regular,
-  Urbanist_400Regular_Italic,
-  Urbanist_500Medium,
-  Urbanist_500Medium_Italic,
-  Urbanist_600SemiBold,
-  Urbanist_600SemiBold_Italic,
-  Urbanist_700Bold,
-  Urbanist_700Bold_Italic,
-  Urbanist_800ExtraBold,
-  Urbanist_800ExtraBold_Italic,
-  Urbanist_900Black,
-  Urbanist_900Black_Italic,
+  PlusJakartaSans_200ExtraLight,
+  PlusJakartaSans_200ExtraLight_Italic,
+  PlusJakartaSans_300Light,
+  PlusJakartaSans_300Light_Italic,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_400Regular_Italic,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_500Medium_Italic,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_600SemiBold_Italic,
+  PlusJakartaSans_700Bold,
+  PlusJakartaSans_700Bold_Italic,
+  PlusJakartaSans_800ExtraBold,
+  PlusJakartaSans_800ExtraBold_Italic,
   useFonts,
-} from '@expo-google-fonts/urbanist';
+} from '@expo-google-fonts/plus-jakarta-sans';
 import { Stack, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
@@ -33,6 +29,7 @@ import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 import { NavBar } from './components/NavBar';
 import { toastConfig } from './components/Toast';
 import { withPushNotifications } from './hoc/withPushNotifications';
+
 SplashScreen.preventAutoHideAsync();
 
 const HIDE_NAV_ROUTES = ['login', 'support', 'register'];
@@ -59,24 +56,20 @@ const RoutedAppWithPush = withPushNotifications(RoutedApp);
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    Urbanist_100Thin,
-    Urbanist_200ExtraLight,
-    Urbanist_300Light,
-    Urbanist_400Regular,
-    Urbanist_500Medium,
-    Urbanist_600SemiBold,
-    Urbanist_700Bold,
-    Urbanist_800ExtraBold,
-    Urbanist_900Black,
-    Urbanist_100Thin_Italic,
-    Urbanist_200ExtraLight_Italic,
-    Urbanist_300Light_Italic,
-    Urbanist_400Regular_Italic,
-    Urbanist_500Medium_Italic,
-    Urbanist_600SemiBold_Italic,
-    Urbanist_700Bold_Italic,
-    Urbanist_800ExtraBold_Italic,
-    Urbanist_900Black_Italic,
+    PlusJakartaSans_200ExtraLight,
+    PlusJakartaSans_200ExtraLight_Italic,
+    PlusJakartaSans_300Light,
+    PlusJakartaSans_300Light_Italic,
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_400Regular_Italic,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_500Medium_Italic,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_600SemiBold_Italic,
+    PlusJakartaSans_700Bold,
+    PlusJakartaSans_700Bold_Italic,
+    PlusJakartaSans_800ExtraBold,
+    PlusJakartaSans_800ExtraBold_Italic,
   });
 
   useEffect(() => {

@@ -1,6 +1,12 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useSearchTrainers } from '@/app/api/mutations/use-search-trainers';
 import { ROUTES } from '@/constants/routes';
@@ -46,38 +52,43 @@ export function UserFavoriteTrainersSection() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ columnGap: 8 }}
+        contentContainerStyle={{ columnGap: 16 }}
       >
-        {trainers?.slice(0, 4)?.map((trainer) => (
-          <Card
-            key={trainer?.id}
-            style={[
-              styles.card,
-              {
-                maxWidth: 200,
-                alignSelf: 'flex-start',
-              },
-            ]}
+        {trainers?.slice(0, 5)?.map((trainer, index) => (
+          <TouchableOpacity
+            key={`trainer-card-${trainer.id}-${index}`}
+            onPress={() => router.push(`${ROUTES.trainers}/${trainer.id}`)}
           >
-            <View style={{ rowGap: 4 }}>
-              <Image
-                source={{ uri: getUserAvatarURL(trainer?.person) }}
-                style={[styles.avatar, { marginBottom: 4 }]}
-              />
-              <AppText
-                style={{
-                  fontWeight: '600',
-                  fontSize: 17,
-                  color: theme.dark900,
-                }}
-              >
-                {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
-              </AppText>
-              <AppText style={{ color: theme.textSecondary, fontSize: 16 }}>
-                {truncateWords(trainer?.person?.bio ?? '', 20)}
-              </AppText>
-            </View>
-          </Card>
+            <Card
+              key={trainer?.id}
+              style={[
+                styles.card,
+                {
+                  maxWidth: 200,
+                  alignSelf: 'flex-start',
+                },
+              ]}
+            >
+              <View style={{ rowGap: 8 }}>
+                <Image
+                  source={{ uri: getUserAvatarURL(trainer?.person) }}
+                  style={[styles.avatar]}
+                />
+                <AppText
+                  style={{
+                    fontWeight: '600',
+                    fontSize: 15,
+                    color: theme.dark900,
+                  }}
+                >
+                  {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
+                </AppText>
+                <AppText style={{ color: theme.textSecondary, fontSize: 14 }}>
+                  {truncateWords(trainer?.person?.bio ?? '', 20)}
+                </AppText>
+              </View>
+            </Card>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     </HomeSectionContainer>

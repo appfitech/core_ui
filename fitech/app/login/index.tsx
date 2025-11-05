@@ -162,7 +162,7 @@ export default function LoginScreen() {
 
           <View style={styles.footerText}>
             <AppText
-              style={{ color: theme.dark400, fontSize: 18, fontWeight: '500' }}
+              style={{ color: theme.dark400, fontSize: 15, fontWeight: '500' }}
             >
               {'¿No tienes una cuenta?'}
             </AppText>
@@ -196,14 +196,13 @@ const getStyles = (theme: FullTheme) =>
       ...HEADING_STYLES(theme).subheader,
       marginTop: 8,
     },
-
     optionsRow: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
       marginBottom: 16,
     },
     forgotText: {
-      fontSize: 16,
+      fontSize: 15,
       color: theme.dark100,
       fontWeight: '500',
     },
@@ -216,7 +215,7 @@ const getStyles = (theme: FullTheme) =>
       color: theme.dark100,
       fontWeight: '600',
       marginLeft: 10,
-      fontSize: 18,
+      fontSize: 15,
     },
     iconLeft: {
       marginRight: 8,

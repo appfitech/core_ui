@@ -17,7 +17,7 @@ export function SupportButton() {
 
   return (
     <TouchableOpacity onPress={handleSupportClick} style={styles.button}>
-      <Feather name="help-circle" size={30} color={theme.dark100} />
+      <Feather name="help-circle" size={26} color={theme.dark100} />
     </TouchableOpacity>
   );
 }
@@ -26,7 +26,7 @@ const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     button: {
       backgroundColor: transparentize(theme.dark100, 0.2),
-      borderRadius: '50%',
-      padding: 2,
+      borderRadius: 999,
+      padding: 4,
     },
   });

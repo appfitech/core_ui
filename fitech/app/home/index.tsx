@@ -1,21 +1,15 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
-import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { truncateWords } from '@/utils/strings';
 
-import { useSearchTrainers } from '../api/mutations/use-search-trainers';
-import { useGetDiets } from '../api/queries/use-get-diets';
-import { useGetRoutines } from '../api/queries/use-get-routines';
 import { useTrainerGetPaymentsSummary } from '../api/queries/use-trainer-get-payments';
 import { useTrainerGetReviews } from '../api/queries/use-trainer-get-reviews';
 import { AppText } from '../components/AppText';
@@ -30,45 +24,15 @@ const EMOJIS = ['😠', '😕', '😐', '🙂', '😄'];
 const EMOJIS_LABEL = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Muy bueno'];
 
 export default function HomeScreen() {
-  const token = useUserStore((s) => s.getToken());
-
-  const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const [trainers, setTrainers] = useState<PublicTrainerDtoReadable[]>([]);
+
   const insets = useSafeAreaInsets();
 
   const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const { data: reviews } = useTrainerGetReviews(isTrainer);
   const { data: paymentsSummary } = useTrainerGetPaymentsSummary(isTrainer);
-
-  const { data: routines } = useGetRoutines();
-  const { data: diets } = useGetDiets();
-  const { mutate: searchTrainers } = useSearchTrainers();
-
-  useEffect(() => {
-    if (!token) return;
-
-    searchTrainers(
-      { query: '' },
-      {
-        onSuccess: (data) => setTrainers(data),
-      },
-    );
-  }, [token]);
-
-  const handleTrainersClick = useCallback(() => {
-    router.push(isTrainer ? ROUTES.trainerClients : ROUTES.trainers);
-  }, [isTrainer]);
-
-  const handleActivityViewAll = useCallback(() => {
-    router.push(isTrainer ? ROUTES.trainerReviews : ROUTES.workouts);
-  }, [isTrainer]);
-
-  const handleMacrosNav = useCallback(() => {
-    router.push(ROUTES.macrosCalculator);
-  }, []);
 
   return (
     <View style={[styles.wrapper, { paddingTop: insets.top }]}>
@@ -87,7 +51,7 @@ export default function HomeScreen() {
               <Image
                 source={require('../../assets/images/trainer.png')}
                 style={styles.image}
-                resizeMode={'cover'}
+                resizeMode="cover"
               />
               <AppText style={styles.sectionTitle}>Mis Pagos</AppText>
               <View style={{ gap: 12, marginVertical: 6 }}>
@@ -214,78 +178,16 @@ const getStyles = (theme: FullTheme) =>
       position: 'relative',
       backgroundColor: theme.backgroundInverted,
     },
-    headerWrapper: {
-      paddingVertical: 16,
-      rowGap: 16,
-      backgroundColor: theme.backgroundInverted,
-    },
-    headerRow: {
-      paddingHorizontal: 16,
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    avatarRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      columnGap: 12,
-    },
     contentWrapper: {
       backgroundColor: theme.dark100,
       padding: 16,
       rowGap: 20,
-      paddingBottom: 300,
-    },
-    sectionHeader: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      paddingBottom: 180,
     },
     sectionTitle: {
       color: theme.textPrimary,
       fontWeight: '700',
       fontSize: 16,
-    },
-    sectionAction: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    sectionActionText: {
-      color: theme.successText,
-      fontSize: 14,
-      fontWeight: '700',
-    },
-    cardTitle: {
-      fontWeight: '600',
-      fontSize: 17,
-      color: theme.textPrimary,
-    },
-    cardSub: {
-      fontSize: 16,
-      color: theme.textSecondary,
-    },
-    cardSubBold: {
-      color: theme.textSecondary,
-      fontWeight: '700',
-    },
-    greeting: {
-      ...HEADING_STYLES(theme).title,
-      fontWeight: '700',
-      color: theme.dark100,
-    },
-    subtext: {
-      ...HEADING_STYLES(theme).subtitle,
-      textAlign: 'left',
-    },
-    avatar: {
-      width: 50,
-      height: 50,
-      borderRadius: 50,
-    },
-    iconWrapper: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginBottom: 10,
     },
     ...SHARED_STYLES(theme),
     card: {

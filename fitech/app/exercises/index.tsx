@@ -1,6 +1,6 @@
-// FILE: app/(tabs)/exercises.tsx
+import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
@@ -9,7 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { ExerciseSetDto, WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useGetMonthlyWorkouts } from '../api/queries/use-get-user-workouts';
+import { useGetMonthlyWorkouts } from '../api/queries/workouts/use-get-user-workouts';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 
@@ -139,7 +139,18 @@ export default function ExercisesScreen() {
   const { y, m } = visibleYM;
   const { start, end } = monthRange(y, m);
 
-  const { data: monthlyData, isLoading } = useGetMonthlyWorkouts(start, end);
+  const {
+    data: monthlyData,
+    isLoading,
+    refetch,
+  } = useGetMonthlyWorkouts(start, end);
+
+  useFocusEffect(
+    useCallback(() => {
+      // When screen gets focus, refetch the current month
+      refetch();
+    }, [refetch, start, end]),
+  );
 
   useEffect(() => {
     if (!isLoading && monthlyData) {
@@ -186,12 +197,11 @@ export default function ExercisesScreen() {
   );
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <AppText style={styles.title}>Mi Registro de Entrenamientos</AppText>
-      <AppText style={styles.subtitle}>
-        Lleva el control de tus workouts y alcanza tus metas fitness
-      </AppText>
-
+    <PageContainer
+      header={'Mi Registro de Entrenamientos'}
+      subheader={'Lleva el control de tus workouts y alcanza tus metas fitness'}
+      style={{ padding: 16 }}
+    >
       <View style={{ marginTop: 16, borderRadius: 12, overflow: 'hidden' }}>
         <Calendar
           onDayPress={(d: DayObj) => handleOpenDay(d.dateString)}

@@ -10,57 +10,51 @@ import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 import { AppText } from '../AppText';
+import { NotificationsButton } from '../NotificationsButton';
 import { SearchBar } from '../SearchBar';
 import { SupportButton } from '../SupportButton';
 
 export function GreetingHeader() {
-  // Hooks
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  // User Store
   const user = useUserStore((s) => s.user);
   const userAvatarURL = getUserAvatarURL(user?.user?.person);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   return (
     <View style={styles.headerWrapper}>
-      <View style={styles.headerRow}>
+      <View style={styles.topRow}>
         <View style={styles.avatarRow}>
           {userAvatarURL && (
             <Image source={{ uri: userAvatarURL }} style={styles.avatar} />
           )}
-          <TouchableOpacity
-            style={styles.textContainer}
-            onPress={() => router.push(ROUTES.profile)}
-          >
+          <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
             <AppText style={styles.greeting}>
-              {`Hola ${user?.user?.person?.firstName}`}
-            </AppText>
-            <AppText style={styles.subtext}>
-              {getRandomMotivationalQuote()}
+              {`Hola ${user?.user?.person?.firstName}!`}
             </AppText>
           </TouchableOpacity>
         </View>
-        <SupportButton />
+
+        <View style={styles.actionsRow}>
+          <NotificationsButton />
+          <SupportButton />
+        </View>
       </View>
 
-      <TouchableOpacity
-        style={{
-          paddingHorizontal: 16,
-          flexDirection: 'row',
+      {/* Quote */}
+      <AppText style={styles.subtext}>{getRandomMotivationalQuote()}</AppText>
 
-          columnGap: 4,
-          alignItems: 'center',
-        }}
-        onPress={() => router.push(ROUTES.trainers)}
-      >
-        <SearchBar
-          placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
-          readOnly
-          onPress={() => router.push(ROUTES.trainers)}
-        />
-      </TouchableOpacity>
+      {/* Search */}
+      <View style={{ marginTop: 24 }}>
+        <TouchableOpacity onPress={() => router.push(ROUTES.trainers)}>
+          <SearchBar
+            placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
+            readOnly
+            onPress={() => router.push(ROUTES.trainers)}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -70,20 +64,25 @@ const getStyles = (theme: FullTheme) =>
     headerWrapper: {
       paddingTop: 16,
       paddingBottom: 24,
-      rowGap: 16,
+      paddingHorizontal: 16,
+      rowGap: 4,
       backgroundColor: theme.backgroundInverted,
     },
-    headerRow: {
-      paddingHorizontal: 16,
+    topRow: {
       flexDirection: 'row',
-      alignItems: 'flex-start',
+      alignItems: 'center',
+      justifyContent: 'space-between',
     },
     avatarRow: {
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 12,
-      flex: 1,
-      paddingVertical: 8,
+      flexShrink: 1,
+    },
+    actionsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 8,
     },
     greeting: {
       ...HEADING_STYLES(theme).title,
@@ -98,12 +97,8 @@ const getStyles = (theme: FullTheme) =>
       flexShrink: 1,
     },
     avatar: {
-      width: 60,
-      height: 60,
+      width: 30,
+      height: 30,
       borderRadius: 70,
-    },
-    textContainer: {
-      flex: 1,
-      rowGap: 4,
     },
   });

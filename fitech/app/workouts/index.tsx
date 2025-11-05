@@ -154,13 +154,13 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
     },
     cardTitle: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: '800',
       color: theme.dark900,
       marginBottom: 8,
     },
     cardDescription: {
-      fontSize: 16,
+      fontSize: 14,
       color: theme.dark700,
       lineHeight: 20,
     },
