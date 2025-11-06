@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
-  TextInput,
   View,
 } from 'react-native';
 
@@ -23,6 +22,7 @@ import { useUpdateMatchPreferences } from '../api/mutations/use-update-match-pre
 import { useGetUserMatchPreferences } from '../api/queries/use-get-user-match-preferences';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
+import { TextInput } from '../components/TextInput';
 
 /** =========================
  *  ENUMS / CONSTANTS (BE)

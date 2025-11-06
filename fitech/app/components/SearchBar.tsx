@@ -1,10 +1,12 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import { StyleSheet, TextInputProps, View } from 'react-native';
 
 import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+
+import { TextInput } from './TextInput';
 
 type Props = { shouldHideEndIcon?: boolean } & TextInputProps;
 

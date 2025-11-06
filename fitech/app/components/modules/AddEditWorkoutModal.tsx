@@ -1,13 +1,6 @@
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   useCreateWorkout,
@@ -29,6 +22,7 @@ import { FullTheme } from '@/types/theme';
 import { Button } from '../Button';
 import { Dropdown } from '../Dropdown';
 import PageContainer from '../PageContainer';
+import { TextInput } from '../TextInput';
 
 type Props = {
   mode: 'add' | 'edit';

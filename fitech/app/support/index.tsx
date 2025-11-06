@@ -1,22 +1,18 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
 
 import { useSendInquiry } from '../api/mutations/useSendInquiry';
-import { BackButton } from '../components/BackButton';
+import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
+import { Card } from '../components/Card';
 import { Dropdown } from '../components/Dropdown';
+import PageContainer from '../components/PageContainer';
+import { TextInput } from '../components/TextInput';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnicos', value: 'technical' },
@@ -41,8 +37,6 @@ export default function SupportScreen() {
 
   const { mutate: submitInquiry } = useSendInquiry();
 
-  const insets = useSafeAreaInsets();
-
   const handleClear = () => {
     setForm(initialState);
   };
@@ -61,48 +55,36 @@ export default function SupportScreen() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 40,
-          minHeight: '100%',
-        },
-      ]}
+    <PageContainer
+      header={'Centro de Soporte'}
+      subheader={'¿Necesitas ayuda? Estamos aquí para asistirte'}
+      style={{ rowGap: 12 }}
     >
-      <View style={{ marginTop: 0, marginBottom: 50 }}>
-        <BackButton />
-      </View>
-      <Text style={styles.title}>Centro de Soporte</Text>
-      <Text style={styles.subtitle}>
-        ¿Necesitas ayuda? Estamos aquí para asistirte
-      </Text>
-
-      <View style={styles.contactCard}>
-        <Text
+      <Card style={{ rowGap: 12 }}>
+        <AppText
           style={{
-            fontSize: 20,
+            fontSize: 18,
             color: 'white',
-            fontWeight: 'bold',
-            marginBottom: 12,
+            fontWeight: '700',
           }}
         >
           {'Contacto directo'}
-        </Text>
+        </AppText>
         <View style={styles.contactRow}>
-          <Ionicons name="call-outline" size={20} color={theme.icon} />
-          <Text style={styles.contactText}>+51 (01) 615-8900</Text>
+          <Feather name="phone" size={20} color={theme.icon} />
+          <AppText style={styles.contactText}>+51 (01) 615-8900</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="mail-outline" size={20} color={theme.icon} />
-          <Text style={styles.contactText}>soporte@fitech.pe</Text>
+          <Feather name="mail" size={20} color={theme.icon} />
+          <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="location-outline" size={20} color={theme.icon} />
-          <Text style={styles.contactText}>Av. El Derby 254, Surco, Lima</Text>
+          <Feather name="map-pin" size={20} color={theme.icon} />
+          <AppText style={styles.contactText}>
+            Av. El Derby 254, Surco, Lima
+          </AppText>
         </View>
-      </View>
+      </Card>
 
       <View style={styles.form}>
         <Dropdown
@@ -120,29 +102,23 @@ export default function SupportScreen() {
 
         <TextInput
           placeholder="Asunto*"
-          style={styles.input}
           value={form?.subject}
           onChangeText={handleChange('subject')}
         />
         <TextInput
           placeholder="Descripción*"
-          style={[styles.input, styles.textArea]}
           value={form?.description}
           onChangeText={handleChange('description')}
           multiline
+          numberOfLines={7}
         />
       </View>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleClear}>
-          <Text style={styles.cancelText}>Limpiar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.updateButton} onPress={handleSubmit}>
-          <Ionicons name="send" size={16} color="#fff" />
-          <Text style={styles.updateText}>Enviar Consulta</Text>
-        </TouchableOpacity>
+        <Button type={'secondary'} onPress={handleClear} label={'Limpiar'} />
+        <Button onPress={handleSubmit} label={'Enviar Consulta'} />
       </View>
-    </ScrollView>
+    </PageContainer>
   );
 }
 
@@ -170,27 +146,20 @@ const getStyles = (theme: FullTheme) =>
       textAlign: 'center',
       marginBottom: 20,
     },
-    contactCard: {
-      backgroundColor: theme.primaryLight,
-      borderRadius: 12,
-      padding: 20,
-      marginBottom: 20,
-    },
     contactRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8,
+      columnGap: 12,
     },
     contactText: {
-      marginLeft: 8,
       fontSize: 15,
-      color: 'white',
-      fontWeight: 'medium',
+      color: theme.dark100,
+      fontWeight: 400,
     },
     form: {
       backgroundColor: '#fff',
       borderRadius: 12,
-      padding: 16,
+      marginTop: 10,
       rowGap: 12,
     },
     input: {

@@ -1,7 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { TextInput } from '@/app/components/TextInput';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
