@@ -97,7 +97,7 @@ const getStyles = (theme: FullTheme) =>
       textAlign: 'left',
       color: theme.dark300,
       flexShrink: 1,
-      paddingRight: 70,
+      paddingRight: 100,
     },
     avatar: {
       width: 30,
