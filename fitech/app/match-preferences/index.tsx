@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -34,14 +35,6 @@ type CrushLookingFor = 'CASUAL' | 'SERIOUS' | 'BOTH';
 
 const MIN_AGE = 18;
 const MAX_AGE = 65;
-
-/** Placeholder list; replace with your real source later */
-const ALL_LOCATIONS: LocationDto[] = [
-  { id: 75, fullName: 'Cusco - Cusco - San Blas' },
-  { id: 70, fullName: 'Cusco - Urubamba - Machupicchu' },
-  { id: 51, fullName: 'Lima - Magdalena' },
-  { id: 52, fullName: 'Lima - Miraflores' },
-];
 
 /** =========================
  *  HELPERS
@@ -631,10 +624,7 @@ export default function MatchPreferencesScreen() {
                         selected && { color: theme.dark100, fontWeight: '700' },
                       ]}
                     >
-                      {loc.fullName ||
-                        [loc.department, loc.province, loc.district]
-                          .filter(Boolean)
-                          .join(' - ')}
+                      {formatLocationName(loc)}
                     </AppText>
                   </Pressable>
                 );
@@ -791,11 +781,6 @@ function ChipsList({
     <RowWrap>
       {items.map((loc) => {
         if (!loc?.id) return null;
-        const label =
-          loc.fullName ||
-          [loc.department, loc.province, loc.district]
-            .filter(Boolean)
-            .join(' - ');
         return (
           <Pressable
             key={loc.id}
@@ -803,7 +788,7 @@ function ChipsList({
             style={[styles.tag, { backgroundColor: theme.backgroundInverted }]}
           >
             <AppText style={{ color: theme.dark100, fontWeight: '700' }}>
-              {label} ×
+              {formatLocationName(loc)} ×
             </AppText>
           </Pressable>
         );

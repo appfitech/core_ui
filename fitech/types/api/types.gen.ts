@@ -133,6 +133,10 @@ export type PersonDto = {
    */
   birthDate?: string;
   /**
+   * Residence location ID
+   */
+  residenceLocationId?: number;
+  /**
    * List of fitness goal types
    */
   fitnessGoalTypes?: FitnessGoalTypeDto[];

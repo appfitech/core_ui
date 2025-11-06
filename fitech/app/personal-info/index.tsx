@@ -1,13 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ALL_LOCATIONS, findLocationById, formatLocationName } from '@/constants/locations';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
+import { LocationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 import { useUpdateUser } from '../api/mutations/useUpdateUser';
@@ -28,6 +30,19 @@ export default function PersonalInfoScreen() {
   const updateUserInfo = useUserStore((s) => s.updateUserInfo);
 
   const [form, setForm] = useState(user);
+  const [selectedLocation, setSelectedLocation] = useState<LocationDto | null>(null);
+  const [locationModalOpen, setLocationModalOpen] = useState(false);
+
+  // Load user's initial location
+  useEffect(() => {
+    if (user?.person?.residenceLocationId) {
+      const userLocation = findLocationById(user.person.residenceLocationId);
+      if (userLocation) {
+        setSelectedLocation(userLocation);
+        // No need to update form here since it already comes with correct data
+      }
+    }
+  }, [user]);
 
   const handleUpdate = useCallback(() => {
     updateUser(form, {
@@ -51,6 +66,17 @@ export default function PersonalInfoScreen() {
     },
     [],
   );
+
+  const handleLocationChange = useCallback((location: LocationDto | null) => {
+    setSelectedLocation(location);
+    setForm((prev) => ({
+      ...prev,
+      person: { 
+        ...prev?.person, 
+        residenceLocationId: location?.id 
+      },
+    }));
+  }, []);
 
   return (
     <PageContainer style={{ padding: 16, paddingBottom: 150 }}>
@@ -121,6 +147,31 @@ export default function PersonalInfoScreen() {
           value={form?.person?.phoneNumber}
         />
 
+        <FormWrapper label={'Distrito de residencia'}>
+          <Pressable
+            onPress={() => setLocationModalOpen(true)}
+            style={styles.locationPicker}
+          >
+            <Text style={{ opacity: 0.7 }}>
+              {selectedLocation ? 'Cambiar distrito' : 'Seleccionar distrito'}
+            </Text>
+          </Pressable>
+          
+          {/* Selected district */}
+          {selectedLocation && (
+            <View style={styles.chipContainer}>
+              <Pressable
+                onPress={() => handleLocationChange(null)}
+                style={[styles.chip, { backgroundColor: theme.backgroundInverted }]}
+              >
+                <Text style={{ color: theme.dark100, fontWeight: '700' }}>
+                  {formatLocationName(selectedLocation)} ×
+                </Text>
+              </Pressable>
+            </View>
+          )}
+        </FormWrapper>
+
         <InputWrapper
           id={'bio'}
           label={'Biografía'}
@@ -139,6 +190,56 @@ export default function PersonalInfoScreen() {
           <Text style={styles.cancelText}>Cancelar</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Location selection modal */}
+      <Modal transparent visible={locationModalOpen} animationType="fade">
+        <View style={styles.modalBackdrop}>
+          <View style={styles.modalCard}>
+            <Text style={styles.modalTitle}>Selecciona tu distrito</Text>
+            <ScrollView style={{ maxHeight: 320 }}>
+              {ALL_LOCATIONS.map((loc) => {
+                const selected = selectedLocation?.id === loc.id;
+
+                return (
+                  <Pressable
+                    key={loc.id}
+                    onPress={() => {
+                      if (selected) {
+                        handleLocationChange(null); // Deselect if already selected
+                      } else {
+                        handleLocationChange(loc); // Select only this location
+                        setLocationModalOpen(false); // Close modal automatically
+                      }
+                    }}
+                    style={[
+                      styles.locationRow,
+                      selected && { backgroundColor: theme.backgroundInverted },
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        styles.locationRowText,
+                        selected && { color: theme.dark100, fontWeight: '700' },
+                      ]}
+                    >
+                      {formatLocationName(loc)}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+
+            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12, gap: 10 }}>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setLocationModalOpen(false)}
+              >
+                <Text style={styles.modalButtonText}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </PageContainer>
   );
 }
@@ -228,6 +329,63 @@ const getStyles = (theme: FullTheme) =>
       color: '#2E7D32',
       fontWeight: '600',
       fontSize: 12,
+    },
+    locationPicker: {
+      borderRadius: 10,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: '#D7D7D7',
+      paddingVertical: 12,
+      paddingHorizontal: 12,
+      backgroundColor: '#FFF',
+      marginBottom: 8,
+    },
+    chipContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    chip: {
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 999,
+    },
+    modalBackdrop: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.25)',
+      justifyContent: 'center',
+      padding: 16,
+    },
+    modalCard: {
+      borderRadius: 16,
+      backgroundColor: theme.dark100,
+      padding: 16,
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: '800',
+      marginBottom: 8,
+      color: theme.textPrimary,
+    },
+    locationRow: {
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderRadius: 10,
+      marginBottom: 8,
+      backgroundColor: '#F5F5F5',
+    },
+    locationRowText: {
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
+    modalButton: {
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+      backgroundColor: '#EFEFEF',
+    },
+    modalButtonText: {
+      fontWeight: '600',
+      color: theme.textPrimary,
     },
     ...SHARED_STYLES(theme),
     headerTitle: {
