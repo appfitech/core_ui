@@ -8,16 +8,16 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import { transparentize } from '@/utils/style';
 
-export function SupportButton() {
+export function ChatButton() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const handleSupportClick = useCallback(() => router.push(ROUTES.support), []);
+  const handleClick = useCallback(() => router.push(ROUTES.chats), []);
 
   return (
-    <TouchableOpacity onPress={handleSupportClick} style={styles.button}>
-      <Feather name="help-circle" size={26} color={theme.dark100} />
+    <TouchableOpacity onPress={handleClick} style={styles.button}>
+      <Feather name="message-square" size={22} color={theme.dark100} />
     </TouchableOpacity>
   );
 }

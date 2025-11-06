@@ -32,7 +32,7 @@ import { withPushNotifications } from './hoc/withPushNotifications';
 
 SplashScreen.preventAutoHideAsync();
 
-const HIDE_NAV_ROUTES = ['login', 'support', 'register'];
+const HIDE_NAV_ROUTES = ['login', 'support', 'register', 'chats'];
 
 function RoutedApp() {
   useAutoRefreshToken();

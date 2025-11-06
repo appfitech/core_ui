@@ -26,6 +26,7 @@ export const ROUTES = {
   matchPreferences: '/match-preferences',
   testTools: '/test-tools',
   notifications: '/notifications',
+  chats: '/chats',
 } as const;
 
 type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

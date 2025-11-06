@@ -10,6 +10,7 @@ import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 import { AppText } from '../AppText';
+import { ChatButton } from '../ChatButton';
 import { NotificationsButton } from '../NotificationsButton';
 import { SearchBar } from '../SearchBar';
 import { SupportButton } from '../SupportButton';
@@ -37,6 +38,7 @@ export function GreetingHeader() {
         </View>
 
         <View style={styles.actionsRow}>
+          <ChatButton />
           <NotificationsButton />
           <SupportButton />
         </View>

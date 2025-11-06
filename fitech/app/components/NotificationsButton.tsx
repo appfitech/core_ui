@@ -25,7 +25,7 @@ export function NotificationsButton() {
 
   return (
     <TouchableOpacity onPress={handleButtonClick} style={styles.button}>
-      <Feather name="bell" size={26} color={theme.dark100} />
+      <Feather name="bell" size={24} color={theme.dark100} />
       {!!data?.unreadCount && (
         <View
           style={{
@@ -54,5 +54,9 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
       padding: 4,
       position: 'relative',
+      width: 35,
+      height: 35,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
