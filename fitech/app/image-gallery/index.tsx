@@ -1,40 +1,29 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import {
-  Alert,
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Animated, { FadeInDown } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
 
 import { useDeletePhoto } from '../api/mutations/useDeletePhoto';
 import { useSetProfilePhoto } from '../api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '../api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '../api/queries/useGetUserPhotos';
-import { BackButton } from '../components/BackButton';
+import { AppText } from '../components/AppText';
+import { Card } from '../components/Card';
+import PageContainer from '../components/PageContainer';
 
 const MAX_PHOTOS = 10;
-const MAX_SIZE = 500 * 1024; // 500 KB
 
 export default function ImageGalleryScreen() {
-  const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
   const profilePhotoId = useUserStore(
     (s) => s?.user?.user?.person?.profilePhotoId,
   );
   const updateProfilePhotoId = useUserStore((s) => s.updateProfilePhotoId);
-
-  // React.useEffect(() => {
-  //   updateProfilePhotoId(33);
-  // }, []);
 
   const { mutate: uploadPhoto } = useUploadPhoto();
   const { mutate: deletePhoto } = useDeletePhoto();
@@ -52,11 +41,6 @@ export default function ImageGalleryScreen() {
 
     if (!result.canceled) {
       const file = result.assets[0];
-
-      // if (file.fileSize && file.fileSize > MAX_SIZE) {
-      //   Alert.alert('Imagen demasiado grande', 'Debe ser menor a 500kb.');
-      //   return;
-      // }
 
       if (photos.length >= MAX_PHOTOS) {
         Alert.alert('Límite alcanzado', 'Solo puedes subir hasta 10 fotos.');
@@ -83,7 +67,7 @@ export default function ImageGalleryScreen() {
     const photo = photos[index];
     deletePhoto(photo.id, {
       onSuccess: () => refetch(),
-      onError: (error) => {
+      onError: () => {
         Alert.alert('Error', 'No se pudo eliminar la foto.');
       },
     });
@@ -101,7 +85,7 @@ export default function ImageGalleryScreen() {
             setProfilePhoto(
               { photoId },
               {
-                onSuccess: async (response) => {
+                onSuccess: async () => {
                   await updateProfilePhotoId(photoId);
                 },
                 onError: (err) => {
@@ -116,46 +100,28 @@ export default function ImageGalleryScreen() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 60,
-          minHeight: '100%',
-        },
-      ]}
-    >
-      <View style={{ marginBottom: 60 }}>
-        <BackButton />
-      </View>
-
-      <Animated.Text
-        entering={FadeInDown.duration(500)}
-        style={styles.sectionTitle}
-      >
-        Gestiona tus fotos
-      </Animated.Text>
-
-      <View style={styles.trainerBanner}>
-        <Text style={styles.trainerBannerTitle}>
+    <PageContainer header={'Gestiona tus fotos'} style={{ rowGap: 10 }}>
+      <Card style={{ backgroundColor: theme.primary, rowGap: 4 }}>
+        <AppText style={styles.trainerBannerTitle}>
           🎯 ¡Haz que tu perfil destaque!
-        </Text>
-        <Text style={styles.trainerBannerText}>
+        </AppText>
+        <AppText style={styles.trainerBannerText}>
           Sube hasta 10 fotos que muestren tu estilo, resultados y experiencia
           como trainer.
-        </Text>
-        <Text style={styles.trainerBannerText}>
+        </AppText>
+        <AppText style={styles.trainerBannerText}>
           Tienes {photos.length} de {MAX_PHOTOS} fotos subidas.
-        </Text>
-      </View>
+        </AppText>
+      </Card>
 
-      <View style={styles.tipBanner}>
-        <Text style={styles.tipTitle}>💡 Tip</Text>
-        <Text style={styles.tipText}>
+      <Card
+        style={{ flexDirection: 'row', columnGap: 12, alignItems: 'center' }}
+      >
+        <AppText style={styles.tipTitle}>💡 Tip</AppText>
+        <AppText style={styles.tipText}>
           Las fotos de buena calidad generan más confianza con los clientes
-        </Text>
-      </View>
+        </AppText>
+      </Card>
 
       {!!profilePhotoId && (
         <View style={styles.mainPhotoWrapper}>
@@ -165,18 +131,24 @@ export default function ImageGalleryScreen() {
             }}
             style={styles.mainPhoto}
           />
-          <Text style={styles.avatarLabel}>Foto de perfil</Text>
+          <AppText style={styles.avatarLabel}>Foto de perfil</AppText>
         </View>
       )}
 
       {!isLoading && (
-        <FlatList
-          data={photos}
-          keyExtractor={(photo) => photo.id.toString()}
-          horizontal
-          contentContainerStyle={{ gap: 10, paddingVertical: 10 }}
-          renderItem={({ item, index }) => (
-            <View style={styles.thumbnailWrapper}>
+        <View style={styles.galleryGrid}>
+          {photos.map((item, index) => (
+            <View
+              key={item.id.toString()}
+              style={[
+                styles.thumbnailWrapper,
+                profilePhotoId === item.id && {
+                  borderWidth: 4,
+                  borderRadius: 15,
+                  borderColor: theme.primary,
+                },
+              ]}
+            >
               <Image
                 source={{
                   uri: `https://appfitech.com/v1/app/file-upload/view/${item.id}`,
@@ -186,14 +158,14 @@ export default function ImageGalleryScreen() {
 
               {profilePhotoId === item.id ? (
                 <View style={styles.avatarBadge}>
-                  <Ionicons name="star" size={16} color="#fff" />
+                  <Feather name="check-circle" size={16} color="#fff" />
                 </View>
               ) : (
                 <TouchableOpacity
                   style={styles.starBadge}
                   onPress={() => confirmSetAsProfile(item.id)}
                 >
-                  <Ionicons name="star-outline" size={16} color="#fff" />
+                  <Feather name="star" size={16} color="#fff" />
                 </TouchableOpacity>
               )}
 
@@ -204,129 +176,122 @@ export default function ImageGalleryScreen() {
                 <Ionicons name="close" size={16} color="#fff" />
               </TouchableOpacity>
             </View>
+          ))}
+
+          {photos.length < MAX_PHOTOS && (
+            <TouchableOpacity
+              onPress={pickImage}
+              style={[styles.thumbnailWrapper, styles.uploadBtn]}
+            >
+              <Feather name="plus" size={24} color="#0F4C81" />
+              <AppText style={styles.uploadText}>Agregar</AppText>
+            </TouchableOpacity>
           )}
-          ListFooterComponent={
-            photos.length < MAX_PHOTOS && (
-              <TouchableOpacity onPress={pickImage} style={styles.uploadBtn}>
-                <Ionicons name="add" size={24} color="#0F4C81" />
-                <Text style={styles.uploadText}>Agregar</Text>
-              </TouchableOpacity>
-            )
-          }
-        />
+        </View>
       )}
-    </ScrollView>
+    </PageContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#F5F7FA',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#0F4C81',
-    marginBottom: 16,
-  },
-  tipBanner: {
-    backgroundColor: '#D6EDFF',
-    padding: 12,
-    borderRadius: 12,
-    marginBottom: 10,
-  },
-  tipTitle: {
-    fontWeight: '700',
-    color: '#0F4C81',
-  },
-  tipText: {
-    fontSize: 13,
-    color: '#333',
-    marginTop: 4,
-  },
-  mainPhotoWrapper: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  mainPhoto: {
-    width: 200,
-    height: 200,
-    borderRadius: 12,
-    borderColor: '#0F4C81',
-    borderWidth: 2,
-  },
-  avatarLabel: {
-    marginTop: 8,
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#0F4C81',
-  },
-  thumbnailWrapper: {
-    position: 'relative',
-  },
-  thumbnail: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-  },
-  avatarBadge: {
-    position: 'absolute',
-    top: 4,
-    left: 4,
-    backgroundColor: '#0F4C81',
-    padding: 4,
-    borderRadius: 8,
-  },
-  starBadge: {
-    position: 'absolute',
-    bottom: 4,
-    left: 4,
-    backgroundColor: '#FF8C42',
-    padding: 4,
-    borderRadius: 8,
-    zIndex: 10,
-  },
-  deleteBtn: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: '#ff5a5f',
-    padding: 4,
-    borderRadius: 8,
-  },
-  uploadBtn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 80,
-    height: 80,
-    backgroundColor: '#E4E6EB',
-    borderRadius: 10,
-  },
-  uploadText: {
-    fontSize: 10,
-    fontWeight: '600',
-    color: '#0F4C81',
-    marginTop: 4,
-  },
-  trainerBanner: {
-    backgroundColor: '#FFE9D6',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: '#FF8C42',
-  },
-  trainerBannerTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#C15800',
-    marginBottom: 4,
-  },
-  trainerBannerText: {
-    fontSize: 13,
-    marginTop: 10,
-    color: '#663C00',
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    tipBanner: {
+      backgroundColor: '#D6EDFF',
+      padding: 12,
+      borderRadius: 12,
+      marginBottom: 10,
+    },
+    tipTitle: {
+      fontWeight: '700',
+      color: theme.dark100,
+      fontSize: 16,
+    },
+    tipText: {
+      fontSize: 14,
+      color: theme.dark200,
+      flex: 1,
+    },
+    mainPhotoWrapper: {
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    mainPhoto: {
+      width: 200,
+      height: 200,
+      borderRadius: 12,
+      borderColor: '#0F4C81',
+      borderWidth: 2,
+    },
+    avatarLabel: {
+      marginTop: 8,
+      fontSize: 16,
+      fontWeight: '500',
+      color: '#0F4C81',
+    },
+
+    galleryGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    thumbnailWrapper: {
+      position: 'relative',
+      width: '32%',
+      aspectRatio: 1,
+      marginBottom: 10,
+    },
+    thumbnail: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 10,
+    },
+
+    avatarBadge: {
+      position: 'absolute',
+      top: 4,
+      left: 4,
+      backgroundColor: '#0F4C81',
+      padding: 4,
+      borderRadius: 8,
+    },
+    starBadge: {
+      position: 'absolute',
+      bottom: 4,
+      left: 4,
+      backgroundColor: '#FF8C42',
+      padding: 4,
+      borderRadius: 8,
+      zIndex: 10,
+    },
+    deleteBtn: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      backgroundColor: '#ff5a5f',
+      padding: 4,
+      borderRadius: 8,
+    },
+
+    uploadBtn: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#E4E6EB',
+      borderRadius: 10,
+    },
+    uploadText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: '#0F4C81',
+      marginTop: 4,
+    },
+
+    trainerBannerTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: theme.dark900,
+    },
+    trainerBannerText: {
+      fontSize: 14,
+      color: theme.dark700,
+    },
+  });

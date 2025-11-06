@@ -40,6 +40,7 @@ export default function WorkoutDayScreen() {
         header={moment(date).format('DD/MM/YYYY')}
         subheader={'Entrenamientos registrados'}
         style={{ padding: 16, rowGap: 10, flex: 1 }}
+        hasBottomPadding={false}
       >
         {exerciseCount && (
           <View style={styles.summaryRow}>
@@ -53,7 +54,7 @@ export default function WorkoutDayScreen() {
         <FlatList
           style={{ flex: 1 }}
           data={sessions}
-          keyExtractor={(item) => String(item.id)}
+          keyExtractor={(item) => `exercise-card-${date}-${item.id}`}
           contentContainerStyle={{ paddingBottom: 120 }}
           renderItem={({ item }) => (
             <View style={{ marginBottom: 12 }}>
@@ -79,24 +80,22 @@ export default function WorkoutDayScreen() {
             ) : null
           }
         />
-
-        <View style={styles.bottomBar}>
-          <Pressable
-            style={[styles.button, styles.btnGhost]}
-            onPress={() => router.back()}
-          >
-            <AppText style={[styles.buttonText, { color: theme.textPrimary }]}>
-              Cerrar
-            </AppText>
-          </Pressable>
-          <Pressable style={[styles.button, styles.btnPrimary]} onPress={open}>
-            <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
-              + Agregar Ejercicio
-            </AppText>
-          </Pressable>
-        </View>
       </PageContainer>
-
+      <View style={styles.bottomBar}>
+        <Pressable
+          style={[styles.button, styles.btnGhost]}
+          onPress={() => router.back()}
+        >
+          <AppText style={[styles.buttonText, { color: theme.textPrimary }]}>
+            Cerrar
+          </AppText>
+        </Pressable>
+        <Pressable style={[styles.button, styles.btnPrimary]} onPress={open}>
+          <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
+            + Agregar Ejercicio
+          </AppText>
+        </Pressable>
+      </View>
       {isOpen && (
         <AddEditExerciseModal
           mode={'add'}

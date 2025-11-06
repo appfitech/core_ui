@@ -1,5 +1,5 @@
 import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
-import Animated, { SlideInLeft } from 'react-native-reanimated';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -15,7 +15,7 @@ export function Card({ children, style }: Props) {
 
   return (
     <Animated.View
-      entering={SlideInLeft.springify().damping(25)}
+      entering={FadeInUp.duration(250)}
       style={[styles.card, style]}
     >
       {children}

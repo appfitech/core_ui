@@ -15,6 +15,7 @@ import { FullTheme } from '@/types/theme';
 
 import { useGetReviews } from '../api/queries/use-get-reviews';
 import { AppText } from '../components/AppText';
+import PageContainer from '../components/PageContainer';
 
 const EMOJIS = ['😠', '😕', '😐', '🙂', '😄'];
 const EMOJIS_LABEL = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Muy bueno'];
@@ -79,13 +80,12 @@ export const ReviewModal: React.FC<Props> = ({
 
   return (
     <Modal visible={isOpen} transparent animationType="fade">
-      <View
+      <PageContainer
+        hasBackButton={false}
+        styleContainer={{ backgroundColor: 'transparent' }}
         style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
+          width: '100%',
           backgroundColor: '#00000088',
-          padding: 16,
         }}
       >
         <View
@@ -94,6 +94,7 @@ export const ReviewModal: React.FC<Props> = ({
             padding: 16,
             borderRadius: 12,
             rowGap: 12,
+            marginTop: 100,
           }}
         >
           <AppText style={styles.title}>¿Cómo fue tu experiencia?</AppText>
@@ -201,7 +202,7 @@ export const ReviewModal: React.FC<Props> = ({
             </AppText>
           </TouchableOpacity>
         </View>
-      </View>
+      </PageContainer>
     </Modal>
   );
 };
