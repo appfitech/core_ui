@@ -1,13 +1,26 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ALL_LOCATIONS, findLocationById, formatLocationName } from '@/constants/locations';
+import {
+  ALL_LOCATIONS,
+  findLocationById,
+  formatLocationName,
+} from '@/constants/locations';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
 import { useUserStore } from '@/stores/user';
 import { LocationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
@@ -15,6 +28,7 @@ import { FullTheme } from '@/types/theme';
 import { useUpdateUser } from '../api/mutations/useUpdateUser';
 import { AnimatedAppText } from '../components/AnimatedAppText';
 import { DatePicker } from '../components/DatePicker';
+import { DropdownWrapper } from '../components/DropdownWrapper';
 import { FormWrapper } from '../components/FormWrapper';
 import { InputWrapper } from '../components/InputWrapper';
 import PageContainer from '../components/PageContainer';
@@ -30,8 +44,11 @@ export default function PersonalInfoScreen() {
   const updateUserInfo = useUserStore((s) => s.updateUserInfo);
 
   const [form, setForm] = useState(user);
-  const [selectedLocation, setSelectedLocation] = useState<LocationDto | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LocationDto | null>(
+    null,
+  );
   const [locationModalOpen, setLocationModalOpen] = useState(false);
+  const { isOpen, open, close, setIsOpen } = useOpenable();
 
   // Load user's initial location
   useEffect(() => {
@@ -71,9 +88,9 @@ export default function PersonalInfoScreen() {
     setSelectedLocation(location);
     setForm((prev) => ({
       ...prev,
-      person: { 
-        ...prev?.person, 
-        residenceLocationId: location?.id 
+      person: {
+        ...prev?.person,
+        residenceLocationId: location?.id,
       },
     }));
   }, []);
@@ -147,37 +164,26 @@ export default function PersonalInfoScreen() {
           value={form?.person?.phoneNumber}
         />
 
-        <FormWrapper label={'Distrito de residencia'}>
-          <Pressable
-            onPress={() => setLocationModalOpen(true)}
-            style={styles.locationPicker}
-          >
-            <Text style={{ opacity: 0.7 }}>
-              {selectedLocation ? 'Cambiar distrito' : 'Seleccionar distrito'}
-            </Text>
-          </Pressable>
-          
-          {/* Selected district */}
-          {selectedLocation && (
-            <View style={styles.chipContainer}>
-              <Pressable
-                onPress={() => handleLocationChange(null)}
-                style={[styles.chip, { backgroundColor: theme.backgroundInverted }]}
-              >
-                <Text style={{ color: theme.dark100, fontWeight: '700' }}>
-                  {formatLocationName(selectedLocation)} ×
-                </Text>
-              </Pressable>
-            </View>
-          )}
-        </FormWrapper>
+        <DropdownWrapper
+          label={'Distrito de residencia'}
+          placeholder={'Seleccionar distrito'}
+          setIsOpen={setIsOpen}
+          isOpen={isOpen}
+          onChange={setSelectedLocation}
+          options={ALL_LOCATIONS.map((item) => ({
+            value: item.id,
+            label: item.fullName,
+          }))}
+          value={selectedLocation}
+          zIndex={10000}
+        />
 
         <InputWrapper
           id={'bio'}
           label={'Biografía'}
           value={form?.person?.bio ?? ''}
           multiline
-          numberOfLines={4}
+          numberOfLines={8}
           onChangeText={handleChange('bio')}
         />
       </Animated.View>
@@ -229,7 +235,14 @@ export default function PersonalInfoScreen() {
               })}
             </ScrollView>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginTop: 12, gap: 10 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                marginTop: 12,
+                gap: 10,
+              }}
+            >
               <TouchableOpacity
                 style={styles.modalButton}
                 onPress={() => setLocationModalOpen(false)}

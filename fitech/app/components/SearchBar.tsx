@@ -8,19 +8,23 @@ import { FullTheme } from '@/types/theme';
 
 import { TextInput } from './TextInput';
 
-type Props = { shouldHideEndIcon?: boolean } & TextInputProps;
+type Props = {
+  shouldHideEndIcon?: boolean;
+  containerStyle: any;
+} & TextInputProps;
 
 export function SearchBar({
   onPress,
   onChangeText,
   readOnly,
   placeholder,
+  containerStyle,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
-    <View style={styles.searchBar}>
+    <View style={[styles.searchBar, containerStyle]}>
       <Feather name="search" size={20} color={theme.dark700} />
       <TextInput
         placeholder={placeholder}

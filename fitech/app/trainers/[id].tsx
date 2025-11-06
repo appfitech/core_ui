@@ -21,6 +21,7 @@ import { useGetTrainer } from '../api/queries/use-get-trainer';
 import { useGetTrainerPhotos } from '../api/queries/use-get-trainer-photos';
 import { useGetTrainerServices } from '../api/queries/use-get-trainer-services';
 import { ContractModal } from '../components/ContractModal';
+import PageContainer from '../components/PageContainer';
 
 export default function TrainerProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -70,16 +71,7 @@ export default function TrainerProfileScreen() {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 40,
-          minHeight: '100%',
-        },
-      ]}
-    >
+    <PageContainer>
       {trainer && (
         <View style={styles.profileHeader}>
           <Image
@@ -162,7 +154,7 @@ export default function TrainerProfileScreen() {
           service={selectedService}
         />
       )}
-    </ScrollView>
+    </PageContainer>
   );
 }
 

@@ -11,6 +11,7 @@ import { Trainer } from '@/types/trainer';
 
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
 import { AppText } from '../components/AppText';
+import { Card } from '../components/Card';
 import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 
@@ -44,22 +45,21 @@ export default function TrainersSearchScreen() {
   }, [query]);
 
   return (
-    <PageContainer hasBackButton={false} style={{ padding: 16 }}>
-      <View style={{ rowGap: 10, paddingVertical: 10 }}>
-        <AppText style={styles.title}>
-          {'Encuentra tu \nentrenador ideal'}
-        </AppText>
-        <AppText style={styles.subtitle}>
-          {'Descubre entrenadores especializados en tus objetivos fitness'}
-        </AppText>
-      </View>
-
+    <PageContainer
+      header={'Encuentra tu \nentrenador ideal'}
+      subheader={
+        'Descubre entrenadores especializados en tus objetivos fitness'
+      }
+      hasBackButton={false}
+      style={{ padding: 16 }}
+    >
       <View style={styles.searchRow}>
         <SearchBar
           placeholder="Buscar por nombre"
           value={query}
           onChangeText={setQuery}
           shouldHideEndIcon={true}
+          containerStyle={{ width: 'unset', flex: 1 }}
         />
         <TouchableOpacity style={styles.searchButton}>
           <Feather name="chevrons-right" size={22} color={theme.dark100} />
@@ -70,36 +70,47 @@ export default function TrainersSearchScreen() {
         {results?.length} entrenadores encontrados
       </AppText>
 
-      {results?.map((trainer) => (
-        <View key={trainer.id} style={styles.card}>
-          <Image
-            source={{
-              uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
+      <View style={{ rowGap: 12 }}>
+        {results?.map((trainer) => (
+          <Card
+            key={trainer.id}
+            style={{
+              flexDirection: 'row',
+              columnGap: 10,
+              backgroundColor: theme.dark200,
             }}
-            style={styles.avatar}
-          />
-          <AppText style={styles.name}>
-            {trainer.person.firstName} {trainer.person.lastName}
-          </AppText>
-          <AppText style={styles.bio} numberOfLines={2}>
-            {trainer.person.bio}
-          </AppText>
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.profileButton}
-              onPress={() => router.push(`/trainers/${trainer.id}`)}
-            >
-              <Text style={styles.profileText}>{'Ver Perfil'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.contactButton}
-              onPress={() => router.push(`/trainers/${trainer.id}`)}
-            >
-              <AppText style={styles.contactText}>{'Contactar'}</AppText>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
+          >
+            <Image
+              source={{
+                uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
+              }}
+              style={{ width: 100, height: 100, borderRadius: 100 }}
+            />
+            <View style={{ flex: 1 }}>
+              <AppText style={styles.name}>
+                {trainer.person.firstName} {trainer.person.lastName}
+              </AppText>
+              <AppText style={styles.bio} numberOfLines={3}>
+                {trainer.person.bio}
+              </AppText>
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={styles.profileButton}
+                  onPress={() => router.push(`/trainers/${trainer.id}`)}
+                >
+                  <Text style={styles.profileText}>{'Ver Perfil'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.contactButton}
+                  onPress={() => router.push(`/trainers/${trainer.id}`)}
+                >
+                  <AppText style={styles.contactText}>{'Contactar'}</AppText>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Card>
+        ))}
+      </View>
     </PageContainer>
   );
 }

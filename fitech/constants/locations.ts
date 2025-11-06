@@ -15,15 +15,17 @@ export const ALL_LOCATIONS: LocationDto[] = [
  * Utility to format the full name of a location
  */
 export const formatLocationName = (location: LocationDto): string => {
-  return location.fullName || 
+  return (
+    location.fullName ||
     [location.department, location.province, location.district]
       .filter(Boolean)
-      .join(' - ');
+      .join(' - ')
+  );
 };
 
 /**
  * Utility to find a location by ID
  */
 export const findLocationById = (id: number): LocationDto | undefined => {
-  return ALL_LOCATIONS.find(location => location.id === id);
+  return ALL_LOCATIONS.find((location) => location.id === id);
 };

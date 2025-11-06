@@ -19,7 +19,7 @@ export function DropdownWrapper({ label, id, ...props }: Props) {
   return (
     <View key={id} style={styles.inputWrapper}>
       <AppText style={styles.label}>{label}</AppText>
-      <Dropdown {...props} placeholder={label} />
+      <Dropdown {...props} placeholder={props?.placeholder || label} />
     </View>
   );
 }

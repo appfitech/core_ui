@@ -47,7 +47,7 @@ export function UserFavoriteTrainersSection() {
   return (
     <HomeSectionContainer
       title="Entrenadores destacados"
-      onClick={() => router.push(ROUTES.workouts)}
+      onClick={() => router.push(ROUTES.trainers)}
     >
       <ScrollView
         horizontal
