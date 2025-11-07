@@ -68,7 +68,7 @@ export default function NotificationsScreen() {
             <ListItem
               key={`notification-${item.id}-${index}`}
               label={`${item.icon} ${item.title}`}
-              description={item.message}
+              description={`${item.message}${item.timeAgo ? `\n${item.timeAgo}` : ''}`}
               hasChevron={false}
               style={item.isRead ? {} : { backgroundColor: theme.green100 }}
               onClick={() => {
