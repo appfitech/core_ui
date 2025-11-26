@@ -21,8 +21,6 @@ export function ChipsList({ options, selectedValues, onChange }: Props) {
 
     set.has(newValue) ? set.delete(newValue) : set.add(newValue);
 
-    console.log('[K] set', set);
-
     onChange(Array.from(set));
   };
 

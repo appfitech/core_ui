@@ -617,6 +617,10 @@ export type ProfileUpdateDtoReadable = {
    */
   bio?: string;
   /**
+   * User's residence location ID (optional)
+   */
+  residenceLocationId?: number;
+  /**
    * List of fitness goal type IDs
    */
   fitnessGoalTypeIds?: number[];
@@ -642,6 +646,10 @@ export type ProfileUpdateDtoWritable = {
    * User's biography or description
    */
   bio?: string;
+  /**
+   * User's residence location ID (optional)
+   */
+  residenceLocationId?: number;
   /**
    * List of fitness goal type IDs
    */
@@ -1118,6 +1126,17 @@ export type AchievementFileDto = {
    * User file ID reference
    */
   userFileId?: number;
+};
+
+export type ExerciseFilterRequest = {
+  startDate: string;
+  endDate: string;
+  muscleGroups?: string[];
+  exerciseName?: string;
+  minSets?: number;
+  maxSets?: number;
+  minWeight?: number;
+  maxWeight?: number;
 };
 
 /**
@@ -2557,6 +2576,56 @@ export type PageClientResourceGroupDtoWritable = {
   first?: boolean;
   last?: boolean;
   empty?: boolean;
+};
+
+export type ChatResponseDtoListConversationDto = {
+  success?: boolean;
+  message?: string;
+  data?: ConversationDto[];
+};
+
+export type ConversationDto = {
+  id?: number;
+  matchId?: number;
+  matchType?: string;
+  lastMessageAt?: string;
+  createdAt?: string;
+  otherUserId?: number;
+  otherUserName?: string;
+  otherUserUsername?: string;
+  otherUserProfileImageUrl?: string;
+  lastMessageContent?: string;
+  unreadCount?: number;
+};
+
+export type ChatResponseDtoConversationDto = {
+  success?: boolean;
+  message?: string;
+  data?: ConversationDto;
+};
+
+export type ChatResponseDtoListMessageDto = {
+  success?: boolean;
+  message?: string;
+  data?: MessageDto[];
+};
+
+export type MessageDto = {
+  id?: number;
+  conversationId?: number;
+  messageContent?: string;
+  messageType?: string;
+  aiViolationDetected?: boolean;
+  aiViolationType?: string;
+  sender?: SenderInfo;
+  createdAt?: string;
+};
+
+export type SenderInfo = {
+  id?: number;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
 };
 
 /**
@@ -4265,6 +4334,23 @@ export type CreateExerciseWithSetsResponses = {
 export type CreateExerciseWithSetsResponse =
   CreateExerciseWithSetsResponses[keyof CreateExerciseWithSetsResponses];
 
+export type GetUserExercisesByFilterData = {
+  body: ExerciseFilterRequest;
+  path?: never;
+  query?: never;
+  url: '/v1/app/workouts/exercises/user/filter';
+};
+
+export type GetUserExercisesByFilterResponses = {
+  /**
+   * OK
+   */
+  200: WorkoutSessionDto[];
+};
+
+export type GetUserExercisesByFilterResponse =
+  GetUserExercisesByFilterResponses[keyof GetUserExercisesByFilterResponses];
+
 export type GetAllData = {
   body?: never;
   path?: never;
@@ -5899,6 +5985,23 @@ export type GetExerciseFrequencyResponses = {
 export type GetExerciseFrequencyResponse =
   GetExerciseFrequencyResponses[keyof GetExerciseFrequencyResponses];
 
+export type GetAllMuscleGroupsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/workouts/muscle-groups';
+};
+
+export type GetAllMuscleGroupsResponses = {
+  /**
+   * OK
+   */
+  200: string[];
+};
+
+export type GetAllMuscleGroupsResponse =
+  GetAllMuscleGroupsResponses[keyof GetAllMuscleGroupsResponses];
+
 export type GetExercisesByMuscleGroupData = {
   body?: never;
   path: {
@@ -5979,6 +6082,7 @@ export type GetUserExercisesByDateRangeData = {
   query: {
     startDate: string;
     endDate: string;
+    muscleGroups?: string[];
   };
   url: '/v1/app/workouts/exercises/user/date-range';
 };
@@ -7799,6 +7903,23 @@ export type FindLocationByExactMatchResponses = {
 export type FindLocationByExactMatchResponse =
   FindLocationByExactMatchResponses[keyof FindLocationByExactMatchResponses];
 
+export type GetLimaDistrictsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/locations/lima-districts';
+};
+
+export type GetLimaDistrictsResponses = {
+  /**
+   * OK
+   */
+  200: string[];
+};
+
+export type GetLimaDistrictsResponse =
+  GetLimaDistrictsResponses[keyof GetLimaDistrictsResponses];
+
 export type GetLocationsByDepartmentData = {
   body?: never;
   path: {
@@ -8522,6 +8643,61 @@ export type GetClientDietsResponses = {
 
 export type GetClientDietsResponse =
   GetClientDietsResponses[keyof GetClientDietsResponses];
+
+export type GetConversationsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/chats';
+};
+
+export type GetConversationsResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoListConversationDto;
+};
+
+export type GetConversationsResponse =
+  GetConversationsResponses[keyof GetConversationsResponses];
+
+export type GetConversationData = {
+  body?: never;
+  path: {
+    conversationId: number;
+  };
+  query?: never;
+  url: '/v1/app/chats/{conversationId}';
+};
+
+export type GetConversationResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoConversationDto;
+};
+
+export type GetConversationResponse =
+  GetConversationResponses[keyof GetConversationResponses];
+
+export type GetMessagesData = {
+  body?: never;
+  path: {
+    conversationId: number;
+  };
+  query?: never;
+  url: '/v1/app/chats/{conversationId}/messages';
+};
+
+export type GetMessagesResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoListMessageDto;
+};
+
+export type GetMessagesResponse =
+  GetMessagesResponses[keyof GetMessagesResponses];
 
 export type GetBankAccountsByPersonData = {
   body?: never;

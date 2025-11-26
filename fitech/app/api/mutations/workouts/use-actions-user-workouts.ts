@@ -29,7 +29,6 @@ export const useEditWorkout = () => {
 export const useCreateWorkout = () => {
   return useMutation<WorkoutSessionDto, Error, CreateExerciseWithSetsRequest>({
     mutationFn: async (request: CreateExerciseWithSetsRequest) => {
-      console.log('[K] request', request);
       return api.post(`/workouts/exercises/with-sets`, request);
     },
   });
