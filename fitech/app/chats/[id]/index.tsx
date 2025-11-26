@@ -150,6 +150,7 @@ export default function ChatDetailScreen() {
 
       ws.onclose = (event) => {
         setWsStatus('closed');
+        console.log('[K] event.code', event.code);
         wsRef.current = null;
         console.log('Chat WebSocket closed', event.code, event.reason);
 
@@ -165,6 +166,7 @@ export default function ChatDetailScreen() {
 
       ws.onerror = (event) => {
         setWsStatus('error');
+        console.log('[K] error', JSON.stringify(event));
         console.error('Chat WebSocket error', event);
       };
     };

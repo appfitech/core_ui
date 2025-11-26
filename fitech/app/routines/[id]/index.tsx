@@ -1,14 +1,19 @@
 import { Feather } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import { StyleSheet, View } from 'react-native';
 
 import { useGetRoutineById } from '@/app/api/queries/use-get-routine-by-id';
 import { AppText } from '@/app/components/AppText';
+import { Button } from '@/app/components/Button';
 import PageContainer from '@/app/components/PageContainer';
 import { Tag } from '@/app/components/Tag';
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+
+const ROUTINE_TEMPLATE_URL =
+  'https://appfitech.com/v1/app/templates/plantilla_rutinas.xlsx';
 
 export default function RoutineDetailScreen() {
   const { theme } = useTheme();
@@ -16,6 +21,14 @@ export default function RoutineDetailScreen() {
 
   const styles = getStyles(theme);
   const routine = useGetRoutineById(Number(id));
+
+  const handleDownload = async () => {
+    try {
+      await WebBrowser.openBrowserAsync(ROUTINE_TEMPLATE_URL);
+    } catch (e) {
+      console.error('[FITECH] error opening diet template', e);
+    }
+  };
 
   return (
     <PageContainer style={{ padding: 16 }}>
@@ -46,22 +59,6 @@ export default function RoutineDetailScreen() {
         <View style={[styles.card, { backgroundColor: theme.dark100 }]}>
           <View style={styles.container}>
             <AppText style={styles.label}>
-              <Feather name={'check-square'} size={16} />
-              &nbsp;{'Objetivo'}
-            </AppText>
-            <AppText style={styles.content}>
-              {routine?.resourceObjective}
-            </AppText>
-          </View>
-          <View style={styles.container}>
-            <AppText style={styles.label}>
-              <Feather name={'edit'} size={16} />
-              &nbsp;{'Plan Nutricional Detallado'}
-            </AppText>
-            <AppText style={styles.content}>{routine?.resourceDetails}</AppText>
-          </View>
-          <View style={styles.container}>
-            <AppText style={styles.label}>
               <Feather name={'calendar'} size={16} />
               &nbsp;{'Fecha creación'}
             </AppText>
@@ -69,23 +66,8 @@ export default function RoutineDetailScreen() {
               {`Creada el: ${routine.createdAt}`}
             </AppText>
           </View>
-          <View style={styles.container}>
-            <AppText style={styles.label}>
-              <Feather name={'play'} size={16} />
-              &nbsp;{'Inicio del plan'}
-            </AppText>
-            <AppText style={styles.content}>{routine.startDate}</AppText>
-          </View>
         </View>
-        <View style={[styles.card, { backgroundColor: theme.dark200 }]}>
-          <View style={styles.container}>
-            <AppText style={styles.label}>
-              <Feather name={'file-minus'} size={16} />
-              &nbsp;{'Notas del Trainer'}
-            </AppText>
-            <AppText style={styles.content}>{routine?.trainerNotes}</AppText>
-          </View>
-        </View>
+        <Button label={'Descargar Excel'} onPress={handleDownload} />
       </View>
     </PageContainer>
   );
