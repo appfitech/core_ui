@@ -5,11 +5,11 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Switch,
   View,
 } from 'react-native';
 
 import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
+import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -22,6 +22,9 @@ import { FullTheme } from '@/types/theme';
 import { useUpdateMatchPreferences } from '../api/mutations/use-update-match-preferences';
 import { useGetUserMatchPreferences } from '../api/queries/use-get-user-match-preferences';
 import { AppText } from '../components/AppText';
+import { SwitchRow } from '../components/atoms/SwitchRow';
+import { Button } from '../components/Button';
+import { Card } from '../components/Card';
 import PageContainer from '../components/PageContainer';
 import { TextInput } from '../components/TextInput';
 
@@ -54,9 +57,6 @@ const DEFAULT_GYM_CRUSH = {
   gymCrushLookingFor: 'BOTH' as CrushLookingFor,
 };
 
-/** =========================
- *  MAIN SCREEN
- *  ========================= */
 export default function MatchPreferencesScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -147,6 +147,8 @@ export default function MatchPreferencesScreen() {
         showAge: !!matchPreferences?.showAge,
         showLocation: !!matchPreferences?.showLocation,
         showRealName: !!matchPreferences?.showRealName,
+        gymBroShowBio: matchPreferences?.gymBroShowBio,
+        gymCrushShowBio: matchPreferences?.gymCrushShowBio,
       };
 
       updatePreferences(payload, {
@@ -191,43 +193,34 @@ export default function MatchPreferencesScreen() {
   );
 
   return (
-    <PageContainer style={{ padding: 16, paddingBottom: 150 }}>
-      <ScrollView
-        contentContainerStyle={{ paddingBottom: 32 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Header */}
-        <View>
-          <View>
-            <AppText style={styles.title}>Preferencias de Match</AppText>
-            <AppText style={styles.subtitle}>
-              Configura cómo quieres aparecer en nuestros sistemas de conexión
-            </AppText>
-          </View>
-        </View>
+    <PageContainer
+      header="Preferencias de Match"
+      subheader="Configura cómo quieres aparecer en nuestros sistemas de conexión"
+      style={{ padding: 16, paddingBottom: 150, rowGap: 20 }}
+    >
+      {/* GymBro card */}
+      <Card style={{ backgroundColor: theme.dark200, rowGap: 10 }}>
+        <SwitchRow
+          label="GYMBRO"
+          value={!!matchPreferences?.showInGymBro}
+          onChange={onToggleGymBro}
+          labelStyle={[styles.title, { textAlign: 'left', fontWeight: '700' }]}
+        />
+        <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+          Encuentra compañeros de entrenamiento que compartan tus objetivos y
+          horarios
+        </AppText>
 
-        {/* GymBro card */}
-        <Card
-          title="GymBro"
-          subtitle="Encuentra compañeros de entrenamiento que compartan tus objetivos y horarios"
-          theme={theme}
-          backgroundColor={theme.warningBackground}
-        >
-          <SwitchRow
-            theme={theme}
-            label="Activar GymBro"
-            value={!!matchPreferences?.showInGymBro}
-            onValueChange={onToggleGymBro}
-          />
-
-          {!!matchPreferences?.showInGymBro && (
-            <>
-              <SectionTitle theme={theme} label="Horarios de entrenamiento" />
-              <RowWrap>
+        {!!matchPreferences?.showInGymBro && (
+          <>
+            <SectionTitle theme={theme} label="Horarios de entrenamiento" />
+            <RowWrap>
+              {MATCH_WORKOUT_SCHEDULES.map(({ label, value }, index) => (
                 <ChipToggle
-                  label="Mañana"
+                  key={`${value}-${index}`}
+                  label={label}
                   active={
-                    matchPreferences?.gymBroWorkoutTimes?.includes('MORNING') ||
+                    matchPreferences?.gymBroWorkoutTimes?.includes(value) ||
                     false
                   }
                   onPress={() => {
@@ -235,9 +228,9 @@ export default function MatchPreferencesScreen() {
                       const set = new Set(
                         (prev?.gymBroWorkoutTimes || []) as TimePref[],
                       );
-                      set.has('MORNING')
-                        ? set.delete('MORNING')
-                        : set.add('MORNING');
+
+                      set.has(value) ? set.delete(value) : set.add(value);
+
                       return {
                         ...(prev || {}),
                         gymBroWorkoutTimes: Array.from(set),
@@ -246,325 +239,280 @@ export default function MatchPreferencesScreen() {
                   }}
                   theme={theme}
                 />
-                <ChipToggle
-                  label="Tarde"
-                  active={
-                    matchPreferences?.gymBroWorkoutTimes?.includes(
-                      'AFTERNOON',
-                    ) || false
-                  }
+              ))}
+            </RowWrap>
+
+            <SectionTitle theme={theme} label="Nivel de intensidad" />
+
+            <RowWrap>
+              {(
+                [
+                  ['Cualquiera', 'ANY'],
+                  ['Principiante', 'BEGINNER'],
+                  ['Intermedio', 'INTERMEDIATE'],
+                  ['Avanzado', 'ADVANCED'],
+                ] as const
+              ).map(([label, val]) => (
+                <RadioChip
+                  key={val}
+                  label={label}
+                  selected={matchPreferences?.gymBroIntensity === val}
                   onPress={() =>
-                    setMatchPreferences((prev) => {
-                      const set = new Set(
-                        (prev?.gymBroWorkoutTimes || []) as TimePref[],
-                      );
-                      set.has('AFTERNOON')
-                        ? set.delete('AFTERNOON')
-                        : set.add('AFTERNOON');
-                      return {
-                        ...(prev || {}),
-                        gymBroWorkoutTimes: Array.from(set),
-                      };
-                    })
+                    setMatchPreferences((prev) => ({
+                      ...(prev || {}),
+                      gymBroIntensity: val as Intensity,
+                    }))
                   }
                   theme={theme}
                 />
-                <ChipToggle
-                  label="Noche"
-                  active={
-                    matchPreferences?.gymBroWorkoutTimes?.includes('NIGHT') ||
-                    false
+              ))}
+            </RowWrap>
+
+            <SectionTitle theme={theme} label="Ubicaciones de interés" />
+            <Pressable
+              onPress={() => setLocModalOpen('GYMBRO')}
+              style={styles.locationPicker}
+            >
+              <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
+            </Pressable>
+            <ChipsList
+              items={(matchPreferences?.gymBroLocations || []) as LocationDto[]}
+              onRemove={(id) =>
+                setMatchPreferences((prev) => ({
+                  ...(prev || {}),
+                  gymBroLocations: (prev?.gymBroLocations || []).filter(
+                    (x) => x?.id !== id,
+                  ),
+                }))
+              }
+              theme={theme}
+            />
+
+            <SectionTitle theme={theme} label="Preferencias Generales" />
+            <AppText style={styles.smallLabel}>Buscando</AppText>
+            <RowWrap>
+              {(
+                [
+                  ['Hombres', 'MALE'],
+                  ['Mujeres', 'FEMALE'],
+                  ['Ambos', 'BOTH'],
+                ] as const
+              ).map(([label, val]) => (
+                <RadioChip
+                  key={val}
+                  label={label}
+                  selected={
+                    matchPreferences?.gymBroLookingForGender === (val as Gender)
                   }
                   onPress={() =>
-                    setMatchPreferences((prev) => {
-                      const set = new Set(
-                        (prev?.gymBroWorkoutTimes || []) as TimePref[],
-                      );
-                      set.has('NIGHT') ? set.delete('NIGHT') : set.add('NIGHT');
-                      return {
-                        ...(prev || {}),
-                        gymBroWorkoutTimes: Array.from(set),
-                      };
-                    })
+                    setMatchPreferences((prev) => ({
+                      ...(prev || {}),
+                      gymBroLookingForGender: val as Gender,
+                    }))
                   }
                   theme={theme}
                 />
-                <ChipToggle
-                  label="Fin de semana"
-                  active={
-                    matchPreferences?.gymBroWorkoutTimes?.includes('WEEKEND') ||
-                    false
-                  }
-                  onPress={() =>
-                    setMatchPreferences((prev) => {
-                      const set = new Set(
-                        (prev?.gymBroWorkoutTimes || []) as TimePref[],
-                      );
-                      set.has('WEEKEND')
-                        ? set.delete('WEEKEND')
-                        : set.add('WEEKEND');
-                      return {
-                        ...(prev || {}),
-                        gymBroWorkoutTimes: Array.from(set),
-                      };
-                    })
-                  }
-                  theme={theme}
-                />
-              </RowWrap>
+              ))}
+            </RowWrap>
 
-              <SectionTitle theme={theme} label="Nivel de intensidad" />
-              <RowWrap>
-                {(
-                  [
-                    ['Cualquiera', 'ANY'],
-                    ['Principiante', 'BEGINNER'],
-                    ['Intermedio', 'INTERMEDIATE'],
-                    ['Avanzado', 'ADVANCED'],
-                  ] as const
-                ).map(([label, val]) => (
-                  <RadioChip
-                    key={val}
-                    label={label}
-                    selected={matchPreferences?.gymBroIntensity === val}
-                    onPress={() =>
-                      setMatchPreferences((prev) => ({
-                        ...(prev || {}),
-                        gymBroIntensity: val as Intensity,
-                      }))
-                    }
-                    theme={theme}
-                  />
-                ))}
-              </RowWrap>
-
-              <SectionTitle theme={theme} label="Ubicaciones de interés" />
-              <Pressable
-                onPress={() => setLocModalOpen('GYMBRO')}
-                style={styles.locationPicker}
-              >
-                <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
-              </Pressable>
-              <ChipsList
-                items={
-                  (matchPreferences?.gymBroLocations || []) as LocationDto[]
-                }
-                onRemove={(id) =>
-                  setMatchPreferences((prev) => ({
-                    ...(prev || {}),
-                    gymBroLocations: (prev?.gymBroLocations || []).filter(
-                      (x) => x?.id !== id,
-                    ),
-                  }))
-                }
-                theme={theme}
-              />
-
-              <SectionTitle theme={theme} label="Preferencias Generales" />
-              <AppText style={styles.smallLabel}>Buscando</AppText>
-              <RowWrap>
-                {(
-                  [
-                    ['Hombres', 'MALE'],
-                    ['Mujeres', 'FEMALE'],
-                    ['Ambos', 'BOTH'],
-                  ] as const
-                ).map(([label, val]) => (
-                  <RadioChip
-                    key={val}
-                    label={label}
-                    selected={
-                      matchPreferences?.gymBroLookingForGender ===
-                      (val as Gender)
-                    }
-                    onPress={() =>
-                      setMatchPreferences((prev) => ({
-                        ...(prev || {}),
-                        gymBroLookingForGender: val as Gender,
-                      }))
-                    }
-                    theme={theme}
-                  />
-                ))}
-              </RowWrap>
-
-              <AppText style={styles.smallLabel}>Rango de edad</AppText>
-              <Row>
-                {ageInput(
-                  matchPreferences?.gymBroAgeRangeMin,
-                  (n) =>
-                    setMatchPreferences((g) => ({
-                      ...(g || {}),
-                      gymBroAgeRangeMin: n,
-                    })),
-                  'Desde',
-                )}
-                <AppText style={{ marginHorizontal: 8 }}>—</AppText>
-                {ageInput(
-                  matchPreferences?.gymBroAgeRangeMax,
-                  (n) =>
-                    setMatchPreferences((g) => ({
-                      ...(g || {}),
-                      gymBroAgeRangeMax: n,
-                    })),
-                  'Hasta',
-                )}
-              </Row>
-            </>
-          )}
-        </Card>
-
-        {/* GymCrush card */}
-        <Card
-          title="GymCrush"
-          subtitle="Conecta con personas que te interesen para algo más que entrenar"
-          theme={theme}
-          backgroundColor={theme.successBackground}
-        >
-          <SwitchRow
-            theme={theme}
-            label="Activar GymCrush"
-            value={!!matchPreferences?.showInGymCrush}
-            onValueChange={onToggleGymCrush}
-          />
-
-          {!!matchPreferences?.showInGymCrush && (
-            <>
-              <SectionTitle theme={theme} label="Tipo de conexión" />
-              <RowWrap>
-                {(
-                  [
-                    ['Casual', 'CASUAL'],
-                    ['Serio', 'SERIOUS'],
-                    ['Ambos', 'BOTH'],
-                  ] as const
-                ).map(([label, val]) => (
-                  <RadioChip
-                    key={val}
-                    label={label}
-                    selected={
-                      matchPreferences?.gymCrushLookingFor ===
-                      (val as CrushLookingFor)
-                    }
-                    onPress={() =>
-                      setMatchPreferences((g) => ({
-                        ...(g || {}),
-                        gymCrushLookingFor: val as CrushLookingFor,
-                      }))
-                    }
-                    theme={theme}
-                  />
-                ))}
-              </RowWrap>
-
-              <SectionTitle theme={theme} label="Ubicaciones de interés" />
-              <Pressable
-                onPress={() => setLocModalOpen('GYMCRUSH')}
-                style={styles.locationPicker}
-              >
-                <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
-              </Pressable>
-              <ChipsList
-                items={
-                  (matchPreferences?.gymCrushLocations || []) as LocationDto[]
-                }
-                onRemove={(id) =>
+            <AppText style={styles.smallLabel}>Rango de edad</AppText>
+            <Row>
+              {ageInput(
+                matchPreferences?.gymBroAgeRangeMin,
+                (n) =>
                   setMatchPreferences((g) => ({
                     ...(g || {}),
-                    gymCrushLocations: (g?.gymCrushLocations || []).filter(
-                      (x) => x?.id !== id,
-                    ),
-                  }))
-                }
-                theme={theme}
-              />
-
-              <SectionTitle theme={theme} label="Preferencias Generales" />
-              <AppText style={styles.smallLabel}>Buscando</AppText>
-              <RowWrap>
-                {(
-                  [
-                    ['Hombres', 'MALE'],
-                    ['Mujeres', 'FEMALE'],
-                    ['Ambos', 'BOTH'],
-                  ] as const
-                ).map(([label, val]) => (
-                  <RadioChip
-                    key={val}
-                    label={label}
-                    selected={
-                      matchPreferences?.gymCrushLookingForGender ===
-                      (val as Gender)
-                    }
-                    onPress={() =>
-                      setMatchPreferences((g) => ({
-                        ...(g || {}),
-                        gymCrushLookingForGender: val as Gender,
-                      }))
-                    }
-                    theme={theme}
-                  />
-                ))}
-              </RowWrap>
-
-              <AppText style={styles.smallLabel}>Rango de edad</AppText>
-              <Row>
-                {ageInput(
-                  matchPreferences?.gymCrushAgeRangeMin,
-                  (n) =>
-                    setMatchPreferences((g) => ({
-                      ...(g || {}),
-                      gymCrushAgeRangeMin: n,
-                    })),
-                  'Desde',
-                )}
-                <AppText style={{ marginHorizontal: 8 }}>—</AppText>
-                {ageInput(
-                  matchPreferences?.gymCrushAgeRangeMax,
-                  (n) =>
-                    setMatchPreferences((g) => ({
-                      ...(g || {}),
-                      gymCrushAgeRangeMax: n,
-                    })),
-                  'Hasta',
-                )}
-              </Row>
-            </>
-          )}
-        </Card>
-
-        {/* Privacy – only if any is enabled */}
-        {anyEnabled && (
-          <Card
-            title="Configuración de Privacidad"
-            subtitle="Controla qué información pueden ver otros usuarios"
-            theme={theme}
-          >
+                    gymBroAgeRangeMin: n,
+                  })),
+                'Desde',
+              )}
+              <AppText style={{ marginHorizontal: 8 }}>—</AppText>
+              {ageInput(
+                matchPreferences?.gymBroAgeRangeMax,
+                (n) =>
+                  setMatchPreferences((g) => ({
+                    ...(g || {}),
+                    gymBroAgeRangeMax: n,
+                  })),
+                'Hasta',
+              )}
+            </Row>
             <SwitchRow
-              theme={theme}
-              label="Mostrar edad (otros verán tu edad exacta)"
-              value={!!matchPreferences?.showAge}
-              onValueChange={(v) =>
-                setMatchPreferences((prev) => ({ ...(prev || {}), showAge: v }))
+              label="Mostrar bio"
+              value={!!matchPreferences?.gymBroShowBio}
+              onChange={(v) =>
+                setMatchPreferences((prev) => ({
+                  ...(prev || {}),
+                  gymBroShowBio: v,
+                }))
               }
             />
-          </Card>
+          </>
         )}
+      </Card>
 
-        {/* Actions */}
-        <Row style={{ marginTop: 8, gap: 12 }}>
-          <PrimaryButton
-            label="Guardar Preferencias"
-            onPress={handleSave}
-            theme={theme}
+      {/* GymCrush card */}
+      <Card style={{ backgroundColor: theme.dark200, rowGap: 10 }}>
+        <SwitchRow
+          label="GYMCRUSH"
+          value={!!matchPreferences?.showInGymCrush}
+          onChange={onToggleGymCrush}
+          labelStyle={[styles.title, { textAlign: 'left', fontWeight: '700' }]}
+        />
+        <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+          Conecta con personas que te interesen para algo más que entrenar
+        </AppText>
+
+        {!!matchPreferences?.showInGymCrush && (
+          <>
+            <SectionTitle theme={theme} label="Tipo de conexión" />
+            <RowWrap>
+              {(
+                [
+                  ['Casual', 'CASUAL'],
+                  ['Serio', 'SERIOUS'],
+                  ['Ambos', 'BOTH'],
+                ] as const
+              ).map(([label, val]) => (
+                <RadioChip
+                  key={val}
+                  label={label}
+                  selected={
+                    matchPreferences?.gymCrushLookingFor ===
+                    (val as CrushLookingFor)
+                  }
+                  onPress={() =>
+                    setMatchPreferences((g) => ({
+                      ...(g || {}),
+                      gymCrushLookingFor: val as CrushLookingFor,
+                    }))
+                  }
+                  theme={theme}
+                />
+              ))}
+            </RowWrap>
+
+            <SectionTitle theme={theme} label="Ubicaciones de interés" />
+            <Pressable
+              onPress={() => setLocModalOpen('GYMCRUSH')}
+              style={styles.locationPicker}
+            >
+              <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
+            </Pressable>
+            <ChipsList
+              items={
+                (matchPreferences?.gymCrushLocations || []) as LocationDto[]
+              }
+              onRemove={(id) =>
+                setMatchPreferences((g) => ({
+                  ...(g || {}),
+                  gymCrushLocations: (g?.gymCrushLocations || []).filter(
+                    (x) => x?.id !== id,
+                  ),
+                }))
+              }
+              theme={theme}
+            />
+
+            <SectionTitle theme={theme} label="Preferencias Generales" />
+            <AppText style={styles.smallLabel}>Buscando</AppText>
+            <RowWrap>
+              {(
+                [
+                  ['Hombres', 'MALE'],
+                  ['Mujeres', 'FEMALE'],
+                  ['Ambos', 'BOTH'],
+                ] as const
+              ).map(([label, val]) => (
+                <RadioChip
+                  key={val}
+                  label={label}
+                  selected={
+                    matchPreferences?.gymCrushLookingForGender ===
+                    (val as Gender)
+                  }
+                  onPress={() =>
+                    setMatchPreferences((g) => ({
+                      ...(g || {}),
+                      gymCrushLookingForGender: val as Gender,
+                    }))
+                  }
+                  theme={theme}
+                />
+              ))}
+            </RowWrap>
+
+            <AppText style={styles.smallLabel}>Rango de edad</AppText>
+            <Row>
+              {ageInput(
+                matchPreferences?.gymCrushAgeRangeMin,
+                (n) =>
+                  setMatchPreferences((g) => ({
+                    ...(g || {}),
+                    gymCrushAgeRangeMin: n,
+                  })),
+                'Desde',
+              )}
+              <AppText style={{ marginHorizontal: 8 }}>—</AppText>
+              {ageInput(
+                matchPreferences?.gymCrushAgeRangeMax,
+                (n) =>
+                  setMatchPreferences((g) => ({
+                    ...(g || {}),
+                    gymCrushAgeRangeMax: n,
+                  })),
+                'Hasta',
+              )}
+            </Row>
+            <SwitchRow
+              label="Mostrar bio"
+              value={!!matchPreferences?.gymCrushShowBio}
+              onChange={(v) =>
+                setMatchPreferences((prev) => ({
+                  ...(prev || {}),
+                  gymCrushShowBio: v,
+                }))
+              }
+            />
+          </>
+        )}
+      </Card>
+
+      {/* Privacy – only if any is enabled */}
+      {anyEnabled && (
+        <Card style={{ backgroundColor: theme.dark200, rowGap: 20 }}>
+          <View style={{ rowGap: 6 }}>
+            <AppText style={[styles.title, { textAlign: 'left' }]}>
+              {'Configuración de Privacidad'}
+            </AppText>
+            <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+              Controla qué información pueden ver otros usuarios
+            </AppText>
+          </View>
+          <SwitchRow
+            label="Mostrar edad (otros verán tu edad exacta)"
+            value={!!matchPreferences?.showAge}
+            onChange={(v) =>
+              setMatchPreferences((prev) => ({ ...(prev || {}), showAge: v }))
+            }
           />
-          <SecondaryButton
-            label="Restablecer"
-            onPress={handleReset}
-            theme={theme}
-          />
-        </Row>
-      </ScrollView>
+        </Card>
+      )}
+
+      {/* Actions */}
+      <Row style={{ marginTop: 8, gap: 12 }}>
+        <Button
+          label="Guardar Preferencias"
+          onPress={handleSave}
+          style={{ flex: 1 }}
+        />
+        <Button
+          label="Restablecer"
+          onPress={handleReset}
+          type="tertiary"
+          style={{ flex: 1 }}
+        />
+      </Row>
 
       {/* Location picker modal (simple multi-select) */}
       <Modal transparent visible={!!locModalOpen} animationType="fade">
@@ -632,10 +580,11 @@ export default function MatchPreferencesScreen() {
             </ScrollView>
 
             <Row style={{ justifyContent: 'flex-end', marginTop: 12, gap: 10 }}>
-              <SecondaryButton
+              <Button
                 label="Cerrar"
                 onPress={() => setLocModalOpen(null)}
-                theme={theme}
+                type={'tertiary'}
+                buttonStyle={{ paddingHorizontal: 20 }}
               />
             </Row>
           </View>
@@ -645,53 +594,9 @@ export default function MatchPreferencesScreen() {
   );
 }
 
-/** =========================
- *  UI SUBCOMPONENTS
- *  ========================= */
-function Card({
-  title,
-  subtitle,
-  children,
-  theme,
-  backgroundColor,
-}: {
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-  theme: FullTheme;
-  backgroundColor?: string;
-}) {
-  const styles = getStyles(theme);
-
-  return (
-    <View style={[styles.card, { backgroundColor }]}>
-      <AppText style={styles.cardTitle}>{title}</AppText>
-      {!!subtitle && <AppText style={styles.cardSubtitle}>{subtitle}</AppText>}
-      <View style={{ height: 8 }} />
-      {children}
-    </View>
-  );
-}
-
-function SwitchRow({
-  label,
-  value,
-  onValueChange,
-  theme,
-}: {
-  label: string;
-  value: boolean;
-  onValueChange: (v: boolean) => void;
-  theme: FullTheme;
-}) {
-  const styles = getStyles(theme);
-  return (
-    <View style={styles.switchRow}>
-      <AppText style={styles.switchLabel}>{label}</AppText>
-      <Switch value={!!value} onValueChange={onValueChange} />
-    </View>
-  );
-}
+// /** =========================
+//  *  UI SUBCOMPONENTS
+//  *  ========================= */
 
 function SectionTitle({ label, theme }: { label: string; theme: FullTheme }) {
   const styles = getStyles(theme);
@@ -797,53 +702,6 @@ function ChipsList({
   );
 }
 
-function PrimaryButton({
-  label,
-  onPress,
-  theme,
-}: {
-  label: string;
-  onPress: () => void;
-  theme: FullTheme;
-}) {
-  const styles = getStyles(theme);
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.button, { backgroundColor: theme.backgroundInverted }]}
-    >
-      <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
-        {label}
-      </AppText>
-    </Pressable>
-  );
-}
-
-function SecondaryButton({
-  label,
-  onPress,
-  theme,
-}: {
-  label: string;
-  onPress: () => void;
-  theme: FullTheme;
-}) {
-  const styles = getStyles(theme);
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.button, { backgroundColor: '#EFEFEF' }]}
-    >
-      <AppText style={[styles.buttonText, { color: theme.textPrimary }]}>
-        {label}
-      </AppText>
-    </Pressable>
-  );
-}
-
-/** =========================
- *  STYLES
- *  ========================= */
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...HEADING_STYLES(theme),

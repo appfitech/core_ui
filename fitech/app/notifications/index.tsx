@@ -1,7 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { FadeInUp } from 'react-native-reanimated';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -13,7 +12,6 @@ import {
   useMarkNotificationRead,
 } from '../api/mutations/use-actions-notifications';
 import { useGetUserNotifications } from '../api/queries/use-get-notifications';
-import { AnimatedAppText } from '../components/AnimatedAppText';
 import { AppText } from '../components/AppText';
 import { Button } from '../components/Button';
 import { ListItem } from '../components/ListItem';
@@ -42,11 +40,11 @@ export default function NotificationsScreen() {
   }, []);
 
   return (
-    <PageContainer style={{ padding: 16, paddingBottom: 150 }}>
+    <PageContainer
+      style={{ padding: 16, paddingBottom: 150 }}
+      header="Notificaciones"
+    >
       <View style={{ rowGap: 8, paddingVertical: 10, marginBottom: 30 }}>
-        <AnimatedAppText entering={FadeInUp.duration(400)} style={styles.title}>
-          {'Notificaciones'}
-        </AnimatedAppText>
         {!!notifications?.length && (
           <View style={{ alignItems: 'flex-end' }}>
             <Button

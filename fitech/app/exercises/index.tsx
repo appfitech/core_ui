@@ -1,16 +1,19 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import moment from 'moment';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ExerciseSetDto, WorkoutSessionDto } from '@/types/api/types.gen';
+import { WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useGetMonthlyWorkouts } from '../api/queries/workouts/use-get-user-workouts';
+import { useGetMuscleGroups } from '../api/queries/use-get-muscle-groups';
+import { useGetWorkoutsFiltered } from '../api/queries/workouts/use-get-user-workouts';
 import { AppText } from '../components/AppText';
+import { ChipsList } from '../components/molecules/ChipsList';
 import PageContainer from '../components/PageContainer';
 
 LocaleConfig.locales.es = {
@@ -57,20 +60,13 @@ LocaleConfig.locales.es = {
 LocaleConfig.defaultLocale = 'es';
 
 type DayObj = { dateString: string; day: number; month: number; year: number };
-const todayISO = () => new Date().toISOString().slice(0, 10);
+const todayISO = moment().format('YYYY-MM-DD');
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const toISO = (d: Date) =>
   `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const fromISO = (iso: string) => new Date(`${iso}T00:00:00`);
 
-function startOfWeekMonday(iso: string) {
-  const d = fromISO(iso);
-  const dow = d.getDay();
-  const offset = (dow + 6) % 7;
-  d.setDate(d.getDate() - offset);
-  return toISO(d);
-}
 function weekDates(weekStartISO: string) {
   const start = fromISO(weekStartISO);
   return Array.from({ length: 7 }, (_, i) => {
@@ -97,36 +93,12 @@ const groupByDate = (arr: WorkoutSessionDto[]) => {
   return m;
 };
 
-type WeeklyStats = { trainings: number; reps: number; weightKg: number };
-function computeWeeklyStats(
-  byDate: Record<string, WorkoutSessionDto[]>,
-  weekStartISO: string,
-): WeeklyStats {
-  const days = weekDates(weekStartISO);
-  let trainings = 0,
-    reps = 0,
-    weightKg = 0;
-  for (const dayISO of days) {
-    const sessions = byDate[dayISO] || [];
-    if (sessions.length) trainings += 1;
-    for (const s of sessions) {
-      for (const set of (s.exerciseSets || []) as ExerciseSetDto[]) {
-        const r = Number(set.repetitions || 0);
-        const w = Number(set.weightKg || 0);
-        reps += r;
-        if (!isNaN(w)) weightKg += r * w;
-      }
-    }
-  }
-  return { trainings, reps, weightKg };
-}
-const fmtKg = (n: number) => `${n.toLocaleString('es-PE')}kg`;
-
 export default function ExercisesScreen() {
-  const [selectedDate, setSelectedDate] = useState<string>(todayISO());
+  const [selectedDate, setSelectedDate] = useState<string>(todayISO);
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme);
+  const { data: muscleGroups } = useGetMuscleGroups();
 
   const [visibleYM, setVisibleYM] = useState(() => {
     const d = fromISO(selectedDate);
@@ -136,6 +108,8 @@ export default function ExercisesScreen() {
     Record<string, WorkoutSessionDto[]>
   >({});
 
+  const [muscleGroupFilter, setMuscleGroupFilter] = useState([]);
+
   const { y, m } = visibleYM;
   const { start, end } = monthRange(y, m);
 
@@ -143,7 +117,7 @@ export default function ExercisesScreen() {
     data: monthlyData,
     isLoading,
     refetch,
-  } = useGetMonthlyWorkouts(start, end);
+  } = useGetWorkoutsFiltered({ start, end, muscleGroups: muscleGroupFilter });
 
   useFocusEffect(
     useCallback(() => {
@@ -176,31 +150,26 @@ export default function ExercisesScreen() {
     });
   };
 
-  const weekStart = useMemo(
-    () => startOfWeekMonday(selectedDate),
-    [selectedDate],
-  );
-  const prevWeekStart = useMemo(() => {
-    const d = fromISO(weekStart);
-    d.setDate(d.getDate() - 7);
-    return toISO(d);
-  }, [weekStart]);
-
-  const currentStats = useMemo(
-    () => computeWeeklyStats(monthData, weekStart),
-    [monthData, weekStart],
-  );
-  const prevStats = useMemo(
-    () => computeWeeklyStats(monthData, prevWeekStart),
-    [monthData, prevWeekStart],
-  );
-
   return (
     <PageContainer
       header={'Mi Registro de Entrenamientos'}
       subheader={'Lleva el control de tus workouts y alcanza tus metas fitness'}
       style={{ padding: 16 }}
     >
+      <View style={{ rowGap: 8, marginTop: 12 }}>
+        <AppText
+          style={{ fontWeight: '600', color: theme.primary, fontSize: 15 }}
+        >
+          {'Filtro por grupo muscular'}
+        </AppText>
+        <ChipsList
+          selectedValues={muscleGroupFilter}
+          onChange={setMuscleGroupFilter}
+          options={
+            muscleGroups?.map((item) => ({ label: item, value: item })) ?? []
+          }
+        />
+      </View>
       <View style={{ marginTop: 16, borderRadius: 12, overflow: 'hidden' }}>
         <Calendar
           onDayPress={(d: DayObj) => handleOpenDay(d.dateString)}
@@ -209,7 +178,7 @@ export default function ExercisesScreen() {
           firstDay={1}
           enableSwipeMonths
           theme={calendarTheme(theme)}
-          maxDate={todayISO()}
+          maxDate={todayISO}
           dayComponent={({ date, state }) => {
             const ds = date?.dateString as string;
             const count = monthData[ds]?.length || 0;
@@ -275,42 +244,6 @@ export default function ExercisesScreen() {
             );
           }}
         />
-      </View>
-
-      <View style={styles.compareCard}>
-        <AppText style={styles.compareTitle}>
-          Comparación con Semana Anterior
-        </AppText>
-        <View style={styles.metricPanel}>
-          <AppText style={styles.metricHeading}>Entrenamientos</AppText>
-          <View style={styles.metricRow}>
-            <AppText style={styles.metricCurrent}>
-              {currentStats.trainings}
-            </AppText>
-            <AppText style={styles.arrow}> → </AppText>
-            <AppText style={styles.metricPrev}>{prevStats.trainings}</AppText>
-          </View>
-        </View>
-        <View style={styles.metricPanel}>
-          <AppText style={styles.metricHeading}>Repeticiones</AppText>
-          <View style={styles.metricRow}>
-            <AppText style={styles.metricCurrent}>{currentStats.reps}</AppText>
-            <AppText style={styles.arrow}> → </AppText>
-            <AppText style={styles.metricPrev}>{prevStats.reps}</AppText>
-          </View>
-        </View>
-        <View style={styles.metricPanel}>
-          <AppText style={styles.metricHeading}>Peso Movido</AppText>
-          <View style={styles.metricRow}>
-            <AppText style={styles.metricCurrent}>
-              {fmtKg(currentStats.weightKg)}
-            </AppText>
-            <AppText style={styles.arrow}> → </AppText>
-            <AppText style={styles.metricPrev}>
-              {fmtKg(prevStats.weightKg)}
-            </AppText>
-          </View>
-        </View>
       </View>
     </PageContainer>
   );

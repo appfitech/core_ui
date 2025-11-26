@@ -35,3 +35,26 @@ export const useGetWorkoutSeries = (workoutId?: number) => {
     enabled: !!workoutId,
   });
 };
+
+export const useGetWorkoutsFiltered = ({
+  start,
+  end,
+  muscleGroups,
+}: {
+  start: string;
+  end: string;
+  muscleGroups: string[];
+}) => {
+  return useQuery<any, Error, WorkoutSessionDto[]>({
+    queryKey: [
+      `/workouts/exercises/user/filter/${start}/${end}/${muscleGroups.join(',')}`,
+    ],
+    queryFn: async () => {
+      return api.post(`/workouts/exercises/user/filter`, {
+        endDate: end,
+        muscleGroups,
+        startDate: start,
+      });
+    },
+  });
+};

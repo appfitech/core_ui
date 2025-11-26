@@ -143,11 +143,11 @@ export function AddEditExerciseModal({
   }, [mode, name, muscleGroup, dateISO, sets, notes, initial?.id]);
 
   return (
-    <Modal animationType="slide" transparent>
+    <Modal animationType="slide" presentationStyle="fullScreen">
       <PageContainer
         hasBackButton={false}
         styleContainer={{ backgroundColor: 'transparent' }}
-        style={[styles.modalOverlay, { padding: 0, paddingBottom: 0 }]}
+        style={[{ padding: 0, paddingBottom: 0 }]}
       >
         <View style={styles.modalCard}>
           <AppText style={styles.modalTitle}>
@@ -273,11 +273,6 @@ const getStyles = (theme: FullTheme) =>
       bottom: 150,
       flexDirection: 'row',
       gap: 12,
-    },
-    modalOverlay: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.35)',
-      justifyContent: 'flex-end',
     },
     modalCard: {
       backgroundColor: theme.background,

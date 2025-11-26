@@ -1,3 +1,4 @@
+import LottieView from 'lottie-react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   Dimensions,
@@ -20,6 +21,7 @@ import Animated, {
 
 import { AppText } from '@/app/components/AppText';
 import PageContainer from '@/app/components/PageContainer';
+import ConfettiAnimation from '@/assets/lottie/confetti.json';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
 import { GymBroCandidateResponseDto } from '@/types/api/types.gen';
@@ -78,6 +80,8 @@ export default function GymBroScreen() {
   const translateX = useSharedValue(0);
   const rotation = useSharedValue(0);
 
+  const [matchName, setMatchName] = useState<string | null>(null);
+
   const resetCard = () => {
     translateX.value = withSpring(0);
     rotation.value = withSpring(0);
@@ -103,6 +107,12 @@ export default function GymBroScreen() {
                 type: 'gymbro',
                 name: response?.matchedUserName ?? '',
               });
+
+              setMatchName(response?.matchedUserName ?? '');
+
+              setTimeout(() => {
+                setMatchName(null);
+              }, 2500);
             }
           },
         });
@@ -160,14 +170,6 @@ export default function GymBroScreen() {
 
   const handlePass = () => onSwiped('left');
   const handleSave = () => onSwiped('right');
-
-  const savedList = useMemo(() => {
-    return Object.values(savedMap).filter((it) => {
-      const id = String(it.userId);
-
-      return !discardedIds.has(id);
-    });
-  }, [savedMap, discardedIds]);
 
   const pan = Gesture.Pan()
     .activeOffsetX([-12, 12])
@@ -282,6 +284,22 @@ export default function GymBroScreen() {
           />
         )}
       </SafeAreaView>
+      {matchName && (
+        <View style={styles.matchOverlay} pointerEvents="none">
+          <LottieView
+            source={ConfettiAnimation}
+            autoPlay
+            loop={true}
+            style={styles.matchLottie}
+          />
+          <View style={styles.matchTextContainer}>
+            <AppText style={styles.matchTitle}>¡Es un match! 💚</AppText>
+            <AppText style={styles.matchSubtitle}>
+              Tú y {matchName} ahora son GymBros.
+            </AppText>
+          </View>
+        </View>
+      )}
     </PageContainer>
   );
 }
@@ -299,6 +317,41 @@ const getStyles = (theme: FullTheme) =>
       color: theme.textSecondary,
       fontSize: 16,
       fontWeight: 500,
+      textAlign: 'center',
+    },
+
+    matchOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    matchLottie: {
+      width: 260,
+      height: 260,
+    },
+    matchTextContainer: {
+      position: 'absolute',
+      bottom: '18%',
+      paddingHorizontal: 24,
+      paddingVertical: 12,
+      borderRadius: 20,
+      backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    matchTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: '#fff',
+      textAlign: 'center',
+      marginBottom: 4,
+    },
+    matchSubtitle: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: '#fff',
       textAlign: 'center',
     },
   });
