@@ -16,19 +16,13 @@ export default function PremiumFeaturesScreen() {
   const styles = getStyles(theme);
 
   return (
-    <PageContainer hasBackButton={false} style={styles.pageStyle}>
+    <PageContainer
+      hasBackButton={false}
+      title="Bienvenido a FITECH Premium"
+      subheader="Accede a funciones exclusivas para llevar tu entrenamiento al siguiente nivel"
+      style={styles.pageStyle}
+    >
       <View style={styles.content}>
-        <View style={styles.headerBlock}>
-          <AppText style={styles.title}>
-            {'Bienvenido a FITECH Premium'}
-          </AppText>
-          <AppText style={styles.subtitle}>
-            {
-              'Accede a funciones exclusivas para llevar tu entrenamiento al siguiente nivel'
-            }
-          </AppText>
-        </View>
-
         <View style={styles.bannerList}>
           <TouchableOpacity style={[styles.banner, styles.bannerSuccess]}>
             <Image

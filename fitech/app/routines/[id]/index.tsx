@@ -31,11 +31,10 @@ export default function RoutineDetailScreen() {
   };
 
   return (
-    <PageContainer style={styles.pageStyle}>
-      <View style={styles.headerBlock}>
-        <AppText style={styles.titleHeader}>{routine?.resourceName}</AppText>
-      </View>
-
+    <PageContainer
+      title={routine?.resourceName ?? 'Rutina'}
+      style={styles.pageStyle}
+    >
       <View style={styles.contentSection}>
         <View style={styles.tagsRow}>
           <Tag

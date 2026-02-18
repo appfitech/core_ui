@@ -59,8 +59,8 @@ export default function Register() {
 
   return (
     <PageContainer
-      header={'Crear cuenta'}
-      subheader={'Ingresa tus datos para registrarte'}
+      title="Crear cuenta"
+      subheader="Ingresa tus datos para registrarte"
       style={{ padding: 16 }}
     >
       <Animated.View entering={SlideInDown.springify()} style={styles.card}>

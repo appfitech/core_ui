@@ -32,12 +32,11 @@ export default function MacrosCalculatorCalculateScreen() {
   }, [foodItemRequest]);
 
   return (
-    <PageContainer style={{ padding: 16, paddingBottom: 200 }}>
-      <AppText style={styles.title}>{'¿Cuánto comiste?'}</AppText>
-      <AppText style={styles.subtitle}>
-        {'Ajusta las porciones para obtener tu desglose de macros.'}
-      </AppText>
-
+    <PageContainer
+      title="¿Cuánto comiste?"
+      subheader="Ajusta las porciones para obtener tu desglose de macros."
+      style={{ padding: 16, paddingBottom: 200 }}
+    >
       <View
         style={{
           gap: 10,

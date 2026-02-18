@@ -84,7 +84,7 @@ export default function ChatsScreen() {
 
   return (
     <PageContainer
-      header="Chats"
+      title="Chats"
       subheader="Mantén el contacto con tus gymcrush y gymbros cuando lo necesites."
       style={styles.pageStyle}
     >

@@ -31,16 +31,11 @@ export default function MacrosCalculatorScreen() {
   }, []);
 
   return (
-    <PageContainer style={{ padding: 16, paddingBottom: 200 }}>
-      <View style={{ rowGap: 10, paddingVertical: 10, marginBottom: 10 }}>
-        <AppText style={styles.title}>
-          {'¿Cuántos gramos tiene tu antojo?'}
-        </AppText>
-        <AppText style={styles.subtitle}>
-          {'Descubre si estás alimentando músculo, energía... o puro gustito.'}
-        </AppText>
-      </View>
-
+    <PageContainer
+      title="¿Cuántos gramos tiene tu antojo?"
+      subheader="Descubre si estás alimentando músculo, energía... o puro gustito."
+      style={{ padding: 16, paddingBottom: 200 }}
+    >
       <AppText style={{ fontSize: 16, fontWeight: '600', marginBottom: 4 }}>
         {'Selecciona tus alimentos'}
       </AppText>

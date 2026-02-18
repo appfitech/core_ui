@@ -86,12 +86,11 @@ export default function ContractsScreen() {
   };
 
   return (
-    <PageContainer style={styles.pageStyle}>
-      <AppText style={styles.title}>Mis Contratos</AppText>
-      <AppText style={styles.subtitle}>
-        Gestiona tus contratos de servicios de entrenamiento
-      </AppText>
-
+    <PageContainer
+      title="Mis Contratos"
+      subheader="Gestiona tus contratos de servicios de entrenamiento"
+      style={styles.pageStyle}
+    >
       <View style={styles.tabRow}>
         {['ACTIVE', 'INACTIVE'].map((status) => (
           <TouchableOpacity

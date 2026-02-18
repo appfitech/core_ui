@@ -219,13 +219,13 @@ export default function TrainerClientsScreen() {
   const styles = getStyles(theme);
 
   return (
-    <PageContainer hasBackButton={false} style={{ padding: 16 }}>
+    <PageContainer
+      hasBackButton={false}
+      title="Mis Clientes"
+      subheader="Gestiona tus clientes y el progreso de sus entrenamientos"
+      style={{ padding: 16 }}
+    >
       <View style={{ rowGap: 10, paddingVertical: 10 }}>
-        <AppText style={styles.title}>{'Mis Clientes'}</AppText>
-        <AppText style={styles.subtitle}>
-          {'Gestiona tus clientes y el progreso de sus entrenamientos'}
-        </AppText>
-      </View>
 
       <View style={styles.searchRow}>
         <SearchBar
@@ -285,6 +285,7 @@ export default function TrainerClientsScreen() {
           </View>
         </View>
       ))}
+      </View>
     </PageContainer>
   );
 }

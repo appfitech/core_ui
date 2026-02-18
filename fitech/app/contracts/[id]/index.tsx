@@ -49,16 +49,7 @@ export default function ContractDetailScreen() {
   }, [parsedContract?.id]);
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <AppText
-        style={[
-          styles.title,
-          { textAlign: 'left', marginTop: 16, marginRight: 50 },
-        ]}
-      >
-        <Ionicons name="information-circle-outline" size={22} />
-        &nbsp;{'Detalles del Contrato'}
-      </AppText>
+    <PageContainer title="Detalles del Contrato" style={{ padding: 16 }}>
       <View style={{ marginVertical: 10, rowGap: 12, padding: 20 }}>
         <View style={{ flexDirection: 'row' }}>
           <View style={{ flex: 1, rowGap: 12 }}>

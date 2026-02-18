@@ -46,10 +46,8 @@ export default function TrainersSearchScreen() {
 
   return (
     <PageContainer
-      header={'Encuentra tu \nentrenador ideal'}
-      subheader={
-        'Descubre entrenadores especializados en tus objetivos fitness'
-      }
+      title="Encuentra tu entrenador ideal"
+      subheader="Descubre entrenadores especializados en tus objetivos fitness"
       hasBackButton={false}
       style={styles.pageStyle}
     >

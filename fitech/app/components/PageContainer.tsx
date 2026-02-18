@@ -17,6 +17,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
 import { AnimatedAppText } from './AnimatedAppText';
+import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
 type Props = {
@@ -24,6 +25,8 @@ type Props = {
   hasBackButton?: boolean;
   hasNoTopPadding?: boolean;
   style?: ViewStyle;
+  /** Shown in the fixed top bar (with back button); stays visible when scrolling */
+  title?: string;
   header?: string;
   subheader?: string;
   includeLogo?: boolean;
@@ -36,6 +39,7 @@ export default function PageContainer({
   hasBackButton = true,
   hasNoTopPadding = false,
   style = {},
+  title = '',
   header = '',
   subheader = '',
   includeLogo = false,
@@ -46,11 +50,38 @@ export default function PageContainer({
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
+  const hasFixedHeader = hasBackButton || title;
+  const fixedHeaderHeight = hasFixedHeader
+    ? title && !hasBackButton
+      ? 64
+      : 56
+    : 0;
+
   return (
     <View style={[styles.container, styleContainer]}>
-      {hasBackButton && (
-        <View style={[styles.backButtonContainer, { paddingTop: insets.top }]}>
-          <BackButton />
+      {hasFixedHeader && (
+        <View
+          style={[
+            styles.fixedHeader,
+            {
+              paddingTop: insets.top,
+              minHeight: fixedHeaderHeight + insets.top,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.fixedHeaderRow,
+              !hasBackButton && styles.fixedHeaderRowCentered,
+            ]}
+          >
+            {hasBackButton && <BackButton variant="light" />}
+            {title ? (
+              <AppText style={styles.fixedTitle} numberOfLines={1}>
+                {title}
+              </AppText>
+            ) : null}
+          </View>
         </View>
       )}
 
@@ -63,11 +94,12 @@ export default function PageContainer({
             contentContainerStyle={[
               styles.scrollContent,
               {
-                padding: 16,
+                paddingHorizontal: 24,
+                paddingVertical: 16,
                 paddingTop: hasNoTopPadding
                   ? 0
-                  : hasBackButton
-                    ? 110
+                  : hasFixedHeader
+                    ? fixedHeaderHeight + insets.top + 8
                     : insets.top,
                 paddingBottom: hasBottomPadding ? 150 : 80,
                 flexGrow: 1,
@@ -77,7 +109,7 @@ export default function PageContainer({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {(header || subheader) && (
+            {(subheader || includeLogo || (header && !title)) && (
               <View style={styles.headerWrapper}>
                 {includeLogo && (
                   <Animated.Image
@@ -87,7 +119,7 @@ export default function PageContainer({
                     resizeMode="contain"
                   />
                 )}
-                {header && (
+                {header && !title && (
                   <AnimatedAppText
                     entering={FadeInUp.delay(200)}
                     style={styles.headerTitle}
@@ -119,15 +151,32 @@ const getStyles = (theme: FullTheme) =>
       flex: 1,
       backgroundColor: theme.background,
     },
-    backButtonContainer: {
+    fixedHeader: {
       position: 'absolute',
       top: 0,
       right: 0,
       left: 0,
       zIndex: 10,
       paddingHorizontal: 24,
-      paddingVertical: 5,
-      backgroundColor: theme.background,
+      paddingVertical: 8,
+      paddingBottom: 12,
+      backgroundColor: theme.backgroundHeader,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.border,
+    },
+    fixedHeaderRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 12,
+    },
+    fixedHeaderRowCentered: {
+      paddingVertical: 12,
+      justifyContent: 'center',
+    },
+    fixedTitle: {
+      flex: 1,
+      ...HEADING_STYLES(theme).screenTitle,
+      color: theme.isDark ? theme.backgroundInverted : theme.background,
     },
     scrollContent: {
       paddingTop: 110,

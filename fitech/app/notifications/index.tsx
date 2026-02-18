@@ -39,7 +39,7 @@ export default function NotificationsScreen() {
   }, []);
 
   return (
-    <PageContainer style={styles.pageStyle} header="Notificaciones">
+    <PageContainer title="Notificaciones" style={styles.pageStyle}>
       <View style={styles.listWrapper}>
         {!!notifications?.length && (
           <View style={styles.markAllWrapper}>

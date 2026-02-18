@@ -29,11 +29,11 @@ export default function DietsScreen() {
   const handleOpenDetail = (dietId: number) => router.push(`/diets/${dietId}`);
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <AppText style={styles.title}>{'Mis Planes Nutricionales'}</AppText>
-      <AppText style={styles.subtitle}>
-        {'Dietas personalizadas para alcanzar tus objetivos de salud'}
-      </AppText>
+    <PageContainer
+      title="Mis Planes Nutricionales"
+      subheader="Dietas personalizadas para alcanzar tus objetivos de salud"
+      style={{ padding: 16 }}
+    >
 
       <View style={styles.tabRow}>
         {['ACTIVE', 'INACTIVE'].map((status) => (

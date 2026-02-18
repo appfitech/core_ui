@@ -69,7 +69,7 @@ const COLORS = {
     backgroundInverted: '#0D1F2D',
     backgroundInput: '#F5F6F8',
     backgroundDropdown: '#E4E6EA',
-    backgroundHeader: '#E4E6EA',
+    backgroundHeader: '#0D1F2D',
     card: '#F9FAFB',
     textPrimary: '#0D1F2D',
     textSecondary: '#4B5563',
@@ -151,5 +151,5 @@ export const LIGHT_THEME: FullTheme = {
 };
 
 export const DARK_THEME: FullTheme = {
-  ...COLORS.light,
+  ...COLORS.dark,
 };

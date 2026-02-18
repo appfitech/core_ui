@@ -96,16 +96,10 @@ export default function PersonalInfoScreen() {
   }, []);
 
   return (
-    <PageContainer style={{ padding: 16, paddingBottom: 150 }}>
-      <View style={styles.header}>
-        <AnimatedAppText
-          entering={FadeInDown.duration(500)}
-          style={styles.headerTitle}
-        >
-          Editar Información Personal
-        </AnimatedAppText>
-      </View>
-
+    <PageContainer
+        title="Editar Información Personal"
+        style={{ padding: 16, paddingBottom: 150 }}
+      >
       <Animated.View entering={FadeInUp.delay(100).duration(500)}>
         <InputWrapper
           id={'firstName'}

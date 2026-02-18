@@ -56,8 +56,8 @@ export default function SupportScreen() {
 
   return (
     <PageContainer
-      header={'Centro de Soporte'}
-      subheader={'¿Necesitas ayuda? Estamos aquí para asistirte'}
+      title="Centro de Soporte"
+      subheader="¿Necesitas ayuda? Estamos aquí para asistirte"
       style={{ rowGap: 12 }}
     >
       <Card style={{ rowGap: 12 }}>

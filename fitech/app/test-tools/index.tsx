@@ -14,7 +14,7 @@ export default function Register() {
   }
 
   return (
-    <PageContainer header={'Testing tools'} style={{ padding: 16, rowGap: 16 }}>
+    <PageContainer title="Testing tools" style={{ padding: 16, rowGap: 16 }}>
       <Button label={'Clear matches'} onPress={resetMatchList} />
       <Button label={'Test notification'} onPress={sendTestPush} />
     </PageContainer>

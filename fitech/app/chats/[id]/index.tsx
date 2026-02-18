@@ -225,7 +225,7 @@ export default function ChatDetailScreen() {
 
   return (
     <PageContainer
-      header={headerTitle}
+      title={headerTitle}
       style={styles.pageStyle}
       hasBottomPadding={false}
     >

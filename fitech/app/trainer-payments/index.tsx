@@ -308,14 +308,11 @@ export default function TrainerPaymentsScreen() {
   const TABLE_MIN_WIDTH = 920; // give columns breathing room
 
   return (
-    <PageContainer hasBackButton={true} style={{ padding: 16 }}>
-      <View style={{ rowGap: 6, paddingVertical: 8 }}>
-        <AppText style={styles.title}>Mis Pagos</AppText>
-        <AppText style={styles.subtitle}>
-          Gestiona y revisa todos tus ingresos por servicios de entrenamiento
-        </AppText>
-      </View>
-
+    <PageContainer
+      title="Mis Pagos"
+      subheader="Gestiona y revisa todos tus ingresos por servicios de entrenamiento"
+      style={{ padding: 16 }}
+    >
       {/* Summary cards */}
       <View style={styles.summaryRow}>
         <SummaryCard

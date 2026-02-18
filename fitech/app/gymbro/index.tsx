@@ -213,10 +213,8 @@ export default function GymBroScreen() {
 
   return (
     <PageContainer
-      header={'GymBro'}
-      subheader={
-        'Tu dupla de entrenamiento te espera. Entrena acompañado y llega más lejos.'
-      }
+      title="GymBro"
+      subheader="Tu dupla de entrenamiento te espera. Entrena acompañado y llega más lejos."
       style={{ flex: 1, paddingBottom: 0 }}
     >
       <SafeAreaView style={{ flex: 1, rowGap: 20, marginTop: 10 }}>

@@ -186,14 +186,12 @@ export default function TrainerServicesScreen() {
   );
 
   return (
-    <PageContainer hasBackButton={false} style={{ padding: 16 }}>
-      {/* Header */}
-      <View style={{ paddingVertical: 8, marginBottom: 8 }}>
-        <AppText style={styles.title}>Gestión de Servicios</AppText>
-        <AppText style={styles.subtitle}>
-          Administra los servicios que ofreces a tus clientes
-        </AppText>
-      </View>
+    <PageContainer
+      hasBackButton={false}
+      title="Gestión de Servicios"
+      subheader="Administra los servicios que ofreces a tus clientes"
+      style={{ padding: 16 }}
+    >
 
       {/* Top actions row */}
       <View style={styles.topRow}>

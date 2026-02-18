@@ -151,8 +151,8 @@ export default function ExercisesScreen() {
 
   return (
     <PageContainer
-      header={'Mi Registro de Entrenamientos'}
-      subheader={'Lleva el control de tus workouts y alcanza tus metas fitness'}
+      title="Mi Registro de Entrenamientos"
+      subheader="Lleva el control de tus workouts y alcanza tus metas fitness"
       style={styles.pageStyle}
     >
       <View style={styles.filterSection}>

@@ -80,10 +80,15 @@ type HeadingStyleKeys =
   | 'subheader'
   | 'title'
   | 'subtitle'
+  | 'screenTitle'
   | 'content'
   | 'caption';
 type HeadingStyles = Record<HeadingStyleKeys, TextStyle>;
 
+/**
+ * iOS: Nav bar titles are typically 17pt Semibold, title case (not all caps).
+ * MD3: Top app bar title 22/16sp; we use 17pt for compact bar consistency.
+ */
 export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
   /** iOS Title 1 (28pt) / MD Headline medium — hero, welcome, login */
   header: {
@@ -113,6 +118,13 @@ export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
   subtitle: {
     color: theme.textSecondary,
     fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 22,
+  },
+  /** Fixed screen header (nav bar title): 17pt Semibold, title case. Use on backgroundHeader. */
+  screenTitle: {
+    color: theme.textPrimary,
+    fontSize: 17,
     fontWeight: '600',
     lineHeight: 22,
   },

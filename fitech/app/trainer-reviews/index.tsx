@@ -43,12 +43,11 @@ export default function ContractsScreen() {
   };
 
   return (
-    <PageContainer style={styles.pageStyle}>
-      <AppText style={styles.title}>Mis Calificaciones</AppText>
-      <AppText style={styles.subtitle}>
-        Revisa las calificaciones y comentarios de tus clientes
-      </AppText>
-
+    <PageContainer
+      title="Mis Calificaciones"
+      subheader="Revisa las calificaciones y comentarios de tus clientes"
+      style={styles.pageStyle}
+    >
       <View style={styles.statsSection}>
         <View style={styles.statCardSuccess}>
           <AppText style={styles.statCardLabel}>{'Total reseñas'}</AppText>

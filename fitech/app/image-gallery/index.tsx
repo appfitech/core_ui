@@ -100,7 +100,7 @@ export default function ImageGalleryScreen() {
   };
 
   return (
-    <PageContainer header={'Gestiona tus fotos'} style={{ rowGap: 10 }}>
+    <PageContainer title="Gestiona tus fotos" style={{ rowGap: 10 }}>
       <Card style={{ backgroundColor: theme.primary, rowGap: 4 }}>
         <AppText style={styles.trainerBannerTitle}>
           🎯 ¡Haz que tu perfil destaque!

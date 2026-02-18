@@ -28,17 +28,10 @@ export default function SubscriptionScreen() {
   const { data: payments } = useGetUserPayments();
 
   return (
-    <PageContainer>
-      <AnimatedAppText entering={FadeInDown.duration(500)} style={styles.title}>
-        {'Mi Suscripción'}
-      </AnimatedAppText>
-      <AnimatedAppText
-        entering={FadeInDown.duration(500)}
-        style={styles.subtitle}
-      >
-        {'Gestiona tu membresía premium'}
-      </AnimatedAppText>
-
+    <PageContainer
+      title="Mi Suscripción"
+      subheader="Gestiona tu membresía premium"
+    >
       <View style={styles.content}>
         <Animated.View
           entering={FadeInUp.delay(100).duration(500)}

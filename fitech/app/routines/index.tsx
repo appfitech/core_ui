@@ -29,11 +29,11 @@ export default function RoutinesScreen() {
     router.push(`/routines/${routineId}`);
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <AppText style={styles.title}>{'Mis Rutinas de Entrenamiento'}</AppText>
-      <AppText style={styles.subtitle}>
-        {'Organiza, sigue y mejora tus sesiones de entrenamiento.'}
-      </AppText>
+    <PageContainer
+      title="Mis Rutinas de Entrenamiento"
+      subheader="Organiza, sigue y mejora tus sesiones de entrenamiento."
+      style={{ padding: 16 }}
+    >
 
       <View style={styles.tabRow}>
         {['ACTIVE', 'INACTIVE'].map((status) => (

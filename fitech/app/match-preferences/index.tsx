@@ -194,7 +194,7 @@ export default function MatchPreferencesScreen() {
 
   return (
     <PageContainer
-      header="Preferencias de Match"
+      title="Preferencias de Match"
       subheader="Configura cómo quieres aparecer en nuestros sistemas de conexión"
       style={styles.pageStyle}
     >

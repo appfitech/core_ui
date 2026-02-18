@@ -210,10 +210,8 @@ export default function GymCrushScreen() {
 
   return (
     <PageContainer
-      header={'GymCrush'}
-      subheader={
-        'Conecta con tu crush fitness. Coincidan, queden y vean si hay química.'
-      }
+      title="GymCrush"
+      subheader="Conecta con tu crush fitness. Coincidan, queden y vean si hay química."
       style={styles.pageContainer}
     >
       <SafeAreaView style={styles.safeArea}>

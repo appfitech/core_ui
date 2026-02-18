@@ -32,11 +32,10 @@ export default function DietDetailScreen() {
   };
 
   return (
-    <PageContainer style={styles.pageStyle}>
-      <View style={styles.headerBlock}>
-        <AppText style={styles.titleHeader}>{diet?.resourceName}</AppText>
-      </View>
-
+    <PageContainer
+      title={diet?.resourceName ?? 'Plan nutricional'}
+      style={styles.pageStyle}
+    >
       <View style={styles.contentSection}>
         <View style={styles.tagsRow}>
           <Tag

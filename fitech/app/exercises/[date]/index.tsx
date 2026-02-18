@@ -37,8 +37,8 @@ export default function WorkoutDayScreen() {
   return (
     <>
       <PageContainer
-        header={moment(date).format('DD/MM/YYYY')}
-        subheader={'Entrenamientos registrados'}
+        title={moment(date).format('DD/MM/YYYY')}
+        subheader="Entrenamientos registrados"
         style={styles.pageStyle}
         hasBottomPadding={false}
       >
