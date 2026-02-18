@@ -172,7 +172,7 @@ const getStyles = (theme: FullTheme) =>
     wrapper: {
       flex: 1,
       position: 'relative',
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.backgroundHeader,
     },
     contentWrapper: {
       backgroundColor: theme.background,
