@@ -67,6 +67,7 @@ export default function TrainerProfileScreen() {
       notes: `Contrato creado desde perfil del trainer ${selectedService.trainerId}`,
     });
 
+    Alert.alert('¡Listo!', 'Su contrato ha sido generado satisfactoriamente');
     router.replace('/home');
   };
 

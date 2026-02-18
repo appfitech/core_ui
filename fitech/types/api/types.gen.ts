@@ -727,12 +727,14 @@ export type CreateMatchPreferencesRequest = {
   gymBroAgeRangeMin?: number;
   gymBroAgeRangeMax?: number;
   gymBroIntensity?: string;
+  gymBroShowBioInProfile?: boolean;
   gymBroWorkoutTimes?: string[];
   gymBroLocationIds?: number[];
   gymCrushLookingForGender?: string;
   gymCrushAgeRangeMin?: number;
   gymCrushAgeRangeMax?: number;
   gymCrushLookingFor?: string;
+  gymCrushShowBioInProfile?: boolean;
   gymCrushLocationIds?: number[];
   showAge?: boolean;
   showLocation?: boolean;
@@ -748,10 +750,12 @@ export type MatchPreferencesDto = {
   gymBroAgeRangeMin?: number;
   gymBroAgeRangeMax?: number;
   gymBroIntensity?: string;
+  gymBroShowBioInProfile?: boolean;
   gymCrushLookingForGender?: string;
   gymCrushAgeRangeMin?: number;
   gymCrushAgeRangeMax?: number;
   gymCrushLookingFor?: string;
+  gymCrushShowBioInProfile?: boolean;
   showAge?: boolean;
   showLocation?: boolean;
   showRealName?: boolean;
@@ -821,6 +825,10 @@ export type ServiceResourceDtoReadable = {
    */
   trainerId?: number;
   /**
+   * File ID for attached document (Excel, PDF, etc.)
+   */
+  fileId?: number;
+  /**
    * Resource name
    */
   resourceName?: string;
@@ -887,6 +895,10 @@ export type ServiceResourceDtoWritable = {
    * Trainer ID who created the resource
    */
   trainerId?: number;
+  /**
+   * File ID for attached document (Excel, PDF, etc.)
+   */
+  fileId?: number;
   /**
    * Resource name
    */
@@ -1806,9 +1818,9 @@ export type Page = {
   }[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -1993,9 +2005,9 @@ export type PageReviewResponseDtoReadable = {
   content?: ReviewResponseDtoReadable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -2007,9 +2019,9 @@ export type PageReviewResponseDtoWritable = {
   content?: ReviewResponseDtoWritable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -2201,6 +2213,7 @@ export type GymCrushCandidateResponseDto = {
   fitnessLevel?: string;
   goals?: string;
   bio?: string;
+  gymCrushShowBioInProfile?: boolean;
 };
 
 export type CandidateResponseWrapperListGymBroCandidateResponseDto = {
@@ -2222,6 +2235,7 @@ export type GymBroCandidateResponseDto = {
   fitnessLevel?: string;
   goals?: string;
   bio?: string;
+  gymBroShowBioInProfile?: boolean;
 };
 
 export type ResultPageFitnessGoalTypeDto = {
@@ -2437,6 +2451,10 @@ export type ClientResourceResponseDtoReadable = {
    */
   clientName?: string;
   /**
+   * File ID for attached document (Excel, PDF, etc.)
+   */
+  fileId?: number;
+  /**
    * Resource name
    */
   resourceName?: string;
@@ -2512,6 +2530,10 @@ export type ClientResourceResponseDtoWritable = {
    */
   clientName?: string;
   /**
+   * File ID for attached document (Excel, PDF, etc.)
+   */
+  fileId?: number;
+  /**
    * Resource name
    */
   resourceName?: string;
@@ -2558,9 +2580,9 @@ export type PageClientResourceGroupDtoReadable = {
   content?: ClientResourceGroupDtoReadable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -2572,9 +2594,9 @@ export type PageClientResourceGroupDtoWritable = {
   content?: ClientResourceGroupDtoWritable[];
   number?: number;
   sort?: SortObject;
-  numberOfElements?: number;
   first?: boolean;
   last?: boolean;
+  numberOfElements?: number;
   empty?: boolean;
 };
 
@@ -5518,6 +5540,31 @@ export type CreateResourceResponses = {
 export type CreateResourceResponse =
   CreateResourceResponses[keyof CreateResourceResponses];
 
+export type CreateResourceWithFileData = {
+  body?: {
+    file: Blob | File;
+  };
+  path?: never;
+  query: {
+    resourceName: string;
+    resourceType: string;
+    clientId: number;
+  };
+  url: '/v1/app/client-resources/with-file';
+};
+
+export type CreateResourceWithFileResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type CreateResourceWithFileResponse =
+  CreateResourceWithFileResponses[keyof CreateResourceWithFileResponses];
+
 export type FixServiceResourcesClientIdData = {
   body?: never;
   path?: never;
@@ -6720,6 +6767,40 @@ export type GetTestingEndpointsHtmlResponses = {
 
 export type GetTestingEndpointsHtmlResponse =
   GetTestingEndpointsHtmlResponses[keyof GetTestingEndpointsHtmlResponses];
+
+export type DownloadRoutineTemplateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/templates/plantilla_rutinas.xlsx';
+};
+
+export type DownloadRoutineTemplateResponses = {
+  /**
+   * OK
+   */
+  200: Blob | File;
+};
+
+export type DownloadRoutineTemplateResponse =
+  DownloadRoutineTemplateResponses[keyof DownloadRoutineTemplateResponses];
+
+export type DownloadDietTemplateData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/templates/plantilla_dieta.xlsx';
+};
+
+export type DownloadDietTemplateResponses = {
+  /**
+   * OK
+   */
+  200: Blob | File;
+};
+
+export type DownloadDietTemplateResponse =
+  DownloadDietTemplateResponses[keyof DownloadDietTemplateResponses];
 
 export type TestSupportEmailData = {
   body?: never;
@@ -8009,6 +8090,25 @@ export type ViewFileResponses = {
 
 export type ViewFileResponse = ViewFileResponses[keyof ViewFileResponses];
 
+export type DownloadFileData = {
+  body?: never;
+  path: {
+    fileId: number;
+  };
+  query?: never;
+  url: '/v1/app/file-upload/download/{fileId}';
+};
+
+export type DownloadFileResponses = {
+  /**
+   * OK
+   */
+  200: Blob | File;
+};
+
+export type DownloadFileResponse =
+  DownloadFileResponses[keyof DownloadFileResponses];
+
 export type GetContractByIdData = {
   body?: never;
   path: {
@@ -8198,6 +8298,25 @@ export type GetActiveContractsByClientResponses = {
 
 export type GetActiveContractsByClientResponse =
   GetActiveContractsByClientResponses[keyof GetActiveContractsByClientResponses];
+
+export type ClearAllContractsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/contracts/clear-all';
+};
+
+export type ClearAllContractsResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type ClearAllContractsResponse =
+  ClearAllContractsResponses[keyof ClearAllContractsResponses];
 
 export type CheckServiceAvailabilityData = {
   body?: never;

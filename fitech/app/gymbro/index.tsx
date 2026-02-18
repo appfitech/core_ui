@@ -1,8 +1,10 @@
+import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   SafeAreaView,
   StyleSheet,
   View,
@@ -48,6 +50,7 @@ const CARD_H = Math.min(320, SCREEN_H * 0.45);
 const SWIPE_THRESHOLD = CARD_W * 0.35;
 
 export default function GymBroScreen() {
+  const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -76,6 +79,16 @@ export default function GymBroScreen() {
   const [selectedTab, setSelectedTab] = useState<MatchScreenTab>('discover');
 
   const current = available[index];
+
+  useEffect(() => {
+    const PREFETCH_AHEAD = 3;
+    for (let i = index + 1; i <= index + PREFETCH_AHEAD; i++) {
+      const candidate = available[i];
+      if (candidate?.profilePhotoUrl) {
+        Image.prefetch(`https://appfitech.com${candidate.profilePhotoUrl}`);
+      }
+    }
+  }, [index, available]);
 
   const translateX = useSharedValue(0);
   const rotation = useSharedValue(0);
@@ -252,7 +265,9 @@ export default function GymBroScreen() {
                   <MatchContactCard
                     candidate={item}
                     onDiscard={() => handleRemoveMatch(item?.userId)}
-                    onContact={() => {}}
+                    onContact={() => {
+                      router.push('/chats/1');
+                    }}
                   />
                 </Animated.View>
               )}

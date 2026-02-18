@@ -33,8 +33,5 @@
   "javascript.updateImportsOnFileMove.enabled": "always",
   "diffEditor.hideUnchangedRegions.enabled": true,
   "diffEditor.ignoreTrimWhitespace": false,
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  }
+  "editor.formatOnSave": true
 }

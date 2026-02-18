@@ -147,8 +147,8 @@ export default function MatchPreferencesScreen() {
         showAge: !!matchPreferences?.showAge,
         showLocation: !!matchPreferences?.showLocation,
         showRealName: !!matchPreferences?.showRealName,
-        gymBroShowBio: matchPreferences?.gymBroShowBio,
-        gymCrushShowBio: matchPreferences?.gymCrushShowBio,
+        gymBroShowBioInProfile: matchPreferences?.gymBroShowBioInProfile,
+        gymCrushShowBioInProfile: matchPreferences?.gymCrushShowBioInProfile,
       };
 
       updatePreferences(payload, {
@@ -339,11 +339,11 @@ export default function MatchPreferencesScreen() {
             </Row>
             <SwitchRow
               label="Mostrar bio"
-              value={!!matchPreferences?.gymBroShowBio}
+              value={!!matchPreferences?.gymBroShowBioInProfile}
               onChange={(v) =>
                 setMatchPreferences((prev) => ({
                   ...(prev || {}),
-                  gymBroShowBio: v,
+                  gymBroShowBioInProfile: v,
                 }))
               }
             />
@@ -466,11 +466,11 @@ export default function MatchPreferencesScreen() {
             </Row>
             <SwitchRow
               label="Mostrar bio"
-              value={!!matchPreferences?.gymCrushShowBio}
+              value={!!matchPreferences?.gymCrushShowBioInProfile}
               onChange={(v) =>
                 setMatchPreferences((prev) => ({
                   ...(prev || {}),
-                  gymCrushShowBio: v,
+                  gymCrushShowBioInProfile: v,
                 }))
               }
             />

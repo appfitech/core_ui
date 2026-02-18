@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
@@ -56,6 +57,7 @@ export default function GymCrushScreen() {
   const { data: mutuals, refetch: refetchMutuals } = useGetGymCrushMutuals();
   const { mutate: discardGymCrush } = useDiscardGymCrush();
   const { mutate: matchGymCrush } = useMatchGymCrush();
+  const router = useRouter();
 
   const [savedMap, setSavedMap] = useState<
     Record<string, GymCrushCandidateResponseDto>
@@ -260,7 +262,9 @@ export default function GymCrushScreen() {
                   <MatchContactCard
                     candidate={item}
                     onDiscard={() => handleRemoveMatch(item?.userId)}
-                    onContact={() => {}}
+                    onContact={() => {
+                      router.push('/chats/1');
+                    }}
                   />
                 </Animated.View>
               )}

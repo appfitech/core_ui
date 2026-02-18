@@ -2,15 +2,14 @@ import { TextStyle, ViewStyle } from 'react-native';
 
 import { FullTheme } from '@/types/theme';
 
-type SharedStyleKeys =
-  | 'label'
-  | 'inputWrapper'
-  | 'input'
-  | 'dropdown'
-  | 'submitButton'
-  | 'submitText';
-
-type SharedStyles = Record<SharedStyleKeys, ViewStyle | TextStyle>;
+type SharedStyles = {
+  label: TextStyle;
+  inputWrapper: ViewStyle;
+  input: TextStyle;
+  dropdown: TextStyle;
+  submitButton: ViewStyle;
+  submitText: TextStyle;
+};
 
 export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
   label: {

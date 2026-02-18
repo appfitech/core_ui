@@ -58,9 +58,11 @@ export function MatchContactCard({ candidate, onDiscard, onContact }: Props) {
             )}
           </View>
 
-          {!!candidate.bio && (
-            <AppText style={styles.bioText}>{candidate.bio}</AppText>
-          )}
+          {!!candidate.bio &&
+            (candidate.gymBroShowBioInProfile ||
+              candidate.gymCrushShowBioInProfile) && (
+              <AppText style={styles.bioText}>{candidate.bio}</AppText>
+            )}
         </View>
       </View>
       <View style={styles.buttonsContainer}>

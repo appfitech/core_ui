@@ -3,12 +3,13 @@ import {
   Modal,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 import { TrainerService } from '@/types/trainer';
+
+import { AppText } from './AppText';
 
 export function ContractModal({
   visible,
@@ -28,19 +29,21 @@ export function ContractModal({
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <ScrollView>
-            <Text style={styles.title}>
+            <AppText style={styles.title}>
               Términos y Condiciones del Servicio
-            </Text>
-            <Text style={styles.section}>Resumen del Servicio</Text>
-            <Text style={styles.text}>Servicio: {service?.name}</Text>
-            <Text style={styles.text}>
+            </AppText>
+            <AppText style={styles.section}>Resumen del Servicio</AppText>
+            <AppText style={styles.text}>Servicio: {service?.name}</AppText>
+            <AppText style={styles.text}>
               Precio Total: S/ {service?.totalPrice.toFixed(2)}
-            </Text>
-            <Text style={styles.text}>
+            </AppText>
+            <AppText style={styles.text}>
               Modalidad: {service?.isInPerson ? 'Presencial' : 'Virtual'}
-            </Text>
-            <Text style={styles.section}>Términos y Condiciones Generales</Text>
-            <Text style={styles.text}>
+            </AppText>
+            <AppText style={styles.section}>
+              Términos y Condiciones Generales
+            </AppText>
+            <AppText style={styles.text}>
               1. Contratación del Servicio
               {'\n'}Al contratar este servicio, acepta que:
               {'\n'}El servicio será prestado por el entrenador seleccionado
@@ -92,7 +95,7 @@ export function ContractModal({
               {'\n'}La información compartida durante las sesiones es
               confidencial
               {'\n'}Las grabaciones o fotos requieren consentimiento previo
-            </Text>
+            </AppText>
             <TouchableOpacity
               onPress={() => setAccepted(!accepted)}
               style={styles.checkboxRow}
@@ -100,21 +103,21 @@ export function ContractModal({
               <View
                 style={[styles.checkbox, accepted && styles.checkboxChecked]}
               />
-              <Text style={styles.checkboxText}>
+              <AppText style={styles.checkboxText}>
                 He leído y acepto los términos y condiciones del servicio
-              </Text>
+              </AppText>
             </TouchableOpacity>
           </ScrollView>
           <View style={styles.buttonRow}>
             <TouchableOpacity onPress={onClose} style={styles.cancelButton}>
-              <Text style={styles.cancelText}>Cancelar</Text>
+              <AppText style={styles.cancelText}>Cancelar</AppText>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onConfirm}
               disabled={!accepted}
               style={[styles.confirmButton, !accepted && { opacity: 0.5 }]}
             >
-              <Text style={styles.confirmText}>Contratar</Text>
+              <AppText style={styles.confirmText}>Contratar</AppText>
             </TouchableOpacity>
           </View>
         </View>

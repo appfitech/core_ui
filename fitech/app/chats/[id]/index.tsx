@@ -29,7 +29,7 @@ type Message = {
   time: string;
 };
 
-const WS_BASE_URL = process.env.EXPO_PUBLIC_WS_URL ?? 'wss://appfitech.com/api';
+const WS_BASE_URL = 'ws://appfitech.com/api';
 
 function buildWsUrl(token: string) {
   const base = WS_BASE_URL.endsWith('/')
@@ -111,7 +111,15 @@ export default function ChatDetailScreen() {
 
   /** websocket */
   useEffect(() => {
+    console.log('[WebSocket] Effect triggered with:', {
+      conversationId: conversationIdNumber,
+      hasToken: !!token,
+      tokenLength: token?.length || 0,
+      userId: currentUserId,
+    });
+
     if (!conversationIdNumber || !token || !currentUserId) {
+      console.log('[WebSocket] ❌ Missing requirements - not connecting');
       return;
     }
 
@@ -119,6 +127,7 @@ export default function ChatDetailScreen() {
 
     const connect = () => {
       const url = buildWsUrl(token);
+      console.log('[WebSocket] 🔌 Attempting connection to:', url);
       const ws = new WebSocket(url);
 
       wsRef.current = ws;
@@ -225,9 +234,9 @@ export default function ChatDetailScreen() {
       }}
       hasBottomPadding={false}
     >
-      <AppText style={{ fontSize: 14, color: 'red' }}>
+      {/* <AppText style={{ fontSize: 14, color: 'red' }}>
         WS status: {wsStatus}
-      </AppText>
+      </AppText> */}
 
       <View style={styles.messagesContainer}>
         {isMessagesLoading ? (
