@@ -22,15 +22,15 @@ export function MatchProfileCard({ candidate }: Props) {
   const styles = getStyles(theme);
 
   return (
-    <View style={[styles.card, { width: CARD_W, height: CARD_H }]}>
+    <View style={[styles.card, styles.cardSize]}>
       <ImageBackground
         source={{ uri: `https://appfitech.com${candidate?.profilePhotoUrl}` }}
-        style={{ height: IMAGE_H }}
+        style={styles.imageHeight}
         imageStyle={styles.imageContainer}
         resizeMode="cover"
       />
       <View style={styles.cardFooter}>
-        <View style={{ gap: 6 }}>
+        <View style={styles.footerInner}>
           <AppText style={styles.nameText}>
             {`${candidate?.firstName} ${candidate?.lastName}`}
             {candidate.age ? `, ${candidate.age}` : ''}
@@ -75,6 +75,16 @@ const getStyles = (theme: FullTheme) =>
       overflow: 'hidden',
       borderWidth: 1,
       borderColor: theme.warningBorder,
+    },
+    cardSize: {
+      width: CARD_W,
+      height: CARD_H,
+    },
+    imageHeight: {
+      height: IMAGE_H,
+    },
+    footerInner: {
+      gap: 6,
     },
     cardFooter: {
       padding: 16,

@@ -31,20 +31,13 @@ export default function RoutineDetailScreen() {
   };
 
   return (
-    <PageContainer style={{ padding: 16 }}>
-      <View style={{ marginBottom: 20 }}>
-        <AppText
-          style={[
-            styles.title,
-            { textAlign: 'left', marginTop: 16, marginRight: 50 },
-          ]}
-        >
-          {routine?.resourceName}
-        </AppText>
+    <PageContainer style={styles.pageStyle}>
+      <View style={styles.headerBlock}>
+        <AppText style={styles.titleHeader}>{routine?.resourceName}</AppText>
       </View>
 
-      <View style={{ rowGap: 20 }}>
-        <View style={{ flexDirection: 'row', columnGap: 10 }}>
+      <View style={styles.contentSection}>
+        <View style={styles.tagsRow}>
           <Tag
             backgroundColor={theme.successBackground}
             textColor={theme.successText}
@@ -56,7 +49,7 @@ export default function RoutineDetailScreen() {
             label={'Contrato'}
           />
         </View>
-        <View style={[styles.card, { backgroundColor: theme.dark100 }]}>
+        <View style={[styles.card, styles.cardWithBg]}>
           <View style={styles.container}>
             <AppText style={styles.label}>
               <Feather name={'calendar'} size={16} />
@@ -75,7 +68,18 @@ export default function RoutineDetailScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageStyle: { padding: 16 },
+    headerBlock: { marginBottom: 20 },
+    titleHeader: {
+      ...HEADING_STYLES(theme).title,
+      textAlign: 'left',
+      marginTop: 16,
+      marginRight: 50,
+    },
+    contentSection: { rowGap: 20 },
+    tagsRow: { flexDirection: 'row', columnGap: 10 },
     card: { borderRadius: 16, padding: 16, rowGap: 16 },
+    cardWithBg: { backgroundColor: theme.dark100 },
     container: { rowGap: 8 },
     label: {
       fontSize: 18,
@@ -87,5 +91,4 @@ const getStyles = (theme: FullTheme) =>
       fontWeight: 400,
       color: theme.dark700,
     },
-    ...HEADING_STYLES(theme),
   });

@@ -51,7 +51,7 @@ export default function TrainersSearchScreen() {
         'Descubre entrenadores especializados en tus objetivos fitness'
       }
       hasBackButton={false}
-      style={{ padding: 16 }}
+      style={styles.pageStyle}
     >
       <View style={styles.searchRow}>
         <SearchBar
@@ -59,7 +59,7 @@ export default function TrainersSearchScreen() {
           value={query}
           onChangeText={setQuery}
           shouldHideEndIcon={true}
-          containerStyle={{ width: 'unset', flex: 1 }}
+          containerStyle={styles.searchBarContainer}
         />
         <TouchableOpacity style={styles.searchButton}>
           <Feather name="chevrons-right" size={22} color={theme.dark100} />
@@ -70,23 +70,16 @@ export default function TrainersSearchScreen() {
         {results?.length} entrenadores encontrados
       </AppText>
 
-      <View style={{ rowGap: 12 }}>
+      <View style={styles.resultsList}>
         {results?.map((trainer) => (
-          <Card
-            key={trainer.id}
-            style={{
-              flexDirection: 'row',
-              columnGap: 10,
-              backgroundColor: theme.dark200,
-            }}
-          >
+          <Card key={trainer.id} style={styles.cardRow}>
             <Image
               source={{
                 uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
               }}
-              style={{ width: 100, height: 100, borderRadius: 100 }}
+              style={styles.trainerAvatar}
             />
-            <View style={{ flex: 1 }}>
+            <View style={styles.cardContent}>
               <AppText style={styles.name}>
                 {trainer.person.firstName} {trainer.person.lastName}
               </AppText>
@@ -117,16 +110,18 @@ export default function TrainersSearchScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
+    pageStyle: {
       padding: 16,
-      backgroundColor: theme.background,
     },
-
     searchRow: {
       flexDirection: 'row',
       marginBottom: 20,
       columnGap: 4,
       alignItems: 'center',
+    },
+    searchBarContainer: {
+      width: 'unset',
+      flex: 1,
     },
     searchButton: {
       backgroundColor: theme.primary,
@@ -136,29 +131,28 @@ const getStyles = (theme: FullTheme) =>
       height: 43,
       width: 43,
     },
+    resultsList: {
+      rowGap: 12,
+    },
+    cardRow: {
+      flexDirection: 'row',
+      columnGap: 10,
+      backgroundColor: theme.dark200,
+    },
+    trainerAvatar: {
+      width: 100,
+      height: 100,
+      borderRadius: 100,
+    },
+    cardContent: {
+      flex: 1,
+    },
     resultCount: {
       fontSize: 14,
       fontWeight: '600',
       color: theme.dark800,
       marginBottom: 12,
       alignSelf: 'flex-end',
-    },
-    card: {
-      backgroundColor: '#fff',
-      borderRadius: 12,
-      padding: 12,
-      marginBottom: 16,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 2,
-    },
-    avatar: {
-      width: '100%',
-      height: 160,
-      borderRadius: 8,
-      marginBottom: 8,
     },
     name: {
       fontSize: 14,

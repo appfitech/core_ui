@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
@@ -154,12 +153,10 @@ export default function ExercisesScreen() {
     <PageContainer
       header={'Mi Registro de Entrenamientos'}
       subheader={'Lleva el control de tus workouts y alcanza tus metas fitness'}
-      style={{ padding: 16 }}
+      style={styles.pageStyle}
     >
-      <View style={{ rowGap: 8, marginTop: 12 }}>
-        <AppText
-          style={{ fontWeight: '600', color: theme.primary, fontSize: 15 }}
-        >
+      <View style={styles.filterSection}>
+        <AppText style={styles.filterTitle}>
           {'Filtro por grupo muscular'}
         </AppText>
         <ChipsList
@@ -170,7 +167,7 @@ export default function ExercisesScreen() {
           }
         />
       </View>
-      <View style={{ marginTop: 16, borderRadius: 12, overflow: 'hidden' }}>
+      <View style={styles.calendarWrapper}>
         <Calendar
           onDayPress={(d: DayObj) => handleOpenDay(d.dateString)}
           onMonthChange={(m: any) => setVisibleYM({ y: m.year, m: m.month })}
@@ -196,46 +193,45 @@ export default function ExercisesScreen() {
               .map((_, i) => (
                 <View
                   key={i}
-                  style={{
-                    width: 4,
-                    height: 4,
-                    borderRadius: 2,
-                    marginHorizontal: 2,
-                    backgroundColor: isSelected
-                      ? theme.dark100
-                      : (theme.success ?? theme.backgroundInverted),
-                  }}
+                  style={[
+                    styles.dayDot,
+                    {
+                      backgroundColor: isSelected
+                        ? theme.dark100
+                        : (theme.success ?? theme.backgroundInverted),
+                    },
+                  ]}
                 />
               ));
             return (
               <TouchableOpacity
-                style={{ paddingVertical: 4, paddingHorizontal: 2 }}
+                style={styles.dayTouchable}
                 onPress={() => handleOpenDay(ds)}
                 disabled={isDisabled}
               >
                 <View
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingVertical: 6,
-                    paddingHorizontal: 6,
-                    borderRadius: 8,
-                    backgroundColor: isSelected
-                      ? theme.backgroundInverted
-                      : hasWorkoutBg,
-                  }}
+                  style={[
+                    styles.dayInner,
+                    {
+                      backgroundColor: isSelected
+                        ? theme.backgroundInverted
+                        : hasWorkoutBg,
+                    },
+                  ]}
                 >
                   <AppText
-                    style={{
-                      textAlign: 'center',
-                      fontWeight: isSelected ? '700' : '400',
-                      color: textColor,
-                    }}
+                    style={[
+                      styles.dayText,
+                      {
+                        fontWeight: isSelected ? '700' : '400',
+                        color: textColor,
+                      },
+                    ]}
                   >
                     {date.day}
                   </AppText>
                   {count > 0 && (
-                    <View style={{ flexDirection: 'row', marginTop: 4 }}>
+                    <View style={styles.dotsRow}>
                       {dots}
                     </View>
                   )}
@@ -269,36 +265,28 @@ const calendarTheme = (theme: FullTheme) => ({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    compareCard: {
-      marginTop: 16,
-      borderRadius: 12,
-      backgroundColor: theme.infoBackground,
-      padding: 16,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#E6E6E6',
-      marginBottom: 100,
+    pageStyle: { padding: 16 },
+    filterSection: { rowGap: 8, marginTop: 12 },
+    filterTitle: {
+      fontWeight: '600',
+      color: theme.primary,
+      fontSize: 15,
     },
-    compareTitle: { fontSize: 20, fontWeight: '800', marginBottom: 10 },
-    metricPanel: {
-      backgroundColor: '#F7F7F7',
-      borderRadius: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      marginTop: 10,
-    },
-    metricHeading: { textAlign: 'center', fontWeight: '700', marginBottom: 6 },
-    metricRow: {
-      flexDirection: 'row',
-      justifyContent: 'center',
+    calendarWrapper: { marginTop: 16, borderRadius: 12, overflow: 'hidden' },
+    dayTouchable: { paddingVertical: 4, paddingHorizontal: 2 },
+    dayInner: {
       alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 6,
+      paddingHorizontal: 6,
+      borderRadius: 8,
     },
-    metricCurrent: { color: '#1A73E8', fontWeight: '800', fontSize: 18 },
-    arrow: {
-      marginHorizontal: 8,
-      fontSize: 16,
-      opacity: 0.8,
-      color: '#F39C12',
+    dayText: { textAlign: 'center' },
+    dotsRow: { flexDirection: 'row', marginTop: 4 },
+    dayDot: {
+      width: 4,
+      height: 4,
+      borderRadius: 2,
+      marginHorizontal: 2,
     },
-    metricPrev: { color: theme.textSecondary, fontSize: 18, fontWeight: '700' },
-    ...HEADING_STYLES(theme),
   });

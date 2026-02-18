@@ -27,20 +27,8 @@ export function NotificationsButton() {
     <TouchableOpacity onPress={handleButtonClick} style={styles.button}>
       <Feather name="bell" size={24} color={theme.dark100} />
       {!!data?.unreadCount && (
-        <View
-          style={{
-            position: 'absolute',
-            right: -5,
-            top: -5,
-            backgroundColor: theme.primary,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 10,
-            width: 20,
-            height: 20,
-          }}
-        >
-          <AppText style={{ fontWeight: 500 }}>{data?.unreadCount}</AppText>
+        <View style={styles.badge}>
+          <AppText style={styles.badgeText}>{data?.unreadCount}</AppText>
         </View>
       )}
     </TouchableOpacity>
@@ -58,5 +46,19 @@ const getStyles = (theme: FullTheme) =>
       height: 35,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    badge: {
+      position: 'absolute',
+      right: -5,
+      top: -5,
+      backgroundColor: theme.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 10,
+      width: 20,
+      height: 20,
+    },
+    badgeText: {
+      fontWeight: '500',
     },
   });

@@ -115,7 +115,7 @@ export function ContractModal({
             <TouchableOpacity
               onPress={onConfirm}
               disabled={!accepted}
-              style={[styles.confirmButton, !accepted && { opacity: 0.5 }]}
+              style={[styles.confirmButton, !accepted && styles.confirmButtonDisabled]}
             >
               <AppText style={styles.confirmText}>Contratar</AppText>
             </TouchableOpacity>
@@ -198,6 +198,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 4,
     alignItems: 'center',
+  },
+  confirmButtonDisabled: {
+    opacity: 0.5,
   },
   confirmText: {
     color: '#fff',

@@ -31,7 +31,7 @@ export function MatchContactCard({ candidate, onDiscard, onContact }: Props) {
           }
         />
 
-        <View style={{ gap: 2, flex: 1 }}>
+        <View style={styles.nameBlock}>
           <AppText style={styles.nameText}>
             {`${candidate?.firstName} ${candidate?.lastName}`}
             {candidate.age ? `, ${candidate.age}` : ''}
@@ -67,16 +67,16 @@ export function MatchContactCard({ candidate, onDiscard, onContact }: Props) {
       </View>
       <View style={styles.buttonsContainer}>
         <Button
-          style={{ flex: 1 }}
-          buttonStyle={{ paddingVertical: 11 }}
+          style={styles.buttonFlex}
+          buttonStyle={styles.buttonPadding}
           label={'Contactar'}
           type="tertiary"
           onPress={onContact}
         />
         <Button
           type="destructive"
-          style={{ flex: 1 }}
-          buttonStyle={{ paddingVertical: 11 }}
+          style={styles.buttonFlex}
+          buttonStyle={styles.buttonPadding}
           label={'Quitar'}
           onPress={onDiscard}
         />
@@ -101,22 +101,20 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       gap: 16,
     },
+    nameBlock: {
+      gap: 2,
+      flex: 1,
+    },
     buttonsContainer: {
       gap: 8,
       flexDirection: 'row',
       flex: 1,
     },
-    cardFooter: {
-      padding: 16,
-      gap: 10,
-      backgroundColor: theme.warningBackground,
-      borderBottomLeftRadius: 24,
-      borderBottomRightRadius: 24,
+    buttonFlex: {
       flex: 1,
     },
-    imageContainer: {
-      borderTopLeftRadius: 24,
-      borderTopRightRadius: 24,
+    buttonPadding: {
+      paddingVertical: 11,
     },
     nameText: {
       ...HEADING_STYLES(theme).subtitle,

@@ -39,7 +39,7 @@ export default function WorkoutDayScreen() {
       <PageContainer
         header={moment(date).format('DD/MM/YYYY')}
         subheader={'Entrenamientos registrados'}
-        style={{ padding: 16, rowGap: 10, flex: 1 }}
+        style={styles.pageStyle}
         hasBottomPadding={false}
       >
         {exerciseCount && (
@@ -52,12 +52,12 @@ export default function WorkoutDayScreen() {
           </View>
         )}
         <FlatList
-          style={{ flex: 1 }}
+          style={styles.listStyle}
           data={sessions}
           keyExtractor={(item) => `exercise-card-${date}-${item.id}`}
-          contentContainerStyle={{ paddingBottom: 120 }}
+          contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <View style={{ marginBottom: 12 }}>
+            <View style={styles.cardWrapper}>
               <ExerciseCard
                 session={item}
                 refetchCallback={refetchDailyWorkouts}
@@ -66,14 +66,7 @@ export default function WorkoutDayScreen() {
           )}
           ListEmptyComponent={
             !isLoading ? (
-              <AppText
-                style={{
-                  fontSize: 19,
-                  color: theme.dark500,
-                  marginTop: 40,
-                  textAlign: 'center',
-                }}
-              >
+              <AppText style={styles.emptyText}>
                 Hoy no tienes ejercicios registrados. Añade una rutina y sigue
                 sumando progreso. 🏋️
               </AppText>
@@ -86,12 +79,12 @@ export default function WorkoutDayScreen() {
           style={[styles.button, styles.btnGhost]}
           onPress={() => router.back()}
         >
-          <AppText style={[styles.buttonText, { color: theme.textPrimary }]}>
+          <AppText style={[styles.buttonText, styles.buttonTextGhost]}>
             Cerrar
           </AppText>
         </Pressable>
         <Pressable style={[styles.button, styles.btnPrimary]} onPress={open}>
-          <AppText style={[styles.buttonText, { color: theme.dark100 }]}>
+          <AppText style={[styles.buttonText, styles.buttonTextPrimary]}>
             + Agregar Ejercicio
           </AppText>
         </Pressable>
@@ -111,8 +104,17 @@ export default function WorkoutDayScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    headerTitle: { fontSize: 20, fontWeight: '800', marginBottom: 12 },
+    pageStyle: { padding: 16, rowGap: 10, flex: 1 },
     summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
+    listStyle: { flex: 1 },
+    listContent: { paddingBottom: 120 },
+    cardWrapper: { marginBottom: 12 },
+    emptyText: {
+      fontSize: 19,
+      color: theme.dark500,
+      marginTop: 40,
+      textAlign: 'center',
+    },
     bottomBar: {
       position: 'absolute',
       left: 16,
@@ -132,36 +134,6 @@ const getStyles = (theme: FullTheme) =>
     btnPrimary: { backgroundColor: theme.backgroundInverted },
     btnGhost: { backgroundColor: '#EFEFEF' },
     buttonText: { fontSize: 16, fontWeight: '700' },
-    modalOverlay: {
-      flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.35)',
-      justifyContent: 'flex-end',
-    },
-    modalCard: {
-      backgroundColor: theme.background,
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      padding: 16,
-      gap: 10,
-      maxHeight: '92%',
-      paddingBottom: 50,
-    },
-    modalTitle: { fontSize: 18, fontWeight: '800', marginBottom: 8 },
-    input: {
-      borderWidth: 1,
-      borderColor: '#C7C7C7',
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 12,
-      fontSize: 16,
-      backgroundColor: 'white',
-    },
-    inputSmall: { flex: 1 },
-    setRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-      marginBottom: 8,
-    },
-    modalFooter: { flexDirection: 'row', gap: 10, marginTop: 8 },
+    buttonTextGhost: { color: theme.textPrimary },
+    buttonTextPrimary: { color: theme.dark100 },
   });

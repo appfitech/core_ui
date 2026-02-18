@@ -86,32 +86,16 @@ export default function ChatsScreen() {
     <PageContainer
       header="Chats"
       subheader="Mantén el contacto con tus gymcrush y gymbros cuando lo necesites."
-      style={{ flex: 1, paddingBottom: 0 }}
+      style={styles.pageStyle}
     >
       {isLoading ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <View style={styles.loadingCenter}>
           <ActivityIndicator color={theme.backgroundInverted} />
-          <AppText style={{ marginTop: 8, fontSize: 13, color: theme.dark400 }}>
-            Cargando chats...
-          </AppText>
+          <AppText style={styles.loadingText}>Cargando chats...</AppText>
         </View>
       ) : !isLoading && !chats.length ? (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <AppText
-            style={{ fontSize: 13, color: theme.dark400, textAlign: 'center' }}
-          >
+        <View style={styles.emptyCenter}>
+          <AppText style={styles.emptyText}>
             Aún no tienes conversaciones activas.
           </AppText>
         </View>
@@ -162,6 +146,30 @@ export default function ChatsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageStyle: {
+      flex: 1,
+      paddingBottom: 0,
+    },
+    loadingCenter: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    loadingText: {
+      marginTop: 8,
+      fontSize: 13,
+      color: theme.dark400,
+    },
+    emptyCenter: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 13,
+      color: theme.dark400,
+      textAlign: 'center',
+    },
     list: {
       width: '100%',
       marginTop: 8,

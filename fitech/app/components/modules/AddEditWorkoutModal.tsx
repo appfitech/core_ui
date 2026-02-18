@@ -147,7 +147,7 @@ export function AddEditExerciseModal({
       <PageContainer
         hasBackButton={false}
         styleContainer={{ backgroundColor: 'transparent' }}
-        style={[{ padding: 0, paddingBottom: 0 }]}
+        style={styles.modalPageStyle}
       >
         <View style={styles.modalCard}>
           <AppText style={styles.modalTitle}>
@@ -176,27 +176,17 @@ export function AddEditExerciseModal({
             value={muscleGroup}
           />
 
-          <View
-            style={{
-              marginTop: 8,
-              marginBottom: 4,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <AppText style={{ fontWeight: '700' }}>Series</AppText>
+          <View style={styles.seriesHeaderRow}>
+            <AppText style={styles.seriesLabel}>Series</AppText>
             <Pressable onPress={addSet}>
-              <AppText style={{ color: '#1A73E8', fontWeight: '700' }}>
-                + Añadir serie
-              </AppText>
+              <AppText style={styles.addSeriesText}>+ Añadir serie</AppText>
             </Pressable>
           </View>
 
           <ScrollView>
             {sets.map((s, idx) => (
               <View key={idx} style={styles.setRow}>
-                <AppText style={{ fontWeight: '600', width: 64 }}>
+                <AppText style={styles.setLabel}>
                   Serie {idx + 1}
                 </AppText>
                 <TextInput
@@ -219,11 +209,9 @@ export function AddEditExerciseModal({
                 />
                 <Pressable
                   onPress={() => removeSet(idx)}
-                  style={{ paddingHorizontal: 8 }}
+                  style={styles.removeButton}
                 >
-                  <AppText style={{ color: '#D9534F', fontWeight: '700' }}>
-                    🗑️
-                  </AppText>
+                  <AppText style={styles.removeButtonText}>🗑️</AppText>
                 </Pressable>
               </View>
             ))}
@@ -234,7 +222,7 @@ export function AddEditExerciseModal({
             placeholderTextColor="#808080"
             value={notes}
             onChangeText={setNotes}
-            style={[styles.input, { height: 50 }]}
+            style={[styles.input, styles.notesInput]}
             multiline
           />
 
@@ -242,20 +230,20 @@ export function AddEditExerciseModal({
             <Button
               label={'Cancelar'}
               onPress={onClose}
-              style={{ flex: 1 }}
+              style={styles.buttonFlex}
               type={'tertiary'}
-              buttonStyle={{ paddingVertical: 10 }}
+              buttonStyle={styles.footerButtonPadding}
             />
 
             <Button
               label={mode === 'add' ? 'Guardar Ejercicio' : 'Guardar Cambios'}
               disabled={!canSave}
               buttonStyle={[
-                { paddingVertical: 10 },
-                !canSave && { opacity: 0.5 },
+                styles.footerButtonPadding,
+                !canSave && styles.confirmButtonDisabled,
               ]}
               onPress={handleSave}
-              style={{ flex: 1 }}
+              style={styles.buttonFlex}
             />
           </View>
         </View>
@@ -266,14 +254,7 @@ export function AddEditExerciseModal({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    bottomBar: {
-      position: 'absolute',
-      left: 16,
-      right: 16,
-      bottom: 150,
-      flexDirection: 'row',
-      gap: 12,
-    },
+    modalPageStyle: { padding: 0, paddingBottom: 0 },
     modalCard: {
       backgroundColor: theme.background,
       borderTopLeftRadius: 16,
@@ -294,11 +275,27 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: 'white',
     },
     inputSmall: { flex: 1 },
+    seriesHeaderRow: {
+      marginTop: 8,
+      marginBottom: 4,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    seriesLabel: { fontWeight: '700' },
+    addSeriesText: { color: '#1A73E8', fontWeight: '700' },
     setRow: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
       marginBottom: 8,
     },
+    setLabel: { fontWeight: '600', width: 64 },
+    removeButton: { paddingHorizontal: 8 },
+    removeButtonText: { color: '#D9534F', fontWeight: '700' },
+    notesInput: { height: 50 },
     modalFooter: { flexDirection: 'row', gap: 10, marginTop: 8 },
+    buttonFlex: { flex: 1 },
+    footerButtonPadding: { paddingVertical: 10 },
+    confirmButtonDisabled: { opacity: 0.5 },
   });

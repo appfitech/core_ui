@@ -226,12 +226,7 @@ export default function ChatDetailScreen() {
   return (
     <PageContainer
       header={headerTitle}
-      style={{
-        flex: 1,
-        paddingBottom: 0,
-        paddingHorizontal: 16,
-        rowGap: 16,
-      }}
+      style={styles.pageStyle}
       hasBottomPadding={false}
     >
       {/* <AppText style={{ fontSize: 14, color: 'red' }}>
@@ -299,7 +294,7 @@ export default function ChatDetailScreen() {
       </View>
 
       <View
-        style={[styles.inputRow, Platform.OS === 'ios' && { marginBottom: 12 }]}
+        style={[styles.inputRow, Platform.OS === 'ios' && styles.inputRowIos]}
       >
         <TextInput
           style={styles.textInput}
@@ -311,7 +306,7 @@ export default function ChatDetailScreen() {
         />
         <TouchableOpacity
           onPress={handleSend}
-          style={[styles.sendButton, !input.trim() && { opacity: 0.5 }]}
+          style={[styles.sendButton, !input.trim() && styles.sendButtonDisabled]}
           disabled={!input.trim()}
         >
           <Ionicons name="send" size={20} color={theme.dark100} />
@@ -323,6 +318,12 @@ export default function ChatDetailScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageStyle: {
+      flex: 1,
+      paddingBottom: 0,
+      paddingHorizontal: 16,
+      rowGap: 16,
+    },
     messagesContainer: {
       flex: 1,
       minHeight: 0,
@@ -388,6 +389,9 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 8,
       paddingVertical: 8,
     },
+    inputRowIos: {
+      marginBottom: 12,
+    },
     textInput: {
       flex: 1,
       minHeight: 40,
@@ -407,5 +411,8 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.backgroundInverted,
+    },
+    sendButtonDisabled: {
+      opacity: 0.5,
     },
   });

@@ -321,12 +321,32 @@ export default function GymBroScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageContainer: { flex: 1, paddingBottom: 0 },
+    safeArea: { flex: 1, rowGap: 20, marginTop: 10 },
+    contentWrapper: { flex: 1 },
     center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    centerWithPadding: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 140,
+    },
     empty: {
       borderWidth: 1,
       borderRadius: 24,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    emptyCard: {
+      width: CARD_W,
+      height: CARD_H,
+      borderColor: theme.border,
+    },
+    listContent: { gap: 12, paddingBottom: 24 },
+    listEmptyWrapper: {
+      paddingHorizontal: 24,
+      paddingVertical: 50,
+      alignItems: 'center',
     },
     emptyText: {
       color: theme.textSecondary,

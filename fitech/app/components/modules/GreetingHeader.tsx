@@ -32,7 +32,7 @@ export function GreetingHeader() {
           )}
           <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
             <AppText style={styles.greeting}>
-              {`Hola ${user?.user?.person?.firstName}!`}
+              {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}!`}
             </AppText>
           </TouchableOpacity>
         </View>
@@ -48,7 +48,7 @@ export function GreetingHeader() {
       <AppText style={styles.subtext}>{getRandomMotivationalQuote()}</AppText>
 
       {/* Search */}
-      <View style={{ marginTop: 24 }}>
+      <View style={styles.searchWrapper}>
         <TouchableOpacity onPress={() => router.push(ROUTES.trainers)}>
           <SearchBar
             placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
@@ -103,5 +103,8 @@ const getStyles = (theme: FullTheme) =>
       width: 30,
       height: 30,
       borderRadius: 70,
+    },
+    searchWrapper: {
+      marginTop: 24,
     },
   });

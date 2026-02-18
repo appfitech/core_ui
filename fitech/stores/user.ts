@@ -14,6 +14,7 @@ enum UserType {
 
 const SECURE_USER_KEY = 'user';
 const SECURE_TOKEN_KEY = 'auth_token';
+const SECURE_USER_ID_KEY = 'user_id';
 
 type UserStore = {
   user: LoginResponseDtoReadable | null;
@@ -24,6 +25,9 @@ type UserStore = {
 
   logout: () => Promise<void>;
   loadSession: () => Promise<void>;
+
+  /** Returns userId from SecureStore (so we can hydrate user when blob was lost). */
+  getStoredUserId: () => Promise<number | null>;
 
   updateUserInfo: (data: UserResponseDtoReadable) => Promise<void>;
   updateProfilePhotoId: (photoId: number) => Promise<void>;
@@ -47,8 +51,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
     const token = data?.token ?? null;
     if (token) {
       await SecureStore.setItemAsync(SECURE_TOKEN_KEY, token);
-
       set({ token });
+    }
+
+    const userId = data?.user?.id;
+    if (userId != null) {
+      await SecureStore.setItemAsync(SECURE_USER_ID_KEY, String(userId));
     }
   },
 
@@ -73,8 +81,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
   logout: async () => {
     await SecureStore.deleteItemAsync(SECURE_USER_KEY);
     await SecureStore.deleteItemAsync(SECURE_TOKEN_KEY);
+    await SecureStore.deleteItemAsync(SECURE_USER_ID_KEY);
 
     set({ user: null, token: null });
+  },
+
+  getStoredUserId: async () => {
+    const raw = await SecureStore.getItemAsync(SECURE_USER_ID_KEY);
+    if (raw == null) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
   },
 
   loadSession: async () => {

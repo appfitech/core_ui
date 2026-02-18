@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { NotificationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
@@ -41,12 +40,12 @@ export default function NotificationsScreen() {
 
   return (
     <PageContainer
-      style={{ padding: 16, paddingBottom: 150 }}
+      style={styles.pageStyle}
       header="Notificaciones"
     >
-      <View style={{ rowGap: 8, paddingVertical: 10, marginBottom: 30 }}>
+      <View style={styles.listWrapper}>
         {!!notifications?.length && (
-          <View style={{ alignItems: 'flex-end' }}>
+          <View style={styles.markAllWrapper}>
             <Button
               onPress={handleMarkAllRead}
               type={'link'}
@@ -56,9 +55,7 @@ export default function NotificationsScreen() {
         )}
         <View>
           {!notifications?.length && (
-            <AppText
-              style={{ color: theme.secondary, fontSize: 16, marginTop: 34 }}
-            >
+            <AppText style={styles.emptyMessage}>
               {'Estás al día, no hay más notificaciones 🎉'}
             </AppText>
           )}
@@ -68,7 +65,7 @@ export default function NotificationsScreen() {
               label={`${item.icon} ${item.title}`}
               description={`${item.message}${item.timeAgo ? `\n${item.timeAgo}` : ''}`}
               hasChevron={false}
-              style={item.isRead ? {} : { backgroundColor: theme.green100 }}
+              style={item.isRead ? undefined : styles.itemUnread}
               onClick={() => {
                 if (item.id) {
                   markNotifRead(item.id, {
@@ -90,31 +87,24 @@ export default function NotificationsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    card: {
-      borderRadius: 16,
-      padding: 20,
-      marginBottom: 16,
-      display: 'flex',
-      flexDirection: 'row',
+    pageStyle: {
+      padding: 16,
+      paddingBottom: 150,
     },
-    cardTitle: {
+    listWrapper: {
+      rowGap: 8,
+      paddingVertical: 10,
+      marginBottom: 30,
+    },
+    markAllWrapper: {
+      alignItems: 'flex-end',
+    },
+    emptyMessage: {
+      color: theme.secondary,
       fontSize: 16,
-      fontWeight: '800',
-      color: theme.dark900,
-      marginBottom: 8,
+      marginTop: 34,
     },
-    cardDescription: {
-      fontSize: 14,
-      color: theme.dark700,
-      lineHeight: 20,
-    },
-    image: {
-      width: 120,
-      height: '100%',
-    },
-    ...HEADING_STYLES(theme),
-    title: {
-      ...HEADING_STYLES(theme).title,
-      textAlign: 'left',
+    itemUnread: {
+      backgroundColor: theme.green100,
     },
   });

@@ -25,7 +25,7 @@ export function ChipsList({ options, selectedValues, onChange }: Props) {
   };
 
   return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    <View style={styles.row}>
       {options.map((option) => {
         return (
           <ChipToggle
@@ -41,13 +41,11 @@ export function ChipsList({ options, selectedValues, onChange }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (_theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      paddingVertical: 10,
-      paddingHorizontal: 14,
-      borderRadius: 999,
-      backgroundColor: '#F1F1F1',
+    row: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
     },
-    label: { fontWeight: '600' },
   });

@@ -214,18 +214,18 @@ export default function GymCrushScreen() {
       subheader={
         'Conecta con tu crush fitness. Coincidan, queden y vean si hay química.'
       }
-      style={{ flex: 1, paddingBottom: 0 }}
+      style={styles.pageContainer}
     >
-      <SafeAreaView style={{ flex: 1, rowGap: 20, marginTop: 10 }}>
+      <SafeAreaView style={styles.safeArea}>
         <Tabs
           options={MATCH_SCREEN_TABS}
           value={selectedTab}
           onSelect={setSelectedTab}
         />
 
-        <View style={{}}>
+        <View style={styles.contentWrapper}>
           {selectedTab === 'discover' ? (
-            <View style={[styles.center, { paddingBottom: 140 }]}>
+            <View style={styles.centerWithPadding}>
               {current ? (
                 <GestureDetector gesture={pan}>
                   <Animated.View style={[cardStyle]}>
@@ -233,16 +233,7 @@ export default function GymCrushScreen() {
                   </Animated.View>
                 </GestureDetector>
               ) : (
-                <View
-                  style={[
-                    styles.empty,
-                    {
-                      width: CARD_W,
-                      height: CARD_H,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                >
+                <View style={[styles.empty, styles.emptyCard]}>
                   <AppText style={styles.emptyText}>
                     No hay más perfiles por ahora ✨
                   </AppText>
@@ -253,10 +244,7 @@ export default function GymCrushScreen() {
             <FlatList
               data={mutuals}
               keyExtractor={(item) => String(item.userId)}
-              contentContainerStyle={{
-                gap: 12,
-                paddingBottom: 24,
-              }}
+              contentContainerStyle={styles.listContent}
               renderItem={({ item }) => (
                 <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
                   <MatchContactCard
@@ -269,13 +257,7 @@ export default function GymCrushScreen() {
                 </Animated.View>
               )}
               ListEmptyComponent={
-                <View
-                  style={{
-                    paddingHorizontal: 24,
-                    paddingVertical: 50,
-                    alignItems: 'center',
-                  }}
-                >
+                <View style={styles.listEmptyWrapper}>
                   <AppText style={styles.emptyText}>
                     Nada por aquí… Ve a “Descubre” y desliza ➡️. Si hacen match
                     (like mutuo), te llega notificación.
@@ -317,12 +299,32 @@ export default function GymCrushScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageContainer: { flex: 1, paddingBottom: 0 },
+    safeArea: { flex: 1, rowGap: 20, marginTop: 10 },
+    contentWrapper: { flex: 1 },
     center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+    centerWithPadding: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingBottom: 140,
+    },
     empty: {
       borderWidth: 1,
       borderRadius: 24,
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    emptyCard: {
+      width: CARD_W,
+      height: CARD_H,
+      borderColor: theme.border,
+    },
+    listContent: { gap: 12, paddingBottom: 24 },
+    listEmptyWrapper: {
+      paddingHorizontal: 24,
+      paddingVertical: 50,
+      alignItems: 'center',
     },
     emptyText: {
       color: theme.textSecondary,

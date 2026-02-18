@@ -18,7 +18,7 @@ import {
 import { Stack, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
@@ -44,13 +44,17 @@ function RoutedApp() {
     HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.flex1}>
       <Stack screenOptions={{ headerShown: false }} />
       <Toast config={toastConfig} />
       {!shouldHideNav && <NavBar />}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex1: { flex: 1 },
+});
 
 const RoutedAppWithPush = withPushNotifications(RoutedApp);
 
@@ -81,7 +85,7 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.flex1}>
       <ThemeProvider>
         <ReactQueryProvider>
           <RoutedAppWithPush />

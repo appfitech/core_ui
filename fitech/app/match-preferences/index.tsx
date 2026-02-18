@@ -196,17 +196,17 @@ export default function MatchPreferencesScreen() {
     <PageContainer
       header="Preferencias de Match"
       subheader="Configura cómo quieres aparecer en nuestros sistemas de conexión"
-      style={{ padding: 16, paddingBottom: 150, rowGap: 20 }}
+      style={styles.pageStyle}
     >
       {/* GymBro card */}
-      <Card style={{ backgroundColor: theme.dark200, rowGap: 10 }}>
+      <Card style={styles.cardDark}>
         <SwitchRow
           label="GYMBRO"
           value={!!matchPreferences?.showInGymBro}
           onChange={onToggleGymBro}
-          labelStyle={[styles.title, { textAlign: 'left', fontWeight: '700' }]}
+          labelStyle={styles.titleLeft}
         />
-        <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+        <AppText style={styles.subtitleLeft}>
           Encuentra compañeros de entrenamiento que compartan tus objetivos y
           horarios
         </AppText>
@@ -273,7 +273,7 @@ export default function MatchPreferencesScreen() {
               onPress={() => setLocModalOpen('GYMBRO')}
               style={styles.locationPicker}
             >
-              <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
+              <AppText style={styles.addLocationText}>Agregar ubicación</AppText>
             </Pressable>
             <ChipsList
               items={(matchPreferences?.gymBroLocations || []) as LocationDto[]}
@@ -326,7 +326,7 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Desde',
               )}
-              <AppText style={{ marginHorizontal: 8 }}>—</AppText>
+              <AppText style={styles.ageSeparator}>—</AppText>
               {ageInput(
                 matchPreferences?.gymBroAgeRangeMax,
                 (n) =>
@@ -352,14 +352,14 @@ export default function MatchPreferencesScreen() {
       </Card>
 
       {/* GymCrush card */}
-      <Card style={{ backgroundColor: theme.dark200, rowGap: 10 }}>
+      <Card style={styles.cardDark}>
         <SwitchRow
           label="GYMCRUSH"
           value={!!matchPreferences?.showInGymCrush}
           onChange={onToggleGymCrush}
-          labelStyle={[styles.title, { textAlign: 'left', fontWeight: '700' }]}
+          labelStyle={styles.titleLeft}
         />
-        <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+        <AppText style={styles.subtitleLeft}>
           Conecta con personas que te interesen para algo más que entrenar
         </AppText>
 
@@ -397,7 +397,7 @@ export default function MatchPreferencesScreen() {
               onPress={() => setLocModalOpen('GYMCRUSH')}
               style={styles.locationPicker}
             >
-              <AppText style={{ opacity: 0.7 }}>Agregar ubicación</AppText>
+              <AppText style={styles.addLocationText}>Agregar ubicación</AppText>
             </Pressable>
             <ChipsList
               items={
@@ -453,7 +453,7 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Desde',
               )}
-              <AppText style={{ marginHorizontal: 8 }}>—</AppText>
+              <AppText style={styles.ageSeparator}>—</AppText>
               {ageInput(
                 matchPreferences?.gymCrushAgeRangeMax,
                 (n) =>
@@ -480,12 +480,12 @@ export default function MatchPreferencesScreen() {
 
       {/* Privacy – only if any is enabled */}
       {anyEnabled && (
-        <Card style={{ backgroundColor: theme.dark200, rowGap: 20 }}>
-          <View style={{ rowGap: 6 }}>
-            <AppText style={[styles.title, { textAlign: 'left' }]}>
+        <Card style={styles.privacyCard}>
+          <View style={styles.privacyInner}>
+            <AppText style={styles.titleLeft}>
               {'Configuración de Privacidad'}
             </AppText>
-            <AppText style={[styles.subtitle, { textAlign: 'left' }]}>
+            <AppText style={styles.subtitleLeft}>
               Controla qué información pueden ver otros usuarios
             </AppText>
           </View>
@@ -500,17 +500,17 @@ export default function MatchPreferencesScreen() {
       )}
 
       {/* Actions */}
-      <Row style={{ marginTop: 8, gap: 12 }}>
+      <Row style={styles.actionsRow}>
         <Button
           label="Guardar Preferencias"
           onPress={handleSave}
-          style={{ flex: 1 }}
+          style={styles.buttonFlex}
         />
         <Button
           label="Restablecer"
           onPress={handleReset}
           type="tertiary"
-          style={{ flex: 1 }}
+          style={styles.buttonFlex}
         />
       </Row>
 
@@ -519,7 +519,7 @@ export default function MatchPreferencesScreen() {
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
             <AppText style={styles.modalTitle}>Selecciona ubicaciones</AppText>
-            <ScrollView style={{ maxHeight: 320 }}>
+            <ScrollView style={styles.modalScroll}>
               {ALL_LOCATIONS.map((loc) => {
                 const selected = (
                   locModalOpen === 'GYMBRO'
@@ -563,13 +563,13 @@ export default function MatchPreferencesScreen() {
                     }}
                     style={[
                       styles.locationRow,
-                      selected && { backgroundColor: theme.backgroundInverted },
+                      selected && styles.locationRowSelected,
                     ]}
                   >
                     <AppText
                       style={[
                         styles.locationRowText,
-                        selected && { color: theme.dark100, fontWeight: '700' },
+                        selected && styles.locationRowTextSelected,
                       ]}
                     >
                       {formatLocationName(loc)}
@@ -579,12 +579,12 @@ export default function MatchPreferencesScreen() {
               })}
             </ScrollView>
 
-            <Row style={{ justifyContent: 'flex-end', marginTop: 12, gap: 10 }}>
+            <Row style={styles.modalFooterRow}>
               <Button
                 label="Cerrar"
                 onPress={() => setLocModalOpen(null)}
                 type={'tertiary'}
-                buttonStyle={{ paddingHorizontal: 20 }}
+                buttonStyle={styles.modalCloseButton}
               />
             </Row>
           </View>
@@ -604,19 +604,19 @@ function SectionTitle({ label, theme }: { label: string; theme: FullTheme }) {
 }
 
 function Row({ children, style }: { children: React.ReactNode; style?: any }) {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
   return (
-    <View style={[{ flexDirection: 'row', alignItems: 'center' }, style]}>
+    <View style={[styles.rowBase, style]}>
       {children}
     </View>
   );
 }
 
 function RowWrap({ children }: { children: React.ReactNode }) {
-  return (
-    <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-      {children}
-    </View>
-  );
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+  return <View style={styles.rowWrap}>{children}</View>;
 }
 
 function ChipToggle({
@@ -634,16 +634,10 @@ function ChipToggle({
   return (
     <Pressable
       onPress={onPress}
-      style={[
-        styles.chip,
-        active && { backgroundColor: theme.backgroundInverted },
-      ]}
+      style={[styles.chip, active && styles.chipActive]}
     >
       <AppText
-        style={[
-          styles.chipText,
-          active && { color: theme.dark100, fontWeight: '700' },
-        ]}
+        style={[styles.chipText, active && styles.chipTextActive]}
       >
         {label}
       </AppText>
@@ -690,9 +684,9 @@ function ChipsList({
           <Pressable
             key={loc.id}
             onPress={() => onRemove(loc.id!)}
-            style={[styles.tag, { backgroundColor: theme.backgroundInverted }]}
+            style={[styles.tag, styles.tagSelected]}
           >
-            <AppText style={{ color: theme.dark100, fontWeight: '700' }}>
+            <AppText style={styles.tagText}>
               {formatLocationName(loc)} ×
             </AppText>
           </Pressable>
@@ -705,31 +699,51 @@ function ChipsList({
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...HEADING_STYLES(theme),
-
-    card: {
-      marginTop: 16,
-      borderRadius: 12,
-      backgroundColor: theme.infoBackground,
+    pageStyle: {
       padding: 16,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#E6E6E6',
+      paddingBottom: 150,
+      rowGap: 20,
     },
-    cardTitle: { fontSize: 18, fontWeight: '800', marginBottom: 2 },
-    cardSubtitle: { opacity: 0.8 },
-
+    cardDark: {
+      backgroundColor: theme.dark200,
+      rowGap: 10,
+    },
+    titleLeft: {
+      ...HEADING_STYLES(theme).title,
+      textAlign: 'left',
+      fontWeight: '700',
+    },
+    subtitleLeft: {
+      ...HEADING_STYLES(theme).subtitle,
+      textAlign: 'left',
+    },
+    addLocationText: { opacity: 0.7 },
+    ageSeparator: { marginHorizontal: 8 },
+    privacyCard: {
+      backgroundColor: theme.dark200,
+      rowGap: 20,
+    },
+    privacyInner: { rowGap: 6 },
+    actionsRow: { marginTop: 8, gap: 12, flexDirection: 'row', alignItems: 'center' },
+    buttonFlex: { flex: 1 },
+    modalScroll: { maxHeight: 320 },
+    modalFooterRow: {
+      justifyContent: 'flex-end',
+      marginTop: 12,
+      gap: 10,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    modalCloseButton: { paddingHorizontal: 20 },
+    rowBase: { flexDirection: 'row', alignItems: 'center' },
+    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+    locationRowSelected: { backgroundColor: theme.backgroundInverted },
+    locationRowTextSelected: { color: theme.dark100, fontWeight: '700' },
     sectionTitle: {
       marginTop: 10,
       marginBottom: 8,
       fontWeight: '700',
     },
-
-    switchRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingVertical: 6,
-    },
-    switchLabel: { fontWeight: '600' },
 
     chip: {
       paddingVertical: 10,
@@ -737,7 +751,9 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
       backgroundColor: '#F1F1F1',
     },
+    chipActive: { backgroundColor: theme.backgroundInverted },
     chipText: { fontWeight: '600' },
+    chipTextActive: { color: theme.dark100, fontWeight: '700' },
 
     smallLabel: { marginTop: 12, marginBottom: 6, opacity: 0.8 },
 
@@ -767,17 +783,8 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 12,
       borderRadius: 999,
     },
-
-    button: {
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      borderRadius: 14,
-      alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
-    },
-    buttonText: { fontWeight: '800' },
-
+    tagSelected: { backgroundColor: theme.backgroundInverted },
+    tagText: { color: theme.dark100, fontWeight: '700' },
     modalBackdrop: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.25)',

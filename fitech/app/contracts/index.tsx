@@ -86,7 +86,7 @@ export default function ContractsScreen() {
   };
 
   return (
-    <PageContainer style={{ padding: 16 }}>
+    <PageContainer style={styles.pageStyle}>
       <AppText style={styles.title}>Mis Contratos</AppText>
       <AppText style={styles.subtitle}>
         Gestiona tus contratos de servicios de entrenamiento
@@ -114,7 +114,7 @@ export default function ContractsScreen() {
         ))}
       </View>
 
-      <View style={{ rowGap: 20, marginBottom: 100 }}>
+      <View style={styles.cardsList}>
         {filteredContracts?.map((contract) => (
           <View key={contract.id ?? contract?.contractId} style={styles.card}>
             <AppText style={styles.cardTitle}>{contract.serviceName}</AppText>
@@ -221,6 +221,8 @@ export default function ContractsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
+    pageStyle: { padding: 16 },
+    cardsList: { rowGap: 20, marginBottom: 100 },
     tabRow: {
       flexDirection: 'row',
       marginVertical: 20,

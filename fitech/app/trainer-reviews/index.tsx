@@ -43,50 +43,24 @@ export default function ContractsScreen() {
   };
 
   return (
-    <PageContainer style={{ padding: 16 }}>
+    <PageContainer style={styles.pageStyle}>
       <AppText style={styles.title}>Mis Calificaciones</AppText>
       <AppText style={styles.subtitle}>
         Revisa las calificaciones y comentarios de tus clientes
       </AppText>
 
-      <View style={{ rowGap: 10, marginBottom: 100, marginTop: 20 }}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: theme.successBackground,
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            justifyContent: 'space-between',
-            borderRadius: 20,
-          }}
-        >
-          <AppText style={{ fontWeight: 600, fontSize: 20 }}>
-            {'Total reseñas'}
-          </AppText>
-          <AppText
-            style={{ color: theme.successText, fontSize: 40, fontWeight: 900 }}
-          >
+      <View style={styles.statsSection}>
+        <View style={styles.statCardSuccess}>
+          <AppText style={styles.statCardLabel}>{'Total reseñas'}</AppText>
+          <AppText style={styles.statCardValueSuccess}>
             {stats?.totalReviews}
           </AppText>
         </View>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: theme.infoBackground,
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 16,
-            justifyContent: 'space-between',
-            borderRadius: 20,
-          }}
-        >
-          <AppText style={{ fontWeight: 600, fontSize: 20 }}>
+        <View style={styles.statCardInfo}>
+          <AppText style={styles.statCardLabel}>
             {'Calificación promedio'}
           </AppText>
-          <AppText
-            style={{ color: theme.infoText, fontSize: 40, fontWeight: 900 }}
-          >
+          <AppText style={styles.statCardValueInfo}>
             {stats?.averageRating}
           </AppText>
         </View>
@@ -120,28 +94,36 @@ export default function ContractsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    tabRow: {
+    pageStyle: { padding: 16 },
+    statsSection: { rowGap: 10, marginBottom: 100, marginTop: 20 },
+    statCardSuccess: {
+      flex: 1,
+      backgroundColor: theme.successBackground,
       flexDirection: 'row',
-      marginVertical: 20,
-      overflow: 'hidden',
-      columnGap: 16,
-    },
-    tabButton: {
-      paddingVertical: 12,
-      paddingHorizontal: 20,
       alignItems: 'center',
+      padding: 16,
+      justifyContent: 'space-between',
       borderRadius: 20,
     },
-    tabButtonActive: {
-      backgroundColor: theme.backgroundInverted,
+    statCardInfo: {
+      flex: 1,
+      backgroundColor: theme.infoBackground,
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      justifyContent: 'space-between',
+      borderRadius: 20,
     },
-    tabText: {
-      fontSize: 16,
-      color: theme.textPrimary,
-      fontWeight: '600',
+    statCardLabel: { fontWeight: '600', fontSize: 20 },
+    statCardValueSuccess: {
+      color: theme.successText,
+      fontSize: 40,
+      fontWeight: '900',
     },
-    tabTextActive: {
-      color: theme.dark100,
+    statCardValueInfo: {
+      color: theme.infoText,
+      fontSize: 40,
+      fontWeight: '900',
     },
     card: {
       backgroundColor: theme.dark100,
@@ -175,22 +157,8 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
     },
-    reviewButton: {
-      marginTop: 10,
-      backgroundColor: theme.infoText,
-      padding: 12,
-      borderRadius: 10,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     detailsButtonText: {
       color: theme.dark900,
-      fontWeight: '500',
-      fontSize: 15,
-    },
-    reviewButtonText: {
-      color: theme.infoBackground,
       fontWeight: '500',
       fontSize: 15,
     },

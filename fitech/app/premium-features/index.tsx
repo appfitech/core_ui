@@ -16,9 +16,9 @@ export default function PremiumFeaturesScreen() {
   const styles = getStyles(theme);
 
   return (
-    <PageContainer hasBackButton={false} style={{ paddingHorizontal: 16 }}>
-      <View style={{ flexGrow: 1, paddingBottom: 100 }}>
-        <View style={{ paddingVertical: 16, rowGap: 8 }}>
+    <PageContainer hasBackButton={false} style={styles.pageStyle}>
+      <View style={styles.content}>
+        <View style={styles.headerBlock}>
           <AppText style={styles.title}>
             {'Bienvenido a FITECH Premium'}
           </AppText>
@@ -31,10 +31,7 @@ export default function PremiumFeaturesScreen() {
 
         <View style={styles.bannerList}>
           <TouchableOpacity
-            style={[
-              styles.banner,
-              { backgroundColor: theme.successBackground },
-            ]}
+            style={[styles.banner, styles.bannerSuccess]}
           >
             <Image
               source={require('../../assets/images/vectors/gym_library.png')}
@@ -55,7 +52,7 @@ export default function PremiumFeaturesScreen() {
           {matchPreferences?.showInGymBro && (
             <TouchableOpacity
               onPress={() => router.push('/gymbro')}
-              style={[styles.banner, { backgroundColor: theme.infoBackground }]}
+              style={[styles.banner, styles.bannerInfo]}
             >
               <View style={styles.bannerContent}>
                 <AppText style={styles.bannerTitle}>{'GymBro'}</AppText>
@@ -75,10 +72,7 @@ export default function PremiumFeaturesScreen() {
 
           {matchPreferences?.showInGymCrush && (
             <TouchableOpacity
-              style={[
-                styles.banner,
-                { backgroundColor: theme.orangeBackground },
-              ]}
+              style={[styles.banner, styles.bannerOrange]}
               onPress={() => router.push('/gymcrush')}
             >
               <Image
@@ -105,6 +99,9 @@ export default function PremiumFeaturesScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...HEADING_STYLES(theme),
+    pageStyle: { paddingHorizontal: 16 },
+    content: { flexGrow: 1, paddingBottom: 100 },
+    headerBlock: { paddingVertical: 16, rowGap: 8 },
     bannerList: {
       rowGap: 20,
       marginTop: 20,
@@ -117,6 +114,9 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 8,
       alignItems: 'center',
     },
+    bannerSuccess: { backgroundColor: theme.successBackground },
+    bannerInfo: { backgroundColor: theme.infoBackground },
+    bannerOrange: { backgroundColor: theme.orangeBackground },
     bannerContent: {
       flex: 1,
       rowGap: 6,
