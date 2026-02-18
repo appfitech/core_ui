@@ -27,6 +27,7 @@ export const ROUTES = {
   testTools: '/test-tools',
   notifications: '/notifications',
   chats: '/chats',
+  appearance: '/appearance',
 } as const;
 
 type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

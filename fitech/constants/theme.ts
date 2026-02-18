@@ -77,6 +77,12 @@ const COLORS = {
     icon: BRAND_PRIMARY,
     primaryText: '#166534',
     primaryBg: '#E6FCE6',
+
+    fixedHeaderTitleColor: '#FFFFFF',
+    fixedHeaderSubheaderColor: 'rgba(255, 255, 255, 0.85)',
+    headerBackButtonBg: 'rgba(255, 255, 255, 0.35)',
+    headerBackButtonBorder: 'rgba(255, 255, 255, 0.5)',
+    headerBackButtonBorderWidth: 1,
   },
 
   dark: {
@@ -135,7 +141,7 @@ const COLORS = {
     backgroundInverted: '#FFFFFF',
     backgroundInput: '#1F2937',
     backgroundDropdown: '#374151',
-    backgroundHeader: '#0D1F2D',
+    backgroundHeader: '#1F2937',
     card: '#1F2937',
     textPrimary: '#F5F6F8',
     textSecondary: '#9CA3AF',
@@ -143,6 +149,12 @@ const COLORS = {
     icon: '#4ADE4A',
     primaryText: '#86EFAC',
     primaryBg: '#14532D',
+
+    fixedHeaderTitleColor: '#FFFFFF',
+    fixedHeaderSubheaderColor: 'rgba(255, 255, 255, 0.75)',
+    headerBackButtonBg: 'rgba(255, 255, 255, 0.2)',
+    headerBackButtonBorder: 'transparent',
+    headerBackButtonBorderWidth: 0,
   },
 };
 

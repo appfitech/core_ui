@@ -54,6 +54,7 @@ export function GreetingHeader() {
             placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
             readOnly
             onPress={() => router.push(ROUTES.trainers)}
+            containerStyle={styles.searchBarContainer}
           />
         </TouchableOpacity>
       </View>
@@ -68,7 +69,7 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 24,
       paddingHorizontal: 16,
       rowGap: 4,
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.backgroundHeader,
     },
     topRow: {
       flexDirection: 'row',
@@ -89,13 +90,13 @@ const getStyles = (theme: FullTheme) =>
     greeting: {
       ...HEADING_STYLES(theme).title,
       fontWeight: '700',
-      color: theme.dark100,
+      color: theme.fixedHeaderTitleColor,
       textAlign: 'left',
     },
     subtext: {
       ...HEADING_STYLES(theme).subtitle,
       textAlign: 'left',
-      color: theme.dark300,
+      color: theme.fixedHeaderSubheaderColor,
       flexShrink: 1,
       paddingRight: 100,
     },
@@ -107,4 +108,5 @@ const getStyles = (theme: FullTheme) =>
     searchWrapper: {
       marginTop: 24,
     },
+    searchBarContainer: {},
   });

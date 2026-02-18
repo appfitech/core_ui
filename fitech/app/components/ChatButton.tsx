@@ -20,7 +20,11 @@ export function ChatButton() {
       style={styles.button}
       activeOpacity={0.7}
     >
-      <Ionicons name="chatbubble-outline" size={22} color={theme.dark100} />
+      <Ionicons
+        name="chatbubble-outline"
+        size={22}
+        color={theme.fixedHeaderTitleColor}
+      />
     </TouchableOpacity>
   );
 }

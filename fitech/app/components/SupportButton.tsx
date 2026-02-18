@@ -20,7 +20,11 @@ export function SupportButton() {
       style={styles.button}
       activeOpacity={0.7}
     >
-      <Ionicons name="help-circle-outline" size={22} color={theme.dark100} />
+      <Ionicons
+        name="help-circle-outline"
+        size={22}
+        color={theme.fixedHeaderTitleColor}
+      />
     </TouchableOpacity>
   );
 }

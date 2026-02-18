@@ -67,4 +67,11 @@ export type FullTheme = {
   icon: string;
   primaryText: string;
   primaryBg: string;
-};
+
+  // Fixed header bar (text and controls on backgroundHeader)
+  fixedHeaderTitleColor: string;
+  fixedHeaderSubheaderColor: string;
+  headerBackButtonBg: string;
+  headerBackButtonBorder: string;
+  headerBackButtonBorderWidth: number;
+}

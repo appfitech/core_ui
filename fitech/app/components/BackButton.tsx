@@ -35,13 +35,14 @@ const getStyles = (theme: FullTheme, variant: 'default' | 'light') =>
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor:
-        variant === 'light'
-          ? 'rgba(255, 255, 255, 0.2)'
-          : theme.dark900,
+        variant === 'light' ? theme.headerBackButtonBg : theme.dark900,
       padding: 10,
       borderRadius: 100,
+      borderWidth: variant === 'light' ? theme.headerBackButtonBorderWidth : 0,
+      borderColor:
+        variant === 'light' ? theme.headerBackButtonBorder : 'transparent',
       shadowColor: '#000',
-      shadowOpacity: variant === 'light' ? 0.15 : 0.05,
+      shadowOpacity: variant === 'light' ? 0.2 : 0.05,
       shadowOffset: { width: 0, height: 2 },
       shadowRadius: 6,
       elevation: 3,

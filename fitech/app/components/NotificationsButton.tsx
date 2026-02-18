@@ -28,7 +28,11 @@ export function NotificationsButton() {
       style={styles.button}
       activeOpacity={0.7}
     >
-      <Ionicons name="notifications-outline" size={22} color={theme.dark100} />
+      <Ionicons
+        name="notifications-outline"
+        size={22}
+        color={theme.fixedHeaderTitleColor}
+      />
       {!!data?.unreadCount && (
         <View style={styles.badge}>
           <AppText style={styles.badgeText}>{data?.unreadCount}</AppText>

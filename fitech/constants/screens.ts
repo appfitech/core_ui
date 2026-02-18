@@ -15,6 +15,11 @@ export const PROFILE_LIST_ITEMS: {
     label: 'Información Personal',
   },
   {
+    icon: 'contrast-outline',
+    route: ROUTES.appearance,
+    label: 'Apariencia',
+  },
+  {
     icon: 'images-outline',
     route: ROUTES.imageGallery,
     label: 'Galería de fotos',

@@ -51,10 +51,13 @@ export default function PageContainer({
   const styles = getStyles(theme);
 
   const hasFixedHeader = hasBackButton || title;
+  const hasFixedSubheader = !!(title && subheader);
   const fixedHeaderHeight = hasFixedHeader
-    ? title && !hasBackButton
-      ? 64
-      : 56
+    ? hasFixedSubheader
+      ? 80
+      : title && !hasBackButton
+        ? 64
+        : 56
     : 0;
 
   return (
@@ -76,11 +79,16 @@ export default function PageContainer({
             ]}
           >
             {hasBackButton && <BackButton variant="light" />}
-            {title ? (
-              <AppText style={styles.fixedTitle} numberOfLines={1}>
-                {title}
-              </AppText>
-            ) : null}
+            <View style={styles.fixedHeaderTextWrap}>
+              {title ? (
+                <AppText style={styles.fixedTitle} numberOfLines={1}>
+                  {title}
+                </AppText>
+              ) : null}
+              {hasFixedSubheader ? (
+                <AppText style={styles.fixedSubheader}>{subheader}</AppText>
+              ) : null}
+            </View>
           </View>
         </View>
       )}
@@ -109,7 +117,7 @@ export default function PageContainer({
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
-            {(subheader || includeLogo || (header && !title)) && (
+            {((subheader && !title) || includeLogo || (header && !title)) && (
               <View style={styles.headerWrapper}>
                 {includeLogo && (
                   <Animated.Image
@@ -173,10 +181,19 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 12,
       justifyContent: 'center',
     },
-    fixedTitle: {
+    fixedHeaderTextWrap: {
       flex: 1,
+      minWidth: 0,
+    },
+    fixedTitle: {
       ...HEADING_STYLES(theme).screenTitle,
-      color: theme.isDark ? theme.backgroundInverted : theme.background,
+      color: theme.fixedHeaderTitleColor,
+    },
+    fixedSubheader: {
+      marginTop: 2,
+      fontSize: 13,
+      fontWeight: '500',
+      color: theme.fixedHeaderSubheaderColor,
     },
     scrollContent: {
       paddingTop: 110,
