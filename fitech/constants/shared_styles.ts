@@ -2,6 +2,25 @@ import { TextStyle, ViewStyle } from 'react-native';
 
 import { FullTheme } from '@/types/theme';
 
+/**
+ * Typography & form styles aligned with platform guidelines.
+ *
+ * ## iOS Human Interface Guidelines (Typography)
+ * - Large Title: 34pt | Title 1: 28pt | Title 2: 22pt | Title 3: 20pt
+ * - Headline: 17pt Semibold | Body: 17pt Regular | Callout: 16pt | Subheadline: 15pt
+ * - Footnote: 13pt | Caption 1: 12pt
+ * - Weights: Regular (400), Medium (500), Semibold (600), Bold (700)
+ * - Minimum tap target: 44×44pt. Inputs ≥16pt to avoid zoom on focus.
+ *
+ * ## Material Design 3 (Type scale – mobile)
+ * - Headline: 32/28/24sp | Title: 22/16/14sp | Body: 16/14/12sp | Label: 14/12/11sp
+ * - Body 16sp as baseline; lighter weight/color for secondary hierarchy
+ * - Minimum touch target: 48dp
+ *
+ * Our scale maps to both: header≈Title 1, title≈Title 3, body=17/16, caption=13/12.
+ */
+const TAP_TARGET_MIN = 44;
+
 type SharedStyles = {
   label: TextStyle;
   inputWrapper: ViewStyle;
@@ -13,40 +32,46 @@ type SharedStyles = {
 
 export const SHARED_STYLES = (theme: FullTheme): SharedStyles => ({
   label: {
-    fontSize: 14,
-    color: theme.green700,
+    fontSize: 15,
+    color: theme.textPrimary,
     fontWeight: '600',
-    marginBottom: 6,
+    marginBottom: 8,
     marginTop: 12,
   },
   inputWrapper: {
-    marginBottom: 4,
+    marginBottom: 8,
   },
+  /** 16pt avoids iOS zoom on focus; matches MD input/body size */
   input: {
     backgroundColor: theme.backgroundInput,
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    borderRadius: 12,
+    paddingHorizontal: 16,
     paddingVertical: 14,
-    fontSize: 15,
-    color: theme.dark900,
+    fontSize: 16,
+    color: theme.textPrimary,
+    minHeight: TAP_TARGET_MIN,
   },
   dropdown: {
     backgroundColor: theme.backgroundInput,
     borderColor: 'transparent',
-    borderRadius: 10,
-    color: theme.dark900,
-    fontSize: 15,
+    borderRadius: 12,
+    color: theme.textPrimary,
+    fontSize: 16,
+    minHeight: TAP_TARGET_MIN,
   },
   submitButton: {
     backgroundColor: theme.primary,
-    paddingVertical: 18,
-    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: TAP_TARGET_MIN,
   },
   submitText: {
-    color: theme.textPrimary,
+    color: theme.backgroundInverted,
     fontWeight: '700',
-    fontSize: 16,
+    fontSize: 17,
   },
 });
 
@@ -55,35 +80,54 @@ type HeadingStyleKeys =
   | 'subheader'
   | 'title'
   | 'subtitle'
-  | 'content';
+  | 'content'
+  | 'caption';
 type HeadingStyles = Record<HeadingStyleKeys, TextStyle>;
 
 export const HEADING_STYLES = (theme: FullTheme): HeadingStyles => ({
+  /** iOS Title 1 (28pt) / MD Headline medium — hero, welcome, login */
   header: {
     color: theme.textPrimary,
-    fontSize: 30,
+    fontSize: 28,
+    fontWeight: '700',
+    letterSpacing: -0.5,
+    lineHeight: 34,
     textAlign: 'center',
-    fontWeight: '600',
   },
+  /** iOS Body (17pt) / MD Body large — supporting line under header */
   subheader: {
-    fontSize: 20,
     color: theme.textSecondary,
+    fontSize: 17,
+    fontWeight: '500',
+    lineHeight: 24,
     textAlign: 'center',
   },
+  /** iOS Title 3 (20pt) / MD Title large — section or card title */
   title: {
+    color: theme.textPrimary,
     fontSize: 20,
     fontWeight: '700',
-    color: theme.textPrimary,
-    textAlign: 'center',
+    lineHeight: 26,
   },
+  /** iOS Callout (16pt) / MD Title medium — secondary heading */
   subtitle: {
-    fontSize: 14,
     color: theme.textSecondary,
-    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+    lineHeight: 22,
   },
+  /** iOS Body (17pt) / MD Body large — primary body text */
   content: {
-    fontSize: 13,
     color: theme.textPrimary,
-    textAlign: 'left',
+    fontSize: 17,
+    fontWeight: '400',
+    lineHeight: 24,
+  },
+  /** iOS Footnote (13pt) / MD Label medium — labels, hints, metadata */
+  caption: {
+    color: theme.textSecondary,
+    fontSize: 13,
+    fontWeight: '500',
+    lineHeight: 18,
   },
 });
