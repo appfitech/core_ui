@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -52,7 +52,7 @@ export default function MacrosCalculatorScreen() {
           shouldHideEndIcon={true}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <Feather name="chevrons-right" size={22} color={theme.dark100} />
+          <Ionicons name="chevrons-forward" size={22} color={theme.dark100} />
         </TouchableOpacity>
       </View>
 
@@ -82,7 +82,7 @@ export default function MacrosCalculatorScreen() {
           >
             {'Calcular'}
           </AppText>
-          <Feather name="play" size={20} color={theme.background} />
+          <Ionicons name="play" size={20} color={theme.background} />
         </TouchableOpacity>
       </View>
 

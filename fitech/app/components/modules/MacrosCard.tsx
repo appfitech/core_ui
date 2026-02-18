@@ -15,7 +15,10 @@ export function MacrosCard() {
   const styles = getStyles(theme);
 
   return (
-    <TouchableOpacity onPress={() => router.push(ROUTES.macrosCalculator)}>
+    <TouchableOpacity
+      onPress={() => router.push(ROUTES.macrosCalculator)}
+      activeOpacity={0.85}
+    >
       <Card style={styles.card}>
         <View style={{ width: 70 }}>
           <Image
@@ -38,21 +41,33 @@ export function MacrosCard() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     card: {
-      flex: 1,
       flexDirection: 'row',
-      columnGap: 15,
+      columnGap: 16,
       alignItems: 'center',
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.background,
+      borderLeftWidth: 5,
+      borderLeftColor: theme.primary,
+      borderRadius: 16,
+      padding: 18,
+      shadowColor: theme.backgroundInverted,
+      shadowOpacity: 0.08,
+      shadowOffset: { width: 0, height: 4 },
+      shadowRadius: 12,
+      elevation: 4,
     },
     image: {
       width: '100%',
       height: 100,
     },
     title: {
-      color: theme.dark100,
+      color: theme.textPrimary,
       fontSize: 19,
       fontWeight: '800',
     },
-    subtitle: { color: theme.dark300, fontSize: 16.5 },
-    textContainer: { flex: 1, rowGap: 8 },
+    subtitle: {
+      color: theme.textSecondary,
+      fontSize: 15,
+      lineHeight: 22,
+    },
+    textContainer: { flex: 1, rowGap: 6 },
   });

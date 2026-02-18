@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, TextInputProps, View } from 'react-native';
 
@@ -25,7 +25,7 @@ export function SearchBar({
 
   return (
     <View style={[styles.searchBar, containerStyle]}>
-      <Feather name="search" size={20} color={theme.dark700} />
+      <Ionicons name="search-outline" size={20} color={theme.dark700} />
       <TextInput
         placeholder={placeholder}
         readOnly={readOnly}

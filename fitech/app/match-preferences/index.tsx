@@ -273,7 +273,9 @@ export default function MatchPreferencesScreen() {
               onPress={() => setLocModalOpen('GYMBRO')}
               style={styles.locationPicker}
             >
-              <AppText style={styles.addLocationText}>Agregar ubicación</AppText>
+              <AppText style={styles.addLocationText}>
+                Agregar ubicación
+              </AppText>
             </Pressable>
             <ChipsList
               items={(matchPreferences?.gymBroLocations || []) as LocationDto[]}
@@ -397,7 +399,9 @@ export default function MatchPreferencesScreen() {
               onPress={() => setLocModalOpen('GYMCRUSH')}
               style={styles.locationPicker}
             >
-              <AppText style={styles.addLocationText}>Agregar ubicación</AppText>
+              <AppText style={styles.addLocationText}>
+                Agregar ubicación
+              </AppText>
             </Pressable>
             <ChipsList
               items={
@@ -606,11 +610,7 @@ function SectionTitle({ label, theme }: { label: string; theme: FullTheme }) {
 function Row({ children, style }: { children: React.ReactNode; style?: any }) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  return (
-    <View style={[styles.rowBase, style]}>
-      {children}
-    </View>
-  );
+  return <View style={[styles.rowBase, style]}>{children}</View>;
 }
 
 function RowWrap({ children }: { children: React.ReactNode }) {
@@ -636,9 +636,7 @@ function ChipToggle({
       onPress={onPress}
       style={[styles.chip, active && styles.chipActive]}
     >
-      <AppText
-        style={[styles.chipText, active && styles.chipTextActive]}
-      >
+      <AppText style={[styles.chipText, active && styles.chipTextActive]}>
         {label}
       </AppText>
     </Pressable>
@@ -724,7 +722,12 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 20,
     },
     privacyInner: { rowGap: 6 },
-    actionsRow: { marginTop: 8, gap: 12, flexDirection: 'row', alignItems: 'center' },
+    actionsRow: {
+      marginTop: 8,
+      gap: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
     buttonFlex: { flex: 1 },
     modalScroll: { maxHeight: 320 },
     modalFooterRow: {

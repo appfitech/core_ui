@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import { StyleSheet, View } from 'react-native';
@@ -53,7 +53,7 @@ export default function DietDetailScreen() {
         <View style={[styles.card, styles.cardWithBg]}>
           <View style={styles.container}>
             <AppText style={styles.label}>
-              <Feather name={'calendar'} size={16} />
+              <Ionicons name="calendar-outline" size={16} />
               &nbsp;{'Fecha creación'}
             </AppText>
             <AppText style={styles.content}>

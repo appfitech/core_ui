@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -20,7 +20,7 @@ export function Tag({ backgroundColor, icon = '', label, textColor }: Props) {
 
   return (
     <View style={[styles.tagContainer, { backgroundColor }]}>
-      {icon && <Feather name={icon} size={16} color={textColor} />}
+      {icon && <Ionicons name={icon as any} size={16} color={textColor} />}
       <AppText style={[styles.text, { color: textColor }]}>{label}</AppText>
     </View>
   );

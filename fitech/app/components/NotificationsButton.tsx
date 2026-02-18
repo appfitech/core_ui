@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -6,7 +6,6 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
-import { transparentize } from '@/utils/style';
 
 import { useGetUserNotifications } from '../api/queries/use-get-notifications';
 import { AppText } from './AppText';
@@ -24,8 +23,12 @@ export function NotificationsButton() {
   );
 
   return (
-    <TouchableOpacity onPress={handleButtonClick} style={styles.button}>
-      <Feather name="bell" size={24} color={theme.dark100} />
+    <TouchableOpacity
+      onPress={handleButtonClick}
+      style={styles.button}
+      activeOpacity={0.7}
+    >
+      <Ionicons name="notifications-outline" size={22} color={theme.dark100} />
       {!!data?.unreadCount && (
         <View style={styles.badge}>
           <AppText style={styles.badgeText}>{data?.unreadCount}</AppText>
@@ -38,27 +41,31 @@ export function NotificationsButton() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     button: {
-      backgroundColor: transparentize(theme.dark100, 0.2),
-      borderRadius: 999,
-      padding: 4,
-      position: 'relative',
-      width: 35,
-      height: 35,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
+      position: 'relative',
+      backgroundColor: 'rgba(255,255,255,0.12)',
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.2)',
     },
     badge: {
       position: 'absolute',
-      right: -5,
-      top: -5,
+      right: -2,
+      top: -2,
       backgroundColor: theme.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      width: 20,
-      height: 20,
+      minWidth: 18,
+      height: 18,
+      paddingHorizontal: 5,
     },
     badgeText: {
-      fontWeight: '500',
+      fontWeight: '700',
+      fontSize: 11,
+      color: theme.backgroundInverted,
     },
   });

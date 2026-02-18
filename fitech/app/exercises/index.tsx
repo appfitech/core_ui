@@ -230,11 +230,7 @@ export default function ExercisesScreen() {
                   >
                     {date.day}
                   </AppText>
-                  {count > 0 && (
-                    <View style={styles.dotsRow}>
-                      {dots}
-                    </View>
-                  )}
+                  {count > 0 && <View style={styles.dotsRow}>{dots}</View>}
                 </View>
               </TouchableOpacity>
             );

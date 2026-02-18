@@ -1,4 +1,4 @@
-import { Entypo, Feather, Ionicons } from '@expo/vector-icons';
+import { Entypo, Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -235,7 +235,7 @@ export default function TrainerClientsScreen() {
           shouldHideEndIcon={true}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <Feather name="chevrons-right" size={22} color={theme.dark100} />
+          <Ionicons name="chevrons-forward" size={22} color={theme.dark100} />
         </TouchableOpacity>
       </View>
 

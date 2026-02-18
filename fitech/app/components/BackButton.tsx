@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
@@ -13,7 +13,7 @@ export function BackButton() {
 
   return (
     <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-      <Feather name="arrow-left" size={20} color={theme.background} />
+      <Ionicons name="arrow-back" size={22} color={theme.background} />
     </TouchableOpacity>
   );
 }

@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -108,8 +108,8 @@ export default function LoginScreen() {
           />
 
           <View style={styles.inputWrapper}>
-            <Feather
-              name="at-sign"
+            <Ionicons
+              name="at"
               size={20}
               color={theme.dark800}
               style={styles.iconLeft}
@@ -124,8 +124,8 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.inputWrapper}>
-            <Feather
-              name="lock"
+            <Ionicons
+              name="lock-closed-outline"
               size={20}
               color={theme.dark800}
               style={styles.iconLeft}
@@ -138,8 +138,8 @@ export default function LoginScreen() {
               onChangeText={setPassword}
             />
             <TouchableOpacity onPress={handleToggleDisplayPass}>
-              <Feather
-                name={!displayPass ? 'eye' : 'eye-off'}
+              <Ionicons
+                name={!displayPass ? 'eye-outline' : 'eye-off-outline'}
                 size={20}
                 color={theme.dark800}
               />

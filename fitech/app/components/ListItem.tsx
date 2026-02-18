@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import {
@@ -55,7 +55,7 @@ export function ListItem({
     <TouchableOpacity style={[styles.listItem, style]} onPress={handleClick}>
       {!!icon && (
         <View style={styles.iconWrapper}>
-          <Feather name={icon as any} size={23} color={theme.green800} />
+          <Ionicons name={icon as any} size={23} color={theme.green800} />
         </View>
       )}
       <View style={[{ flex: 1 }, description && { paddingHorizontal: 16 }]}>
@@ -67,7 +67,7 @@ export function ListItem({
         )}
       </View>
       {hasChevron && (
-        <Feather name="chevron-right" size={20} color={theme.green700} />
+        <Ionicons name="chevron-forward" size={20} color={theme.green700} />
       )}
     </TouchableOpacity>
   );

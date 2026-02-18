@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -47,7 +47,7 @@ export default function MacrosCalculatorCalculateScreen() {
         {!selectedItems.length && (
           <View style={styles.banner}>
             <AppText style={styles.bannerLabel}>
-              <Feather name="alert-circle" size={20} />
+              <Ionicons name="alert-circle-outline" size={20} />
               &nbsp;
               {
                 'Todavía no elegiste ningún alimento. Agrega uno para calcular tus macros.'
@@ -92,7 +92,7 @@ export default function MacrosCalculatorCalculateScreen() {
             >
               {'Mostrar resultados'}
             </AppText>
-            <Feather name="play" size={20} color={theme.background} />
+            <Ionicons name="play" size={20} color={theme.background} />
           </TouchableOpacity>
         </View>
       )}

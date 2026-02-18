@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -66,7 +66,7 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
           flexGrow: 0,
         }}
       >
-        <Feather name="trash-2" size={24} color={theme.errorText} />
+        <Ionicons name="trash-outline" size={24} color={theme.errorText} />
       </TouchableOpacity>
     </View>
   );

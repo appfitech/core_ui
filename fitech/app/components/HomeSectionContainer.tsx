@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
@@ -23,7 +23,11 @@ export function HomeSectionContainer({ children, title, onClick }: Props) {
         <AppText style={styles.sectionTitle}>{title}</AppText>
         <TouchableOpacity onPress={onClick} style={styles.sectionAction}>
           <AppText style={styles.sectionActionText}>{'Ver todo'}</AppText>
-          <Feather color={theme.successText} size={16} name="chevrons-right" />
+          <Ionicons
+            name="chevrons-forward"
+            size={16}
+            color={theme.successText}
+          />
         </TouchableOpacity>
       </View>
       {children}

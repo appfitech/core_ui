@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
@@ -22,8 +22,8 @@ export function ErrorBanner({ errorMessage = '', onClear }: Props) {
 
   return (
     <Animated.View entering={FadeInUp} style={styles.errorBanner}>
-      <Feather
-        name="alert-triangle"
+      <Ionicons
+        name="warning-outline"
         size={18}
         color={styles.errorText.color as string}
       />
@@ -34,7 +34,11 @@ export function ErrorBanner({ errorMessage = '', onClear }: Props) {
         onPress={onClear}
         hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
       >
-        <Feather name="x" size={18} color={styles.errorText.color as string} />
+        <Ionicons
+          name="close"
+          size={18}
+          color={styles.errorText.color as string}
+        />
       </TouchableOpacity>
     </Animated.View>
   );

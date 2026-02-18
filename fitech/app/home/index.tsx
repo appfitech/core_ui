@@ -44,7 +44,11 @@ export default function HomeScreen() {
         style={{ padding: 0, paddingBottom: 0 }}
       >
         <View style={styles.contentWrapper}>
-          {!isTrainer && <MacrosCard />}
+          {!isTrainer && (
+            <View style={styles.macrosCardWrap}>
+              <MacrosCard />
+            </View>
+          )}
 
           {isTrainer && (
             <>
@@ -54,7 +58,7 @@ export default function HomeScreen() {
                 resizeMode="cover"
               />
               <AppText style={styles.sectionTitle}>Mis Pagos</AppText>
-              <View style={{ gap: 12, marginVertical: 6 }}>
+              <View style={styles.summaryCardsRow}>
                 <SummaryCard
                   icon={
                     <Ionicons name="checkmark-done" size={18} color="#FFF" />
@@ -91,7 +95,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ columnGap: 8 }}
+              contentContainerStyle={styles.reviewsScrollContent}
             >
               {reviews?.content?.slice(0, 4)?.map((review) => {
                 const emojiIndex = (review?.rating ?? 3) - 1;
@@ -100,15 +104,7 @@ export default function HomeScreen() {
                   <Animated.View
                     key={review?.id}
                     entering={FadeInUp.delay(100).duration(500)}
-                    style={[
-                      styles.card,
-                      {
-                        backgroundColor: theme.dark200,
-                        maxWidth: 200,
-                        alignSelf: 'flex-start',
-                        padding: 10,
-                      },
-                    ]}
+                    style={[styles.card, styles.reviewCard]}
                   >
                     <View style={{ rowGap: 6 }}>
                       {/* Name */}
@@ -179,26 +175,41 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.backgroundInverted,
     },
     contentWrapper: {
-      backgroundColor: theme.dark100,
+      backgroundColor: theme.background,
+      borderTopLeftRadius: 24,
+      borderTopRightRadius: 24,
       padding: 16,
-      rowGap: 20,
+      paddingTop: 20,
+      rowGap: 24,
       paddingBottom: 180,
+    },
+    macrosCardWrap: {
+      marginTop: -8,
     },
     sectionTitle: {
       color: theme.textPrimary,
       fontWeight: '700',
       fontSize: 16,
     },
+    summaryCardsRow: {
+      gap: 12,
+      marginVertical: 6,
+    },
     ...SHARED_STYLES(theme),
     card: {
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.background,
       borderRadius: 16,
       padding: 20,
-      shadowColor: theme.backgroundInverted,
-      shadowOpacity: 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 8,
-      elevation: 4,
+      borderWidth: 1,
+      borderColor: theme.border,
       rowGap: 8,
+    },
+    reviewCard: {
+      maxWidth: 200,
+      alignSelf: 'flex-start',
+      padding: 12,
+    },
+    reviewsScrollContent: {
+      columnGap: 12,
     },
   });

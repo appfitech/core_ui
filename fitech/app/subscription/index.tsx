@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import moment from 'moment';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -78,24 +78,24 @@ export default function SubscriptionScreen() {
           <SectionItem
             label={'Fecha de inicio'}
             value={subscription?.startDate}
-            icon={'calendar'}
+            icon="calendar-outline"
           />
           <SectionItem
             label={'Fecha de finalización'}
             value={subscription?.endDate}
-            icon={'trending-down'}
+            icon="trending-down"
           />
           <SectionItem
             label={'Tipo de Membresía'}
             value={subscription?.membershipType}
-            icon={'book-open'}
+            icon="book-outline"
           />
 
           {subscription?.trainerName && (
             <SectionItem
               label={'Entrenador'}
               value={subscription?.trainerName}
-              icon={'user'}
+              icon="person-outline"
             />
           )}
         </Animated.View>
@@ -171,7 +171,7 @@ const SectionItem = ({ label, sublabel, value, icon }) => {
     <View style={styles.item}>
       {icon && (
         <View style={styles.iconWrapper}>
-          <Feather name={icon} size={16} color={theme.dark400} />
+          <Ionicons name={icon as any} size={16} color={theme.dark400} />
         </View>
       )}
       <View

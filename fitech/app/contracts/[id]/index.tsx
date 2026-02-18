@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -56,7 +56,7 @@ export default function ContractDetailScreen() {
           { textAlign: 'left', marginTop: 16, marginRight: 50 },
         ]}
       >
-        <Feather name="info" size={22} />
+        <Ionicons name="information-circle-outline" size={22} />
         &nbsp;{'Detalles del Contrato'}
       </AppText>
       <View style={{ marginVertical: 10, rowGap: 12, padding: 20 }}>

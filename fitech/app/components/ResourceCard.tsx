@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -68,7 +68,7 @@ export function ResourceCard({ onClick, resource }: Props) {
           <AppText style={{ color: theme.dark600 }}>
             {'Ver detalle'}&nbsp;
           </AppText>
-          <Feather name="chevrons-right" size={20} color={theme.dark600} />
+          <Ionicons name="chevrons-forward" size={20} color={theme.dark600} />
         </View>
       </View>
     </TouchableOpacity>

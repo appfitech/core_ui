@@ -98,8 +98,10 @@ export function UserFavoriteTrainersSection() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     card: {
-      backgroundColor: theme.dark200,
+      backgroundColor: theme.background,
       flex: 1,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     avatar: {
       width: 50,

@@ -84,7 +84,7 @@ const getStyles = (theme: FullTheme) =>
     actionsRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      columnGap: 8,
+      columnGap: 10,
     },
     greeting: {
       ...HEADING_STYLES(theme).title,

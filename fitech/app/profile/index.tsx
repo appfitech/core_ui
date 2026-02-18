@@ -69,7 +69,7 @@ export default function ProfileScreen() {
           }}
         >
           <Tag
-            icon={'user'}
+            icon="person-outline"
             label={userType === 1 ? 'Trainer' : 'Usuario'}
             textColor={theme.successText}
             backgroundColor={theme.successBackground}
@@ -77,7 +77,7 @@ export default function ProfileScreen() {
           {user?.premium && !isTrainer && (
             <TouchableOpacity onPress={handleSubscriptionClick}>
               <Tag
-                icon={'dollar-sign'}
+                icon="cash-outline"
                 label={`Premium ${user?.premiumBy === 'CONTRACT' ? '(Con Contrato)' : '(Por Pago)'}`}
                 textColor={theme.warningText}
                 backgroundColor={theme.warningBackground}

@@ -1,4 +1,4 @@
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { Alert, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -158,14 +158,14 @@ export default function ImageGalleryScreen() {
 
               {profilePhotoId === item.id ? (
                 <View style={styles.avatarBadge}>
-                  <Feather name="check-circle" size={16} color="#fff" />
+                  <Ionicons name="checkmark-circle" size={16} color="#fff" />
                 </View>
               ) : (
                 <TouchableOpacity
                   style={styles.starBadge}
                   onPress={() => confirmSetAsProfile(item.id)}
                 >
-                  <Feather name="star" size={16} color="#fff" />
+                  <Ionicons name="star" size={16} color="#fff" />
                 </TouchableOpacity>
               )}
 
@@ -183,7 +183,7 @@ export default function ImageGalleryScreen() {
               onPress={pickImage}
               style={[styles.thumbnailWrapper, styles.uploadBtn]}
             >
-              <Feather name="plus" size={24} color="#0F4C81" />
+              <Ionicons name="add" size={24} color="#0F4C81" />
               <AppText style={styles.uploadText}>Agregar</AppText>
             </TouchableOpacity>
           )}

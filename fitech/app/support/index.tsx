@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -71,15 +71,15 @@ export default function SupportScreen() {
           {'Contacto directo'}
         </AppText>
         <View style={styles.contactRow}>
-          <Feather name="phone" size={20} color={theme.icon} />
+          <Ionicons name="call-outline" size={20} color={theme.icon} />
           <AppText style={styles.contactText}>+51 (01) 615-8900</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Feather name="mail" size={20} color={theme.icon} />
+          <Ionicons name="mail-outline" size={20} color={theme.icon} />
           <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Feather name="map-pin" size={20} color={theme.icon} />
+          <Ionicons name="location-outline" size={20} color={theme.icon} />
           <AppText style={styles.contactText}>
             Av. El Derby 254, Surco, Lima
           </AppText>

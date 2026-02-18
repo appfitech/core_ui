@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
@@ -62,10 +62,10 @@ export const Accordion = ({ title, children, themeColors }: AccordionProps) => {
         <Text style={[styles.title, { color: themeColors?.text }]}>
           {title}
         </Text>
-        <Feather
-          color={themeColors?.icon}
+        <Ionicons
+          name={expanded ? 'chevron-up' : 'chevron-down'}
           size={18}
-          name={expanded ? 'chevrons-up' : 'chevrons-down'}
+          color={themeColors?.icon}
         />
       </TouchableOpacity>
 

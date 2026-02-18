@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
@@ -16,14 +16,18 @@ import { AppText } from './AppText';
 SplashScreen.preventAutoHideAsync();
 
 const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
-  home: { icon: 'home', route: ROUTES.home, label: 'Home' },
-  workouts: { icon: 'activity', route: ROUTES.workouts, label: 'Actividad' },
+  home: { icon: 'home-outline', route: ROUTES.home, label: 'Home' },
+  workouts: {
+    icon: 'barbell-outline',
+    route: ROUTES.workouts,
+    label: 'Actividad',
+  },
   trainers: {
-    icon: 'users',
+    icon: 'people-outline',
     route: isTrainer ? ROUTES.trainerClients : ROUTES.trainers,
     label: isTrainer ? 'Clientes' : 'Trainers',
   },
-  profile: { icon: 'user', route: ROUTES.profile, label: 'Perfil' },
+  profile: { icon: 'person-outline', route: ROUTES.profile, label: 'Perfil' },
 });
 
 export function NavBar() {
@@ -67,9 +71,9 @@ export function NavBar() {
                 style={styles.navItem}
                 onPress={handleNavItemClick(route)}
               >
-                <Feather
-                  name={icon}
-                  size={28}
+                <Ionicons
+                  name={icon as any}
+                  size={26}
                   color={isCurrentRoute ? theme.primary : theme.green900}
                 />
                 <AppText

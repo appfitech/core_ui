@@ -10,51 +10,43 @@ export const PROFILE_LIST_ITEMS: {
   premiumOnly?: boolean;
 }[] = [
   {
-    icon: 'user',
+    icon: 'person-outline',
     route: ROUTES.personalInfo,
     label: 'Información Personal',
   },
   {
-    icon: 'image',
+    icon: 'images-outline',
     route: ROUTES.imageGallery,
     label: 'Galería de fotos',
   },
   {
-    icon: 'list',
+    icon: 'list-outline',
     route: ROUTES.goals,
     label: 'Objetivos Fitness',
     userOnly: true,
   },
   {
-    icon: 'heart',
+    icon: 'heart-outline',
     route: ROUTES.matchPreferences,
     label: 'Preferencias de match',
     userOnly: true,
     premiumOnly: true,
   },
   {
-    icon: 'dollar-sign',
+    icon: 'cash-outline',
     route: ROUTES.subscription,
     label: 'Mi Suscripción',
     userOnly: true,
     premiumOnly: true,
   },
   {
-    icon: 'bell',
+    icon: 'notifications-outline',
     route: ROUTES.notifications,
     label: 'Notificaciones',
     userOnly: true,
   },
-  {
-    icon: 'help-circle',
-    route: ROUTES.support,
-    label: 'Soporte',
-  },
-  {
-    icon: 'github',
-    route: ROUTES.testTools,
-    label: 'Testing tools',
-  },
+  { icon: 'help-circle-outline', route: ROUTES.support, label: 'Soporte' },
+  { icon: 'logo-github', route: ROUTES.testTools, label: 'Testing tools' },
 ];
 
 export const MATCH_SCREEN_TABS: Option[] = [

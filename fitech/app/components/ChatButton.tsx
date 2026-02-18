@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
@@ -6,7 +6,6 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
-import { transparentize } from '@/utils/style';
 
 export function ChatButton() {
   const router = useRouter();
@@ -16,8 +15,12 @@ export function ChatButton() {
   const handleClick = useCallback(() => router.push(ROUTES.chats), []);
 
   return (
-    <TouchableOpacity onPress={handleClick} style={styles.button}>
-      <Feather name="message-square" size={22} color={theme.dark100} />
+    <TouchableOpacity
+      onPress={handleClick}
+      style={styles.button}
+      activeOpacity={0.7}
+    >
+      <Ionicons name="chatbubble-outline" size={22} color={theme.dark100} />
     </TouchableOpacity>
   );
 }
@@ -25,12 +28,13 @@ export function ChatButton() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     button: {
-      backgroundColor: transparentize(theme.dark100, 0.2),
-      borderRadius: 999,
-      padding: 4,
-      width: 35,
-      height: 35,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
+      backgroundColor: 'rgba(255,255,255,0.12)',
+      borderWidth: 1,
+      borderColor: 'rgba(255,255,255,0.2)',
     },
   });

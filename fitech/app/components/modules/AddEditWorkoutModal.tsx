@@ -186,9 +186,7 @@ export function AddEditExerciseModal({
           <ScrollView>
             {sets.map((s, idx) => (
               <View key={idx} style={styles.setRow}>
-                <AppText style={styles.setLabel}>
-                  Serie {idx + 1}
-                </AppText>
+                <AppText style={styles.setLabel}>Serie {idx + 1}</AppText>
                 <TextInput
                   keyboardType="numeric"
                   placeholder="Repeticiones"

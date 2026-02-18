@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
   Modal,
@@ -143,8 +143,8 @@ export const ReviewModal: React.FC<Props> = ({
             style={styles.checkboxRow}
             onPress={() => setAnonymous((prev) => !prev)}
           >
-            <Feather
-              name={anonymous ? 'check-square' : 'square'}
+            <Ionicons
+              name={anonymous ? 'checkbox' : 'square-outline'}
               size={20}
               color={theme.primary}
             />

@@ -306,7 +306,10 @@ export default function ChatDetailScreen() {
         />
         <TouchableOpacity
           onPress={handleSend}
-          style={[styles.sendButton, !input.trim() && styles.sendButtonDisabled]}
+          style={[
+            styles.sendButton,
+            !input.trim() && styles.sendButtonDisabled,
+          ]}
           disabled={!input.trim()}
         >
           <Ionicons name="send" size={20} color={theme.dark100} />

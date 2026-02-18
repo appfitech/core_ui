@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -62,7 +62,7 @@ export default function TrainersSearchScreen() {
           containerStyle={styles.searchBarContainer}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <Feather name="chevrons-right" size={22} color={theme.dark100} />
+          <Ionicons name="chevrons-forward" size={22} color={theme.dark100} />
         </TouchableOpacity>
       </View>
 

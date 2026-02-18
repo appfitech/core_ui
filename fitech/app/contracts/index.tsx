@@ -1,4 +1,4 @@
-import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -119,14 +119,18 @@ export default function ContractsScreen() {
           <View key={contract.id ?? contract?.contractId} style={styles.card}>
             <AppText style={styles.cardTitle}>{contract.serviceName}</AppText>
             <View style={styles.cardRow}>
-              <Feather name="user" size={18} color={theme.dark700} />
+              <Ionicons name="person-outline" size={18} color={theme.dark700} />
               <AppText style={styles.cardInfo}>
                 Trainer: {contract.trainerName}
               </AppText>
             </View>
             {contract?.completionDate && (
               <View style={styles.cardRow}>
-                <Feather name="calendar" size={18} color={theme.dark700} />
+                <Ionicons
+                  name="calendar-outline"
+                  size={18}
+                  color={theme.dark700}
+                />
                 <AppText style={styles.cardInfo}>
                   Fecha de fin: {contract.startDate ?? contract?.completionDate}
                 </AppText>
@@ -134,7 +138,7 @@ export default function ContractsScreen() {
             )}
             {contract?.totalAmount && (
               <View style={styles.cardRow}>
-                <Feather name="dollar-sign" size={18} color={theme.dark700} />
+                <Ionicons name="cash-outline" size={18} color={theme.dark700} />
                 <AppText style={styles.cardInfo}>
                   Monto: S/ {contract.totalAmount.toFixed(2)}
                 </AppText>
@@ -170,8 +174,8 @@ export default function ContractsScreen() {
                   <AppText style={styles.detailsButtonText}>
                     Ver Detalles&nbsp;
                   </AppText>
-                  <Feather
-                    name="chevron-right"
+                  <Ionicons
+                    name="chevron-forward"
                     size={16}
                     color={theme.dark900}
                   />
@@ -193,8 +197,8 @@ export default function ContractsScreen() {
                       ? 'Editar Reseña'
                       : 'Dejar Reseña'}
                   </AppText>
-                  <Feather
-                    name="chevron-right"
+                  <Ionicons
+                    name="chevron-forward"
                     size={16}
                     color={theme.infoBackground}
                   />

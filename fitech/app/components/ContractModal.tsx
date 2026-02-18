@@ -115,7 +115,10 @@ export function ContractModal({
             <TouchableOpacity
               onPress={onConfirm}
               disabled={!accepted}
-              style={[styles.confirmButton, !accepted && styles.confirmButtonDisabled]}
+              style={[
+                styles.confirmButton,
+                !accepted && styles.confirmButtonDisabled,
+              ]}
             >
               <AppText style={styles.confirmText}>Contratar</AppText>
             </TouchableOpacity>

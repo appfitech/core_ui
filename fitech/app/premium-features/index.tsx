@@ -30,9 +30,7 @@ export default function PremiumFeaturesScreen() {
         </View>
 
         <View style={styles.bannerList}>
-          <TouchableOpacity
-            style={[styles.banner, styles.bannerSuccess]}
-          >
+          <TouchableOpacity style={[styles.banner, styles.bannerSuccess]}>
             <Image
               source={require('../../assets/images/vectors/gym_library.png')}
               style={styles.image}
