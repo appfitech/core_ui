@@ -1,24 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import {
   ALL_LOCATIONS,
   findLocationById,
   formatLocationName,
 } from '@/constants/locations';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { useUserStore } from '@/stores/user';
@@ -26,7 +17,8 @@ import { LocationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 import { useUpdateUser } from '../api/mutations/useUpdateUser';
-import { AnimatedAppText } from '../components/AnimatedAppText';
+import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
 import { DatePicker } from '../components/DatePicker';
 import { DropdownWrapper } from '../components/DropdownWrapper';
 import { FormWrapper } from '../components/FormWrapper';
@@ -34,7 +26,6 @@ import { InputWrapper } from '../components/InputWrapper';
 import PageContainer from '../components/PageContainer';
 
 export default function PersonalInfoScreen() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
   const { mutate: updateUser } = useUpdateUser();
   const { theme } = useTheme();
@@ -48,7 +39,7 @@ export default function PersonalInfoScreen() {
     null,
   );
   const [locationModalOpen, setLocationModalOpen] = useState(false);
-  const { isOpen, open, close, setIsOpen } = useOpenable();
+  const { isOpen, setIsOpen } = useOpenable();
 
   // Load user's initial location
   useEffect(() => {
@@ -97,9 +88,10 @@ export default function PersonalInfoScreen() {
 
   return (
     <PageContainer
-        title="Editar Información Personal"
-        style={{ padding: 16, paddingBottom: 150 }}
-      >
+      title="Editar Información Personal"
+      style={styles.pageStyle}
+      contentPaddingBottom={120}
+    >
       <Animated.View entering={FadeInUp.delay(100).duration(500)}>
         <InputWrapper
           id={'firstName'}
@@ -115,18 +107,27 @@ export default function PersonalInfoScreen() {
           value={form?.person?.lastName}
         />
 
-        <InputWrapper
-          id={'email'}
-          label={'Email'}
-          readOnly
-          value={form?.person?.email}
-        />
-        {user?.isEmailVerified && (
-          <View style={styles.verifiedTag}>
-            <Ionicons name="checkmark-circle" size={14} color="#4CAF50" />
-            <Text style={styles.verifiedText}>Email Verificado</Text>
+        <View style={styles.emailRow}>
+          <View style={styles.emailInputWrap}>
+            <InputWrapper
+              id="email"
+              label="Email"
+              value={form?.person?.email}
+              editable={false}
+              disabled
+            />
           </View>
-        )}
+          {user?.isEmailVerified && (
+            <View style={styles.verifiedTag}>
+              <Ionicons
+                name="checkmark-circle"
+                size={18}
+                color={theme.success}
+              />
+              <AppText style={styles.verifiedText}>Verificado</AppText>
+            </View>
+          )}
+        </View>
 
         <InputWrapper
           id={'documentNumber'}
@@ -183,19 +184,26 @@ export default function PersonalInfoScreen() {
       </Animated.View>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.submitButton} onPress={handleUpdate}>
-          <Text style={styles.updateText}>Actualizar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
+        <Button
+          label="Actualizar"
+          type="primary"
+          onPress={handleUpdate}
+          style={styles.buttonFull}
+          buttonStyle={styles.primaryButton}
+        />
+        <Button
+          label="Cancelar"
+          type="secondary"
+          onPress={handleCancel}
+          style={styles.buttonFull}
+        />
       </View>
 
       {/* Location selection modal */}
       <Modal transparent visible={locationModalOpen} animationType="fade">
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Selecciona tu distrito</Text>
+            <AppText style={styles.modalTitle}>Selecciona tu distrito</AppText>
             <ScrollView style={{ maxHeight: 320 }}>
               {ALL_LOCATIONS.map((loc) => {
                 const selected = selectedLocation?.id === loc.id;
@@ -213,36 +221,32 @@ export default function PersonalInfoScreen() {
                     }}
                     style={[
                       styles.locationRow,
-                      selected && { backgroundColor: theme.backgroundInverted },
+                      selected && { backgroundColor: theme.primary },
                     ]}
                   >
-                    <Text
+                    <AppText
                       style={[
                         styles.locationRowText,
-                        selected && { color: theme.dark100, fontWeight: '700' },
+                        selected && {
+                          color: theme.background,
+                          fontWeight: '700',
+                        },
                       ]}
                     >
                       {formatLocationName(loc)}
-                    </Text>
+                    </AppText>
                   </Pressable>
                 );
               })}
             </ScrollView>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                marginTop: 12,
-                gap: 10,
-              }}
-            >
-              <TouchableOpacity
-                style={styles.modalButton}
+            <View style={styles.modalActions}>
+              <Button
+                label="Cerrar"
+                type="tertiary"
                 onPress={() => setLocationModalOpen(false)}
-              >
-                <Text style={styles.modalButtonText}>Cerrar</Text>
-              </TouchableOpacity>
+                buttonStyle={styles.modalButton}
+              />
             </View>
           </View>
         </View>
@@ -253,150 +257,88 @@ export default function PersonalInfoScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      backgroundColor: '#F5F7FA',
-      paddingHorizontal: 20,
-    },
-    sectionTitle: {
-      fontSize: 18,
-      fontWeight: '700',
-      color: '#0F4C81',
-      marginBottom: 16,
-    },
-    card: {
-      backgroundColor: '#fff',
-      borderRadius: 16,
-      padding: 20,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 8,
-      elevation: 4,
-    },
-    field: {
-      marginBottom: 16,
-    },
-
-    header: {
-      width: '100%',
-      alignItems: 'center',
-      marginBottom: 12,
-    },
-
-    textArea: {
-      height: 100,
-      paddingTop: 10,
+    pageStyle: {
+      paddingHorizontal: 16,
     },
     buttonRow: {
       flexDirection: 'column',
-      justifyContent: 'space-between',
-      marginTop: 10,
-      rowGap: 10,
+      marginTop: 24,
+      rowGap: 12,
     },
-    cancelButton: {
-      flex: 1,
+    buttonFull: {
+      width: '100%',
+    },
+    primaryButton: {
       paddingVertical: 14,
-      borderRadius: 10,
-      alignItems: 'center',
-      borderColor: '#ccc',
-      borderWidth: 1,
-      marginRight: 8,
     },
-    cancelText: {
-      fontWeight: '600',
-      fontSize: 14,
-      color: '#444',
+    emailRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      gap: 12,
+      marginBottom: 8,
     },
-    updateButton: {
+    emailInputWrap: {
       flex: 1,
-      backgroundColor: '#0F4C81',
-      paddingVertical: 14,
-      borderRadius: 10,
-      alignItems: 'center',
-      marginLeft: 8,
-    },
-    updateText: {
-      fontWeight: '600',
-      fontSize: 14,
-      color: '#fff',
+      minWidth: 0,
     },
     verifiedTag: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#DFF6DD',
-      paddingHorizontal: 8,
-      paddingVertical: 4,
-      borderRadius: 8,
-      marginTop: 10,
-      maxWidth: 150,
-    },
-    verifiedText: {
-      marginLeft: 4,
-      color: '#2E7D32',
-      fontWeight: '600',
-      fontSize: 12,
-    },
-    locationPicker: {
-      borderRadius: 10,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#D7D7D7',
-      paddingVertical: 12,
+      backgroundColor: theme.successBackground,
       paddingHorizontal: 12,
-      backgroundColor: '#FFF',
+      paddingVertical: 8,
+      borderRadius: 10,
+      gap: 8,
+      borderWidth: 1,
+      borderColor: theme.successBorder,
       marginBottom: 8,
     },
-    chipContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 8,
-    },
-    chip: {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 999,
+    verifiedText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: theme.successText,
     },
     modalBackdrop: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.25)',
+      backgroundColor: 'rgba(0,0,0,0.35)',
       justifyContent: 'center',
       padding: 16,
     },
     modalCard: {
       borderRadius: 16,
-      backgroundColor: theme.dark100,
+      backgroundColor: theme.card,
       padding: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     modalTitle: {
       fontSize: 18,
       fontWeight: '800',
-      marginBottom: 8,
+      marginBottom: 12,
       color: theme.textPrimary,
     },
     locationRow: {
-      paddingVertical: 12,
-      paddingHorizontal: 10,
-      borderRadius: 10,
-      marginBottom: 8,
-      backgroundColor: '#F5F5F5',
+      paddingVertical: 14,
+      paddingHorizontal: 12,
+      borderRadius: 12,
+      marginBottom: 6,
+      backgroundColor: theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     locationRowText: {
       fontWeight: '600',
+      fontSize: 15,
       color: theme.textPrimary,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      marginTop: 12,
     },
     modalButton: {
       paddingVertical: 10,
-      paddingHorizontal: 16,
-      borderRadius: 10,
-      backgroundColor: '#EFEFEF',
-    },
-    modalButtonText: {
-      fontWeight: '600',
-      color: theme.textPrimary,
+      paddingHorizontal: 20,
     },
     ...SHARED_STYLES(theme),
-    headerTitle: {
-      ...HEADING_STYLES(theme).title,
-      fontWeight: '700',
-    },
   });

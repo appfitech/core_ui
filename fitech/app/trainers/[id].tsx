@@ -1,16 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 
@@ -21,7 +16,6 @@ import { useGetTrainerServices } from '../api/queries/use-get-trainer-services';
 import { AppText } from '../components/AppText';
 import { Button } from '../components/Button';
 import PageContainer from '../components/PageContainer';
-import { useUserStore } from '@/stores/user';
 
 export default function TrainerProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -38,12 +32,15 @@ export default function TrainerProfileScreen() {
   const styles = getStyles(theme);
 
   const handleContract = async (service: TrainerService) => {
+    if (clientId == null) {
+      return;
+    }
     const res = await checkContract({ clientId, serviceId: service?.id });
 
     if (res?.canContract) {
       router.push({
-        pathname: `/trainers/${id}/contract`,
-        params: { service: JSON.stringify(service) },
+        pathname: '/trainers/[id]/contract',
+        params: { id: id ?? '', service: JSON.stringify(service) },
       });
     } else {
       showAlert({
@@ -57,116 +54,106 @@ export default function TrainerProfileScreen() {
 
   return (
     <PageContainer
-      title={trainer ? `${trainer.person.firstName} ${trainer.person.lastName}` : 'Entrenador'}
+      title={
+        trainer
+          ? `${trainer.person.firstName} ${trainer.person.lastName}`
+          : 'Entrenador'
+      }
       style={styles.pageStyle}
+      contentPaddingBottom={100}
     >
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        {trainer && (
-          <View style={styles.profileCard}>
-            <Image
-              source={{
-                uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
-              }}
-              style={styles.avatar}
-            />
-            <AppText style={styles.role}>Entrenador personal</AppText>
-            {trainer.premium && (
-              <View style={styles.premiumTag}>
-                <Ionicons name="star" size={14} color={theme.warning} />
-                <AppText style={styles.premiumText}>
-                  Entrenador certificado
-                </AppText>
-              </View>
-            )}
-          </View>
-        )}
-
-        {services && services.length > 0 && (
-          <View style={styles.section}>
-            <AppText style={styles.sectionTitle}>Servicios disponibles</AppText>
-            <View style={styles.serviceList}>
-              {services.map((service) => (
-                <View key={service.id} style={styles.serviceCard}>
-                  <AppText style={styles.serviceName}>{service.name}</AppText>
-                  <AppText style={styles.serviceDesc} numberOfLines={2}>
-                    {service.description}
-                  </AppText>
-                  <View style={styles.servicePriceRow}>
-                    <Ionicons
-                      name="cash-outline"
-                      size={20}
-                      color={theme.primary}
-                    />
-                    <AppText style={styles.servicePrice}>
-                      S/ {service.totalPrice.toFixed(2)}
-                    </AppText>
-                  </View>
-                  <View style={styles.serviceCta}>
-                    <Button
-                      label="Contratar servicio"
-                      onPress={() => handleContract(service)}
-                      type="primary"
-                    />
-                  </View>
-                </View>
-              ))}
-            </View>
-          </View>
-        )}
-
-        {photos && photos.length > 0 && (
-          <View style={styles.section}>
-            <AppText style={styles.sectionTitle}>Galería</AppText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.galleryScroll}
-            >
-              {photos.map((photo) => (
-                <Image
-                  key={photo.id}
-                  source={{
-                    uri: `https://appfitech.com/v1/app/file-upload/view/${photo.id}`,
-                  }}
-                  style={styles.galleryImage}
-                />
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {trainer?.person?.bio && (
-          <View style={styles.section}>
-            <View style={styles.aboutCard}>
-              <AppText style={styles.rowLabel}>Acerca de</AppText>
-              <AppText style={styles.aboutText}>
-                {trainer.person.bio}
+      {trainer && (
+        <View style={styles.profileBlock}>
+          <Image
+            source={{
+              uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
+            }}
+            style={styles.avatar}
+          />
+          <AppText style={styles.role}>Entrenador personal</AppText>
+          {trainer.premium && (
+            <View style={styles.premiumTag}>
+              <Ionicons name="star" size={14} color={theme.warning} />
+              <AppText style={styles.premiumText}>
+                Entrenador certificado
               </AppText>
             </View>
+          )}
+        </View>
+      )}
+
+      {services && services.length > 0 && (
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>SERVICIOS DISPONIBLES</AppText>
+          <View style={styles.serviceList}>
+            {services.map((service) => (
+              <View key={service.id} style={styles.serviceCard}>
+                <AppText style={styles.serviceName}>{service.name}</AppText>
+                <AppText style={styles.serviceDesc} numberOfLines={2}>
+                  {service.description}
+                </AppText>
+                <View style={styles.servicePriceRow}>
+                  <Ionicons
+                    name="cash-outline"
+                    size={20}
+                    color={theme.primary}
+                  />
+                  <AppText style={styles.servicePrice}>
+                    S/ {service.totalPrice.toFixed(2)}
+                  </AppText>
+                </View>
+                <View style={styles.serviceCta}>
+                  <Button
+                    label="Contratar servicio"
+                    onPress={() => handleContract(service)}
+                    type="primary"
+                  />
+                </View>
+              </View>
+            ))}
           </View>
-        )}
-      </ScrollView>
+        </View>
+      )}
+
+      {photos && photos.length > 0 && (
+        <View style={styles.section}>
+          <AppText style={styles.sectionTitle}>GALERÍA</AppText>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.galleryScroll}
+          >
+            {photos.map((photo) => (
+              <Image
+                key={photo.id}
+                source={{
+                  uri: `https://appfitech.com/v1/app/file-upload/view/${photo.id}`,
+                }}
+                style={styles.galleryImage}
+              />
+            ))}
+          </ScrollView>
+        </View>
+      )}
+
+      {trainer?.person?.bio && (
+        <View style={styles.section}>
+          <View style={styles.aboutCard}>
+            <AppText style={styles.sectionTitle}>ACERCA DE</AppText>
+            <AppText style={styles.aboutText}>{trainer.person.bio}</AppText>
+          </View>
+        </View>
+      )}
     </PageContainer>
   );
 }
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { flex: 1 },
-    scroll: { flex: 1 },
-    scrollContent: { paddingBottom: 180 },
-    profileCard: {
-      backgroundColor: theme.card,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: theme.border,
-      padding: 24,
+    pageStyle: {},
+    profileBlock: {
       alignItems: 'center',
-      marginTop: 16,
+      marginTop: 8,
       marginBottom: 20,
     },
     avatar: {
@@ -199,10 +186,12 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 24,
     },
     sectionTitle: {
-      fontSize: 17,
+      fontSize: 12,
       fontWeight: '700',
-      color: theme.textPrimary,
-      marginBottom: 12,
+      color: theme.textSecondary,
+      marginBottom: 10,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
     },
     serviceList: {
       rowGap: 12,
@@ -254,14 +243,6 @@ const getStyles = (theme: FullTheme) =>
       borderWidth: 1,
       borderColor: theme.border,
       padding: 18,
-    },
-    rowLabel: {
-      fontSize: 11,
-      fontWeight: '600',
-      color: theme.textSecondary,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginBottom: 8,
     },
     aboutText: {
       fontSize: 15,

@@ -42,7 +42,7 @@ export default function ProfileScreen() {
   const userAvatarURL = getUserAvatarURL(person);
 
   return (
-    <PageContainer hasBackButton={false}>
+    <PageContainer hasBackButton={false} contentPaddingBottom={120}>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {userAvatarURL ? (
           <Image
@@ -52,7 +52,12 @@ export default function ProfileScreen() {
             style={styles.avatar}
           />
         ) : (
-          <View style={styles.avatarWrapper}>
+          <View
+            style={[
+              styles.avatarWrapper,
+              { backgroundColor: theme.backgroundInput },
+            ]}
+          >
             <AvatarSvg width="100%" height="100%" />
           </View>
         )}
@@ -60,14 +65,7 @@ export default function ProfileScreen() {
           {`${person?.firstName ?? ''} ${person?.lastName ?? ''}`}
         </AppText>
         <AppText style={styles.email}>{person?.email}</AppText>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginTop: 10,
-            columnGap: 4,
-          }}
-        >
+        <View style={styles.tagsRow}>
           <Tag
             icon="person-outline"
             label={userType === 1 ? 'Trainer' : 'Usuario'}
@@ -105,10 +103,10 @@ export default function ProfileScreen() {
       </Animated.View>
 
       <Button
-        label={'Cerrar sesión'}
-        style={{ marginTop: 30 }}
+        label="Cerrar sesión"
+        style={styles.logoutButton}
         onPress={handleLogout}
-        type={'destructive'}
+        type="destructive"
       />
     </PageContainer>
   );
@@ -116,70 +114,49 @@ export default function ProfileScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      flexGrow: 1,
-      backgroundColor: theme.background,
-      paddingHorizontal: 20,
-    },
     header: {
       alignItems: 'center',
-      marginBottom: 32,
-      marginTop: 10,
+      marginBottom: 24,
+      marginTop: 8,
     },
     avatar: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
+      width: 88,
+      height: 88,
+      borderRadius: 44,
       marginBottom: 12,
     },
     avatarWrapper: {
-      width: 80,
-      height: 80,
-      borderRadius: 40,
+      width: 88,
+      height: 88,
+      borderRadius: 44,
       overflow: 'hidden',
-      backgroundColor: '#fff',
     },
     name: {
       ...HEADING_STYLES(theme).title,
       fontWeight: '700',
+      color: theme.textPrimary,
     },
     email: {
       ...HEADING_STYLES(theme).subtitle,
       marginTop: 4,
+      color: theme.textSecondary,
     },
-    userType: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: theme.primary,
+    tagsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 12,
+      columnGap: 8,
     },
     section: {
       backgroundColor: theme.card,
       borderRadius: 16,
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      shadowColor: theme.background,
-      shadowOpacity: 0.9,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 8,
-      elevation: 3,
+      borderWidth: 1,
+      borderColor: theme.border,
+      paddingVertical: 4,
+      paddingHorizontal: 4,
+      overflow: 'hidden',
     },
-    item: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: 14,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.dark500,
-    },
-    iconWrapper: {
-      width: 40,
-      alignItems: 'center',
-    },
-    itemLabel: {
-      flex: 1,
-      marginLeft: 12,
-      fontSize: 16,
-      fontWeight: '500',
-      color: theme.dark900,
-      paddingVertical: 10,
+    logoutButton: {
+      marginTop: 24,
     },
   });

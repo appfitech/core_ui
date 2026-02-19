@@ -269,9 +269,6 @@ export default function GymBroScreen() {
                   <MatchContactCard
                     candidate={item}
                     onDiscard={() => handleRemoveMatch(item?.userId)}
-                    onContact={() => {
-                      router.push('/chats/1');
-                    }}
                   />
                 </Animated.View>
               )}

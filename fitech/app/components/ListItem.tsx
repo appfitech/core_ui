@@ -38,6 +38,7 @@ export function ListItem({
   const { theme } = useTheme();
 
   const styles = getStyles(theme);
+  const iconColor = theme.primary;
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -55,7 +56,7 @@ export function ListItem({
     <TouchableOpacity style={[styles.listItem, style]} onPress={handleClick}>
       {!!icon && (
         <View style={styles.iconWrapper}>
-          <Ionicons name={icon as any} size={23} color={theme.green800} />
+          <Ionicons name={icon as any} size={23} color={iconColor} />
         </View>
       )}
       <View style={[{ flex: 1 }, description && { paddingHorizontal: 16 }]}>
@@ -63,11 +64,11 @@ export function ListItem({
           {label}
         </AppText>
         {description && (
-          <AppText style={{ color: theme.dark500 }}>{description}</AppText>
+          <AppText style={{ color: theme.textSecondary }}>{description}</AppText>
         )}
       </View>
       {hasChevron && (
-        <Ionicons name="chevron-forward" size={20} color={theme.green700} />
+        <Ionicons name="chevron-forward" size={20} color={theme.textSecondary} />
       )}
     </TouchableOpacity>
   );
@@ -78,9 +79,10 @@ const getStyles = (theme: FullTheme) =>
     listItem: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 12,
+      paddingVertical: 14,
+      paddingHorizontal: 12,
       borderBottomWidth: 1,
-      borderBottomColor: theme.dark300,
+      borderBottomColor: theme.border,
       columnGap: 12,
     },
     iconWrapper: {
@@ -91,7 +93,6 @@ const getStyles = (theme: FullTheme) =>
       flex: 1,
       fontSize: 16,
       fontWeight: '500',
-      color: theme.dark900,
-      paddingVertical: 10,
+      color: theme.textPrimary,
     },
   });

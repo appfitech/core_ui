@@ -13,7 +13,6 @@ import { useSetProfilePhoto } from '../api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '../api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '../api/queries/useGetUserPhotos';
 import { AppText } from '../components/AppText';
-import { Card } from '../components/Card';
 import PageContainer from '../components/PageContainer';
 
 const MAX_PHOTOS = 10;
@@ -111,8 +110,12 @@ export default function ImageGalleryScreen() {
   };
 
   return (
-    <PageContainer title="Gestiona tus fotos" style={{ rowGap: 10 }}>
-      <Card style={{ backgroundColor: theme.primary, rowGap: 4 }}>
+    <PageContainer
+      title="Gestiona tus fotos"
+      style={styles.pageContent}
+      contentPaddingBottom={120}
+    >
+      <View style={styles.bannerCard}>
         <AppText style={styles.trainerBannerTitle}>
           🎯 ¡Haz que tu perfil destaque!
         </AppText>
@@ -123,16 +126,14 @@ export default function ImageGalleryScreen() {
         <AppText style={styles.trainerBannerText}>
           Tienes {photos.length} de {MAX_PHOTOS} fotos subidas.
         </AppText>
-      </Card>
+      </View>
 
-      <Card
-        style={{ flexDirection: 'row', columnGap: 12, alignItems: 'center' }}
-      >
+      <View style={styles.tipCard}>
         <AppText style={styles.tipTitle}>💡 Tip</AppText>
         <AppText style={styles.tipText}>
           Las fotos de buena calidad generan más confianza con los clientes
         </AppText>
-      </Card>
+      </View>
 
       {!!profilePhotoId && (
         <View style={styles.mainPhotoWrapper}>
@@ -168,23 +169,23 @@ export default function ImageGalleryScreen() {
               />
 
               {profilePhotoId === item.id ? (
-                <View style={styles.avatarBadge}>
-                  <Ionicons name="checkmark-circle" size={16} color="#fff" />
+                <View style={[styles.avatarBadge, { backgroundColor: theme.primary }]}>
+                  <Ionicons name="checkmark-circle" size={16} color={theme.background} />
                 </View>
               ) : (
                 <TouchableOpacity
-                  style={styles.starBadge}
+                  style={[styles.starBadge, { backgroundColor: theme.primary }]}
                   onPress={() => confirmSetAsProfile(item.id)}
                 >
-                  <Ionicons name="star" size={16} color="#fff" />
+                  <Ionicons name="star" size={16} color={theme.background} />
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity
-                style={styles.deleteBtn}
+                style={[styles.deleteBtn, { backgroundColor: theme.error }]}
                 onPress={() => removePhoto(index)}
               >
-                <Ionicons name="close" size={16} color="#fff" />
+                <Ionicons name="close" size={16} color={theme.background} />
               </TouchableOpacity>
             </View>
           ))}
@@ -194,7 +195,7 @@ export default function ImageGalleryScreen() {
               onPress={pickImage}
               style={[styles.thumbnailWrapper, styles.uploadBtn]}
             >
-              <Ionicons name="add" size={24} color="#0F4C81" />
+              <Ionicons name="add" size={24} color={theme.primary} />
               <AppText style={styles.uploadText}>Agregar</AppText>
             </TouchableOpacity>
           )}
@@ -206,20 +207,37 @@ export default function ImageGalleryScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    tipBanner: {
-      backgroundColor: '#D6EDFF',
-      padding: 12,
-      borderRadius: 12,
-      marginBottom: 10,
+    pageContent: {
+      rowGap: 16,
+    },
+    bannerCard: {
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      padding: 16,
+      rowGap: 6,
+    },
+    tipCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 12,
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 16,
     },
     tipTitle: {
       fontWeight: '700',
-      color: theme.dark100,
+      color: theme.textPrimary,
       fontSize: 16,
     },
     tipText: {
       fontSize: 14,
-      color: theme.dark200,
+      color: theme.textSecondary,
       flex: 1,
     },
     mainPhotoWrapper: {
@@ -230,16 +248,15 @@ const getStyles = (theme: FullTheme) =>
       width: 200,
       height: 200,
       borderRadius: 12,
-      borderColor: '#0F4C81',
+      borderColor: theme.primary,
       borderWidth: 2,
     },
     avatarLabel: {
       marginTop: 8,
       fontSize: 16,
-      fontWeight: '500',
-      color: '#0F4C81',
+      fontWeight: '600',
+      color: theme.primary,
     },
-
     galleryGrid: {
       flexDirection: 'row',
       flexWrap: 'wrap',
@@ -256,12 +273,10 @@ const getStyles = (theme: FullTheme) =>
       height: '100%',
       borderRadius: 10,
     },
-
     avatarBadge: {
       position: 'absolute',
       top: 4,
       left: 4,
-      backgroundColor: '#0F4C81',
       padding: 4,
       borderRadius: 8,
     },
@@ -269,7 +284,6 @@ const getStyles = (theme: FullTheme) =>
       position: 'absolute',
       bottom: 4,
       left: 4,
-      backgroundColor: '#FF8C42',
       padding: 4,
       borderRadius: 8,
       zIndex: 10,
@@ -278,31 +292,31 @@ const getStyles = (theme: FullTheme) =>
       position: 'absolute',
       top: 4,
       right: 4,
-      backgroundColor: '#ff5a5f',
       padding: 4,
       borderRadius: 8,
     },
-
     uploadBtn: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: '#E4E6EB',
+      backgroundColor: theme.backgroundInput,
       borderRadius: 10,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     uploadText: {
       fontSize: 14,
       fontWeight: '600',
-      color: '#0F4C81',
+      color: theme.primary,
       marginTop: 4,
     },
-
     trainerBannerTitle: {
       fontSize: 16,
       fontWeight: '700',
-      color: theme.dark900,
+      color: theme.textPrimary,
     },
     trainerBannerText: {
       fontSize: 14,
-      color: theme.dark700,
+      color: theme.textSecondary,
+      lineHeight: 20,
     },
   });

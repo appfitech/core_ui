@@ -1,114 +1,155 @@
-import { StyleSheet, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { GymBroCandidateResponseDto } from '@/types/api/types.gen';
+import {
+  GymBroCandidateResponseDto,
+  GymCrushCandidateResponseDto,
+} from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+import { getCandidateProfileImageUrl } from '@/utils/user';
 
 import { AppText } from './AppText';
 import { AvatarPhoto } from './AvatarPhoto';
 import { Button } from './Button';
 import { Tag } from './Tag';
 
+type CandidateWithChatId = (
+  | GymBroCandidateResponseDto
+  | GymCrushCandidateResponseDto
+) & {
+  chatId?: number;
+};
+
+type CandidateWithBioPref = CandidateWithChatId & {
+  gymBroShowBioInProfile?: boolean;
+  gymCrushShowBioInProfile?: boolean;
+};
+
 type Props = {
-  candidate: GymBroCandidateResponseDto;
-  onContact: () => void;
+  candidate: CandidateWithChatId;
   onDiscard: () => void;
 };
 
-export function MatchContactCard({ candidate, onDiscard, onContact }: Props) {
+export function MatchContactCard({ candidate, onDiscard }: Props) {
+  const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+
+  const profileImageUrl = getCandidateProfileImageUrl(
+    candidate?.profilePhotoUrl,
+  );
+
+  const handleContact = () => {
+    if (!!candidate?.chatId) {
+      router.push(`/chats/${candidate.chatId}`);
+    }
+  };
+
+  const handleDiscardPress = () => {
+    Alert.alert(
+      'Quitar match',
+      '¿Estás seguro de que quieres quitar este match? Ya no podrás ver su perfil ni enviar mensajes.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { text: 'Quitar', style: 'destructive', onPress: onDiscard },
+      ],
+    );
+  };
+
+  const showBio =
+    !!candidate?.bio &&
+    (!!(candidate as CandidateWithBioPref).gymBroShowBioInProfile ||
+      !!(candidate as CandidateWithBioPref).gymCrushShowBioInProfile);
+  const canChat = candidate?.chatId != null;
 
   return (
     <View style={styles.card}>
       <View style={styles.dataContainer}>
-        <AvatarPhoto
-          url={
-            candidate?.profilePhotoUrl
-              ? `https://appfitech.com${candidate?.profilePhotoUrl}`
-              : ''
-          }
-        />
+        <AvatarPhoto url={profileImageUrl ?? ''} />
 
         <View style={styles.nameBlock}>
           <AppText style={styles.nameText}>
             {`${candidate?.firstName} ${candidate?.lastName}`}
             {candidate.age ? `, ${candidate.age}` : ''}
           </AppText>
-          {candidate?.age && (
+          {candidate?.age ? (
             <AppText
               style={styles.otherText}
             >{`${candidate.age} años`}</AppText>
-          )}
+          ) : null}
           <View style={styles.tagsContainer}>
             {candidate.city && (
               <Tag
-                backgroundColor={theme.warning}
-                textColor={theme.warningText}
+                backgroundColor={theme.primary}
+                textColor={theme.background}
                 label={candidate.city}
               />
             )}
             {candidate.fitnessLevel && (
               <Tag
-                backgroundColor={theme.warning}
-                textColor={theme.warningText}
+                backgroundColor={theme.primary}
+                textColor={theme.background}
                 label={candidate.fitnessLevel}
               />
             )}
           </View>
-
-          {!!candidate.bio &&
-            (candidate.gymBroShowBioInProfile ||
-              candidate.gymCrushShowBioInProfile) && (
-              <AppText style={styles.bioText}>{candidate.bio}</AppText>
-            )}
+          {showBio && (
+            <AppText style={styles.bioText} numberOfLines={3}>
+              {candidate.bio}
+            </AppText>
+          )}
         </View>
       </View>
       <View style={styles.buttonsContainer}>
         <Button
           style={styles.buttonFlex}
           buttonStyle={styles.buttonPadding}
-          label={'Contactar'}
-          type="tertiary"
-          onPress={onContact}
+          label="Contactar"
+          type="secondary"
+          onPress={handleContact}
+          disabled={!canChat}
         />
-        <Button
-          type="destructive"
-          style={styles.buttonFlex}
-          buttonStyle={styles.buttonPadding}
-          label={'Quitar'}
-          onPress={onDiscard}
-        />
+        <TouchableOpacity
+          style={[styles.discardButton, !canChat && styles.buttonFlex]}
+          onPress={handleDiscardPress}
+          activeOpacity={0.8}
+        >
+          <AppText style={styles.discardButtonText}>Quitar</AppText>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const headings = HEADING_STYLES(theme);
+  return StyleSheet.create({
     card: {
-      borderRadius: 24,
+      borderRadius: 16,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.dark300,
-      backgroundColor: theme.dark100,
-      gap: 12,
-      padding: 12,
+      borderColor: theme.border,
+      backgroundColor: theme.card,
+      padding: 16,
+      rowGap: 14,
     },
     dataContainer: {
       flexDirection: 'row',
-      alignItems: 'center',
-      gap: 16,
+      alignItems: 'flex-start',
+      gap: 14,
     },
     nameBlock: {
-      gap: 2,
       flex: 1,
+      minWidth: 0,
+      rowGap: 4,
     },
     buttonsContainer: {
-      gap: 8,
       flexDirection: 'row',
-      flex: 1,
+      gap: 10,
+      alignItems: 'center',
     },
     buttonFlex: {
       flex: 1,
@@ -116,22 +157,41 @@ const getStyles = (theme: FullTheme) =>
     buttonPadding: {
       paddingVertical: 11,
     },
+    discardButton: {
+      paddingVertical: 12,
+      paddingHorizontal: 18,
+      borderRadius: 14,
+      backgroundColor: theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    discardButtonText: {
+      ...headings.subtitle,
+      color: theme.error,
+      fontWeight: '700',
+    },
     nameText: {
-      ...HEADING_STYLES(theme).subtitle,
-      fontWeight: 800,
+      ...headings.title,
+      fontSize: 18,
       textAlign: 'left',
     },
     otherText: {
-      ...HEADING_STYLES(theme).subtitle,
+      ...headings.subtitle,
       textAlign: 'left',
     },
     tagsContainer: {
-      flex: 1,
       flexDirection: 'row',
+      flexWrap: 'wrap',
       columnGap: 6,
+      rowGap: 4,
     },
     bioText: {
-      ...HEADING_STYLES(theme).content,
-      fontSize: 12,
+      ...headings.content,
+      fontSize: 14,
+      color: theme.textSecondary,
+      marginTop: 4,
     },
   });
+};
