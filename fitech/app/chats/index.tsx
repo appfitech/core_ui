@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -15,12 +16,76 @@ import { FullTheme } from '@/types/theme';
 
 import { useGetChats } from '../api/queries/use-chat-queries';
 
+const CONTRACT_LOGO = require('../../assets/images/logos/rounded_logo.webp');
+
+/** Avatar: CONTRACT logo, or profile image with fallback to first letter on load error / no URL. */
+function ChatListAvatar({
+  matchType,
+  avatarUri,
+  name,
+  theme,
+  styles,
+}: {
+  matchType?: string;
+  avatarUri: string | null;
+  name: string;
+  theme: FullTheme;
+  styles: ReturnType<typeof getStyles>;
+}) {
+  const [imageError, setImageError] = useState(false);
+
+  if (matchType === 'CONTRACT') {
+    return (
+      <View style={styles.avatar}>
+        <Image
+          source={CONTRACT_LOGO}
+          style={styles.avatarImage}
+          resizeMode="cover"
+        />
+      </View>
+    );
+  }
+  if (avatarUri && !imageError) {
+    return (
+      <View style={styles.avatar}>
+        <Image
+          source={{ uri: avatarUri }}
+          style={styles.avatarImage}
+          resizeMode="cover"
+          onError={() => setImageError(true)}
+        />
+      </View>
+    );
+  }
+  return (
+    <View style={styles.avatar}>
+      <AppText style={styles.avatarInitials}>
+        {name[0]?.toUpperCase() ?? '?'}
+      </AppText>
+    </View>
+  );
+}
+
+/** Returns avatar image URL when available; otherwise UI shows first letter of name. */
+function getAvatarUri(c: ConversationDto): string | null {
+  const urlOrId = c.otherUserProfileImageUrl ?? c.otherUserId;
+  if (urlOrId == null) return null;
+  if (typeof urlOrId === 'string') {
+    const s = urlOrId.trim();
+    if (s === '') return null;
+    if (s.startsWith('http')) return s;
+  }
+  return `https://appfitech.com/v1/app/file-upload/view/${urlOrId}`;
+}
+
 type ChatListItem = {
   id: string;
   name: string;
   lastMessage: string;
   time: string;
   unread: number;
+  matchType?: string;
+  avatarUri: string | null;
 };
 
 function formatConversationTime(iso: string | undefined) {
@@ -67,6 +132,8 @@ function mapConversationToChatItem(c: ConversationDto): ChatListItem {
     lastMessage: c.lastMessageContent ?? 'Aún no hay mensajes.',
     time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
     unread: c.unreadCount ?? 0,
+    matchType: c.matchType,
+    avatarUri: getAvatarUri(c),
   };
 }
 
@@ -115,9 +182,13 @@ export default function ChatsScreen() {
                 })
               }
             >
-              <View style={styles.avatar}>
-                <AppText style={styles.avatarInitials}>{chat.name[0]}</AppText>
-              </View>
+              <ChatListAvatar
+                matchType={chat.matchType}
+                avatarUri={chat.avatarUri}
+                name={chat.name}
+                theme={theme}
+                styles={styles}
+              />
 
               <View style={styles.chatMain}>
                 <AppText style={styles.chatName} numberOfLines={1}>
@@ -130,11 +201,13 @@ export default function ChatsScreen() {
 
               <View style={styles.meta}>
                 <AppText style={styles.chatTime}>{chat.time}</AppText>
-                {chat.unread > 0 && (
+                {chat.unread > 0 ? (
                   <View style={styles.unreadBadge}>
-                    <AppText style={styles.unreadText}>{chat.unread}</AppText>
+                    <AppText style={styles.unreadText}>
+                      {chat.unread > 99 ? '99+' : chat.unread}
+                    </AppText>
                   </View>
-                )}
+                ) : null}
               </View>
             </TouchableOpacity>
           ))}
@@ -158,7 +231,7 @@ const getStyles = (theme: FullTheme) =>
     loadingText: {
       marginTop: 8,
       fontSize: 13,
-      color: theme.dark400,
+      color: theme.textSecondary,
     },
     emptyCenter: {
       flex: 1,
@@ -166,8 +239,8 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontSize: 13,
-      color: theme.dark400,
+      fontSize: 14,
+      color: theme.textSecondary,
       textAlign: 'center',
     },
     list: {
@@ -178,27 +251,29 @@ const getStyles = (theme: FullTheme) =>
     chatRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 12,
-      paddingHorizontal: 10,
+      paddingVertical: 14,
+      paddingHorizontal: 14,
       borderRadius: 14,
-      backgroundColor: theme.background,
-      shadowColor: theme.backgroundInverted,
-      shadowOpacity: 0.04,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 6,
-      elevation: 2,
-      columnGap: 10,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+      columnGap: 12,
     },
     avatar: {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.backgroundInput,
       alignItems: 'center',
       justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    avatarImage: {
+      width: 44,
+      height: 44,
     },
     avatarInitials: {
-      color: theme.dark100,
+      color: theme.primaryText,
       fontWeight: '700',
       fontSize: 18,
     },
@@ -207,13 +282,13 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 2,
     },
     chatName: {
-      fontSize: 15,
+      fontSize: 16,
       fontWeight: '700',
       color: theme.textPrimary,
     },
     chatPreview: {
       fontSize: 13,
-      color: theme.dark400,
+      color: theme.textSecondary,
     },
     meta: {
       alignItems: 'flex-end',
@@ -222,19 +297,19 @@ const getStyles = (theme: FullTheme) =>
     },
     chatTime: {
       fontSize: 11,
-      color: theme.dark400,
+      color: theme.textSecondary,
     },
     unreadBadge: {
       minWidth: 20,
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 999,
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.primary,
       alignItems: 'center',
     },
     unreadText: {
       fontSize: 11,
       fontWeight: '700',
-      color: theme.dark100,
+      color: theme.background,
     },
   });

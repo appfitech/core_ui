@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   SafeAreaView,
   StyleSheet,
   View,
@@ -28,6 +29,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
 import { MatchScreenTab } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
+import { getCandidateProfileImageUrl } from '@/utils/user';
 
 import {
   useDiscardGymCrush,
@@ -45,7 +47,7 @@ import { showMatchToast } from '../components/Toast';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const CARD_W = SCREEN_W * 0.9;
-const CARD_H = Math.min(320, SCREEN_H * 0.45);
+const CARD_H = Math.min(420, SCREEN_H * 0.55);
 const SWIPE_THRESHOLD = CARD_W * 0.35;
 
 export default function GymCrushScreen() {
@@ -78,6 +80,15 @@ export default function GymCrushScreen() {
   const [selectedTab, setSelectedTab] = useState<MatchScreenTab>('discover');
 
   const current = available[index];
+
+  useEffect(() => {
+    const PREFETCH_AHEAD = 4;
+    for (let i = Math.max(0, index - 1); i <= index + PREFETCH_AHEAD; i++) {
+      const candidate = available[i];
+      const uri = getCandidateProfileImageUrl(candidate?.profilePhotoUrl);
+      if (uri) Image.prefetch(uri);
+    }
+  }, [index, available]);
 
   const translateX = useSharedValue(0);
   const rotation = useSharedValue(0);
@@ -135,6 +146,9 @@ export default function GymCrushScreen() {
   );
 
   const handleRefetchAll = () => {
+    setIndex(0);
+    setDiscardedIds(new Set());
+    setSavedMap({});
     refetchMutuals();
     refetchCandidates();
   };
@@ -172,14 +186,6 @@ export default function GymCrushScreen() {
 
   const handlePass = () => onSwiped('left');
   const handleSave = () => onSwiped('right');
-
-  const savedList = useMemo(() => {
-    return Object.values(savedMap).filter((it) => {
-      const id = String(it.userId);
-
-      return !discardedIds.has(id);
-    });
-  }, [savedMap, discardedIds]);
 
   const pan = Gesture.Pan()
     .activeOffsetX([-12, 12])
@@ -226,7 +232,10 @@ export default function GymCrushScreen() {
             <View style={styles.centerWithPadding}>
               {current ? (
                 <GestureDetector gesture={pan}>
-                  <Animated.View style={[cardStyle]}>
+                  <Animated.View
+                    style={[cardStyle]}
+                    key={`gymcrush-${current.userId}`}
+                  >
                     <MatchProfileCard candidate={current} />
                   </Animated.View>
                 </GestureDetector>
@@ -298,14 +307,21 @@ export default function GymCrushScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageContainer: { flex: 1, paddingBottom: 0 },
-    safeArea: { flex: 1, rowGap: 20, marginTop: 10 },
-    contentWrapper: { flex: 1 },
+    safeArea: {
+      flex: 1,
+      minHeight: SCREEN_H - 120,
+      rowGap: 12,
+      marginTop: 10,
+    },
+    contentWrapper: { flex: 1, minHeight: CARD_H + 280 },
     center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
     centerWithPadding: {
       flex: 1,
       alignItems: 'center',
-      justifyContent: 'center',
-      paddingBottom: 140,
+      justifyContent: 'flex-start',
+      paddingTop: 16,
+      paddingBottom: 220,
+      minHeight: SCREEN_H * 0.6,
     },
     empty: {
       borderWidth: 1,

@@ -3,6 +3,7 @@ import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   useGetChat,
@@ -21,6 +23,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+
+const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 
 type Message = {
   id: string;
@@ -66,7 +70,8 @@ function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
 export default function ChatDetailScreen() {
   const { id, title } = useLocalSearchParams<{ id: string; title?: string }>();
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const insets = useSafeAreaInsets();
+  const styles = getStyles(theme, insets.bottom);
 
   const token = useUserStore((s) => s.getToken());
   const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
@@ -223,15 +228,26 @@ export default function ChatDetailScreen() {
     chatData?.data?.otherUserUsername ??
     'Chat';
 
+  const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
+
   return (
     <PageContainer
       title={headerTitle}
       style={styles.pageStyle}
       hasBottomPadding={false}
     >
-      {/* <AppText style={{ fontSize: 14, color: 'red' }}>
-        WS status: {wsStatus}
-      </AppText> */}
+      {isContractConversation && (
+        <View style={styles.contractBanner}>
+          <Image
+            source={CONTRACT_LOGO}
+            style={styles.contractBannerLogo}
+            resizeMode="contain"
+          />
+          <AppText style={styles.contractBannerText}>
+            Conversación por contrato — Estás chateando con tu entrenador
+          </AppText>
+        </View>
+      )}
 
       <View style={styles.messagesContainer}>
         {isMessagesLoading ? (
@@ -293,13 +309,11 @@ export default function ChatDetailScreen() {
         )}
       </View>
 
-      <View
-        style={[styles.inputRow, Platform.OS === 'ios' && styles.inputRowIos]}
-      >
+      <View style={styles.inputRow}>
         <TextInput
           style={styles.textInput}
           placeholder="Escribe un mensaje..."
-          placeholderTextColor={theme.dark400}
+          placeholderTextColor={theme.textSecondary}
           value={input}
           onChangeText={setInput}
           multiline
@@ -312,20 +326,40 @@ export default function ChatDetailScreen() {
           ]}
           disabled={!input.trim()}
         >
-          <Ionicons name="send" size={20} color={theme.dark100} />
+          <Ionicons name="send" size={20} color={theme.background} />
         </TouchableOpacity>
       </View>
     </PageContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: FullTheme, safeBottom: number) =>
   StyleSheet.create({
     pageStyle: {
       flex: 1,
       paddingBottom: 0,
       paddingHorizontal: 16,
       rowGap: 16,
+    },
+    contractBanner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      borderRadius: 12,
+      backgroundColor: theme.card ?? theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    contractBannerLogo: {
+      width: 32,
+      height: 32,
+    },
+    contractBannerText: {
+      flex: 1,
+      fontSize: 13,
+      color: theme.textSecondary,
     },
     messagesContainer: {
       flex: 1,
@@ -343,12 +377,12 @@ const getStyles = (theme: FullTheme) =>
     systemText: {
       marginTop: 8,
       fontSize: 13,
-      color: theme.dark400,
+      color: theme.textSecondary,
       textAlign: 'center',
     },
     messageRow: {
       flexDirection: 'row',
-      marginVertical: 2,
+      marginVertical: 4,
     },
     messageRowMe: {
       justifyContent: 'flex-end',
@@ -359,41 +393,52 @@ const getStyles = (theme: FullTheme) =>
     bubble: {
       maxWidth: '78%',
       borderRadius: 18,
-      paddingHorizontal: 12,
-      paddingVertical: 8,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
     },
     bubbleMe: {
       backgroundColor: theme.backgroundInverted,
-      borderBottomRightRadius: 4,
+      borderBottomRightRadius: 6,
+      shadowColor: theme.dark900,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.12,
+      shadowRadius: 3,
+      elevation: 2,
     },
     bubbleThem: {
-      backgroundColor: theme.background,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.dark300,
-      borderBottomLeftRadius: 4,
+      backgroundColor: theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderBottomLeftRadius: 6,
+      shadowColor: theme.dark900,
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.06,
+      shadowRadius: 2,
+      elevation: 1,
     },
     bubbleText: {
-      color: theme.dark900,
-      fontSize: 14,
+      color: theme.textPrimary,
+      fontSize: 15,
+      lineHeight: 22,
     },
     bubbleMeText: {
-      color: theme.dark100,
-      fontSize: 14,
+      color: theme.background,
+      fontSize: 15,
+      lineHeight: 22,
     },
     bubbleTime: {
-      marginTop: 4,
+      marginTop: 6,
       fontSize: 11,
-      color: theme.dark400,
+      color: theme.textSecondary,
       textAlign: 'right',
     },
     inputRow: {
       flexDirection: 'row',
       alignItems: 'flex-end',
-      columnGap: 8,
-      paddingVertical: 8,
-    },
-    inputRowIos: {
-      marginBottom: 12,
+      columnGap: 10,
+      paddingTop: 12,
+      paddingBottom: Math.max(safeBottom, 20),
+      paddingHorizontal: 0,
     },
     textInput: {
       flex: 1,
@@ -404,7 +449,7 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 8,
       backgroundColor: theme.background,
       borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.dark300,
+      borderColor: theme.border,
       fontSize: 14,
     },
     sendButton: {

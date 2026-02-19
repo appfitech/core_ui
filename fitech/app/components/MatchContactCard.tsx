@@ -132,5 +132,6 @@ const getStyles = (theme: FullTheme) =>
     },
     bioText: {
       ...HEADING_STYLES(theme).content,
+      fontSize: 12,
     },
   });

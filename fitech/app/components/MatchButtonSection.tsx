@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
@@ -30,17 +31,14 @@ export function MatchButtonSection({
     return (
       <View style={styles.container} pointerEvents="box-none">
         <Button
-          type={'tertiary'}
+          type="secondary"
+          label="Actualizar"
           onPress={onRefresh}
-          buttonStyle={{
-            height: 70,
-            width: 70,
-            borderRadius: '100%',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
+          buttonStyle={styles.refreshButton}
         >
-          <Ionicons name="refresh" size={30} color={theme.dark100} />
+          <View style={styles.refreshIconRow}>
+            <Ionicons name="refresh" size={22} color={theme.primary} />
+          </View>
         </Button>
       </View>
     );
@@ -66,5 +64,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     zIndex: 20,
+  },
+  refreshButton: {
+    minWidth: 160,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  refreshIconRow: {
+    marginLeft: 6,
   },
 });

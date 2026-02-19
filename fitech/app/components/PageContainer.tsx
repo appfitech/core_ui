@@ -20,6 +20,8 @@ import { AnimatedAppText } from './AnimatedAppText';
 import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
+const DEFAULT_CONTENT_PADDING_BOTTOM = 220;
+
 type Props = {
   children: React.ReactNode;
   hasBackButton?: boolean;
@@ -31,6 +33,8 @@ type Props = {
   subheader?: string;
   includeLogo?: boolean;
   hasBottomPadding?: boolean;
+  /** Bottom padding for scroll content so the last content is visible above nav/tab bar. Applied after style. */
+  contentPaddingBottom?: number;
   styleContainer?: ViewStyle;
 };
 
@@ -44,8 +48,12 @@ export default function PageContainer({
   subheader = '',
   includeLogo = false,
   hasBottomPadding = true,
+  contentPaddingBottom,
   styleContainer = {},
 }: Props) {
+  const scrollPaddingBottom =
+    contentPaddingBottom ??
+    (hasBottomPadding ? DEFAULT_CONTENT_PADDING_BOTTOM : 80);
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -109,12 +117,14 @@ export default function PageContainer({
                   : hasFixedHeader
                     ? fixedHeaderHeight + insets.top + 8
                     : insets.top,
-                paddingBottom: hasBottomPadding ? 150 : 80,
-                flexGrow: 1,
               },
               style,
-              // Keep horizontal padding so page styles don't make content skinnier
               { paddingHorizontal: 24 },
+              {
+                paddingBottom: scrollPaddingBottom,
+                flexGrow: 1,
+                flexShrink: 0,
+              },
             ]}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}

@@ -1,24 +1,24 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 
+import { UserResponseDtoReadable } from '@/types/api/types.gen';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FitnessGoal } from '@/types/fitness-goals';
+import { FullTheme } from '@/types/theme';
 
 import { useUpdateFitnessGoals } from '../api/mutations/use-update-fitness-goals';
 import { useGetAllFitnessGoalTypes } from '../api/queries/use-get-all-fitness-goal-types';
-import { BackButton } from '../components/BackButton';
+import { AppText } from '../components/AppText';
+import { Button } from '../components/Button';
+import PageContainer from '../components/PageContainer';
 import { SelectableCard } from '../components/SelectableCard';
 
 export default function FitnessGoalsScreen() {
-  const insets = useSafeAreaInsets();
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
   const [selectedGoals, setSelectedGoals] = useState<FitnessGoal[]>([]);
   const { mutate: updateFitnessGoals } = useUpdateFitnessGoals();
   const updateUserInfo = useUserStore((s) => s.updateUserInfo);
@@ -28,13 +28,21 @@ export default function FitnessGoalsScreen() {
     (s) => s?.user?.user?.person?.fitnessGoalTypes,
   );
 
-  const { data: goals = [] } = useGetAllFitnessGoalTypes();
+  const { data: goalsData = [] } = useGetAllFitnessGoalTypes();
 
   useEffect(() => {
-    if (userGoals?.length) {
-      setSelectedGoals(userGoals);
-    }
-  }, [userGoals]);
+    if (!userGoals?.length || !goalsData.length) return;
+    const ids = new Set(
+      userGoals.map((g) => g?.id).filter((id): id is number => id != null),
+    );
+    setSelectedGoals(
+      goalsData.filter((g) => g.id != null && ids.has(g.id)) as FitnessGoal[],
+    );
+  }, [userGoals, goalsData]);
+
+  const goals = goalsData.filter(
+    (g) => g != null && g.id != null,
+  ) as FitnessGoal[];
 
   const toggleGoal = (goal: FitnessGoal) => {
     setSelectedGoals((prev) => {
@@ -50,110 +58,84 @@ export default function FitnessGoalsScreen() {
   const handleUpdate = useCallback(() => {
     updateFitnessGoals(
       {
-        fitnessGoalTypeIds: selectedGoals?.map((goal) => goal.id),
+        fitnessGoalTypeIds: selectedGoals.map((goal) => goal.id),
       },
       {
         onSuccess: async (response) => {
-          await updateUserInfo(response);
+          if (response?.user)
+            await updateUserInfo(response.user as UserResponseDtoReadable);
           router.back();
         },
       },
     );
-  }, [selectedGoals]);
+  }, [selectedGoals, updateFitnessGoals, updateUserInfo, router]);
 
   const handleCancel = useCallback(() => {
     router.back();
-  }, []);
+  }, [router]);
 
   return (
-    <ScrollView
-      contentContainerStyle={[
-        styles.container,
-        {
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 60,
-          minHeight: '100%',
-        },
-      ]}
+    <PageContainer
+      title="Objetivos Fitness"
+      subheader="Selecciona tus metas para recomendaciones personalizadas"
+      style={styles.pageStyle}
+      contentPaddingBottom={220}
     >
-      <View style={{ marginTop: 0, marginBottom: 60 }}>
-        <BackButton />
-      </View>
-      <Text style={styles.header}>Objetivos Fitness</Text>
-      <Text style={styles.subheader}>
-        Selecciona tus metas para recibir recomendaciones personalizadas (puedes
-        elegir varios)
-      </Text>
+      <AppText style={styles.subheader}>
+        Puedes elegir varios objetivos.
+      </AppText>
 
-      {goals.map((goal) => (
-        <SelectableCard
-          key={`${goal.id}-fitness-goal-option`}
-          icon={goal.icon}
-          title={goal.name}
-          description={goal.description}
-          selected={selectedGoals.some((g) => g.id === goal.id)}
-          onPress={() => toggleGoal(goal)}
-        />
-      ))}
+      <View style={styles.cardList}>
+        {goals.map((goal) => (
+          <SelectableCard
+            key={`${goal.id}-fitness-goal-option`}
+            icon={goal.icon ?? 'fitness'}
+            title={goal.name ?? ''}
+            description={goal.description ?? ''}
+            selected={selectedGoals.some((g) => g.id === goal.id)}
+            onPress={() => toggleGoal(goal)}
+          />
+        ))}
+      </View>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelButton} onPress={handleCancel}>
-          <Text style={styles.cancelText}>Cancelar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.updateButton} onPress={handleUpdate}>
-          <Text style={styles.updateText}>Actualizar</Text>
-        </TouchableOpacity>
+        <Button
+          type="secondary"
+          onPress={handleCancel}
+          label="Cancelar"
+          style={styles.buttonFlex}
+        />
+        <Button
+          onPress={handleUpdate}
+          label="Actualizar"
+          style={styles.buttonFlex}
+        />
       </View>
-    </ScrollView>
+    </PageContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#F5F7FA',
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#0F4C81',
-    marginBottom: 4,
-  },
-  subheader: {
-    fontSize: 12,
-    color: '#555',
-    marginBottom: 36,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-  },
-  cancelButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    borderColor: '#ccc',
-    borderWidth: 1,
-    marginRight: 8,
-  },
-  cancelText: {
-    fontWeight: '600',
-    fontSize: 14,
-    color: '#444',
-  },
-  updateButton: {
-    flex: 1,
-    backgroundColor: '#0F4C81',
-    paddingVertical: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  updateText: {
-    fontWeight: '600',
-    fontSize: 14,
-    color: '#fff',
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    pageStyle: {
+      rowGap: 16,
+    },
+    subheader: {
+      fontSize: 15,
+      color: theme.textSecondary,
+      lineHeight: 22,
+      marginBottom: 8,
+    },
+    cardList: {
+      rowGap: 12,
+      marginBottom: 8,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      gap: 12,
+      marginTop: 16,
+    },
+    buttonFlex: {
+      flex: 1,
+    },
+  });

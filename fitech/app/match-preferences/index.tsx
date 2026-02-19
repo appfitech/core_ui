@@ -519,19 +519,19 @@ export default function MatchPreferencesScreen() {
       )}
 
       {/* Actions */}
-      <Row style={styles.actionsRow}>
+      <View style={styles.actionsRow}>
         <Button
           label="Guardar Preferencias"
           onPress={handleSave}
-          style={styles.buttonFlex}
+          style={styles.buttonFull}
         />
         <Button
           label="Restablecer"
           onPress={handleReset}
           type="tertiary"
-          style={styles.buttonFlex}
+          style={styles.buttonFull}
         />
-      </Row>
+      </View>
 
       {/* Location picker modal (simple multi-select) */}
       <Modal transparent visible={!!locModalOpen} animationType="fade">
@@ -713,12 +713,14 @@ const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...HEADING_STYLES(theme),
     pageStyle: {
-      padding: 16,
-      paddingBottom: 150,
+      paddingHorizontal: 16,
       rowGap: 20,
     },
     cardDark: {
-      backgroundColor: theme.dark200,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderRadius: 14,
       rowGap: 10,
     },
     titleLeft: {
@@ -730,20 +732,25 @@ const getStyles = (theme: FullTheme) =>
       ...HEADING_STYLES(theme).subtitle,
       textAlign: 'left',
     },
-    addLocationText: { opacity: 0.7 },
+    addLocationText: {
+      fontSize: 15,
+      color: theme.textSecondary,
+      fontWeight: '500',
+    },
     ageSeparator: { marginHorizontal: 8 },
     privacyCard: {
-      backgroundColor: theme.dark200,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderRadius: 14,
       rowGap: 20,
     },
     privacyInner: { rowGap: 6 },
     actionsRow: {
-      marginTop: 8,
-      gap: 12,
-      flexDirection: 'row',
-      alignItems: 'center',
+      marginTop: 12,
+      rowGap: 12,
     },
-    buttonFlex: { flex: 1 },
+    buttonFull: { width: '100%' },
     modalScroll: { maxHeight: 320 },
     modalFooterRow: {
       justifyContent: 'flex-end',
@@ -755,8 +762,8 @@ const getStyles = (theme: FullTheme) =>
     modalCloseButton: { paddingHorizontal: 20 },
     rowBase: { flexDirection: 'row', alignItems: 'center' },
     rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    locationRowSelected: { backgroundColor: theme.backgroundInverted },
-    locationRowTextSelected: { color: theme.dark100, fontWeight: '700' },
+    locationRowSelected: { backgroundColor: theme.primary },
+    locationRowTextSelected: { color: theme.background, fontWeight: '700' },
     sectionTitle: {
       marginTop: 10,
       marginBottom: 8,
@@ -767,33 +774,48 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 10,
       paddingHorizontal: 14,
       borderRadius: 999,
-      backgroundColor: '#F1F1F1',
+      backgroundColor: theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
-    chipActive: { backgroundColor: theme.backgroundInverted },
-    chipText: { fontWeight: '600' },
-    chipTextActive: { color: theme.dark100, fontWeight: '700' },
+    chipActive: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    chipText: {
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
+    chipTextActive: { color: theme.background, fontWeight: '700' },
 
-    smallLabel: { marginTop: 12, marginBottom: 6, opacity: 0.8 },
+    smallLabel: {
+      marginTop: 12,
+      marginBottom: 6,
+      fontSize: 13,
+      fontWeight: '600',
+      color: theme.textSecondary,
+    },
 
     ageInput: {
       minWidth: 90,
-      borderRadius: 10,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#D7D7D7',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
       paddingVertical: 10,
       paddingHorizontal: 12,
-      backgroundColor: '#FFF',
+      backgroundColor: theme.backgroundInput,
       textAlign: 'center',
       fontWeight: '700',
+      color: theme.textPrimary,
     },
 
     locationPicker: {
-      borderRadius: 10,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: '#D7D7D7',
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
       paddingVertical: 12,
-      paddingHorizontal: 12,
-      backgroundColor: '#FFF',
+      paddingHorizontal: 14,
+      backgroundColor: theme.backgroundInput,
       marginBottom: 8,
     },
     tag: {
@@ -801,8 +823,8 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 12,
       borderRadius: 999,
     },
-    tagSelected: { backgroundColor: theme.backgroundInverted },
-    tagText: { color: theme.dark100, fontWeight: '700' },
+    tagSelected: { backgroundColor: theme.primary },
+    tagText: { color: theme.background, fontWeight: '700' },
     modalBackdrop: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.25)',
@@ -811,16 +833,28 @@ const getStyles = (theme: FullTheme) =>
     },
     modalCard: {
       borderRadius: 16,
-      backgroundColor: theme.dark100,
-      padding: 16,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 18,
     },
-    modalTitle: { fontSize: 18, fontWeight: '800', marginBottom: 8 },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      marginBottom: 12,
+      color: theme.textPrimary,
+    },
     locationRow: {
-      paddingVertical: 12,
-      paddingHorizontal: 10,
-      borderRadius: 10,
+      paddingVertical: 14,
+      paddingHorizontal: 14,
+      borderRadius: 12,
       marginBottom: 8,
-      backgroundColor: '#F5F5F5',
+      backgroundColor: theme.backgroundInput,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
-    locationRowText: { fontWeight: '600' },
+    locationRowText: {
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
   });

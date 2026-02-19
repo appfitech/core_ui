@@ -58,35 +58,28 @@ export default function SupportScreen() {
     <PageContainer
       title="Centro de Soporte"
       subheader="¿Necesitas ayuda? Estamos aquí para asistirte"
-      style={{ rowGap: 12 }}
+      style={styles.pageStyle}
     >
-      <Card style={{ rowGap: 12 }}>
-        <AppText
-          style={{
-            fontSize: 18,
-            color: 'white',
-            fontWeight: '700',
-          }}
-        >
-          {'Contacto directo'}
-        </AppText>
+      <Card style={[styles.contactCard, { backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border }]}>
+        <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
-          <Ionicons name="call-outline" size={20} color={theme.icon} />
+          <Ionicons name="call-outline" size={20} color={theme.primary} />
           <AppText style={styles.contactText}>+51 (01) 615-8900</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="mail-outline" size={20} color={theme.icon} />
+          <Ionicons name="mail-outline" size={20} color={theme.primary} />
           <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="location-outline" size={20} color={theme.icon} />
+          <Ionicons name="location-outline" size={20} color={theme.primary} />
           <AppText style={styles.contactText}>
             Av. El Derby 254, Surco, Lima
           </AppText>
         </View>
       </Card>
 
-      <View style={styles.form}>
+      <Card style={[styles.formCard, { backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border }]}>
+        <AppText style={styles.formCardTitle}>Enviar consulta</AppText>
         <Dropdown
           isOpen={isOpen}
           value={form.type}
@@ -110,13 +103,14 @@ export default function SupportScreen() {
           value={form?.description}
           onChangeText={handleChange('description')}
           multiline
-          numberOfLines={7}
+          numberOfLines={5}
+          style={styles.descriptionInput}
         />
-      </View>
+      </Card>
 
       <View style={styles.buttonRow}>
-        <Button type={'secondary'} onPress={handleClear} label={'Limpiar'} />
-        <Button onPress={handleSubmit} label={'Enviar Consulta'} />
+        <Button type="secondary" onPress={handleClear} label="Limpiar" style={styles.buttonFull} />
+        <Button onPress={handleSubmit} label="Enviar Consulta" style={styles.buttonFull} />
       </View>
     </PageContainer>
   );
@@ -124,27 +118,19 @@ export default function SupportScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      padding: 20,
-      backgroundColor: '#F5F7FA',
+    pageStyle: {
+      flex: 1,
+      paddingHorizontal: 16,
+      paddingBottom: 160,
+      rowGap: 16,
     },
-    dropdown: {
-      backgroundColor: '#F5F7FA',
-      borderColor: '#ccc',
-      borderRadius: 10,
+    contactCard: {
+      rowGap: 12,
     },
-    title: {
-      fontSize: 26,
+    contactTitle: {
+      fontSize: 18,
       fontWeight: '700',
-      color: '#0F4C81',
-      textAlign: 'center',
-      marginBottom: 4,
-    },
-    subtitle: {
-      fontSize: 16,
-      color: '#555',
-      textAlign: 'center',
-      marginBottom: 20,
+      color: theme.textPrimary,
     },
     contactRow: {
       flexDirection: 'row',
@@ -153,83 +139,31 @@ const getStyles = (theme: FullTheme) =>
     },
     contactText: {
       fontSize: 15,
-      color: theme.dark100,
-      fontWeight: 400,
+      color: theme.textSecondary,
+      fontWeight: '400',
     },
-    form: {
-      backgroundColor: '#fff',
-      borderRadius: 12,
-      marginTop: 10,
-      rowGap: 12,
+    formCard: {
+      borderRadius: 14,
+      padding: 18,
+      rowGap: 14,
     },
-    input: {
-      backgroundColor: '#F5F7FA',
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      paddingVertical: 10,
-      fontSize: 14,
-      borderWidth: 1,
-      borderColor: '#E0E0E0',
-      color: '#1B1F23',
+    formCardTitle: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      marginBottom: 4,
     },
-    textArea: {
-      height: 100,
-      paddingTop: 10,
-    },
-    clearButton: {
-      backgroundColor: '#ccc',
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-    },
-    clearButtonText: {
-      color: '#333',
-      fontWeight: '600',
-    },
-    submitButton: {
-      flexDirection: 'row',
-      backgroundColor: '#0F4C81',
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    submitButtonText: {
-      color: '#fff',
-      fontWeight: '600',
-      marginLeft: 6,
+    descriptionInput: {
+      minHeight: 100,
+      maxHeight: 140,
+      flex: undefined,
     },
     buttonRow: {
-      flexDirection: 'column',
-      marginTop: 20,
-      rowGap: 10,
-    },
-    cancelButton: {
-      flex: 1,
-      paddingVertical: 14,
-      borderRadius: 10,
-      alignItems: 'center',
-      borderColor: '#ccc',
-      borderWidth: 1,
-    },
-    cancelText: {
-      fontWeight: '600',
-      fontSize: 14,
-      color: '#444',
-    },
-    updateButton: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
+      rowGap: 12,
+      marginTop: 8,
       width: '100%',
-      backgroundColor: '#0F4C81',
-      paddingVertical: 14,
-      borderRadius: 10,
     },
-    updateText: {
-      fontWeight: '600',
-      fontSize: 14,
-      color: '#fff',
-      paddingLeft: 10,
+    buttonFull: {
+      width: '100%',
     },
   });

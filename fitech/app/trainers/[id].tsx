@@ -95,9 +95,16 @@ export default function TrainerProfileScreen() {
                   <AppText style={styles.serviceDesc} numberOfLines={2}>
                     {service.description}
                   </AppText>
-                  <AppText style={styles.servicePrice}>
-                    S/ {service.totalPrice.toFixed(2)}
-                  </AppText>
+                  <View style={styles.servicePriceRow}>
+                    <Ionicons
+                      name="cash-outline"
+                      size={20}
+                      color={theme.primary}
+                    />
+                    <AppText style={styles.servicePrice}>
+                      S/ {service.totalPrice.toFixed(2)}
+                    </AppText>
+                  </View>
                   <View style={styles.serviceCta}>
                     <Button
                       label="Contratar servicio"
@@ -218,11 +225,16 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 6,
       lineHeight: 20,
     },
+    servicePriceRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      marginTop: 8,
+    },
     servicePrice: {
       fontSize: 15,
       fontWeight: '700',
-      color: theme.primaryText,
-      marginTop: 8,
+      color: theme.primary,
     },
     serviceCta: {
       marginTop: 14,
