@@ -62,18 +62,8 @@ type DayObj = { dateString: string; day: number; month: number; year: number };
 const todayISO = moment().format('YYYY-MM-DD');
 
 const pad = (n: number) => String(n).padStart(2, '0');
-const toISO = (d: Date) =>
-  `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 const fromISO = (iso: string) => new Date(`${iso}T00:00:00`);
 
-function weekDates(weekStartISO: string) {
-  const start = fromISO(weekStartISO);
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    return toISO(d);
-  });
-}
 const monthRange = (year: number, month1to12: number) => {
   const start = `${year}-${pad(month1to12)}-01`;
   const lastDay = new Date(year, month1to12, 0).getDate();
@@ -107,7 +97,7 @@ export default function ExercisesScreen() {
     Record<string, WorkoutSessionDto[]>
   >({});
 
-  const [muscleGroupFilter, setMuscleGroupFilter] = useState([]);
+  const [muscleGroupFilter, setMuscleGroupFilter] = useState<string[]>([]);
 
   const { y, m } = visibleYM;
   const { start, end } = monthRange(y, m);
@@ -135,8 +125,8 @@ export default function ExercisesScreen() {
     marked[selectedDate] = {
       ...(marked[selectedDate] ?? {}),
       selected: true,
-      selectedColor: theme.backgroundInverted,
-      selectedTextColor: theme.dark100,
+      selectedColor: theme.primary,
+      selectedTextColor: theme.background,
     };
     return marked;
   }, [selectedDate, theme]);
@@ -155,9 +145,10 @@ export default function ExercisesScreen() {
       subheader="Lleva el control de tus workouts y alcanza tus metas fitness"
       style={styles.pageStyle}
     >
-      <View style={styles.filterSection}>
-        <AppText style={styles.filterTitle}>
-          {'Filtro por grupo muscular'}
+      <View style={styles.filterCard}>
+        <AppText style={styles.filterTitle}>Filtro por grupo muscular</AppText>
+        <AppText style={styles.filterHint}>
+          Toca un grupo para filtrar los entrenamientos del mes
         </AppText>
         <ChipsList
           selectedValues={muscleGroupFilter}
@@ -167,7 +158,8 @@ export default function ExercisesScreen() {
           }
         />
       </View>
-      <View style={styles.calendarWrapper}>
+
+      <View style={styles.calendarCard}>
         <Calendar
           onDayPress={(d: DayObj) => handleOpenDay(d.dateString)}
           onMonthChange={(m: any) => setVisibleYM({ y: m.year, m: m.month })}
@@ -181,12 +173,11 @@ export default function ExercisesScreen() {
             const count = monthData[ds]?.length || 0;
             const isSelected = ds === selectedDate;
             const isDisabled = state === 'disabled';
-            const hasWorkoutBg =
-              count > 0 ? 'rgba(91, 194, 54, 0.15)' : 'transparent';
+            const hasWorkout = count > 0;
             const textColor = isSelected
-              ? theme.dark100
+              ? theme.background
               : isDisabled
-                ? (theme.dark300 ?? '#A0A0A0')
+                ? theme.dark400
                 : theme.textPrimary;
             const dots = Array(Math.min(count, 3))
               .fill(0)
@@ -197,8 +188,8 @@ export default function ExercisesScreen() {
                     styles.dayDot,
                     {
                       backgroundColor: isSelected
-                        ? theme.dark100
-                        : (theme.success ?? theme.backgroundInverted),
+                        ? theme.background
+                        : theme.primary,
                     },
                   ]}
                 />
@@ -214,8 +205,10 @@ export default function ExercisesScreen() {
                     styles.dayInner,
                     {
                       backgroundColor: isSelected
-                        ? theme.backgroundInverted
-                        : hasWorkoutBg,
+                        ? theme.primary
+                        : hasWorkout
+                          ? theme.primaryBg
+                          : 'transparent',
                     },
                   ]}
                 >
@@ -223,12 +216,12 @@ export default function ExercisesScreen() {
                     style={[
                       styles.dayText,
                       {
-                        fontWeight: isSelected ? '700' : '400',
+                        fontWeight: isSelected ? '700' : '500',
                         color: textColor,
                       },
                     ]}
                   >
-                    {date.day}
+                    {date?.day ?? ''}
                   </AppText>
                   {count > 0 && <View style={styles.dotsRow}>{dots}</View>}
                 </View>
@@ -242,16 +235,16 @@ export default function ExercisesScreen() {
 }
 
 const calendarTheme = (theme: FullTheme) => ({
-  backgroundColor: theme.dark100,
-  calendarBackground: theme.dark100,
+  backgroundColor: theme.card,
+  calendarBackground: theme.card,
   textSectionTitleColor: theme.textSecondary,
-  selectedDayBackgroundColor: theme.backgroundInverted,
-  selectedDayTextColor: theme.dark100,
-  todayTextColor: theme.primary ?? theme.backgroundInverted,
+  selectedDayBackgroundColor: theme.primary,
+  selectedDayTextColor: theme.background,
+  todayTextColor: theme.primary,
   dayTextColor: theme.textPrimary,
-  textDisabledColor: theme.secondary ?? '#A0A0A0',
-  dotColor: theme.primary ?? theme.backgroundInverted,
-  selectedDotColor: theme.dark100,
+  textDisabledColor: theme.dark400,
+  dotColor: theme.primary,
+  selectedDotColor: theme.background,
   arrowColor: theme.textPrimary,
   monthTextColor: theme.textPrimary,
   textDayFontSize: 16,
@@ -261,28 +254,49 @@ const calendarTheme = (theme: FullTheme) => ({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { padding: 16 },
-    filterSection: { rowGap: 8, marginTop: 12 },
-    filterTitle: {
-      fontWeight: '600',
-      color: theme.primary,
-      fontSize: 15,
+    pageStyle: { paddingBottom: 180 },
+    filterCard: {
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginTop: 16,
+      rowGap: 8,
     },
-    calendarWrapper: { marginTop: 16, borderRadius: 12, overflow: 'hidden' },
-    dayTouchable: { paddingVertical: 4, paddingHorizontal: 2 },
+    filterTitle: {
+      fontSize: 16,
+      fontWeight: '800',
+      color: theme.primaryText,
+    },
+    filterHint: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      marginTop: -2,
+    },
+    calendarCard: {
+      marginTop: 20,
+      borderRadius: 16,
+      overflow: 'hidden',
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 12,
+    },
+    dayTouchable: { paddingVertical: 6, paddingHorizontal: 2 },
     dayInner: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 6,
-      paddingHorizontal: 6,
-      borderRadius: 8,
+      paddingVertical: 8,
+      paddingHorizontal: 8,
+      borderRadius: 12,
     },
-    dayText: { textAlign: 'center' },
-    dotsRow: { flexDirection: 'row', marginTop: 4 },
+    dayText: { textAlign: 'center', fontSize: 15 },
+    dotsRow: { flexDirection: 'row', marginTop: 4, columnGap: 2 },
     dayDot: {
       width: 4,
       height: 4,
       borderRadius: 2,
-      marginHorizontal: 2,
     },
   });

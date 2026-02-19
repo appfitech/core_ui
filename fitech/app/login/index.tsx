@@ -78,7 +78,11 @@ export default function LoginScreen() {
   };
 
   return (
-    <PageContainer hasBottomPadding={false} style={{ paddingHorizontal: 24 }}>
+    <PageContainer
+      hasBackButton={false}
+      hasBottomPadding={false}
+      style={{ paddingHorizontal: 24 }}
+    >
       <View style={styles.headerWrapper}>
         <Animated.Image
           entering={FadeInUp.duration(600)}
@@ -182,6 +186,7 @@ const getStyles = (theme: FullTheme) =>
       width: '100%',
       alignItems: 'center',
       marginBottom: 32,
+      marginTop: 36,
     },
     logo: {
       width: 80,

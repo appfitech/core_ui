@@ -24,7 +24,7 @@ export function HomeSectionContainer({ children, title, onClick }: Props) {
         <TouchableOpacity onPress={onClick} style={styles.sectionAction}>
           <AppText style={styles.sectionActionText}>{'Ver todo'}</AppText>
           <Ionicons
-            name="chevrons-forward"
+            name="chevron-forward"
             size={16}
             color={theme.successText}
           />

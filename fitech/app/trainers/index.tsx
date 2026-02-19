@@ -1,23 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import debounce from 'lodash.debounce';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-import { Trainer } from '@/types/trainer';
 
 import { useSearchTrainers } from '../api/mutations/use-search-trainers';
 import { AppText } from '../components/AppText';
-import { Card } from '../components/Card';
 import PageContainer from '../components/PageContainer';
 import { SearchBar } from '../components/SearchBar';
 
 export default function TrainersSearchScreen() {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Trainer[]>([]);
+  const [results, setResults] = useState<PublicTrainerDtoReadable[]>([]);
   const { mutate } = useSearchTrainers();
   const router = useRouter();
   const { theme } = useTheme();
@@ -25,24 +23,29 @@ export default function TrainersSearchScreen() {
   const styles = getStyles(theme);
 
   const performSearch = useCallback(
-    debounce((q: string) => {
+    (q: string) => {
       const payload = q.trim().length === 0 ? {} : { query: q };
       mutate(payload, {
-        onSuccess: (data) => {
-          setResults(data);
+        onSuccess: (data: PublicTrainerDtoReadable[] | undefined) => {
+          setResults(data ?? []);
         },
       });
-    }, 500),
+    },
     [mutate],
   );
 
-  useEffect(() => {
-    performSearch('');
-  }, []);
+  const debouncedSearch = useMemo(
+    () => debounce(performSearch, 500),
+    [performSearch],
+  );
 
   useEffect(() => {
-    performSearch(query);
-  }, [query]);
+    debouncedSearch('');
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    debouncedSearch(query);
+  }, [query, debouncedSearch]);
 
   return (
     <PageContainer
@@ -51,7 +54,10 @@ export default function TrainersSearchScreen() {
       hasBackButton={false}
       style={styles.pageStyle}
     >
-      <View style={styles.searchRow}>
+      <View style={styles.filterCard}>
+        <AppText style={styles.filterHint}>
+          Busca por nombre del entrenador
+        </AppText>
         <SearchBar
           placeholder="Buscar por nombre"
           value={query}
@@ -59,47 +65,43 @@ export default function TrainersSearchScreen() {
           shouldHideEndIcon={true}
           containerStyle={styles.searchBarContainer}
         />
-        <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="chevrons-forward" size={22} color={theme.dark100} />
-        </TouchableOpacity>
       </View>
 
       <AppText style={styles.resultCount}>
-        {results?.length} entrenadores encontrados
+        {results?.length ?? 0} entrenadores encontrados
       </AppText>
 
-      <View style={styles.resultsList}>
+      <View style={styles.list}>
         {results?.map((trainer) => (
-          <Card key={trainer.id} style={styles.cardRow}>
+          <TouchableOpacity
+            key={trainer.id ?? 0}
+            style={styles.card}
+            onPress={() => router.push(`/trainers/${trainer.id}`)}
+            activeOpacity={0.78}
+          >
             <Image
               source={{
-                uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
+                uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person?.profilePhotoId}`,
               }}
-              style={styles.trainerAvatar}
+              style={styles.avatar}
             />
             <View style={styles.cardContent}>
               <AppText style={styles.name}>
-                {trainer.person.firstName} {trainer.person.lastName}
+                {trainer.person?.firstName} {trainer.person?.lastName}
               </AppText>
               <AppText style={styles.bio} numberOfLines={3}>
-                {trainer.person.bio}
+                {trainer.person?.bio || 'Sin descripción'}
               </AppText>
-              <View style={styles.buttonRow}>
-                <TouchableOpacity
-                  style={styles.profileButton}
-                  onPress={() => router.push(`/trainers/${trainer.id}`)}
-                >
-                  <Text style={styles.profileText}>{'Ver Perfil'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.contactButton}
-                  onPress={() => router.push(`/trainers/${trainer.id}`)}
-                >
-                  <AppText style={styles.contactText}>{'Contactar'}</AppText>
-                </TouchableOpacity>
+              <View style={styles.ctaRow}>
+                <AppText style={styles.ctaText}>Ver perfil</AppText>
+                <Ionicons
+                  name="chevron-forward"
+                  size={18}
+                  color={theme.primaryText}
+                />
               </View>
             </View>
-          </Card>
+          </TouchableOpacity>
         ))}
       </View>
     </PageContainer>
@@ -108,87 +110,75 @@ export default function TrainersSearchScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: {
-      padding: 16,
+    pageStyle: { paddingBottom: 180 },
+    filterCard: {
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginTop: 16,
     },
-    searchRow: {
-      flexDirection: 'row',
-      marginBottom: 20,
-      columnGap: 4,
-      alignItems: 'center',
+    filterHint: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      marginBottom: 10,
     },
     searchBarContainer: {
-      width: 'unset',
-      flex: 1,
-    },
-    searchButton: {
-      backgroundColor: theme.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 10,
-      height: 43,
-      width: 43,
-    },
-    resultsList: {
-      rowGap: 12,
-    },
-    cardRow: {
-      flexDirection: 'row',
-      columnGap: 10,
-      backgroundColor: theme.dark200,
-    },
-    trainerAvatar: {
-      width: 100,
-      height: 100,
-      borderRadius: 100,
-    },
-    cardContent: {
-      flex: 1,
+      width: '100%',
     },
     resultCount: {
       fontSize: 14,
       fontWeight: '600',
-      color: theme.dark800,
-      marginBottom: 12,
-      alignSelf: 'flex-end',
+      color: theme.textSecondary,
+      marginTop: 16,
+      marginBottom: 4,
+    },
+    list: {
+      marginTop: 8,
+      rowGap: 14,
+    },
+    card: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.card,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 16,
+      columnGap: 14,
+    },
+    avatar: {
+      width: 72,
+      height: 72,
+      borderRadius: 36,
+    },
+    cardContent: {
+      flex: 1,
+      minWidth: 0,
     },
     name: {
-      fontSize: 14,
+      fontSize: 17,
       fontWeight: '700',
-      color: '#0F4C81',
+      color: theme.textPrimary,
     },
     bio: {
-      fontSize: 12,
-      color: '#555',
+      fontSize: 14,
+      color: theme.textSecondary,
       marginTop: 4,
+      lineHeight: 20,
     },
-    buttonRow: {
+    ctaRow: {
       flexDirection: 'row',
-      marginTop: 8,
-      justifyContent: 'space-between',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      gap: 4,
+      marginTop: 10,
     },
-    profileButton: {
-      backgroundColor: '#0F4C81',
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 6,
+    ctaText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: theme.primaryText,
     },
-    profileText: {
-      color: '#fff',
-      fontSize: 12,
-      fontWeight: '600',
-    },
-    contactButton: {
-      borderColor: '#0F4C81',
-      borderWidth: 1,
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 6,
-    },
-    contactText: {
-      color: '#0F4C81',
-      fontSize: 12,
-      fontWeight: '600',
-    },
-    ...HEADING_STYLES(theme),
   });

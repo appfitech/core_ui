@@ -113,6 +113,8 @@ export default function PageContainer({
                 flexGrow: 1,
               },
               style,
+              // Keep horizontal padding so page styles don't make content skinnier
+              { paddingHorizontal: 24 },
             ]}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}

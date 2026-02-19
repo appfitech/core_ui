@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ReviewableContractDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
@@ -20,6 +20,10 @@ import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
 import { Tag } from '../components/Tag';
 import { ReviewModal } from './ReviewModal';
+
+moment.locale('es');
+const formatDate = (iso?: string) =>
+  iso ? moment(iso).format('D MMM YYYY') : '—';
 
 export default function ContractsScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');
@@ -48,12 +52,9 @@ export default function ContractsScreen() {
   );
 
   const handleDetails = (contract: ReviewableContractDto) => {
-    if (!contract?.serviceId) {
-      return;
-    }
-
+    if (!contract?.serviceId) return;
     router.push({
-      pathname: `${ROUTES.contracts}/${contract?.serviceId}`,
+      pathname: `${ROUTES.contracts}/${contract.serviceId}`,
       params: { contract: JSON.stringify(contract) },
     });
   };
@@ -66,7 +67,6 @@ export default function ContractsScreen() {
     existingReviewId: number | null = null,
   ) => {
     const mutateAction = existingReviewId ? updateReview : submitReview;
-
     mutateAction(
       {
         serviceContractId: contractId,
@@ -85,110 +85,152 @@ export default function ContractsScreen() {
     );
   };
 
+  const getStatusTag = (contract: ReviewableContractDto) => {
+    if (contract.contractStatus === 'ACTIVE') return null;
+    if (contract.contractStatus === 'COMPLETED')
+      return (
+        <Tag
+          backgroundColor={theme.backgroundInput}
+          textColor={theme.textSecondary}
+          label="Completado"
+        />
+      );
+    if (contract.contractStatus === 'CANCELLED')
+      return (
+        <Tag
+          backgroundColor={theme.errorBackground}
+          textColor={theme.errorText}
+          label="Cancelado"
+        />
+      );
+    return null;
+  };
+
   return (
     <PageContainer
       title="Mis Contratos"
       subheader="Gestiona tus contratos de servicios de entrenamiento"
       style={styles.pageStyle}
     >
-      <View style={styles.tabRow}>
-        {['ACTIVE', 'INACTIVE'].map((status) => (
-          <TouchableOpacity
-            key={status}
-            style={[
-              styles.tabButton,
-              filter === status && styles.tabButtonActive,
-            ]}
-            onPress={() => setFilter(status as 'ACTIVE' | 'INACTIVE')}
-          >
-            <AppText
-              style={[
-                styles.tabText,
-                filter === status && styles.tabTextActive,
-              ]}
-            >
-              {status === 'ACTIVE' ? 'Activos' : 'Completados'}
-            </AppText>
-          </TouchableOpacity>
-        ))}
+      <View style={styles.filterCard}>
+        <AppText style={styles.filterHint}>
+          Mostrar solo contratos activos o completados
+        </AppText>
+        <View style={styles.tabRow}>
+          {(['ACTIVE', 'INACTIVE'] as const).map((status) => {
+            const isActive = filter === status;
+            return (
+              <TouchableOpacity
+                key={status}
+                style={[styles.tabButton, isActive && styles.tabButtonActive]}
+                onPress={() => setFilter(status)}
+              >
+                <AppText
+                  style={[styles.tabText, isActive && styles.tabTextActive]}
+                >
+                  {status === 'ACTIVE' ? 'Activos' : 'Completados'}
+                </AppText>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
       </View>
 
-      <View style={styles.cardsList}>
-        {filteredContracts?.map((contract) => (
-          <View key={contract.id ?? contract?.contractId} style={styles.card}>
-            <AppText style={styles.cardTitle}>{contract.serviceName}</AppText>
-            <View style={styles.cardRow}>
-              <Ionicons name="person-outline" size={18} color={theme.dark700} />
-              <AppText style={styles.cardInfo}>
-                Trainer: {contract.trainerName}
-              </AppText>
-            </View>
-            {contract?.completionDate && (
-              <View style={styles.cardRow}>
-                <Ionicons
-                  name="calendar-outline"
-                  size={18}
-                  color={theme.dark700}
-                />
-                <AppText style={styles.cardInfo}>
-                  Fecha de fin: {contract.startDate ?? contract?.completionDate}
-                </AppText>
-              </View>
-            )}
-            {contract?.totalAmount && (
-              <View style={styles.cardRow}>
-                <Ionicons name="cash-outline" size={18} color={theme.dark700} />
-                <AppText style={styles.cardInfo}>
-                  Monto: S/ {contract.totalAmount.toFixed(2)}
-                </AppText>
-              </View>
-            )}
-            {contract.contractStatus === 'ACTIVE' && (
-              <Tag
-                backgroundColor={theme.successBackground}
-                textColor={theme.successText}
-                label={'Activo'}
-              />
-            )}
-            {contract.contractStatus === 'COMPLETED' && (
-              <Tag
-                backgroundColor={theme.dark500}
-                textColor={theme.dark100}
-                label={'Completado'}
-              />
-            )}
-            {contract.contractStatus === 'CANCELLED' && (
-              <Tag
-                backgroundColor={theme.errorText}
-                textColor={theme.errorBorder}
-                label={'Cancelado'}
-              />
-            )}
-            <View>
-              {
+      <View style={styles.list}>
+        {filteredContracts?.length === 0 ? (
+          <View style={styles.emptyWrap}>
+            <AppText style={styles.emptyText}>
+              No hay contratos con el filtro aplicado
+            </AppText>
+            <AppText style={styles.emptyHint}>
+              Prueba otro filtro o vuelve más tarde
+            </AppText>
+          </View>
+        ) : (
+          filteredContracts?.map((contract, index) => {
+            const statusTag = getStatusTag(contract);
+            return (
+            <View
+              key={contract.contractId ?? contract.serviceId ?? index}
+              style={styles.card}
+            >
+              <AppText style={styles.cardTitle}>{contract.serviceName}</AppText>
+
+              {contract.trainerName ? (
+                <View style={styles.cardRow}>
+                  <Ionicons
+                    name="person-outline"
+                    size={18}
+                    color={theme.textSecondary}
+                    style={styles.cardRowIcon}
+                  />
+                  <AppText style={styles.cardInfo}>
+                    {contract.trainerName}
+                  </AppText>
+                </View>
+              ) : null}
+
+              {(contract as any)?.startDate || contract?.endDate ? (
+                <View style={styles.cardRow}>
+                  <Ionicons
+                    name="calendar-outline"
+                    size={18}
+                    color={theme.textSecondary}
+                    style={styles.cardRowIcon}
+                  />
+                  <AppText style={styles.cardInfo} numberOfLines={1}>
+                    {(contract as any)?.startDate && contract?.endDate
+                      ? `${formatDate((contract as any).startDate)} – ${formatDate(contract.endDate)}`
+                      : (contract as any)?.startDate
+                        ? `Desde ${formatDate((contract as any).startDate)}`
+                        : `Hasta ${formatDate(contract.endDate)}`}
+                  </AppText>
+                </View>
+              ) : null}
+
+              {(contract as any)?.totalAmount != null ? (
+                <View style={styles.cardRow}>
+                  <Ionicons
+                    name="cash-outline"
+                    size={18}
+                    color={theme.textSecondary}
+                    style={styles.cardRowIcon}
+                  />
+                  <AppText style={styles.cardInfo}>
+                    S/ {(contract as any).totalAmount.toFixed(2)}
+                  </AppText>
+                </View>
+              ) : null}
+
+              {statusTag ? (
+                <View style={styles.tagsRow}>{statusTag}</View>
+              ) : null}
+
+              <View style={styles.ctaRow}>
                 <TouchableOpacity
-                  style={styles.detailsButton}
+                  style={styles.ctaButton}
                   onPress={() => handleDetails(contract)}
                 >
-                  <AppText style={styles.detailsButtonText}>
-                    Ver Detalles&nbsp;
-                  </AppText>
+                  <AppText style={styles.ctaText}>Ver detalle</AppText>
                   <Ionicons
                     name="chevron-forward"
-                    size={16}
-                    color={theme.dark900}
+                    size={18}
+                    color={theme.primaryText}
                   />
                 </TouchableOpacity>
-              }
-              {['CANCELLED', 'COMPLETED'].includes(contract.contractStatus) && (
+              </View>
+
+              {['CANCELLED', 'COMPLETED'].includes(
+                contract.contractStatus ?? '',
+              ) && (
                 <TouchableOpacity
                   style={styles.reviewButton}
                   onPress={() => {
                     setDisplayReview(true);
                     contract?.contractId &&
-                      setSelectedContractId(contract?.contractId);
+                      setSelectedContractId(contract.contractId);
                     contract?.existingReviewId &&
-                      setSelectedReviewId(contract?.existingReviewId);
+                      setSelectedReviewId(contract.existingReviewId);
                   }}
                 >
                   <AppText style={styles.reviewButtonText}>
@@ -199,14 +241,16 @@ export default function ContractsScreen() {
                   <Ionicons
                     name="chevron-forward"
                     size={16}
-                    color={theme.infoBackground}
+                    color={theme.infoText}
                   />
                 </TouchableOpacity>
               )}
             </View>
-          </View>
-        ))}
+            );
+          })
+        )}
       </View>
+
       <ReviewModal
         isOpen={displayReview}
         contractId={selectedContractId}
@@ -224,82 +268,134 @@ export default function ContractsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { padding: 16 },
-    cardsList: { rowGap: 20, marginBottom: 100 },
+    pageStyle: { paddingBottom: 180 },
+    filterCard: {
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginTop: 16,
+    },
+    filterHint: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      marginBottom: 10,
+    },
     tabRow: {
       flexDirection: 'row',
-      marginVertical: 20,
-      overflow: 'hidden',
-      columnGap: 16,
+      columnGap: 10,
+      flexWrap: 'wrap',
     },
     tabButton: {
-      paddingVertical: 12,
-      paddingHorizontal: 20,
+      paddingVertical: 10,
+      paddingHorizontal: 18,
       alignItems: 'center',
-      borderRadius: 20,
+      borderRadius: 999,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     tabButtonActive: {
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
     },
     tabText: {
-      fontSize: 16,
+      fontSize: 15,
       color: theme.textPrimary,
       fontWeight: '600',
     },
     tabTextActive: {
-      color: theme.dark100,
+      color: theme.background,
+      fontWeight: '700',
+    },
+    list: {
+      marginTop: 20,
+      rowGap: 16,
+    },
+    emptyWrap: {
+      marginTop: 24,
+      paddingVertical: 32,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: theme.textPrimary,
+      textAlign: 'center',
+    },
+    emptyHint: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      marginTop: 8,
+      textAlign: 'center',
     },
     card: {
-      backgroundColor: theme.dark100,
-      borderRadius: 16,
-      borderColor: theme.green400,
+      backgroundColor: theme.card,
+      borderRadius: 14,
       borderWidth: 1,
-      padding: 16,
-      rowGap: 6,
+      borderColor: theme.border,
+      padding: 18,
+      paddingBottom: 14,
     },
     cardTitle: {
-      fontSize: 17.5,
-      fontWeight: '600',
-      color: theme.dark700,
-      marginBottom: 8,
+      fontSize: 17,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      marginBottom: 10,
     },
     cardRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 6,
+      marginBottom: 8,
+    },
+    cardRowIcon: {
+      marginRight: 10,
     },
     cardInfo: {
-      fontSize: 15,
-      color: theme.dark800,
-      paddingLeft: 10,
+      flex: 1,
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.textSecondary,
+      minWidth: 0,
     },
-    detailsButton: {
-      marginTop: 12,
-      backgroundColor: theme.green400,
-      padding: 12,
-      borderRadius: 10,
+    tagsRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+      marginBottom: 12,
+    },
+    ctaRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
+    },
+    ctaButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    ctaText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: theme.primaryText,
     },
     reviewButton: {
       marginTop: 10,
-      backgroundColor: theme.infoText,
-      padding: 12,
-      borderRadius: 10,
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-    },
-    detailsButtonText: {
-      color: theme.dark900,
-      fontWeight: '500',
-      fontSize: 15,
+      gap: 4,
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 10,
+      backgroundColor: theme.infoBackground,
     },
     reviewButtonText: {
-      color: theme.infoBackground,
-      fontWeight: '500',
-      fontSize: 15,
+      fontSize: 14,
+      fontWeight: '600',
+      color: theme.infoText,
     },
-    ...HEADING_STYLES(theme),
   });

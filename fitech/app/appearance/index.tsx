@@ -15,6 +15,12 @@ import PageContainer from '../components/PageContainer';
 
 const PREFERENCES: ThemePreference[] = ['system', 'light', 'dark'];
 
+const PREFERENCE_ICONS: Record<ThemePreference, string> = {
+  system: 'phone-portrait-outline',
+  light: 'sunny-outline',
+  dark: 'moon-outline',
+};
+
 export default function AppearanceScreen() {
   const router = useRouter();
   const { theme, themePreference, setThemePreference } = useTheme();
@@ -38,6 +44,8 @@ export default function AppearanceScreen() {
         {PREFERENCES.map((preference, index) => {
           const isSelected = themePreference === preference;
           const isLast = index === PREFERENCES.length - 1;
+          const iconName = PREFERENCE_ICONS[preference];
+          const iconColor = isSelected ? theme.primary : theme.textSecondary;
           return (
             <TouchableOpacity
               key={preference}
@@ -49,11 +57,14 @@ export default function AppearanceScreen() {
               onPress={() => handleSelect(preference)}
               activeOpacity={0.7}
             >
-              <AppText
-                style={[styles.label, isSelected && styles.labelSelected]}
-              >
-                {THEME_PREFERENCE_LABELS[preference]}
-              </AppText>
+              <View style={styles.labelRow}>
+                <Ionicons name={iconName as any} size={22} color={iconColor} />
+                <AppText
+                  style={[styles.label, isSelected && styles.labelSelected]}
+                >
+                  {THEME_PREFERENCE_LABELS[preference]}
+                </AppText>
+              </View>
               {isSelected && (
                 <Ionicons
                   name="checkmark-circle"
@@ -72,23 +83,23 @@ export default function AppearanceScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     container: {
-      paddingBottom: 120,
+      paddingBottom: 180,
     },
     list: {
-      marginTop: 8,
-      borderRadius: 12,
+      marginTop: 16,
+      borderRadius: 14,
       overflow: 'hidden',
-      backgroundColor: theme.dark100,
-      borderWidth: StyleSheet.hairlineWidth,
+      backgroundColor: theme.card,
+      borderWidth: 1,
       borderColor: theme.border,
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 16,
+      paddingVertical: 18,
       paddingHorizontal: 20,
-      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomWidth: 1,
       borderBottomColor: theme.border,
     },
     rowSelected: {
@@ -96,6 +107,11 @@ const getStyles = (theme: FullTheme) =>
     },
     rowLast: {
       borderBottomWidth: 0,
+    },
+    labelRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 12,
     },
     label: {
       fontSize: 16,

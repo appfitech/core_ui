@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import moment from 'moment';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -7,7 +8,11 @@ import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
-import { Tag } from './Tag';
+
+moment.locale('es');
+
+const formatDate = (iso?: string) =>
+  iso ? moment(iso).format('D MMM YYYY') : '—';
 
 type Props = {
   resource: ClientResourceResponseDtoReadable;
@@ -16,59 +21,68 @@ type Props = {
 
 export function ResourceCard({ onClick, resource }: Props) {
   const { theme } = useTheme();
-
   const styles = getStyles(theme);
 
   const handleClick = useCallback(() => {
-    if (!resource?.id) {
-      return;
-    }
-
+    if (!resource?.id) return;
     onClick(resource.id);
-  }, [resource]);
+  }, [resource, onClick]);
+
+  const hasDates = !!(resource?.startDate || resource?.endDate);
 
   return (
-    <TouchableOpacity key={resource.id} onPress={handleClick}>
+    <TouchableOpacity
+      activeOpacity={0.72}
+      onPress={handleClick}
+      style={styles.touchable}
+    >
       <View style={styles.card}>
-        <View style={{ padding: 16, rowGap: 10 }}>
-          <AppText
-            style={{ fontSize: 18, color: theme.dark600, fontWeight: 600 }}
-          >
-            {resource.resourceName}
-          </AppText>
-          <AppText
-            style={{ fontSize: 16, color: theme.dark600, fontWeight: 500 }}
-          >
-            {`Entrenador: ${resource.trainerName}`}
-          </AppText>
-          <View style={{ flexDirection: 'row', columnGap: 10 }}>
-            <Tag
-              backgroundColor={theme.successBackground}
-              textColor={theme.successText}
-              label={resource.isActive ? 'Activa' : 'Inactiva'}
+        <AppText style={styles.title} numberOfLines={2}>
+          {resource.resourceName}
+        </AppText>
+
+        {resource?.trainerName ? (
+          <View style={styles.trainerRow}>
+            <Ionicons
+              name="person-outline"
+              size={16}
+              color={theme.textSecondary}
+              style={styles.trainerIcon}
             />
-            <Tag
-              backgroundColor={theme.infoBackground}
-              textColor={theme.infoText}
-              label={resource?.serviceName}
-            />
+            <View style={styles.trainerTextWrap}>
+              <AppText style={styles.trainerLabel}>Entrenador</AppText>
+              <AppText style={styles.trainerName} numberOfLines={1}>
+                {resource.trainerName}
+              </AppText>
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            borderTopColor: theme.dark200,
-            borderTopWidth: 1,
-            paddingHorizontal: 16,
-            paddingVertical: 8,
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <AppText style={{ color: theme.dark600 }}>
-            {'Ver detalle'}&nbsp;
-          </AppText>
-          <Ionicons name="chevrons-forward" size={20} color={theme.dark600} />
+        ) : null}
+
+        {hasDates ? (
+          <View style={styles.datesRow}>
+            <Ionicons
+              name="calendar-outline"
+              size={16}
+              color={theme.textSecondary}
+              style={styles.dateIcon}
+            />
+            <AppText style={styles.datesText} numberOfLines={1}>
+              {resource.startDate && resource.endDate
+                ? `${formatDate(resource.startDate)} – ${formatDate(resource.endDate)}`
+                : resource.startDate
+                  ? `Desde ${formatDate(resource.startDate)}`
+                  : `Hasta ${formatDate(resource.endDate)}`}
+            </AppText>
+          </View>
+        ) : null}
+
+        <View style={styles.ctaRow}>
+          <AppText style={styles.ctaText}>Ver detalle</AppText>
+          <Ionicons
+            name="chevron-forward"
+            size={18}
+            color={theme.primaryText}
+          />
         </View>
       </View>
     </TouchableOpacity>
@@ -77,34 +91,73 @@ export function ResourceCard({ onClick, resource }: Props) {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    tabRow: {
-      flexDirection: 'row',
-      marginVertical: 20,
-      overflow: 'hidden',
-      columnGap: 16,
-    },
-    tabButton: {
-      paddingVertical: 12,
-      paddingHorizontal: 20,
-      alignItems: 'center',
-      borderRadius: 20,
-    },
-    tabButtonActive: {
-      backgroundColor: theme.backgroundInverted,
-    },
-    tabText: {
-      fontSize: 16,
-      color: theme.textPrimary,
-      fontWeight: '600',
-    },
-    tabTextActive: {
-      color: theme.dark100,
+    touchable: {
+      marginBottom: 4,
     },
     card: {
-      backgroundColor: theme.dark100,
-      borderRadius: 12,
-      borderColor: theme.dark200,
+      backgroundColor: theme.card,
+      borderRadius: 14,
       borderWidth: 1,
+      borderColor: theme.border,
+      padding: 18,
+      paddingBottom: 14,
+    },
+    title: {
+      fontSize: 17,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      lineHeight: 22,
       marginBottom: 12,
+    },
+    trainerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    trainerIcon: {
+      marginRight: 8,
+    },
+    trainerTextWrap: {
+      flex: 1,
+      minWidth: 0,
+    },
+    trainerLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: theme.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginBottom: 1,
+    },
+    trainerName: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
+    datesRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 14,
+    },
+    dateIcon: {
+      marginRight: 8,
+    },
+    datesText: {
+      flex: 1,
+      fontSize: 13,
+      fontWeight: '500',
+      color: theme.textSecondary,
+      minWidth: 0,
+    },
+    ctaRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      gap: 4,
+    },
+    ctaText: {
+      fontSize: 14,
+      fontWeight: '700',
+      color: theme.primaryText,
     },
   });

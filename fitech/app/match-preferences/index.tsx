@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
   Modal,
   Pressable,
   ScrollView,
@@ -11,6 +10,7 @@ import {
 import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
 import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
 import { HEADING_STYLES } from '@/constants/shared_styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   CreateMatchPreferencesRequest,
@@ -59,6 +59,7 @@ const DEFAULT_GYM_CRUSH = {
 
 export default function MatchPreferencesScreen() {
   const { theme } = useTheme();
+  const { showAlert } = useAlert();
   const styles = getStyles(theme);
 
   const {
@@ -116,14 +117,22 @@ export default function MatchPreferencesScreen() {
         (matchPreferences?.gymBroAgeRangeMin ?? MIN_AGE) >
           (matchPreferences?.gymBroAgeRangeMax ?? MAX_AGE)
       ) {
-        return Alert.alert('Revisa GymBro', 'El rango de edad es inválido.');
+        showAlert({
+          title: 'Revisa GymBro',
+          message: 'El rango de edad es inválido.',
+        });
+        return;
       }
       if (
         matchPreferences?.showInGymCrush &&
         (matchPreferences?.gymCrushAgeRangeMin ?? MIN_AGE) >
           (matchPreferences?.gymCrushAgeRangeMax ?? MAX_AGE)
       ) {
-        return Alert.alert('Revisa GymCrush', 'El rango de edad es inválido.');
+        showAlert({
+          title: 'Revisa GymCrush',
+          message: 'El rango de edad es inválido.',
+        });
+        return;
       }
 
       const payload: CreateMatchPreferencesRequest = {
@@ -154,11 +163,17 @@ export default function MatchPreferencesScreen() {
       updatePreferences(payload, {
         onSuccess: () => {
           refetch();
-          Alert.alert('¡Listo!', 'Preferencias guardadas correctamente.');
+          showAlert({
+          title: '¡Listo!',
+          message: 'Preferencias guardadas correctamente.',
+        });
         },
       });
     } catch (err: any) {
-      Alert.alert('No se pudo guardar', err?.message ?? 'Error desconocido');
+      showAlert({
+        title: 'No se pudo guardar',
+        message: err?.message ?? 'Error desconocido',
+      });
     }
   };
 

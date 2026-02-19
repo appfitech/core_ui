@@ -107,7 +107,7 @@ const getStyles = (theme: FullTheme) =>
     pageStyle: { padding: 16, rowGap: 10, flex: 1 },
     summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
     listStyle: { flex: 1 },
-    listContent: { paddingBottom: 120 },
+    listContent: { paddingBottom: 180 },
     cardWrapper: { marginBottom: 12 },
     emptyText: {
       fontSize: 19,

@@ -15,15 +15,17 @@ import {
   PlusJakartaSans_800ExtraBold_Italic,
   useFonts,
 } from '@expo-google-fonts/plus-jakarta-sans';
-import { Stack, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
+import { AlertProvider } from '@/contexts/AlertContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
+import { useUserStore } from '@/stores/user';
 
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 import { NavBar } from './components/NavBar';
@@ -34,11 +36,25 @@ SplashScreen.preventAutoHideAsync();
 
 const HIDE_NAV_ROUTES = ['login', 'support', 'register', 'chats'];
 
+const PUBLIC_ROUTES = ['login', 'register', 'support', 'index'];
+
 function RoutedApp() {
   useAutoRefreshToken();
 
+  const router = useRouter();
   const segments = useSegments();
+  const token = useUserStore((s) => s.token);
   const currentRoute = segments[0];
+
+  useEffect(() => {
+    if (
+      token === null &&
+      currentRoute &&
+      !PUBLIC_ROUTES.includes(currentRoute)
+    ) {
+      router.replace('/');
+    }
+  }, [token, currentRoute, router]);
 
   const shouldHideNav =
     HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
@@ -87,9 +103,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={styles.flex1}>
       <ThemeProvider>
-        <ReactQueryProvider>
-          <RoutedAppWithPush />
-        </ReactQueryProvider>
+        <AlertProvider>
+          <ReactQueryProvider>
+            <RoutedAppWithPush />
+          </ReactQueryProvider>
+        </AlertProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

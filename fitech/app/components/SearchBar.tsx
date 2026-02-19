@@ -19,6 +19,8 @@ export function SearchBar({
   readOnly,
   placeholder,
   containerStyle,
+  value,
+  ...rest
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -33,6 +35,8 @@ export function SearchBar({
         style={[styles.input, { flex: 1 }]}
         onPress={onPress}
         onChangeText={onChangeText}
+        value={value}
+        {...rest}
       />
     </View>
   );

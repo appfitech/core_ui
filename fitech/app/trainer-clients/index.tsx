@@ -235,7 +235,7 @@ export default function TrainerClientsScreen() {
           shouldHideEndIcon={true}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="chevrons-forward" size={22} color={theme.dark100} />
+          <Ionicons name="chevron-forward" size={22} color={theme.dark100} />
         </TouchableOpacity>
       </View>
 

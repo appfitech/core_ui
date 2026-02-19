@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
   Modal,
@@ -7,9 +8,12 @@ import {
   View,
 } from 'react-native';
 
+import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 
 import { AppText } from './AppText';
+import { Button } from './Button';
 
 export function ContractModal({
   visible,
@@ -23,105 +27,75 @@ export function ContractModal({
   service: TrainerService;
 }) {
   const [accepted, setAccepted] = useState(false);
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <ScrollView>
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
             <AppText style={styles.title}>
               Términos y Condiciones del Servicio
             </AppText>
-            <AppText style={styles.section}>Resumen del Servicio</AppText>
-            <AppText style={styles.text}>Servicio: {service?.name}</AppText>
-            <AppText style={styles.text}>
-              Precio Total: S/ {service?.totalPrice.toFixed(2)}
-            </AppText>
-            <AppText style={styles.text}>
-              Modalidad: {service?.isInPerson ? 'Presencial' : 'Virtual'}
-            </AppText>
-            <AppText style={styles.section}>
-              Términos y Condiciones Generales
-            </AppText>
-            <AppText style={styles.text}>
-              1. Contratación del Servicio
-              {'\n'}Al contratar este servicio, acepta que:
-              {'\n'}El servicio será prestado por el entrenador seleccionado
-              según la modalidad elegida
-              {'\n'}El precio total incluye todas las sesiones especificadas en
-              el paquete
-              {'\n'}El pago se procesa inmediatamente al aceptar estos términos
-              {'\n'}El entrenador acepta automáticamente el contrato al recibir
-              el pago
-              {'\n\n'}2. Proceso de Pago y Contratación
-              {'\n'}Al hacer clic en "Aceptar y Continuar", se procesa el pago
-              inmediatamente
-              {'\n'}Una vez completado el pago, el contrato se activa
-              automáticamente
-              {'\n'}El entrenador recibe una notificación instantánea del nuevo
-              contrato
-              {'\n'}No es necesaria confirmación adicional por parte del
-              entrenador
-              {'\n'}El servicio queda disponible para ser programado
-              inmediatamente
-              {'\n\n'}3. Responsabilidades del Cliente
-              {'\n'}Asistir puntualmente a las sesiones programadas
-              {'\n'}Informar sobre cualquier condición médica relevante
-              {'\n'}Seguir las instrucciones del entrenador durante las sesiones
-              {'\n'}Comunicar cualquier inconveniente con 24 horas de
-              anticipación
-              {'\n\n'}4. Responsabilidades del Entrenador
-              {'\n'}Brindar un servicio profesional y de calidad
-              {'\n'}Respetar los horarios acordados
-              {'\n'}Mantener la confidencialidad de la información del cliente
-              {'\n'}Proporcionar orientación personalizada según los objetivos
-              {'\n\n'}5. Cancelaciones y Reembolsos
-              {'\n'}Las cancelaciones deben notificarse con 24 horas de
-              anticipación
-              {'\n'}Los reembolsos se procesarán según la política de la
-              plataforma
-              {'\n'}Las sesiones no utilizadas pueden reprogramarse dentro del
-              período acordado
-              {'\n\n'}6. Limitación de Responsabilidad
-              {'\n'}El cliente asume la responsabilidad de su estado de salud
-              durante el entrenamiento
-              {'\n'}Se recomienda consultar con un médico antes de iniciar
-              cualquier programa de ejercicios
-              {'\n'}La plataforma actúa como intermediario entre cliente y
-              entrenador
-              {'\n\n'}7. Privacidad y Datos
-              {'\n'}Sus datos personales serán tratados conforme a nuestra
-              política de privacidad
-              {'\n'}La información compartida durante las sesiones es
-              confidencial
-              {'\n'}Las grabaciones o fotos requieren consentimiento previo
+            <View style={styles.summaryCard}>
+              <AppText style={styles.summaryLabel}>Resumen</AppText>
+              <AppText style={styles.summaryText}>
+                Servicio: {service?.name}
+              </AppText>
+              <AppText style={styles.summaryText}>
+                Precio: S/ {service?.totalPrice?.toFixed(2)}
+              </AppText>
+              <AppText style={styles.summaryText}>
+                Modalidad: {service?.isInPerson ? 'Presencial' : 'Virtual'}
+              </AppText>
+            </View>
+            <AppText style={styles.termsLabel}>Términos generales</AppText>
+            <AppText style={styles.termsText}>
+              Al contratar acepta los términos de la plataforma: el servicio lo
+              presta el entrenador según la modalidad elegida, el pago se
+              procesa al aceptar, y el contrato se activa al completarse el
+              pago. Cancelaciones con 24 h de anticipación. Sus datos se tratan
+              según nuestra política de privacidad.
             </AppText>
             <TouchableOpacity
               onPress={() => setAccepted(!accepted)}
               style={styles.checkboxRow}
+              activeOpacity={0.7}
             >
               <View
                 style={[styles.checkbox, accepted && styles.checkboxChecked]}
-              />
+              >
+                {accepted && (
+                  <Ionicons
+                    name="checkmark"
+                    size={14}
+                    color={theme.background}
+                  />
+                )}
+              </View>
               <AppText style={styles.checkboxText}>
-                He leído y acepto los términos y condiciones del servicio
+                He leído y acepto los términos
               </AppText>
             </TouchableOpacity>
           </ScrollView>
           <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onClose} style={styles.cancelButton}>
-              <AppText style={styles.cancelText}>Cancelar</AppText>
-            </TouchableOpacity>
-            <TouchableOpacity
+            <Button
+              label="Cancelar"
+              onPress={onClose}
+              type="tertiary"
+              style={styles.cancelButton}
+            />
+            <Button
+              label="Contratar"
               onPress={onConfirm}
               disabled={!accepted}
-              style={[
-                styles.confirmButton,
-                !accepted && styles.confirmButtonDisabled,
-              ]}
-            >
-              <AppText style={styles.confirmText}>Contratar</AppText>
-            </TouchableOpacity>
+              style={styles.confirmButton}
+            />
           </View>
         </View>
       </View>
@@ -129,84 +103,91 @@ export function ContractModal({
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: '#000000aa',
-    justifyContent: 'center',
-    padding: 16,
-  },
-  modal: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 12,
-    maxHeight: '90%',
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#0F4C81',
-    marginBottom: 8,
-  },
-  section: {
-    fontSize: 14,
-    fontWeight: '700',
-    marginTop: 8,
-  },
-  text: {
-    fontSize: 12,
-    color: '#333',
-    marginTop: 4,
-  },
-  checkboxRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 12,
-  },
-  checkbox: {
-    width: 18,
-    height: 18,
-    borderWidth: 1,
-    borderColor: '#0F4C81',
-    marginRight: 8,
-  },
-  checkboxChecked: {
-    backgroundColor: '#0F4C81',
-  },
-  checkboxText: {
-    fontSize: 12,
-    color: '#333',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 12,
-  },
-  cancelButton: {
-    padding: 10,
-    borderRadius: 6,
-    backgroundColor: '#ccc',
-    flex: 1,
-    marginRight: 4,
-    alignItems: 'center',
-  },
-  cancelText: {
-    color: '#333',
-    fontWeight: '600',
-  },
-  confirmButton: {
-    padding: 10,
-    borderRadius: 6,
-    backgroundColor: '#0F4C81',
-    flex: 1,
-    marginLeft: 4,
-    alignItems: 'center',
-  },
-  confirmButtonDisabled: {
-    opacity: 0.5,
-  },
-  confirmText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    overlay: {
+      flex: 1,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      justifyContent: 'flex-end',
+    },
+    modal: {
+      backgroundColor: theme.background,
+      borderTopLeftRadius: 20,
+      borderTopRightRadius: 20,
+      maxHeight: '90%',
+      paddingBottom: 32,
+    },
+    scroll: { maxHeight: 400 },
+    scrollContent: { padding: 20, paddingBottom: 16 },
+    title: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      marginBottom: 16,
+    },
+    summaryCard: {
+      backgroundColor: theme.card,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 14,
+      marginBottom: 16,
+    },
+    summaryLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: theme.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginBottom: 8,
+    },
+    summaryText: {
+      fontSize: 14,
+      color: theme.textPrimary,
+      marginBottom: 4,
+    },
+    termsLabel: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      marginBottom: 8,
+    },
+    termsText: {
+      fontSize: 13,
+      color: theme.textSecondary,
+      lineHeight: 20,
+    },
+    checkboxRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 20,
+      gap: 12,
+    },
+    checkbox: {
+      width: 24,
+      height: 24,
+      borderRadius: 6,
+      borderWidth: 2,
+      borderColor: theme.border,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    checkboxChecked: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    checkboxText: {
+      flex: 1,
+      fontSize: 14,
+      fontWeight: '500',
+      color: theme.textPrimary,
+    },
+    buttonRow: {
+      flexDirection: 'row',
+      paddingHorizontal: 20,
+      paddingTop: 16,
+      gap: 12,
+    },
+    cancelButton: { flex: 1 },
+    confirmButton: { flex: 1 },
+  });

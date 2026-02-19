@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
-import { Alert, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
@@ -19,6 +20,7 @@ const MAX_PHOTOS = 10;
 
 export default function ImageGalleryScreen() {
   const { theme } = useTheme();
+  const { showAlert } = useAlert();
   const styles = getStyles(theme);
   const profilePhotoId = useUserStore(
     (s) => s?.user?.user?.person?.profilePhotoId,
@@ -43,7 +45,10 @@ export default function ImageGalleryScreen() {
       const file = result.assets[0];
 
       if (photos.length >= MAX_PHOTOS) {
-        Alert.alert('Límite alcanzado', 'Solo puedes subir hasta 10 fotos.');
+        showAlert({
+          title: 'Límite alcanzado',
+          message: 'Solo puedes subir hasta 10 fotos.',
+        });
         return;
       }
 
@@ -57,7 +62,10 @@ export default function ImageGalleryScreen() {
       uploadPhoto(formData, {
         onSuccess: () => refetch(),
         onError: () => {
-          Alert.alert('Error', 'No se pudo subir la foto.');
+          showAlert({
+            title: 'Error',
+            message: 'No se pudo subir la foto.',
+          });
         },
       });
     }
@@ -68,16 +76,19 @@ export default function ImageGalleryScreen() {
     deletePhoto(photo.id, {
       onSuccess: () => refetch(),
       onError: () => {
-        Alert.alert('Error', 'No se pudo eliminar la foto.');
+        showAlert({
+          title: 'Error',
+          message: 'No se pudo eliminar la foto.',
+        });
       },
     });
   };
 
   const confirmSetAsProfile = (photoId: number) => {
-    Alert.alert(
-      'Confirmar',
-      '¿Quieres usar esta foto como tu nueva foto de perfil?',
-      [
+    showAlert({
+      title: 'Confirmar',
+      message: '¿Quieres usar esta foto como tu nueva foto de perfil?',
+      buttons: [
         { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Sí, usar',
@@ -96,7 +107,7 @@ export default function ImageGalleryScreen() {
           },
         },
       ],
-    );
+    });
   };
 
   return (

@@ -1,19 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import moment from 'moment';
 import { useCallback, useMemo, useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
-import { useCancelContract } from '@/app/api/mutations/use-cancel-contract';
-import { useCompleteContract } from '@/app/api/mutations/use-complete-contract';
-import { AppText } from '@/app/components/AppText';
-import PageContainer from '@/app/components/PageContainer';
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
+import { useCancelContract } from '../../api/mutations/use-cancel-contract';
+import { useCompleteContract } from '../../api/mutations/use-complete-contract';
+import { AppText } from '../../components/AppText';
+import { Button } from '../../components/Button';
+import PageContainer from '../../components/PageContainer';
+import { Tag } from '../../components/Tag';
+
 import CancelModal from './CancelModal';
 import CompleteModal from './CompleteModal';
+
+moment.locale('es');
+
+const formatDate = (iso?: string) =>
+  iso ? moment(iso).format('D MMM YYYY') : '—';
 
 export default function ContractDetailScreen() {
   const { theme } = useTheme();
@@ -33,126 +41,176 @@ export default function ContractDetailScreen() {
   const styles = getStyles(theme);
 
   const handleComplete = useCallback(() => {
-    completeContract(parsedContract?.id, {
+    completeContract(parsedContract?.id ?? parsedContract?.contractId, {
       onSuccess: () => {
         router.push(ROUTES.contracts);
       },
     });
-  }, [parsedContract?.id]);
+  }, [parsedContract?.id, parsedContract?.contractId, completeContract, router]);
 
   const handleCancel = useCallback(() => {
-    cancelContract(parsedContract?.id, {
+    cancelContract(parsedContract?.id ?? parsedContract?.contractId, {
       onSuccess: () => {
         router.push(ROUTES.contracts);
       },
     });
-  }, [parsedContract?.id]);
+  }, [parsedContract?.id, parsedContract?.contractId, cancelContract, router]);
+
+  const hasDates =
+    parsedContract?.startDate || parsedContract?.endDate;
+  const createdAtFormatted = parsedContract?.createdAt
+    ? moment(parsedContract.createdAt).format('D MMM YYYY')
+    : '—';
+
+  const statusTag = (() => {
+    const status = parsedContract?.contractStatus;
+    if (status === 'ACTIVE') return null;
+    if (status === 'CANCELLED')
+      return (
+        <Tag
+          backgroundColor={theme.errorBackground}
+          textColor={theme.errorText}
+          label="Cancelado"
+        />
+      );
+    return (
+      <Tag
+        backgroundColor={theme.backgroundInput}
+        textColor={theme.textSecondary}
+        label="Completado"
+      />
+    );
+  })();
 
   return (
-    <PageContainer title="Detalles del Contrato" style={{ padding: 16 }}>
-      <View style={{ marginVertical: 10, rowGap: 12, padding: 20 }}>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ flex: 1, rowGap: 12 }}>
-            <View>
-              <AppText style={styles.label}>{'Servicio'}</AppText>
-              <AppText style={styles.info}>
-                {parsedContract?.serviceName}
-              </AppText>
-            </View>
-            <View>
-              <AppText style={styles.label}>{'Estado'}</AppText>
-              <AppText style={styles.info}>
-                {parsedContract?.contractStatus === 'ACTIVE'
-                  ? 'Activo'
-                  : parsedContract?.contractStatus === 'CANCELLED'
-                    ? 'Cancelado'
-                    : 'Completado'}
-              </AppText>
-            </View>
-            {parsedContract.totalAmount && (
-              <View>
-                <AppText style={styles.label}>{'Monto Total'}</AppText>
-                <AppText
-                  style={styles.info}
-                >{`S/. ${parsedContract.totalAmount.toFixed(2)}`}</AppText>
-              </View>
+    <PageContainer
+      title={parsedContract?.serviceName ?? 'Detalles del Contrato'}
+      style={styles.pageStyle}
+    >
+      <View style={styles.card}>
+        {statusTag ? (
+          <View style={styles.chipsRow}>{statusTag}</View>
+        ) : null}
+
+        {parsedContract?.trainerName ? (
+          <View style={styles.row}>
+            {parsedContract?.trainerProfilePhotoId ? (
+              <Image
+                source={{
+                  uri: `https://appfitech.com/v1/app/file-upload/view/${parsedContract.trainerProfilePhotoId}`,
+                }}
+                style={styles.avatar}
+              />
+            ) : (
+              <Ionicons
+                name="person-outline"
+                size={18}
+                color={theme.textSecondary}
+                style={styles.rowIcon}
+              />
             )}
-            <View>
-              <AppText style={styles.label}>{'Estado de Pago'}</AppText>
-              <AppText style={styles.info}>
-                {parsedContract?.paymentStatus ?? '-'}
+            <View style={styles.rowContent}>
+              <AppText style={styles.rowLabel}>Entrenador</AppText>
+              <AppText style={styles.rowValue}>
+                {parsedContract.trainerName}
               </AppText>
             </View>
           </View>
-          <View style={{ alignItems: 'flex-end', rowGap: 10 }}>
-            <Image
-              source={{
-                uri: `https://appfitech.com/v1/app/file-upload/view/${parsedContract.trainerProfilePhotoId}`,
-              }}
-              style={[styles.avatar, { marginBottom: 4 }]}
+        ) : null}
+
+        {hasDates && (
+          <View style={styles.row}>
+            <Ionicons
+              name="calendar-outline"
+              size={18}
+              color={theme.textSecondary}
+              style={styles.rowIcon}
             />
-            {parsedContract?.contractStatus === 'ACTIVE' && (
-              <>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: theme.green400,
-                    padding: 12,
-                    borderRadius: 12,
-                  }}
-                  onPress={() => setDisplayComplete(true)}
-                >
-                  <AppText
-                    style={{
-                      fontSize: 16,
-                      color: theme.green900,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Completar
-                  </AppText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: theme.errorText,
-                    padding: 12,
-                    borderRadius: 12,
-                  }}
-                  onPress={() => setDisplayCancel(true)}
-                >
-                  <AppText
-                    style={{
-                      fontSize: 16,
-                      color: theme.errorBackground,
-                      fontWeight: 600,
-                    }}
-                  >
-                    Cancelar
-                  </AppText>
-                </TouchableOpacity>
-              </>
-            )}
+            <View style={styles.rowContent}>
+              <AppText style={styles.rowLabel}>Vigencia del plan</AppText>
+              <AppText style={styles.rowValue}>
+                {parsedContract?.startDate && parsedContract?.endDate
+                  ? `${formatDate(parsedContract.startDate)} – ${formatDate(parsedContract.endDate)}`
+                  : parsedContract?.startDate
+                    ? `Desde ${formatDate(parsedContract.startDate)}`
+                    : `Hasta ${formatDate(parsedContract.endDate)}`}
+              </AppText>
+            </View>
+          </View>
+        )}
+
+        <View style={styles.row}>
+          <Ionicons
+            name="create-outline"
+            size={18}
+            color={theme.textSecondary}
+            style={styles.rowIcon}
+          />
+          <View style={styles.rowContent}>
+            <AppText style={styles.rowLabel}>Fecha de creación</AppText>
+            <AppText style={styles.rowValue}>{createdAtFormatted}</AppText>
           </View>
         </View>
 
-        <View>
-          <AppText style={styles.label}>{'Fecha creación'}</AppText>
-          <AppText style={styles.info}>
-            {parsedContract?.createdAt ?? '-'}
-          </AppText>
+        {parsedContract?.totalAmount != null && (
+          <View style={styles.row}>
+            <Ionicons
+              name="cash-outline"
+              size={18}
+              color={theme.textSecondary}
+              style={styles.rowIcon}
+            />
+            <View style={styles.rowContent}>
+              <AppText style={styles.rowLabel}>Monto total</AppText>
+              <AppText style={styles.rowValue}>
+                S/ {parsedContract.totalAmount.toFixed(2)}
+              </AppText>
+            </View>
+          </View>
+        )}
+
+        <View style={styles.row}>
+          <Ionicons
+            name="card-outline"
+            size={18}
+            color={theme.textSecondary}
+            style={styles.rowIcon}
+          />
+          <View style={styles.rowContent}>
+            <AppText style={styles.rowLabel}>Estado de pago</AppText>
+            <AppText style={styles.rowValue}>
+              {parsedContract?.paymentStatus ?? '—'}
+            </AppText>
+          </View>
         </View>
-        <View>
-          <AppText style={styles.label}>{'Fecha inicio del plan'}</AppText>
-          <AppText style={styles.info}>
-            {parsedContract?.startDate ?? '-'}
-          </AppText>
-        </View>
-        <View>
-          <AppText style={styles.label}>{'Descripción'}</AppText>
-          <AppText style={styles.info}>
-            {parsedContract?.serviceDescription}
-          </AppText>
-        </View>
+
+        {parsedContract?.serviceDescription ? (
+          <View style={styles.descriptionBlock}>
+            <AppText style={styles.rowLabel}>Descripción</AppText>
+            <AppText style={styles.descriptionText}>
+              {parsedContract.serviceDescription}
+            </AppText>
+          </View>
+        ) : null}
       </View>
+
+      {parsedContract?.contractStatus === 'ACTIVE' && (
+        <View style={styles.actions}>
+          <Button
+            label="Completar"
+            onPress={() => setDisplayComplete(true)}
+            type="primary"
+            style={styles.actionButton}
+          />
+          <Button
+            label="Cancelar contrato"
+            onPress={() => setDisplayCancel(true)}
+            type="destructive"
+            style={styles.actionButton}
+          />
+        </View>
+      )}
+
       <CompleteModal
         isOpen={displayComplete}
         onCloseModal={() => setDisplayComplete(false)}
@@ -169,17 +227,66 @@ export default function ContractDetailScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    label: {
-      fontSize: 15,
-      color: theme.dark500,
-      fontWeight: 600,
-      marginBottom: 4,
+    pageStyle: { paddingBottom: 180 },
+    card: {
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
+      padding: 20,
+      marginTop: 16,
+      rowGap: 20,
+    },
+    chipsRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 10,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+    },
+    rowIcon: {
+      marginRight: 12,
+      marginTop: 2,
     },
     avatar: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: 12,
     },
-    info: { fontSize: 18, color: theme.dark700, fontWeight: 500 },
-    ...HEADING_STYLES(theme),
+    rowContent: {
+      flex: 1,
+      minWidth: 0,
+    },
+    rowLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: theme.textSecondary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+      marginBottom: 4,
+    },
+    rowValue: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
+    descriptionBlock: {
+      marginTop: 4,
+    },
+    descriptionText: {
+      fontSize: 15,
+      fontWeight: '500',
+      color: theme.textSecondary,
+      lineHeight: 22,
+    },
+    actions: {
+      marginTop: 24,
+      rowGap: 12,
+    },
+    actionButton: {
+      width: '100%',
+    },
   });
