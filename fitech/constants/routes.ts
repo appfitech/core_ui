@@ -18,6 +18,7 @@ export const ROUTES = {
   trainerReviews: '/trainer-reviews',
   trainerClients: '/trainer-clients',
   trainerDiets: '/trainer-diets',
+  trainerRoutines: '/trainer-routines',
   trainerPayments: '/trainer-payments',
   gymbro: '/gymbro',
   gymcrush: '/gymcrush',

@@ -28,12 +28,12 @@ import { fromISODate, today } from '@/utils/dates';
 
 type Step = 1 | 2;
 
-const DIET_TEMPLATE_URL =
-  'https://appfitech.com/v1/app/templates/plantilla_dieta.xlsx';
+const ROUTINE_TEMPLATE_URL =
+  'https://appfitech.com/v1/app/templates/plantilla_rutinas.xlsx';
 
 const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
-export default function NewTrainerDietScreen() {
+export default function NewTrainerRoutineScreen() {
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme);
@@ -42,12 +42,12 @@ export default function NewTrainerDietScreen() {
   const [clientId, setClientId] = useState<string | number | null>(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const [dietName, setDietName] = useState('');
+  const [routineName, setRoutineName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [pickedFile, setPickedFile] = useState<{ uri: string; name: string } | null>(null);
 
-  const { mutate: createDiet, isPending } = useCreateClientResourceWithFile();
+  const { mutate: createRoutine, isPending } = useCreateClientResourceWithFile();
 
   const { data: clientsData } = useTrainerGetClientsList({
     page: 0,
@@ -75,9 +75,9 @@ export default function NewTrainerDietScreen() {
 
   const handleDownloadPlantilla = async () => {
     try {
-      await WebBrowser.openBrowserAsync(DIET_TEMPLATE_URL);
+      await WebBrowser.openBrowserAsync(ROUTINE_TEMPLATE_URL);
     } catch (e) {
-      console.error('[FITECH] error opening diet template', e);
+      console.error('[FITECH] error opening routine template', e);
     }
   };
 
@@ -109,7 +109,7 @@ export default function NewTrainerDietScreen() {
   };
 
   const canCreate =
-    Boolean(dietName.trim()) &&
+    Boolean(routineName.trim()) &&
     Boolean(startDate.trim()) &&
     Boolean(endDate.trim()) &&
     Boolean(pickedFile) &&
@@ -123,26 +123,26 @@ export default function NewTrainerDietScreen() {
       name: pickedFile.name,
       type: XLSX_MIME,
     } as any);
-    formData.append('resourceName', dietName.trim());
-    formData.append('resourceType', 'DIETA');
+    formData.append('resourceName', routineName.trim());
+    formData.append('resourceType', 'RUTINA');
     formData.append('clientId', String(clientId));
     formData.append('startDate', toApiDate(startDate));
     formData.append('endDate', toApiDate(endDate));
 
-    createDiet(formData, {
+    createRoutine(formData, {
       onSuccess: () => {
-        showInfoToast('Dieta creada', 'La dieta se creó correctamente.');
+        showInfoToast('Rutina creada', 'La rutina se creó correctamente.');
         router.back();
       },
       onError: () => {
-        showInfoToast('Error', 'No se pudo crear la dieta. Intenta de nuevo.');
+        showInfoToast('Error', 'No se pudo crear la rutina. Intenta de nuevo.');
       },
     });
   };
 
   return (
     <PageContainer
-      title="Crear Nueva Dieta"
+      title="Crear Nueva Rutina"
       style={styles.pageStyle}
       contentPaddingBottom={120}
       hasBackButton
@@ -172,7 +172,7 @@ export default function NewTrainerDietScreen() {
       {step === 1 && (
         <View style={styles.stepContent}>
           <AppText style={styles.fieldLabel}>
-            Selecciona el cliente para la dieta
+            Selecciona el cliente para la rutina
           </AppText>
           <View style={styles.dropdownWrap}>
             <Dropdown
@@ -211,18 +211,18 @@ export default function NewTrainerDietScreen() {
             <Ionicons name="arrow-back" size={20} color={theme.primary} />
             <AppText style={styles.backToStep1Text}>Atrás (cambiar cliente)</AppText>
           </TouchableOpacity>
-          <AppText style={styles.fieldLabel}>Nombre de la Dieta*</AppText>
+          <AppText style={styles.fieldLabel}>Nombre de la Rutina*</AppText>
           <View style={styles.inputRow}>
             <Ionicons
-              name="restaurant-outline"
+              name="barbell-outline"
               size={20}
               color={theme.textSecondary}
               style={styles.inputIcon}
             />
             <TextInput
-              placeholder="Ej: Dieta para ganar masa muscular"
-              value={dietName}
-              onChangeText={setDietName}
+              placeholder="Ej: Rutina para ganar masa muscular"
+              value={routineName}
+              onChangeText={setRoutineName}
               style={styles.input}
             />
           </View>
@@ -245,9 +245,9 @@ export default function NewTrainerDietScreen() {
           />
 
           <View style={styles.plantillaSection}>
-            <AppText style={styles.plantillaTitle}>Plantilla de Dieta</AppText>
+            <AppText style={styles.plantillaTitle}>Plantilla de Rutina</AppText>
             <AppText style={styles.plantillaHint}>
-              Descarga la plantilla, complétala y súbela para crear la dieta.
+              Descarga la plantilla, complétala y súbela para crear la rutina.
             </AppText>
 
             <AppText style={styles.plantillaStepTitle}>
@@ -269,7 +269,7 @@ export default function NewTrainerDietScreen() {
               </AppText>
             </TouchableOpacity>
             <AppText style={styles.downloadHint}>
-              Descarga la plantilla, llénala con el plan alimentario del cliente
+              Descarga la plantilla, llénala con el plan de entrenamiento del cliente
             </AppText>
 
             <AppText style={[styles.plantillaStepTitle, { marginTop: 16 }]}>
@@ -309,7 +309,7 @@ export default function NewTrainerDietScreen() {
                 disabled={!canCreate || isPending}
               >
                 <AppText style={styles.createSubmitBtnText}>
-                  {isPending ? 'Creando…' : 'Crear dieta'}
+                  {isPending ? 'Creando…' : 'Crear rutina'}
                 </AppText>
               </TouchableOpacity>
             </View>
