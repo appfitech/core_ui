@@ -11,6 +11,7 @@ import {
 import { AppText } from '@/app/components/AppText';
 import PageContainer from '@/app/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
@@ -18,23 +19,25 @@ import { useGetChats } from '../api/queries/use-chat-queries';
 
 const CONTRACT_LOGO = require('../../assets/images/logos/rounded_logo.webp');
 
-/** Avatar: CONTRACT logo, or profile image with fallback to first letter on load error / no URL. */
+/** Avatar: CONTRACT logo (only for non-trainer), or profile image with fallback to first letter. Trainers see initial instead of logo. */
 function ChatListAvatar({
   matchType,
   avatarUri,
   name,
+  isTrainer,
   theme,
   styles,
 }: {
   matchType?: string;
   avatarUri: string | null;
   name: string;
+  isTrainer: boolean;
   theme: FullTheme;
   styles: ReturnType<typeof getStyles>;
 }) {
   const [imageError, setImageError] = useState(false);
 
-  if (matchType === 'CONTRACT') {
+  if (matchType === 'CONTRACT' && !isTrainer) {
     return (
       <View style={styles.avatar}>
         <Image
@@ -58,7 +61,7 @@ function ChatListAvatar({
     );
   }
   return (
-    <View style={styles.avatar}>
+    <View style={styles.avatarInitialsWrap}>
       <AppText style={styles.avatarInitials}>
         {name[0]?.toUpperCase() ?? '?'}
       </AppText>
@@ -141,6 +144,7 @@ export default function ChatsScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
+  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const { data, isLoading } = useGetChats();
 
@@ -186,6 +190,7 @@ export default function ChatsScreen() {
                 matchType={chat.matchType}
                 avatarUri={chat.avatarUri}
                 name={chat.name}
+                isTrainer={isTrainer}
                 theme={theme}
                 styles={styles}
               />
@@ -267,15 +272,27 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     avatarImage: {
       width: 44,
       height: 44,
     },
+    avatarInitialsWrap: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      backgroundColor: theme.primaryBg,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: theme.primary,
+    },
     avatarInitials: {
-      color: theme.primaryText,
-      fontWeight: '700',
-      fontSize: 18,
+      color: theme.primary,
+      fontWeight: '800',
+      fontSize: 17,
     },
     chatMain: {
       flex: 1,

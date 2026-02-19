@@ -1,5 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -10,17 +15,22 @@ type Props = {
   title: string;
   children: React.ReactNode;
   onClick: () => void;
+  titleStyle?: TextStyle;
 };
 
-export function HomeSectionContainer({ children, title, onClick }: Props) {
-  // Hooks
+export function HomeSectionContainer({
+  children,
+  title,
+  onClick,
+  titleStyle,
+}: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
       <View style={styles.sectionHeader}>
-        <AppText style={styles.sectionTitle}>{title}</AppText>
+        <AppText style={[styles.sectionTitle, titleStyle]}>{title}</AppText>
         <TouchableOpacity onPress={onClick} style={styles.sectionAction}>
           <AppText style={styles.sectionActionText}>{'Ver todo'}</AppText>
           <Ionicons

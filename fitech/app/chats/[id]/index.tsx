@@ -75,6 +75,7 @@ export default function ChatDetailScreen() {
 
   const token = useUserStore((s) => s.getToken());
   const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
+  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const conversationId = id;
   const conversationIdNumber = Number(id);
@@ -244,7 +245,9 @@ export default function ChatDetailScreen() {
             resizeMode="contain"
           />
           <AppText style={styles.contractBannerText}>
-            Conversación por contrato — Estás chateando con tu entrenador
+            {isTrainer
+              ? 'Conversación por contrato — Estás chateando con tu cliente'
+              : 'Conversación por contrato — Estás chateando con tu entrenador'}
           </AppText>
         </View>
       )}

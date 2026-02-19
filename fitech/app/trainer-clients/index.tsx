@@ -1,8 +1,9 @@
 import { Entypo, Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { FullTheme } from '@/types/theme';
@@ -88,15 +89,27 @@ const Chip = ({
 };
 
 const StatusPill = ({ status }: { status: ServiceItem['status'] }) => {
-  const map: Record<string, { bg: string; text: string; label: string }> = {
-    active: { bg: '#E6F4EA', text: '#1E7B4D', label: 'Activo' },
-    paused: { bg: '#FFF4E5', text: '#B76E00', label: 'Pausado' },
-    finished: { bg: '#ECEFF1', text: '#455A64', label: 'Finalizado' },
-  };
-  const style = map[status] ?? map.active;
-
   const { theme } = useTheme();
   const styles = getStyles(theme);
+
+  const map: Record<string, { bg: string; text: string; label: string }> = {
+    active: {
+      bg: theme.successBackground,
+      text: theme.successText,
+      label: 'Activo',
+    },
+    paused: {
+      bg: theme.warningBackground,
+      text: theme.warningText,
+      label: 'Pausado',
+    },
+    finished: {
+      bg: theme.backgroundInput,
+      text: theme.textSecondary,
+      label: 'Finalizado',
+    },
+  };
+  const style = map[status] ?? map.active;
 
   return (
     <View style={[styles.statusPill, { backgroundColor: style.bg }]}>
@@ -141,7 +154,11 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
         <View style={styles.cardHeader}>
           <AppText style={styles.cardTitle}>{s.serviceName}</AppText>
           <TouchableOpacity hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-            <Entypo name="dots-three-vertical" size={16} color="#555" />
+            <Entypo
+              name="dots-three-vertical"
+              size={16}
+              color={theme.textSecondary}
+            />
           </TouchableOpacity>
         </View>
 
@@ -152,9 +169,12 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
         )}
 
         <View style={styles.priceBox}>
-          <View style={styles.priceIcon}>
-            <Ionicons name="cash-outline" size={16} color="#1E7B4D" />
-          </View>
+          <Ionicons
+            name="cash-outline"
+            size={20}
+            color={theme.success}
+            style={styles.priceIconLeft}
+          />
           <AppText style={styles.priceText}>
             {formatPEN(s.servicePricePerSession)}{' '}
             <AppText style={styles.priceSuffix}>por sesión</AppText>
@@ -166,8 +186,8 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name={s.modality === 'remoto' ? 'videocam' : 'walk'}
               size={14}
-              color="#111"
-              style={{ marginRight: 6 }}
+              color={theme.textPrimary}
+              style={styles.modalityIcon}
             />
             <AppText style={styles.modalityText}>
               {s.modality === 'remoto' ? 'Remoto' : 'Presencial'}
@@ -182,8 +202,8 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name="play"
               size={14}
-              color="#111"
-              style={{ marginRight: 8 }}
+              color={theme.textSecondary}
+              style={styles.metaIcon}
             />
           }
           label="Inicio:"
@@ -194,8 +214,8 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name="card"
               size={14}
-              color="#111"
-              style={{ marginRight: 8 }}
+              color={theme.textSecondary}
+              style={styles.metaIcon}
             />
           }
           label="Pagado:"
@@ -215,76 +235,102 @@ export default function TrainerClientsScreen() {
     search: debouncedQuery ?? '',
   });
 
-  const results: ClientItem[] = (clients?.content as ClientItem[]) ?? [];
+  console.log('clients', clients);
+
+  const results: ClientItem[] =
+    (clients as { content?: ClientItem[] } | undefined)?.content ?? [];
   const styles = getStyles(theme);
+  const router = useRouter();
 
   return (
     <PageContainer
       hasBackButton={false}
       title="Mis Clientes"
       subheader="Gestiona tus clientes y el progreso de sus entrenamientos"
-      style={{ padding: 16 }}
+      style={styles.pageStyle}
+      contentPaddingBottom={120}
     >
-      <View style={{ rowGap: 10, paddingVertical: 10 }}>
-
-      <View style={styles.searchRow}>
-        <SearchBar
-          placeholder="Buscar por nombre"
-          value={query}
-          onChangeText={setQuery}
-          shouldHideEndIcon={true}
-        />
-        <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="chevron-forward" size={22} color={theme.dark100} />
-        </TouchableOpacity>
-      </View>
-
-      <AppText style={styles.resultCount}>
-        {results.length} clientes encontrados
-      </AppText>
-
-      {results.map((client) => (
-        <View key={client.clientId} style={styles.clientCard}>
-          {/* Header: Avatar + Name + Goals */}
-          {!!client.profilePhotoId && (
-            <Image
-              source={{
-                uri: `https://appfitech.com/v1/app/file-upload/view/${client.profilePhotoId}`,
-              }}
-              style={styles.avatar}
+      <View style={styles.contentWrap}>
+        <View style={styles.searchRow}>
+          <SearchBar
+            placeholder="Buscar por nombre"
+            value={query}
+            onChangeText={setQuery}
+            shouldHideEndIcon={true}
+            containerStyle={styles.searchBarContainer}
+          />
+          <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
+            <Ionicons
+              name="chevron-forward"
+              size={22}
+              color={theme.background}
             />
-          )}
-          <AppText style={styles.clientName}>{client.clientName}</AppText>
-          {!!client.fitnessGoals?.length && (
-            <AppText style={styles.bio} numberOfLines={2}>
-              {client.fitnessGoals.join(', ')}
-            </AppText>
-          )}
-
-          {/* Client summary chips */}
-          <View style={styles.rowChips}>
-            <Chip
-              text={`${client.activeServicesCount} activos`}
-              tone="success"
-            />
-            <Chip text={`Total: ${formatPEN(client.totalAmountPaid)}`} />
-          </View>
-
-          {/* Services section header */}
-          <View style={styles.servicesHeaderRow}>
-            <AppText style={styles.servicesHeaderText}>
-              {`Servicios Contratados (${client.totalServicesCount})`}
-            </AppText>
-          </View>
-
-          {/* Service cards */}
-          <View style={{ gap: 16 }}>
-            {client.services.map((s) => (
-              <ServiceCard key={s.contractId} s={s} />
-            ))}
-          </View>
+          </TouchableOpacity>
         </View>
-      ))}
+
+        <AppText style={styles.resultCount}>
+          {results.length} clientes encontrados
+        </AppText>
+
+        {results.map((client) => (
+          <View key={client.clientId} style={styles.clientCard}>
+            {/* Header: round avatar left, name + chips right */}
+            <View style={styles.clientHeaderRow}>
+              <View style={styles.avatarWrap}>
+                {client.profilePhotoId ? (
+                  <Image
+                    source={{
+                      uri: `https://appfitech.com/v1/app/file-upload/view/${client.profilePhotoId}`,
+                    }}
+                    style={styles.avatar}
+                  />
+                ) : (
+                  <View style={styles.avatarPlaceholder} />
+                )}
+              </View>
+              <View style={styles.clientInfo}>
+                <AppText style={styles.clientName}>{client.clientName}</AppText>
+                <View style={styles.rowChips}>
+                  <Chip
+                    text={`${client.activeServicesCount} activos`}
+                    tone="success"
+                  />
+                  <Chip text={`Total: ${formatPEN(client.totalAmountPaid)}`} />
+                </View>
+              </View>
+            </View>
+            {!!client.fitnessGoals?.length && (
+              <AppText style={styles.bio} numberOfLines={2}>
+                {client.fitnessGoals.join(', ')}
+              </AppText>
+            )}
+
+            <TouchableOpacity
+              style={styles.contactarButton}
+              onPress={() => router.push(ROUTES.chats)}
+              activeOpacity={0.8}
+            >
+              <Ionicons
+                name="chatbubble-outline"
+                size={18}
+                color={theme.background}
+              />
+              <AppText style={styles.contactarButtonText}>Contactar</AppText>
+            </TouchableOpacity>
+
+            <View style={styles.servicesHeaderRow}>
+              <AppText style={styles.sectionTitle}>
+                {`SERVICIOS CONTRATADOS (${client.totalServicesCount})`}
+              </AppText>
+            </View>
+
+            <View style={styles.servicesList}>
+              {client.services.map((s) => (
+                <ServiceCard key={s.contractId} s={s} />
+              ))}
+            </View>
+          </View>
+        ))}
       </View>
     </PageContainer>
   );
@@ -292,97 +338,123 @@ export default function TrainerClientsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    container: {
-      padding: 16,
-      backgroundColor: theme.background,
+    pageStyle: {},
+    contentWrap: {
+      rowGap: 12,
+      paddingVertical: 8,
     },
-
     searchRow: {
       flexDirection: 'row',
-      marginBottom: 20,
-      columnGap: 4,
+      columnGap: 10,
       alignItems: 'center',
     },
+    searchBarContainer: { flex: 1 },
     searchButton: {
       backgroundColor: theme.primary,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 10,
-      height: 43,
-      width: 43,
+      borderRadius: 12,
+      height: 48,
+      width: 48,
     },
     resultCount: {
       fontSize: 14,
       fontWeight: '600',
-      color: theme.dark800,
-      marginBottom: 12,
-      alignSelf: 'flex-end',
+      color: theme.textSecondary,
+      marginBottom: 4,
     },
-
-    // Client card wrapper
     clientCard: {
-      backgroundColor: '#fff',
-      borderRadius: 12,
-      padding: 14,
-      marginBottom: 20,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 2,
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      padding: 16,
+      marginBottom: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
-    avatar: {
-      width: '100%',
-      height: 160,
-      borderRadius: 8,
-      marginBottom: 8,
-    },
-    clientName: {
-      fontSize: 16,
-      fontWeight: '700',
-      color: '#111',
-    },
-    bio: {
-      fontSize: 13,
-      color: '#444',
-      marginTop: 4,
-      marginBottom: 10,
-    },
-
-    // Service section header inside client card
-    servicesHeaderRow: {
-      marginTop: 4,
-      marginBottom: 10,
+    clientHeaderRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
+      gap: 14,
+      marginBottom: 10,
     },
-    servicesHeaderText: {
-      fontSize: 14,
+    avatarWrap: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      overflow: 'hidden',
+    },
+    avatar: {
+      width: 56,
+      height: 56,
+      backgroundColor: theme.backgroundInput,
+    },
+    avatarPlaceholder: {
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: theme.backgroundInput,
+    },
+    clientInfo: {
+      flex: 1,
+      gap: 6,
+    },
+    clientName: {
+      fontSize: 17,
       fontWeight: '700',
-      color: '#111',
+      color: theme.textPrimary,
     },
-
-    // Shared chips
+    bio: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      marginTop: 0,
+      marginBottom: 10,
+      lineHeight: 20,
+    },
+    servicesHeaderRow: {
+      marginTop: 8,
+      marginBottom: 10,
+    },
+    sectionTitle: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: theme.textSecondary,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
+    },
     rowChips: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      marginBottom: 6,
       flexWrap: 'wrap',
+    },
+    contactarButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      marginTop: 4,
+      marginBottom: 12,
+      gap: 8,
+    },
+    contactarButtonText: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: theme.background,
     },
     chip: {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
     },
-    chipNeutral: { backgroundColor: '#E6F0FA' },
-    chipSuccess: { backgroundColor: '#E6F4EA' },
+    chipNeutral: { backgroundColor: theme.backgroundInput },
+    chipSuccess: { backgroundColor: theme.successBackground },
     chipText: { fontSize: 12, fontWeight: '600' },
-    chipTextNeutral: { color: '#1A73E8' },
-    chipTextSuccess: { color: '#1E7B4D' },
-
-    // Service card styles
+    chipTextNeutral: { color: theme.textSecondary },
+    chipTextSuccess: { color: theme.successText },
+    servicesList: { gap: 12 },
     serviceCardWrap: {
       position: 'relative',
     },
@@ -394,18 +466,15 @@ const getStyles = (theme: FullTheme) =>
       width: 4,
       borderTopLeftRadius: 10,
       borderBottomLeftRadius: 10,
-      backgroundColor: '#20C27A',
+      backgroundColor: theme.primary,
     },
     card: {
-      backgroundColor: '#FFF',
+      backgroundColor: theme.card,
       borderRadius: 12,
       padding: 14,
       paddingLeft: 18,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 4,
-      elevation: 1,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     cardHeader: {
       flexDirection: 'row',
@@ -416,57 +485,60 @@ const getStyles = (theme: FullTheme) =>
     cardTitle: {
       fontSize: 16,
       fontWeight: '700',
-      color: '#111',
+      color: theme.textPrimary,
       flex: 1,
       marginRight: 8,
     },
     cardDesc: {
-      fontSize: 13,
-      lineHeight: 18,
-      color: '#444',
+      fontSize: 14,
+      lineHeight: 20,
+      color: theme.textSecondary,
       marginBottom: 12,
     },
     priceBox: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#E6F4EA',
-      borderRadius: 8,
+      backgroundColor: theme.successBackground,
+      borderRadius: 10,
       paddingVertical: 10,
       paddingHorizontal: 12,
       marginBottom: 10,
+      gap: 10,
     },
-    priceIcon: {
-      width: 24,
-      height: 24,
-      borderRadius: 6,
-      backgroundColor: '#D7F1E1',
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginRight: 8,
+    priceIconLeft: {
+      marginRight: 2,
     },
     priceText: {
       fontSize: 15,
       fontWeight: '700',
-      color: '#1E7B4D',
+      color: theme.successText,
     },
-    priceSuffix: { fontWeight: '500', color: '#2E7D32' },
-
+    priceSuffix: {
+      fontWeight: '500',
+      color: theme.successText,
+      opacity: 0.9,
+    },
     modalityPill: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#FFEBD6',
+      backgroundColor: theme.backgroundInput,
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
+      gap: 6,
     },
-    modalityText: { fontSize: 12, fontWeight: '600', color: '#4E342E' },
+    modalityIcon: { marginRight: 0 },
+    modalityText: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: theme.textPrimary,
+    },
     statusPill: {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
     },
     statusPillText: { fontSize: 12, fontWeight: '700' },
-
     metaRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -474,14 +546,7 @@ const getStyles = (theme: FullTheme) =>
       paddingTop: 8,
     },
     metaLeft: { flexDirection: 'row', alignItems: 'center' },
-    metaLabel: { fontSize: 12, color: '#444' },
-    metaValue: { fontSize: 13, fontWeight: '700', color: '#1E7B4D' },
-
-    ...HEADING_STYLES(theme),
-    title: {
-      ...HEADING_STYLES(theme).title,
-    },
-    subtitle: {
-      ...HEADING_STYLES(theme).subtitle,
-    },
+    metaIcon: { marginRight: 8 },
+    metaLabel: { fontSize: 12, color: theme.textSecondary },
+    metaValue: { fontSize: 13, fontWeight: '700', color: theme.primary },
   });

@@ -5,7 +5,6 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import { truncateWords } from '@/utils/strings';
@@ -29,17 +28,21 @@ export function TrainerHomeContent() {
 
   return (
     <View style={styles.contentWrapper}>
-      <View style={styles.heroImageWrap}>
-        <Image
-          source={require('../../assets/images/trainer.png')}
-          style={styles.heroImage}
-          resizeMode="cover"
-        />
+      <View style={styles.trainerBadgeRow}>
+        <View style={styles.trainerBadge}>
+          <Image
+            source={require('../../assets/images/logos/rounded_logo.webp')}
+            style={styles.trainerBadgeLogo}
+            resizeMode="contain"
+          />
+          <AppText style={styles.trainerBadgeText}>Entrenador Fitech</AppText>
+        </View>
       </View>
 
       <HomeSectionContainer
-        title="Mis Pagos"
+        title="MIS PAGOS"
         onClick={() => router.push(ROUTES.trainerPayments)}
+        titleStyle={styles.sectionTitle}
       >
         <View style={styles.pagosCard}>
           <View style={styles.summaryCardsRow}>
@@ -73,7 +76,7 @@ export function TrainerHomeContent() {
 
       {reviews?.content && reviews.content.length > 0 && (
         <View style={styles.reviewsSection}>
-          <AppText style={styles.sectionTitle}>Últimas valoraciones</AppText>
+          <AppText style={styles.sectionTitle}>ÚLTIMAS VALORACIONES</AppText>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -114,36 +117,55 @@ export function TrainerHomeContent() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
-  const headings = HEADING_STYLES(theme);
-  return StyleSheet.create({
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
     contentWrapper: {
       rowGap: 24,
     },
-    heroImageWrap: {
+    trainerBadgeRow: {
+      flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 4,
+      justifyContent: 'flex-end',
     },
-    heroImage: {
-      width: '100%',
-      maxWidth: 320,
-      height: 180,
-      borderRadius: 16,
-      overflow: 'hidden',
+    trainerBadge: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
       backgroundColor: theme.backgroundInput,
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    trainerBadgeLogo: {
+      width: 20,
+      height: 20,
+    },
+    trainerBadgeText: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: theme.textSecondary,
+      letterSpacing: 0.3,
     },
     pagosCard: {
       backgroundColor: theme.card,
       borderRadius: 16,
-      padding: 16,
+      padding: 14,
       borderWidth: 1,
       borderColor: theme.border,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
     },
     summaryCardsRow: {
-      gap: 12,
+      gap: 10,
     },
     sectionTitle: {
-      ...headings.title,
+      fontSize: 12,
+      fontWeight: '700',
+      color: theme.textSecondary,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
       marginBottom: 8,
     },
     reviewsSection: {
@@ -190,4 +212,3 @@ const getStyles = (theme: FullTheme) => {
       lineHeight: 20,
     },
   });
-};

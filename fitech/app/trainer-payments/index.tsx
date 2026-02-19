@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -20,12 +19,6 @@ import {
 } from '../api/queries/use-trainer-get-payments';
 import { AppText } from '../components/AppText';
 import PageContainer from '../components/PageContainer';
-
-type PaymentsSummary = {
-  collectedToDate: number;
-  pendingCollection: number;
-  availableForCollection: number;
-};
 
 type Payment = {
   id: number;
@@ -101,15 +94,7 @@ export const SummaryCard = ({
           };
 
   return (
-    <View
-      style={[
-        styles.summaryCard,
-        {
-          backgroundColor: theme.background,
-          borderColor: theme.border,
-        },
-      ]}
-    >
+    <View style={styles.summaryCard}>
       <View
         style={[styles.summaryIconWrap, { backgroundColor: palette.iconBg }]}
       >
@@ -239,7 +224,7 @@ const PaymentRow = ({
         style={[
           styles.td,
           styles.numCol,
-          { color: theme.primaryText, fontWeight: '800' },
+          { color: theme.primary, fontWeight: '800' },
         ]}
       >
         {formatPEN(item.trainerEarnings)}
@@ -281,7 +266,7 @@ export default function TrainerPaymentsScreen() {
   const [endDate, setEndDate] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
-    return payments?.payments?.filter((p) => {
+    return payments?.payments?.filter((p: Payment) => {
       const statusOk = status === 'ALL' || p.paymentStatus === status;
       const d = p.paymentDate ? new Date(p.paymentDate).getTime() : null;
 
@@ -295,7 +280,6 @@ export default function TrainerPaymentsScreen() {
     });
   }, [payments, status, startDate, endDate]);
 
-  const onApplyFilters = () => {};
   const onClearFilters = () => {
     setStatus('ALL');
     setStartDate(null);
@@ -311,157 +295,163 @@ export default function TrainerPaymentsScreen() {
     <PageContainer
       title="Mis Pagos"
       subheader="Gestiona y revisa todos tus ingresos por servicios de entrenamiento"
-      style={{ padding: 16 }}
+      style={styles.pageStyle}
+      contentPaddingBottom={120}
     >
-      {/* Summary cards */}
-      <View style={styles.summaryRow}>
-        <SummaryCard
-          icon={<Ionicons name="checkmark-done" size={18} color="#FFF" />}
-          label="COBRADO HASTA LA FECHA"
-          amount={paymentsSummary?.collectedToDate}
-          tone="green"
-        />
-        <SummaryCard
-          icon={<Ionicons name="time-outline" size={18} color="#FFF" />}
-          label="PENDIENTE DE COBRO"
-          amount={paymentsSummary?.pendingCollection}
-          tone="blue"
-        />
-        <SummaryCard
-          icon={
-            <MaterialCommunityIcons
-              name="wallet-outline"
-              size={18}
-              color="#FFF"
-            />
-          }
-          label="DISPONIBLE PARA COBRAR"
-          amount={paymentsSummary?.availableForCollection}
-          tone="orange"
-        />
-      </View>
-
-      {/* Filters */}
-      <View style={styles.filtersCard}>
-        <AppText style={styles.filtersTitle}>Filtros</AppText>
-
-        <View style={styles.filtersRow}>
-          {/* Status dropdown placeholder */}
-          <TouchableOpacity
-            style={styles.inputLike}
-            onPress={() => {
-              // demo cycle
-              setStatus((prev) =>
-                prev === 'ALL'
-                  ? 'PENDING_CLIENT_APPROVAL'
-                  : prev === 'PENDING_CLIENT_APPROVAL'
-                    ? 'AVAILABLE_FOR_COLLECTION'
-                    : prev === 'AVAILABLE_FOR_COLLECTION'
-                      ? 'COLLECTED'
-                      : 'ALL',
-              );
-            }}
-          >
-            <AppText style={styles.inputLabel}>Estado de Cobro</AppText>
-            <View style={styles.inputValueRow}>
-              <AppText style={styles.inputValue} numberOfLines={1}>
-                {status === 'ALL'
-                  ? 'Todos los estados'
-                  : status === 'PENDING_CLIENT_APPROVAL'
-                    ? 'Pendiente aprobación'
-                    : status === 'AVAILABLE_FOR_COLLECTION'
-                      ? 'Disponible para cobrar'
-                      : 'Cobrado'}
-              </AppText>
-              <Ionicons name="chevron-down" size={16} color={theme.dark400} />
-            </View>
-          </TouchableOpacity>
-
-          {/* Start date placeholder */}
-          <TouchableOpacity
-            style={styles.inputLike}
-            onPress={() => {
-              setStartDate((d) => (d ? null : new Date().toISOString()));
-            }}
-          >
-            <AppText style={styles.inputLabel}>Fecha Inicio</AppText>
-            <View style={styles.inputValueRow}>
-              <AppText style={styles.inputValue}>
-                {formatDate(startDate)}
-              </AppText>
+      <View style={styles.contentWrap}>
+        <AppText style={styles.sectionTitle}>RESUMEN</AppText>
+        <View style={styles.summaryColumn}>
+          <SummaryCard
+            icon={
               <Ionicons
-                name="calendar-outline"
-                size={16}
-                color={theme.dark400}
+                name="checkmark-done"
+                size={18}
+                color={theme.background}
               />
-            </View>
-          </TouchableOpacity>
-
-          {/* End date placeholder */}
-          <TouchableOpacity
-            style={styles.inputLike}
-            onPress={() => {
-              setEndDate((d) => (d ? null : new Date().toISOString()));
-            }}
-          >
-            <AppText style={styles.inputLabel}>Fecha Fin</AppText>
-            <View style={styles.inputValueRow}>
-              <AppText style={styles.inputValue}>{formatDate(endDate)}</AppText>
+            }
+            label="COBRADO HASTA LA FECHA"
+            amount={paymentsSummary?.collectedToDate}
+            tone="green"
+          />
+          <SummaryCard
+            icon={
               <Ionicons
-                name="calendar-outline"
-                size={16}
-                color={theme.dark400}
+                name="time-outline"
+                size={18}
+                color={theme.background}
               />
-            </View>
-          </TouchableOpacity>
+            }
+            label="PENDIENTE DE COBRO"
+            amount={paymentsSummary?.pendingCollection}
+            tone="blue"
+          />
+          <SummaryCard
+            icon={
+              <MaterialCommunityIcons
+                name="wallet-outline"
+                size={18}
+                color={theme.background}
+              />
+            }
+            label="DISPONIBLE PARA COBRAR"
+            amount={paymentsSummary?.availableForCollection}
+            tone="orange"
+          />
         </View>
 
-        <View style={styles.filtersActions}>
-          <TouchableOpacity style={styles.applyBtn} onPress={onApplyFilters}>
-            <Ionicons
-              name="funnel-outline"
-              size={16}
-              color="#FFF"
-              style={{ marginRight: 6 }}
-            />
-            <AppText style={styles.applyBtnText}>Aplicar Filtros</AppText>
-          </TouchableOpacity>
+        <View style={styles.filterCard}>
+          <AppText style={styles.filterHint}>
+            Filtrar por estado de cobro y rango de fechas
+          </AppText>
 
-          <TouchableOpacity onPress={onClearFilters}>
-            <AppText style={styles.clearText}>Limpiar</AppText>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Payment history (horizontal-scroll table) */}
-      <View style={styles.tableCard}>
-        <AppText style={styles.tableTitle}>Historial de Pagos</AppText>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 4 }}
-        >
-          <View style={{ width: Math.max(TABLE_MIN_WIDTH, width - 32) }}>
-            <TableHeader />
-
-            <FlatList
-              data={filtered}
-              keyExtractor={(item) => String(item.id)}
-              renderItem={({ item }) => (
-                <PaymentRow item={item} onCollect={onCollect} />
-              )}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-              ListEmptyComponent={
-                <View style={{ paddingVertical: 18 }}>
-                  <AppText style={styles.muted}>
-                    No hay pagos que coincidan con los filtros.
+          <View style={styles.tabRow}>
+            {(
+              [
+                ['ALL', 'Todos'],
+                ['PENDING_CLIENT_APPROVAL', 'Pendiente'],
+                ['AVAILABLE_FOR_COLLECTION', 'Disponible'],
+                ['COLLECTED', 'Cobrado'],
+              ] as const
+            ).map(([value, label]) => {
+              const isActive = status === value;
+              return (
+                <TouchableOpacity
+                  key={value}
+                  style={[styles.tabButton, isActive && styles.tabButtonActive]}
+                  onPress={() => setStatus(value)}
+                  activeOpacity={0.8}
+                >
+                  <AppText
+                    style={[styles.tabText, isActive && styles.tabTextActive]}
+                    numberOfLines={1}
+                  >
+                    {label}
                   </AppText>
-                </View>
-              }
-            />
+                </TouchableOpacity>
+              );
+            })}
           </View>
-        </ScrollView>
+
+          <View style={styles.dateRow}>
+            <TouchableOpacity
+              style={styles.dateChip}
+              onPress={() =>
+                setStartDate((d) => (d ? null : new Date().toISOString()))
+              }
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={14}
+                color={theme.textSecondary}
+                style={styles.dateChipIcon}
+              />
+              <AppText style={styles.dateChipLabel}>Desde</AppText>
+              <AppText style={styles.dateChipValue} numberOfLines={1}>
+                {startDate ? formatDate(startDate) : '—'}
+              </AppText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dateChip}
+              onPress={() =>
+                setEndDate((d) => (d ? null : new Date().toISOString()))
+              }
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={14}
+                color={theme.textSecondary}
+                style={styles.dateChipIcon}
+              />
+              <AppText style={styles.dateChipLabel}>Hasta</AppText>
+              <AppText style={styles.dateChipValue} numberOfLines={1}>
+                {endDate ? formatDate(endDate) : '—'}
+              </AppText>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.clearFiltersBtn}
+              onPress={onClearFilters}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Ionicons
+                name="close-circle-outline"
+                size={16}
+                color={theme.textSecondary}
+                style={styles.clearFiltersIcon}
+              />
+              <AppText style={styles.clearFiltersText}>Limpiar</AppText>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.tableCard}>
+          <AppText style={styles.sectionTitle}>HISTORIAL DE PAGOS</AppText>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 4 }}
+          >
+            <View style={{ width: Math.max(TABLE_MIN_WIDTH, width - 32) }}>
+              <TableHeader />
+
+              <FlatList
+                data={filtered}
+                keyExtractor={(item) => String(item.id)}
+                renderItem={({ item }) => (
+                  <PaymentRow item={item} onCollect={onCollect} />
+                )}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                ListEmptyComponent={
+                  <View style={{ paddingVertical: 18 }}>
+                    <AppText style={styles.muted}>
+                      No hay pagos que coincidan con los filtros.
+                    </AppText>
+                  </View>
+                }
+              />
+            </View>
+          </ScrollView>
+        </View>
       </View>
     </PageContainer>
   );
@@ -470,109 +460,147 @@ export default function TrainerPaymentsScreen() {
 /* ------------------------------ Styles ---------------------------- */
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    summaryRow: {
-      gap: 12,
-      marginVertical: 10,
+    pageStyle: {},
+    contentWrap: {
+      gap: 16,
+      paddingVertical: 8,
+    },
+    sectionTitle: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: theme.textSecondary,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
+      marginBottom: 4,
+    },
+    summaryColumn: {
+      flexDirection: 'column',
+      gap: 10,
+      marginBottom: 4,
     },
     summaryCard: {
-      flex: 1,
-      borderRadius: 12,
-      padding: 14,
-      borderWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',
       gap: 12,
+      borderRadius: 14,
+      padding: 14,
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: theme.card,
     },
     summaryIconWrap: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
+      width: 40,
+      height: 40,
+      borderRadius: 12,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    summaryLabel: { fontSize: 12, fontWeight: '700', letterSpacing: 0.2 },
+    summaryLabel: {
+      fontSize: 12,
+      fontWeight: '700',
+      letterSpacing: 0.2,
+      textTransform: 'uppercase',
+    },
     summaryAmount: { fontSize: 20, fontWeight: '900', marginTop: 2 },
 
-    filtersCard: {
-      backgroundColor: theme.background,
-      borderRadius: 12,
-      padding: 14,
-      marginTop: 8,
-      marginBottom: 14,
-      borderWidth: 1,
-      borderColor: theme.border,
-    },
-    filtersTitle: {
-      fontSize: 16,
-      fontWeight: '800',
-      color: theme.textPrimary,
-      marginBottom: 10,
-    },
-    filtersRow: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    inputLike: {
-      flex: 1,
+    filterCard: {
       backgroundColor: theme.backgroundInput,
-      borderRadius: 10,
-      paddingHorizontal: 12,
+      borderRadius: 14,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginBottom: 4,
+    },
+    filterHint: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      marginBottom: 12,
+    },
+    tabRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    tabButton: {
       paddingVertical: 10,
+      paddingHorizontal: 14,
+      borderRadius: 10,
+      backgroundColor: theme.card,
       borderWidth: 1,
       borderColor: theme.border,
     },
-    inputLabel: {
-      fontSize: 12,
-      color: theme.dark500,
-      marginBottom: 4,
-      fontWeight: '700',
-    },
-    inputValueRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    inputValue: { fontSize: 14, color: theme.textPrimary, fontWeight: '700' },
-
-    filtersActions: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: 12,
-    },
-    applyBtn: {
-      flexDirection: 'row',
-      alignItems: 'center',
+    tabButtonActive: {
       backgroundColor: theme.primary,
-      borderRadius: 12,
-      paddingHorizontal: 14,
-      paddingVertical: 12,
-      shadowColor: theme.primary,
-      shadowOpacity: 0.25,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 2,
+      borderColor: theme.primary,
     },
-    applyBtnText: { color: theme.background, fontWeight: '900', fontSize: 13 },
-    clearText: { color: theme.dark500, fontWeight: '800' },
+    tabText: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: theme.textSecondary,
+    },
+    tabTextActive: {
+      color: theme.background,
+    },
+    dateRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      alignItems: 'center',
+      gap: 10,
+      marginTop: 12,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: theme.border,
+    },
+    dateChip: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.card,
+      borderRadius: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
+      minWidth: 100,
+    },
+    dateChipIcon: { marginRight: 6 },
+    dateChipLabel: {
+      fontSize: 11,
+      fontWeight: '600',
+      color: theme.textSecondary,
+      marginRight: 6,
+      textTransform: 'uppercase',
+    },
+    dateChipValue: {
+      flex: 1,
+      fontSize: 13,
+      fontWeight: '700',
+      color: theme.textPrimary,
+    },
+    clearFiltersBtn: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 8,
+      paddingHorizontal: 4,
+    },
+    clearFiltersIcon: { marginRight: 4 },
+    clearFiltersText: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: theme.textSecondary,
+    },
 
     tableCard: {
-      backgroundColor: theme.background,
-      borderRadius: 12,
-      padding: 12,
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      padding: 16,
       borderWidth: 1,
       borderColor: theme.border,
-    },
-    tableTitle: {
-      fontSize: 16,
-      fontWeight: '900',
-      color: theme.textPrimary,
-      marginBottom: 8,
     },
     headerRow: {
       backgroundColor: theme.backgroundInput,
-      borderTopLeftRadius: 8,
-      borderTopRightRadius: 8,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
     },
     row: {
       flexDirection: 'row',
@@ -592,7 +620,7 @@ const getStyles = (theme: FullTheme) =>
       color: theme.textPrimary,
     },
     numCol: { flex: 1.2, textAlign: 'right' as const },
-    bodyRow: { backgroundColor: theme.background },
+    bodyRow: { backgroundColor: theme.card },
     separator: { height: 1, backgroundColor: theme.border },
 
     statusPill: {
@@ -617,15 +645,5 @@ const getStyles = (theme: FullTheme) =>
       fontSize: 12,
     },
 
-    muted: { color: theme.dark500 },
-
-    ...HEADING_STYLES(theme),
-    title: {
-      ...HEADING_STYLES(theme).title,
-      color: theme.textPrimary,
-    },
-    subtitle: {
-      ...HEADING_STYLES(theme).subtitle,
-      color: theme.dark600,
-    },
+    muted: { color: theme.textSecondary },
   });

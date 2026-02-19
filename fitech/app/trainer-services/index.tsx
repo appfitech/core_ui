@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -69,13 +68,12 @@ export default function TrainerServicesScreen() {
   }, [list]);
 
   // ------- Filters -------
-  type FilterOpt = 'ALL' | 'ACTIVE' | 'INACTIVE';
-  const [statusFilter, setStatusFilter] = useState<FilterOpt>('ALL');
+  type FilterOpt = 'ACTIVE' | 'INACTIVE';
+  const [statusFilter, setStatusFilter] = useState<FilterOpt>('ACTIVE');
 
   const filtered = useMemo(() => {
     if (statusFilter === 'ACTIVE') return list.filter((s) => s.isActive);
-    if (statusFilter === 'INACTIVE') return list.filter((s) => !s.isActive);
-    return list;
+    return list.filter((s) => !s.isActive);
   }, [list, statusFilter]);
 
   const isTwoCol = width >= 700; // simple heuristic for tablets
@@ -86,17 +84,24 @@ export default function TrainerServicesScreen() {
     <View
       style={[
         styles.statusPill,
-        { backgroundColor: active ? '#E6F4EA' : '#F3F4F6' },
+        {
+          backgroundColor: active
+            ? theme.successBackground
+            : theme.backgroundInput,
+        },
       ]}
     >
       <Ionicons
         name={active ? 'checkmark-circle' : 'close-circle'}
         size={14}
-        color={active ? '#1E7B4D' : '#6B7280'}
-        style={{ marginRight: 6 }}
+        color={active ? theme.success : theme.textSecondary}
+        style={styles.statusPillIcon}
       />
       <AppText
-        style={[styles.statusText, { color: active ? '#1E7B4D' : '#6B7280' }]}
+        style={[
+          styles.statusText,
+          { color: active ? theme.successText : theme.textSecondary },
+        ]}
       >
         {active ? 'Activo' : 'Inactivo'}
       </AppText>
@@ -105,58 +110,57 @@ export default function TrainerServicesScreen() {
 
   const Card = ({ item }: { item: Service }) => (
     <View style={styles.card}>
-      {/* Top row: status + actions */}
       <View style={styles.cardTopRow}>
         <StatusPill active={item.isActive} />
-        <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={styles.cardActions}>
           <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Ionicons name="pencil" size={16} color="#374151" />
+            <Ionicons name="pencil" size={16} color={theme.textSecondary} />
           </TouchableOpacity>
           <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Entypo name="dots-three-vertical" size={14} color="#6B7280" />
+            <Entypo
+              name="dots-three-vertical"
+              size={14}
+              color={theme.textSecondary}
+            />
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Title row with modality icon */}
       <View style={styles.titleRow}>
         <View style={styles.iconBadge}>
           <Ionicons
             name={item.isInPerson ? 'walk' : 'videocam'}
             size={16}
-            color="#FFF"
+            color={theme.background}
           />
         </View>
         <AppText style={styles.cardTitle}>{item.name}</AppText>
       </View>
 
-      {/* Description */}
       {!!item.description && (
         <AppText style={styles.cardDesc} numberOfLines={6}>
           {item.description.trim()}
         </AppText>
       )}
 
-      {/* Footer meta */}
       <View style={styles.metaRow}>
         <View style={styles.metaCell}>
           <Ionicons
             name={item.isInPerson ? 'location' : 'laptop-outline'}
             size={14}
-            color="#4B5563"
-            style={{ marginRight: 6 }}
+            color={theme.textSecondary}
+            style={styles.metaIcon}
           />
           <AppText style={styles.metaText}>
             {item.isInPerson ? 'Presencial' : 'Virtual'}
           </AppText>
         </View>
-
         <View style={styles.metaCell}>
           <Ionicons
             name="people-outline"
             size={14}
-            color="#4B5563"
-            style={{ marginRight: 6 }}
+            color={theme.textSecondary}
+            style={styles.metaIcon}
           />
           <AppText style={styles.metaText}>
             {item.enrolledUsersCount}{' '}
@@ -178,7 +182,7 @@ export default function TrainerServicesScreen() {
   }) => (
     <View style={styles.summaryCard}>
       <View style={styles.summaryIcon}>{icon}</View>
-      <View style={{ flex: 1 }}>
+      <View style={styles.summaryContent}>
         <AppText style={styles.summaryValue}>{value}</AppText>
         <AppText style={styles.summaryLabel}>{label}</AppText>
       </View>
@@ -190,21 +194,24 @@ export default function TrainerServicesScreen() {
       hasBackButton={false}
       title="Gestión de Servicios"
       subheader="Administra los servicios que ofreces a tus clientes"
-      style={{ padding: 16 }}
+      style={styles.pageStyle}
+      contentPaddingBottom={120}
     >
-
-      {/* Top actions row */}
-      <View style={styles.topRow}>
-        <View style={styles.summaryRow}>
+      <View style={styles.topSection}>
+        <View style={styles.summaryColumn}>
           <SummaryCard
             icon={
-              <Ionicons name="checkmark-circle" size={18} color="#1E7B4D" />
+              <Ionicons
+                name="checkmark-circle"
+                size={18}
+                color={theme.success}
+              />
             }
             value={String(activeCount)}
             label="Servicios Activos"
           />
           <SummaryCard
-            icon={<Ionicons name="people" size={18} color="#1A73E8" />}
+            icon={<Ionicons name="people" size={18} color={theme.info} />}
             value={String(enrolledTotal)}
             label="Clientes Inscritos"
           />
@@ -213,183 +220,220 @@ export default function TrainerServicesScreen() {
               <MaterialCommunityIcons
                 name="trending-up"
                 size={18}
-                color="#FB8C00"
+                color={theme.orange}
               />
             }
             value={formatPEN(avgPrice || 0)}
             label="Precio Promedio"
           />
         </View>
-
-        <TouchableOpacity style={styles.newBtn}>
-          <Ionicons name="add" size={16} color="#FFF" />
+        <TouchableOpacity style={styles.newBtn} activeOpacity={0.8}>
+          <Ionicons name="add" size={18} color={theme.background} />
           <AppText style={styles.newBtnText}>Nuevo Servicio</AppText>
         </TouchableOpacity>
       </View>
 
-      {/* Section title + simple filter */}
       <View style={styles.sectionHeader}>
-        <AppText style={styles.sectionTitle}>Mis Servicios</AppText>
-
-        <TouchableOpacity
-          style={styles.filterInput}
-          onPress={() => {
-            // Simple toggle cycle; replace with your ActionSheet/Dropdown
-            setStatusFilter((prev) =>
-              prev === 'ALL'
-                ? 'ACTIVE'
-                : prev === 'ACTIVE'
-                  ? 'INACTIVE'
-                  : 'ALL',
-            );
-          }}
-        >
-          <AppText style={styles.filterLabel}>Filtrar</AppText>
-          <View style={styles.filterValueRow}>
-            <AppText style={styles.filterValue}>
-              {statusFilter === 'ALL'
-                ? 'Todos'
-                : statusFilter === 'ACTIVE'
-                  ? 'Activos'
-                  : 'Inactivos'}
-            </AppText>
-            <Ionicons name="chevron-down" size={16} color="#6B7280" />
-          </View>
-        </TouchableOpacity>
+        <AppText style={styles.sectionTitle}>MIS SERVICIOS</AppText>
       </View>
 
-      {/* Cards grid */}
-      <FlatList
-        data={filtered}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <Card item={item} />}
-        numColumns={numColumns}
-        columnWrapperStyle={numColumns > 1 ? { gap: 12 } : undefined}
-        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 24, gap: 12 }}
-      />
+      <View style={styles.filterCard}>
+        <AppText style={styles.filterHint}>
+          Mostrar solo servicios activos o inactivos
+        </AppText>
+        <View style={styles.tabRow}>
+          {(['ACTIVE', 'INACTIVE'] as const).map((status) => {
+            const isActive = statusFilter === status;
+            return (
+              <TouchableOpacity
+                key={status}
+                style={[styles.tabButton, isActive && styles.tabButtonActive]}
+                onPress={() => setStatusFilter(status)}
+                activeOpacity={0.8}
+              >
+                <AppText
+                  style={[styles.tabText, isActive && styles.tabTextActive]}
+                >
+                  {status === 'ACTIVE' ? 'Activos' : 'Inactivos'}
+                </AppText>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </View>
+
+      {filtered.length === 0 ? (
+        <View style={styles.emptyWrap}>
+          <AppText style={styles.emptyText}>
+            No hay servicios con el filtro aplicado
+          </AppText>
+          <AppText style={styles.emptyHint}>
+            Prueba otro filtro o crea un nuevo servicio
+          </AppText>
+        </View>
+      ) : (
+        <FlatList
+          data={filtered}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => <Card item={item} />}
+          numColumns={numColumns}
+          columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
+          ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
+          contentContainerStyle={styles.listContent}
+        />
+      )}
     </PageContainer>
   );
 }
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    // Header
-    ...HEADING_STYLES(theme),
-    title: {
-      ...HEADING_STYLES(theme).title,
+    pageStyle: {},
+    topSection: {
+      marginBottom: 16,
+      gap: 16,
     },
-    subtitle: {
-      ...HEADING_STYLES(theme).subtitle,
-    },
-
-    // Top row
-    topRow: {
-      alignItems: 'center',
+    summaryColumn: {
+      flexDirection: 'column',
       gap: 10,
-      marginBottom: 12,
+    },
+    summaryCard: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.card,
+      borderRadius: 14,
+      padding: 14,
+      gap: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+    },
+    summaryIcon: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      backgroundColor: theme.backgroundInput,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    summaryContent: { flex: 1 },
+    summaryValue: {
+      fontSize: 18,
+      fontWeight: '800',
+      color: theme.textPrimary,
+    },
+    summaryLabel: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      fontWeight: '600',
+      marginTop: 2,
     },
     newBtn: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#3F51B5',
-      paddingHorizontal: 12,
-      paddingVertical: 10,
-      borderRadius: 10,
+      gap: 8,
+      backgroundColor: theme.primary,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderRadius: 14,
       alignSelf: 'flex-start',
     },
     newBtnText: {
-      color: '#FFF',
-      fontWeight: '800',
-      marginLeft: 6,
-      fontSize: 13,
+      color: theme.background,
+      fontWeight: '700',
+      fontSize: 14,
     },
-
-    // Summary cards
-    summaryRow: {
-      flex: 1,
-      flexDirection: 'row',
-      gap: 10,
-    },
-    summaryCard: {
-      flex: 1,
-      backgroundColor: '#FFF',
-      borderRadius: 12,
-      padding: 12,
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 10,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
-    },
-    summaryIcon: {
-      width: 34,
-      height: 34,
-      borderRadius: 8,
-      backgroundColor: '#F5F5F5',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    summaryValue: { fontSize: 20, fontWeight: '800', color: '#111' },
-    summaryLabel: { fontSize: 12, color: '#6B7280', fontWeight: '600' },
-
-    // Section header + filter
     sectionHeader: {
-      backgroundColor: '#FFF',
-      borderRadius: 12,
-      padding: 12,
-      marginTop: 4,
       marginBottom: 12,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
     },
     sectionTitle: {
-      fontSize: 15,
+      fontSize: 12,
       fontWeight: '700',
-      color: '#111',
+      color: theme.textSecondary,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
     },
-    filterInput: {
-      width: 140,
-      backgroundColor: '#F3F4F6',
-      borderRadius: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 8,
+    filterCard: {
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.primary,
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      marginBottom: 16,
     },
-    filterLabel: { fontSize: 10, color: '#6B7280', fontWeight: '700' },
-    filterValueRow: {
+    filterHint: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      marginBottom: 10,
+    },
+    tabRow: {
       flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+      columnGap: 10,
+      flexWrap: 'wrap',
     },
-    filterValue: { fontSize: 13, color: '#111', fontWeight: '600' },
-
-    // Service card
+    tabButton: {
+      paddingVertical: 10,
+      paddingHorizontal: 18,
+      alignItems: 'center',
+      borderRadius: 999,
+      backgroundColor: theme.card,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    tabButtonActive: {
+      backgroundColor: theme.primary,
+      borderColor: theme.primary,
+    },
+    tabText: {
+      fontSize: 15,
+      color: theme.textPrimary,
+      fontWeight: '600',
+    },
+    tabTextActive: {
+      color: theme.background,
+      fontWeight: '700',
+    },
+    emptyWrap: {
+      paddingVertical: 32,
+      paddingHorizontal: 24,
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: theme.textPrimary,
+      textAlign: 'center',
+    },
+    emptyHint: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      marginTop: 8,
+      textAlign: 'center',
+    },
+    listContent: {
+      paddingTop: 4,
+      paddingBottom: 24,
+      gap: 12,
+    },
+    columnWrapper: { gap: 12 },
+    listSeparator: { height: 12 },
     card: {
       flex: 1,
-      backgroundColor: '#FFF',
-      borderRadius: 12,
-      padding: 12,
-      shadowColor: '#000',
-      shadowOpacity: 0.05,
-      shadowRadius: 4,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 1,
+      backgroundColor: theme.card,
+      borderRadius: 16,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     cardTopRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginBottom: 8,
+      marginBottom: 10,
     },
+    cardActions: { flexDirection: 'row', gap: 12 },
     statusPill: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -398,35 +442,53 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
       alignSelf: 'flex-start',
     },
+    statusPillIcon: { marginRight: 6 },
     statusText: { fontSize: 12, fontWeight: '700' },
-
     titleRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 6,
+      marginBottom: 8,
       gap: 10,
     },
     iconBadge: {
-      width: 28,
-      height: 28,
-      borderRadius: 14,
-      backgroundColor: '#6F57E8',
+      width: 32,
+      height: 32,
+      borderRadius: 10,
+      backgroundColor: theme.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    cardTitle: { fontSize: 15, fontWeight: '800', color: '#111', flex: 1 },
-
-    cardDesc: { fontSize: 13, color: '#444', lineHeight: 18, marginBottom: 8 },
-
+    cardTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: theme.textPrimary,
+      flex: 1,
+    },
+    cardDesc: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      lineHeight: 20,
+      marginBottom: 10,
+    },
     metaRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      borderTopWidth: StyleSheet.hairlineWidth,
-      borderTopColor: '#E5E7EB',
-      paddingTop: 8,
-      marginTop: 4,
+      justifyContent: 'flex-end',
+      gap: 20,
+      borderTopWidth: 1,
+      borderTopColor: theme.border,
+      paddingTop: 12,
+      marginTop: 6,
     },
-    metaCell: { flexDirection: 'row', alignItems: 'center' },
-    metaText: { fontSize: 12, color: '#4B5563', fontWeight: '600' },
+    metaCell: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+    },
+    metaIcon: {},
+    metaText: {
+      fontSize: 12,
+      color: theme.textSecondary,
+      fontWeight: '600',
+    },
   });
