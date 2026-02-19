@@ -3,10 +3,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ReviewableContractDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 import {
@@ -19,26 +16,38 @@ import PageContainer from '../components/PageContainer';
 import { Tag } from '../components/Tag';
 import { RatingDistribution } from './RatingBreakdown';
 
-export default function ContractsScreen() {
+/** Review item as returned by trainer my-reviews API (content array). */
+type TrainerReviewItem = {
+  id?: number;
+  contractId?: number;
+  serviceId?: number;
+  serviceName?: string;
+  clientName?: string;
+  comment?: string;
+  [key: string]: unknown;
+};
+
+export default function TrainerReviewsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
 
-  const { data: stats, refetch: refetchActiveContracts } =
-    useTrainerGetReviewsStats();
-  const { data: breakdown, refetch: refetchInactiveContracts } =
-    useTrainerGetReviewsBreakdown();
-  const { data: reviews, refetch: refetchReviews } = useTrainerGetReviews();
+  const { data: stats } = useTrainerGetReviewsStats();
+  const { data: breakdown } = useTrainerGetReviewsBreakdown();
+  const { data: reviews } = useTrainerGetReviews();
 
   const styles = getStyles(theme);
 
-  const handleDetails = (contract: ReviewableContractDto) => {
-    if (!contract?.serviceId) {
+  const handleDetails = (review: TrainerReviewItem) => {
+    if (!review?.serviceId) {
       return;
     }
 
     router.push({
-      pathname: `${ROUTES.contracts}/${contract?.serviceId}`,
-      params: { contract: JSON.stringify(contract) },
+      pathname: '/contracts/[id]',
+      params: {
+        id: String(review.serviceId),
+        contract: JSON.stringify(review),
+      },
     });
   };
 
@@ -47,49 +56,83 @@ export default function ContractsScreen() {
       title="Mis Calificaciones"
       subheader="Revisa las calificaciones y comentarios de tus clientes"
       style={styles.pageStyle}
+      contentPaddingBottom={120}
     >
-      <View style={styles.statsSection}>
-        <View style={styles.statCardSuccess}>
-          <AppText style={styles.statCardLabel}>{'Total reseñas'}</AppText>
-          <AppText style={styles.statCardValueSuccess}>
-            {stats?.totalReviews}
-          </AppText>
+      <View style={styles.contentWrap}>
+        <AppText style={styles.sectionTitle}>RESUMEN</AppText>
+        <View style={styles.summaryColumn}>
+          <View style={styles.statCardSuccess}>
+            <AppText style={styles.statCardLabel}>Total reseñas</AppText>
+            <AppText style={styles.statCardValueSuccess}>
+              {(stats as { totalReviews?: number } | undefined)?.totalReviews ??
+                0}
+            </AppText>
+          </View>
+          <View style={styles.statCardInfo}>
+            <AppText style={styles.statCardLabel}>
+              Calificación promedio
+            </AppText>
+            <AppText style={styles.statCardValueInfo}>
+              {(stats as { averageRating?: number } | undefined)
+                ?.averageRating ?? '—'}
+            </AppText>
+          </View>
         </View>
-        <View style={styles.statCardInfo}>
-          <AppText style={styles.statCardLabel}>
-            {'Calificación promedio'}
-          </AppText>
-          <AppText style={styles.statCardValueInfo}>
-            {stats?.averageRating}
-          </AppText>
-        </View>
-        {breakdown && <RatingDistribution data={breakdown} />}
-        {reviews?.content?.map((review) => (
-          <View key={review.id ?? review?.contractId} style={styles.card}>
-            <AppText style={styles.cardTitle}>{review.clientName}</AppText>
-            <View style={styles.cardRow}>
-              <AppText style={styles.cardInfo}>{review.comment}</AppText>
-            </View>
-            <Tag
-              backgroundColor={theme.infoBackground}
-              textColor={theme.infoText}
-              label={review?.serviceName}
+
+        {breakdown && (
+          <>
+            <AppText style={styles.sectionTitle}>
+              DISTRIBUCIÓN DE CALIFICACIONES
+            </AppText>
+            <RatingDistribution
+              data={
+                breakdown as unknown as {
+                  averageRating: number;
+                  totalReviews: number;
+                  breakdown: {
+                    stars: number;
+                    count: number;
+                    percentage: number;
+                  }[];
+                }
+              }
             />
-            <View>
+          </>
+        )}
+
+        <AppText style={styles.sectionTitle}>RESEÑAS</AppText>
+        <View style={styles.reviewsList}>
+          {(
+            (reviews as { content?: TrainerReviewItem[] } | undefined)
+              ?.content ?? []
+          ).map((review: TrainerReviewItem) => (
+            <View key={review.id ?? review?.contractId} style={styles.card}>
+              <AppText style={styles.cardTitle}>{review.clientName}</AppText>
+              {review.comment ? (
+                <AppText style={styles.cardComment} numberOfLines={4}>
+                  {review.comment}
+                </AppText>
+              ) : null}
+              <Tag
+                backgroundColor={theme.infoBackground}
+                textColor={theme.infoText}
+                label={review?.serviceName ?? 'Servicio'}
+              />
               <TouchableOpacity
-                style={styles.detailsButton}
+                style={styles.respondButton}
                 onPress={() => handleDetails(review)}
+                activeOpacity={0.8}
               >
-                <AppText style={styles.detailsButtonText}>Responder</AppText>
+                <AppText style={styles.respondButtonText}>Responder</AppText>
                 <Ionicons
                   name="chevron-forward"
                   size={16}
-                  color={theme.dark900}
+                  color={theme.background}
                 />
               </TouchableOpacity>
             </View>
-          </View>
-        ))}
+          ))}
+        </View>
       </View>
     </PageContainer>
   );
@@ -97,73 +140,96 @@ export default function ContractsScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { padding: 16 },
-    statsSection: { rowGap: 10, marginBottom: 100, marginTop: 20 },
+    pageStyle: {},
+    contentWrap: {
+      gap: 16,
+      paddingVertical: 8,
+    },
+    sectionTitle: {
+      fontSize: 12,
+      fontWeight: '700',
+      color: theme.textSecondary,
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
+      marginBottom: 4,
+    },
+    summaryColumn: {
+      flexDirection: 'column',
+      gap: 10,
+      marginBottom: 4,
+    },
     statCardSuccess: {
-      flex: 1,
-      backgroundColor: theme.successBackground,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: 16,
       justifyContent: 'space-between',
-      borderRadius: 20,
+      padding: 16,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: theme.card,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.success,
     },
     statCardInfo: {
-      flex: 1,
-      backgroundColor: theme.infoBackground,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: 16,
       justifyContent: 'space-between',
-      borderRadius: 20,
+      padding: 16,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: theme.card,
+      borderLeftWidth: 4,
+      borderLeftColor: theme.info,
     },
-    statCardLabel: { fontWeight: '600', fontSize: 20 },
+    statCardLabel: {
+      fontWeight: '600',
+      fontSize: 14,
+      color: theme.textSecondary,
+    },
     statCardValueSuccess: {
       color: theme.successText,
-      fontSize: 40,
+      fontSize: 28,
       fontWeight: '900',
     },
     statCardValueInfo: {
       color: theme.infoText,
-      fontSize: 40,
+      fontSize: 28,
       fontWeight: '900',
     },
+    reviewsList: { gap: 12 },
     card: {
-      backgroundColor: theme.dark100,
+      backgroundColor: theme.card,
       borderRadius: 16,
-      borderColor: theme.green400,
       borderWidth: 1,
+      borderColor: theme.border,
       padding: 16,
-      rowGap: 6,
+      gap: 10,
     },
     cardTitle: {
-      fontSize: 17.5,
-      fontWeight: '600',
-      color: theme.dark700,
-      marginBottom: 8,
+      fontSize: 17,
+      fontWeight: '700',
+      color: theme.textPrimary,
     },
-    cardRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 6,
+    cardComment: {
+      fontSize: 14,
+      color: theme.textSecondary,
+      lineHeight: 20,
     },
-    cardInfo: {
-      fontSize: 15,
-      color: theme.dark800,
-    },
-    detailsButton: {
-      marginTop: 12,
-      backgroundColor: theme.green400,
-      padding: 12,
-      borderRadius: 10,
+    respondButton: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
+      gap: 8,
+      marginTop: 4,
+      backgroundColor: theme.primary,
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
     },
-    detailsButtonText: {
-      color: theme.dark900,
-      fontWeight: '500',
+    respondButtonText: {
+      color: theme.background,
+      fontWeight: '700',
       fontSize: 15,
     },
-    ...HEADING_STYLES(theme),
   });

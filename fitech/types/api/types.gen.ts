@@ -2179,8 +2179,8 @@ export type MembershipPlan = {
   annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
-  monthly?: boolean;
   durationDescription?: string;
+  monthly?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {

@@ -38,7 +38,8 @@ export function NavBar() {
   const segments = useSegments();
   const user = useUserStore((s) => s.user);
 
-  const currentRoute = segments[0];
+  const currentPath =
+    '/' + (Array.isArray(segments) ? segments.filter(Boolean).join('/') : '');
   const isPremium = user?.user?.premium;
   const isTrainer = useUserStore((s) => s.getIsTrainer());
 
@@ -63,7 +64,8 @@ export function NavBar() {
       >
         {Object.entries(NAV_ITEMS_MAPPER(isTrainer)).map(
           ([key, { icon, route, label }]) => {
-            const isCurrentRoute = currentRoute === key;
+            const isCurrentRoute =
+              currentPath === route || currentPath.startsWith(route + '/');
 
             return (
               <TouchableOpacity

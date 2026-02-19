@@ -1,6 +1,11 @@
 import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
+import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
+
+import { AppText } from '../components/AppText';
 
 type RatingBreakdown = {
   averageRating: number;
@@ -13,67 +18,72 @@ type RatingBreakdown = {
 };
 
 export const RatingDistribution = ({ data }: { data: RatingBreakdown }) => {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Distribución de Calificaciones</Text>
       {data?.breakdown?.map((item) => (
         <View key={item.stars} style={styles.row}>
-          {/* Stars */}
           <View style={styles.stars}>
             {Array.from({ length: item.stars }).map((_, i) => (
-              <FontAwesome key={i} name="star" size={14} color="#FFA500" />
+              <FontAwesome
+                key={i}
+                name="star"
+                size={14}
+                color={theme.orange}
+              />
             ))}
           </View>
-
-          {/* Progress Bar */}
           <View style={styles.progressContainer}>
             <View
               style={[styles.progressFill, { width: `${item.percentage}%` }]}
             />
           </View>
-
-          {/* Count */}
-          <Text style={styles.count}>{item.count}</Text>
+          <AppText style={styles.count}>{item.count}</AppText>
         </View>
       ))}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    padding: 12,
-    elevation: 2,
-  },
-  title: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 4,
-  },
-  stars: {
-    flexDirection: 'row',
-    width: 60,
-  },
-  progressContainer: {
-    flex: 1,
-    height: 8,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    marginHorizontal: 8,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#FFA500',
-    borderRadius: 4,
-  },
-  count: {
-    width: 20,
-    textAlign: 'right',
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.card,
+      borderRadius: 14,
+      padding: 16,
+      borderWidth: 1,
+      borderColor: theme.border,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginVertical: 6,
+    },
+    stars: {
+      flexDirection: 'row',
+      width: 56,
+      gap: 2,
+    },
+    progressContainer: {
+      flex: 1,
+      height: 10,
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 6,
+      marginHorizontal: 10,
+      overflow: 'hidden',
+    },
+    progressFill: {
+      height: '100%',
+      backgroundColor: theme.orange,
+      borderRadius: 6,
+    },
+    count: {
+      width: 24,
+      textAlign: 'right',
+      fontSize: 13,
+      fontWeight: '700',
+      color: theme.textPrimary,
+    },
+  });

@@ -35,6 +35,7 @@ type ClientItem = {
   clientEmail: string;
   clientPhone: string;
   profilePhotoId?: number | null;
+  chatId?: number | null;
   fitnessGoals: string[];
   services: ServiceItem[];
   totalServicesCount: number;
@@ -235,8 +236,6 @@ export default function TrainerClientsScreen() {
     search: debouncedQuery ?? '',
   });
 
-  console.log('clients', clients);
-
   const results: ClientItem[] =
     (clients as { content?: ClientItem[] } | undefined)?.content ?? [];
   const styles = getStyles(theme);
@@ -307,7 +306,19 @@ export default function TrainerClientsScreen() {
 
             <TouchableOpacity
               style={styles.contactarButton}
-              onPress={() => router.push(ROUTES.chats)}
+              onPress={() => {
+                if (client.chatId != null) {
+                  router.push({
+                    pathname: '/chats/[id]',
+                    params: {
+                      id: String(client.chatId),
+                      title: client.clientName,
+                    },
+                  });
+                } else {
+                  router.push(ROUTES.chats);
+                }
+              }}
               activeOpacity={0.8}
             >
               <Ionicons

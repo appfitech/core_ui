@@ -4,7 +4,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
-  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -41,7 +40,7 @@ function buildWsUrl(token: string) {
     : WS_BASE_URL;
 
   const url = `${base}/ws-native?token=${encodeURIComponent(token)}`;
-  console.log('[K] ws url', url);
+
   return url;
 }
 
@@ -140,7 +139,6 @@ export default function ChatDetailScreen() {
 
       ws.onopen = () => {
         setWsStatus('open');
-        console.log('[K] hellllllloooo');
         console.log('Chat WebSocket connected');
       };
 

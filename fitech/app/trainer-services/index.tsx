@@ -191,7 +191,7 @@ export default function TrainerServicesScreen() {
 
   return (
     <PageContainer
-      hasBackButton={false}
+      hasBackButton
       title="Gestión de Servicios"
       subheader="Administra los servicios que ofreces a tus clientes"
       style={styles.pageStyle}
