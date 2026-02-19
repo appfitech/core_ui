@@ -17,6 +17,7 @@ export const ROUTES = {
   contracts: '/contracts',
   trainerReviews: '/trainer-reviews',
   trainerClients: '/trainer-clients',
+  trainerDiets: '/trainer-diets',
   trainerPayments: '/trainer-payments',
   gymbro: '/gymbro',
   gymcrush: '/gymcrush',

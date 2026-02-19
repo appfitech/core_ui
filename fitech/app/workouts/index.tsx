@@ -42,8 +42,8 @@ export default function WorkoutsScreen() {
     ? [
         {
           key: 'trainer-diets',
-          title: 'Dietas de clientes',
-          description: 'Planes de alimentación de tus clientes',
+          title: 'Dietas de Clientes',
+          description: 'Gestiona las dietas asignadas a tus clientes',
           image: require('../../assets/images/vectors/diet_icon.png'),
         },
         {
