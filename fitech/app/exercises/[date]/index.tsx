@@ -104,7 +104,7 @@ export default function WorkoutDayScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { padding: 16, rowGap: 10, flex: 1 },
+    pageStyle: { padding: 16, rowGap: 10 },
     summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
     listStyle: { flex: 1 },
     listContent: { paddingBottom: 180 },

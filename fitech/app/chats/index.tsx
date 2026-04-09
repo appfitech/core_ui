@@ -225,7 +225,6 @@ export default function ChatsScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: {
-      flex: 1,
       paddingBottom: 0,
     },
     loadingCenter: {

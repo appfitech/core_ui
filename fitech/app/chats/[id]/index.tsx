@@ -337,7 +337,6 @@ export default function ChatDetailScreen() {
 const getStyles = (theme: FullTheme, safeBottom: number) =>
   StyleSheet.create({
     pageStyle: {
-      flex: 1,
       paddingBottom: 0,
       paddingHorizontal: 16,
       rowGap: 16,

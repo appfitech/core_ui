@@ -301,7 +301,7 @@ export default function GymCrushScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageContainer: { flex: 1, paddingBottom: 0 },
+    pageContainer: { paddingBottom: 0 },
     safeArea: {
       flex: 1,
       minHeight: SCREEN_H - 120,

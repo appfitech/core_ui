@@ -192,7 +192,7 @@ export default function TrainerContractScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { flex: 1 },
+    pageStyle: {},
     scroll: { flex: 1 },
     scrollContent: { paddingBottom: 180 },
     errorText: {

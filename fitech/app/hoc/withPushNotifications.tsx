@@ -106,14 +106,10 @@ export function withPushNotifications<P extends Record<string, unknown>>(
       const subReceived = Notifications.addNotificationReceivedListener(
         () => {},
       );
-      const subResponse = Notifications.addNotificationResponseReceivedListener(
-        () => {},
-      );
 
       return () => {
         cancelled = true;
         subReceived.remove();
-        subResponse.remove();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

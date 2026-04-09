@@ -131,7 +131,6 @@ export default function NotificationsScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: {
-      flex: 1,
       paddingHorizontal: 16,
       paddingBottom: 160,
     },

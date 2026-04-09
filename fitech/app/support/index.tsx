@@ -119,7 +119,6 @@ export default function SupportScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: {
-      flex: 1,
       paddingHorizontal: 16,
       paddingBottom: 160,
       rowGap: 16,
