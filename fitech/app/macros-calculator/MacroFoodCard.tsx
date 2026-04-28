@@ -35,12 +35,14 @@ export function MacroFoodCard({
           {
             borderRadius: 20,
             overflow: 'hidden',
-            backgroundColor: theme.dark100,
+            backgroundColor: theme.card,
+            borderWidth: 1,
+            borderColor: theme.border,
           },
           isSelected && {
             backgroundColor: theme.successBackground,
             borderColor: theme.successBorder,
-            borderWidth: 5,
+            borderWidth: 2,
           },
         ]}
       >
@@ -54,48 +56,75 @@ export function MacroFoodCard({
             style={{
               fontSize: 17,
               fontWeight: '500',
-              color: theme.backgroundInverted,
+              color: theme.textPrimary,
             }}
           >
             {foodItem?.name}
           </AppText>
-          <AppText style={{ fontSize: 15, color: theme.dark900 }}>
+          <AppText style={{ fontSize: 15, color: theme.textSecondary }}>
             {foodItem?.description}
           </AppText>
-          {foodItem?.category && (
-            <View style={{ marginVertical: 10 }}>
+          <View
+            style={{
+              marginVertical: 10,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: 8,
+              alignItems: 'center',
+            }}
+          >
+            {!!foodItem?.category && (
               <Tag
-                icon="coffee"
+                icon="restaurant-outline"
                 label={foodItem?.category}
                 textColor={theme.successText}
                 backgroundColor={theme.successBackground}
               />
+            )}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: theme.backgroundInput,
+                borderWidth: 1,
+                borderColor: theme.border,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                borderRadius: 999,
+              }}
+            >
+              <AppText
+                style={{
+                  fontSize: 13,
+                  color: theme.textPrimary,
+                  fontWeight: '700',
+                }}
+              >
+                {`${foodItem?.macros?.calories} kcal`}
+              </AppText>
             </View>
-          )}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}
-          >
-            <AppText
+            <View
               style={{
-                fontSize: 14,
-                color: theme.green800,
-                fontWeight: '600',
+                flexDirection: 'row',
+                alignItems: 'center',
+                backgroundColor: theme.backgroundInput,
+                borderWidth: 1,
+                borderColor: theme.border,
+                paddingVertical: 5,
+                paddingHorizontal: 10,
+                borderRadius: 999,
               }}
             >
-              {`${foodItem?.macros?.calories} kcal`}
-            </AppText>
-            <AppText
-              style={{
-                fontSize: 14,
-                color: theme.green800,
-                fontWeight: '600',
-              }}
-            >
-              {`${foodItem?.macros?.proteins} proteína`}
-            </AppText>
+              <AppText
+                style={{
+                  fontSize: 13,
+                  color: theme.textPrimary,
+                  fontWeight: '700',
+                }}
+              >
+                {`${foodItem?.macros?.proteins} proteína`}
+              </AppText>
+            </View>
           </View>
         </View>
       </View>

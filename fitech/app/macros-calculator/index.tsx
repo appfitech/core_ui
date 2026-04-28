@@ -28,7 +28,7 @@ export default function MacrosCalculatorScreen() {
 
   const handleOpenCalculateMacros = useCallback(() => {
     router.push('/macros-calculator/calculate');
-  }, []);
+  }, [router]);
 
   return (
     <PageContainer
@@ -36,7 +36,14 @@ export default function MacrosCalculatorScreen() {
       subheader="Descubre si estás alimentando músculo, energía... o puro gustito."
       style={{ padding: 16, paddingBottom: 200 }}
     >
-      <AppText style={{ fontSize: 16, fontWeight: '600', marginBottom: 4 }}>
+      <AppText
+        style={{
+          fontSize: 16,
+          fontWeight: '700',
+          marginBottom: 8,
+          color: theme.textPrimary,
+        }}
+      >
         {'Selecciona tus alimentos'}
       </AppText>
       <View style={styles.searchRow}>
@@ -45,9 +52,10 @@ export default function MacrosCalculatorScreen() {
           value={query}
           onChangeText={setQuery}
           shouldHideEndIcon={true}
+          containerStyle={styles.searchBarContainer}
         />
         <TouchableOpacity style={styles.searchButton}>
-          <Ionicons name="chevron-forward" size={22} color={theme.dark100} />
+          <Ionicons name="chevron-forward" size={22} color={theme.background} />
         </TouchableOpacity>
       </View>
 
@@ -59,24 +67,10 @@ export default function MacrosCalculatorScreen() {
         }}
       >
         <TouchableOpacity
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: theme.backgroundInverted,
-            borderRadius: 12,
-          }}
+          style={styles.calculateButton}
           onPress={handleOpenCalculateMacros}
         >
-          <AppText
-            style={{
-              color: theme.background,
-              fontSize: 17,
-              fontWeight: '600',
-            }}
-          >
-            {'Calcular'}
-          </AppText>
+          <AppText style={styles.calculateButtonText}>{'Calcular'}</AppText>
           <Ionicons name="play" size={20} color={theme.background} />
         </TouchableOpacity>
       </View>
@@ -104,16 +98,36 @@ const getStyles = (theme: FullTheme) =>
     searchRow: {
       flexDirection: 'row',
       marginBottom: 20,
-      columnGap: 4,
+      columnGap: 8,
       alignItems: 'center',
+    },
+    searchBarContainer: {
+      flex: 1,
+      width: 'auto',
+      minWidth: 0,
     },
     searchButton: {
       backgroundColor: theme.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      height: 43,
-      width: 43,
+      height: 46,
+      width: 46,
+      flexShrink: 0,
+    },
+    calculateButton: {
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.primary,
+      borderRadius: 12,
+      columnGap: 4,
+    },
+    calculateButtonText: {
+      color: theme.background,
+      fontSize: 17,
+      fontWeight: '600',
     },
     bottomSheetContainer: {
       padding: 16,
