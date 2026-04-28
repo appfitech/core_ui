@@ -70,6 +70,6 @@ const getStyles = (theme: FullTheme) =>
     badgeText: {
       fontWeight: '700',
       fontSize: 11,
-      color: theme.backgroundInverted,
+      color: theme.background,
     },
   });

@@ -36,10 +36,12 @@ export const toastConfig = {
             paddingHorizontal: 10,
             paddingVertical: 6,
             borderRadius: 10,
-            backgroundColor: 'white',
+            backgroundColor: '#FFFFFF',
           }}
         >
-          <AppText style={{ fontWeight: '800' }}>Abrir chat</AppText>
+          <AppText style={{ fontWeight: '800', color: '#111827' }}>
+            Abrir chat
+          </AppText>
         </Pressable>
       )}
     </Animated.View>

@@ -37,18 +37,18 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
         refetchCallback();
       },
     });
-  }, [refetchCallback, session]);
+  }, [deleteWorkout, refetchCallback, session]);
 
   const handleCallback = useCallback(() => {
     close();
     refetchSeries();
     refetchCallback();
-  }, [refetchCallback]);
+  }, [close, refetchCallback, refetchSeries]);
 
   return (
     <Card
       style={{
-        backgroundColor: theme.background,
+        backgroundColor: theme.card,
         borderColor: theme.primary,
         borderWidth: 1,
       }}
@@ -60,13 +60,15 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
           alignItems: 'center',
         }}
       >
-        <AppText style={{ fontSize: 18, fontWeight: '700' }}>
+        <AppText
+          style={{ fontSize: 18, fontWeight: '700', color: theme.textPrimary }}
+        >
           {session.exerciseName}
         </AppText>
         {!!session.muscleGroup && (
           <Tag
-            backgroundColor={theme.backgroundInverted}
-            textColor={theme.dark100}
+            backgroundColor={theme.primaryBg}
+            textColor={theme.primaryText}
             label={session.muscleGroup}
           />
         )}
@@ -88,13 +90,13 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
             </AppText>
             <View
               style={{
-                backgroundColor: '#F0F0F0',
+                backgroundColor: theme.backgroundInput,
                 paddingVertical: 4,
                 paddingHorizontal: 10,
                 borderRadius: 999,
               }}
             >
-              <AppText>
+              <AppText style={{ color: theme.textPrimary }}>
                 {s.repetitions ?? 0}{' '}
                 {(s.repetitions ?? 0) === 1 ? 'repetición' : 'repeticiones'}
               </AppText>
@@ -102,13 +104,15 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
             {typeof s.weightKg === 'number' && (
               <View
                 style={{
-                  backgroundColor: '#F0F0F0',
+                  backgroundColor: theme.backgroundInput,
                   paddingVertical: 4,
                   paddingHorizontal: 10,
                   borderRadius: 999,
                 }}
               >
-                <AppText>{s.weightKg} kg</AppText>
+                <AppText style={{ color: theme.textPrimary }}>
+                  {s.weightKg} kg
+                </AppText>
               </View>
             )}
           </View>
@@ -118,16 +122,24 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
       {!!session.exerciseNotes && (
         <View
           style={{
-            backgroundColor: '#F7F7F7',
+            backgroundColor: theme.backgroundInput,
             padding: 10,
             borderRadius: 8,
             marginTop: 10,
           }}
         >
-          <AppText style={{ fontWeight: '600', marginBottom: 4 }}>
+          <AppText
+            style={{
+              fontWeight: '600',
+              marginBottom: 4,
+              color: theme.textPrimary,
+            }}
+          >
             Notas del entrenamiento:
           </AppText>
-          <AppText>{session.exerciseNotes}</AppText>
+          <AppText style={{ color: theme.textPrimary }}>
+            {session.exerciseNotes}
+          </AppText>
         </View>
       )}
 

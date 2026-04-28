@@ -1,6 +1,13 @@
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import {
   useCreateWorkout,
@@ -21,7 +28,6 @@ import { FullTheme } from '@/types/theme';
 
 import { Button } from '../Button';
 import { Dropdown } from '../Dropdown';
-import PageContainer from '../PageContainer';
 import { TextInput } from '../TextInput';
 
 type Props = {
@@ -86,7 +92,7 @@ export function AddEditExerciseModal({
         },
       ]);
     }
-  }, [prevIsLoading, mode, isLoading, isSuccess]);
+  }, [prevIsLoading, mode, isLoading, isSuccess, initialSeries]);
 
   const addSet = () => setSets((prev) => [...prev, { repetitions: undefined }]);
 
@@ -140,137 +146,195 @@ export function AddEditExerciseModal({
       { ...payload, workoutSessionId: initial?.id },
       { onSuccess: refetchCallback },
     );
-  }, [mode, name, muscleGroup, dateISO, sets, notes, initial?.id]);
+  }, [
+    mode,
+    name,
+    muscleGroup,
+    dateISO,
+    sets,
+    notes,
+    initial?.id,
+    createWorkout,
+    editWorkout,
+    refetchCallback,
+  ]);
 
   return (
-    <Modal animationType="slide" presentationStyle="fullScreen">
-      <PageContainer
-        hasBackButton={false}
-        styleContainer={{ backgroundColor: 'transparent' }}
-        style={styles.modalPageStyle}
-      >
-        <View style={styles.modalCard}>
-          <AppText style={styles.modalTitle}>
-            {mode === 'add' ? '+ Agregar Ejercicio' : 'Editar Ejercicio'} -{' '}
-            {moment(dateISO).format('DD/MM/YYYY')}
-          </AppText>
+    <Modal
+      animationType="slide"
+      presentationStyle="fullScreen"
+      onRequestClose={onClose}
+    >
+      <KeyboardAvoidingView style={styles.modalRoot} behavior="padding">
+        <View style={styles.modalSheet}>
+          <View style={styles.modalPageStyle}>
+            <ScrollView
+              style={styles.formScroll}
+              contentContainerStyle={styles.formContent}
+              showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+            >
+              <View style={styles.modalHeader}>
+                <AppText style={styles.modalTitle}>
+                  {mode === 'add' ? '+ Agregar Ejercicio' : 'Editar Ejercicio'}
+                </AppText>
+                <AppText style={styles.modalSubtitle}>
+                  {moment(dateISO).format('DD/MM/YYYY')}
+                </AppText>
+              </View>
 
-          <TextInput
-            placeholder="Nombre del Ejercicio*"
-            placeholderTextColor="#808080"
-            value={name}
-            onChangeText={setName}
-            style={styles.input}
-          />
+              <TextInput
+                placeholder="Nombre del Ejercicio*"
+                value={name}
+                onChangeText={setName}
+                style={[styles.input, styles.nameInput]}
+              />
 
-          <Dropdown
-            placeholder={'Grupo Muscular'}
-            options={MUSCLE_GROUPS.map((item) => ({
-              label: item,
-              value: item,
-            }))}
-            zIndex={6000}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            onChange={setMuscleGroup}
-            value={muscleGroup}
-          />
+              <Dropdown
+                placeholder={'Grupo Muscular'}
+                options={MUSCLE_GROUPS.map((item) => ({
+                  label: item,
+                  value: item,
+                }))}
+                zIndex={6000}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                onChange={setMuscleGroup}
+                value={muscleGroup}
+              />
 
-          <View style={styles.seriesHeaderRow}>
-            <AppText style={styles.seriesLabel}>Series</AppText>
-            <Pressable onPress={addSet}>
-              <AppText style={styles.addSeriesText}>+ Añadir serie</AppText>
-            </Pressable>
-          </View>
+              <TextInput
+                placeholder="Notas (opcional)"
+                value={notes}
+                onChangeText={setNotes}
+                style={[styles.input, styles.notesInput]}
+                multiline
+              />
 
-          <ScrollView>
-            {sets.map((s, idx) => (
-              <View key={idx} style={styles.setRow}>
-                <AppText style={styles.setLabel}>Serie {idx + 1}</AppText>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="Repeticiones"
-                  placeholderTextColor="#808080"
-                  value={String(s.repetitions || '')}
-                  onChangeText={(t) => updateSet(idx, 'repetitions', t)}
-                  style={[styles.input, styles.inputSmall]}
-                />
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="Peso (kg)"
-                  placeholderTextColor="#808080"
-                  value={
-                    typeof s.weightKg === 'number' ? String(s.weightKg) : ''
-                  }
-                  onChangeText={(t) => updateSet(idx, 'weightKg', t)}
-                  style={[styles.input, styles.inputSmall]}
-                />
-                <Pressable
-                  onPress={() => removeSet(idx)}
-                  style={styles.removeButton}
-                >
-                  <AppText style={styles.removeButtonText}>🗑️</AppText>
+              <View style={styles.seriesHeaderRow}>
+                <AppText style={styles.seriesLabel}>Series</AppText>
+                <Pressable onPress={addSet}>
+                  <AppText style={styles.addSeriesText}>+ Añadir serie</AppText>
                 </Pressable>
               </View>
-            ))}
-          </ScrollView>
 
-          <TextInput
-            placeholder="Notas (opcional)"
-            placeholderTextColor="#808080"
-            value={notes}
-            onChangeText={setNotes}
-            style={[styles.input, styles.notesInput]}
-            multiline
-          />
+              {sets.map((s, idx) => (
+                <View key={idx} style={styles.setCard}>
+                  <View style={styles.setHeader}>
+                    <AppText style={styles.setLabel}>Serie {idx + 1}</AppText>
+                    <Pressable
+                      onPress={() => removeSet(idx)}
+                      style={styles.removeButton}
+                    >
+                      <AppText style={styles.removeButtonText}>
+                        Eliminar
+                      </AppText>
+                    </Pressable>
+                  </View>
 
-          <View style={styles.modalFooter}>
-            <Button
-              label={'Cancelar'}
-              onPress={onClose}
-              style={styles.buttonFlex}
-              type={'tertiary'}
-              buttonStyle={styles.footerButtonPadding}
-            />
+                  <View style={styles.setInputsRow}>
+                    <TextInput
+                      keyboardType="numeric"
+                      placeholder="Repeticiones"
+                      value={String(s.repetitions || '')}
+                      onChangeText={(t) => updateSet(idx, 'repetitions', t)}
+                      style={[styles.input, styles.inputSmall]}
+                    />
+                    <TextInput
+                      keyboardType="numeric"
+                      placeholder="Peso (kg)"
+                      value={
+                        typeof s.weightKg === 'number' ? String(s.weightKg) : ''
+                      }
+                      onChangeText={(t) => updateSet(idx, 'weightKg', t)}
+                      style={[styles.input, styles.inputSmall]}
+                    />
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
 
-            <Button
-              label={mode === 'add' ? 'Guardar Ejercicio' : 'Guardar Cambios'}
-              disabled={!canSave}
-              buttonStyle={[
-                styles.footerButtonPadding,
-                !canSave && styles.confirmButtonDisabled,
-              ]}
-              onPress={handleSave}
-              style={styles.buttonFlex}
-            />
+            <View style={styles.modalFooter}>
+              <Button
+                label={'Cancelar'}
+                onPress={onClose}
+                style={styles.buttonFlex}
+                type={'tertiary'}
+                buttonStyle={styles.footerButtonPadding}
+              />
+
+              <Button
+                label={mode === 'add' ? 'Guardar Ejercicio' : 'Guardar Cambios'}
+                disabled={!canSave}
+                buttonStyle={[
+                  styles.footerButtonPadding,
+                  !canSave && styles.confirmButtonDisabled,
+                ]}
+                onPress={handleSave}
+                style={styles.buttonFlex}
+              />
+            </View>
           </View>
         </View>
-      </PageContainer>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    modalPageStyle: { padding: 0, paddingBottom: 0 },
-    modalCard: {
+    modalRoot: {
+      flex: 1,
       backgroundColor: theme.background,
-      borderTopLeftRadius: 16,
-      borderTopRightRadius: 16,
-      padding: 16,
-      gap: 10,
-      maxHeight: '92%',
-      paddingBottom: 50,
+      justifyContent: 'flex-start',
+      paddingTop: 64,
     },
-    modalTitle: { fontSize: 18, fontWeight: '800', marginBottom: 8 },
+    modalSheet: {
+      backgroundColor: theme.background,
+      borderTopLeftRadius: 22,
+      borderTopRightRadius: 22,
+      borderWidth: 1,
+      borderColor: theme.border,
+      overflow: 'hidden',
+      flex: 1,
+    },
+    modalPageStyle: {
+      flex: 1,
+      paddingHorizontal: 16,
+      paddingTop: 20,
+    },
+    formScroll: { flex: 1 },
+    formContent: {
+      rowGap: 10,
+      paddingBottom: 16,
+    },
+    modalHeader: { marginBottom: 4, marginTop: 4 },
+    modalTitle: {
+      fontSize: 22,
+      fontWeight: '800',
+      color: theme.textPrimary,
+      lineHeight: 28,
+    },
+    modalSubtitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: theme.textSecondary,
+      marginTop: 2,
+    },
     input: {
       borderWidth: 1,
-      borderColor: '#C7C7C7',
+      borderColor: theme.border,
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 12,
       fontSize: 16,
-      backgroundColor: 'white',
+      backgroundColor: theme.backgroundInput,
+      color: theme.textPrimary,
+    },
+    nameInput: {
+      flex: 0,
+      minHeight: 52,
+      paddingVertical: 10,
     },
     inputSmall: { flex: 1 },
     seriesHeaderRow: {
@@ -280,19 +344,38 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    seriesLabel: { fontWeight: '700' },
-    addSeriesText: { color: '#1A73E8', fontWeight: '700' },
-    setRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-      marginBottom: 8,
+    seriesLabel: { fontWeight: '700', fontSize: 16, color: theme.textPrimary },
+    addSeriesText: { color: theme.primary, fontWeight: '700' },
+    setCard: {
+      borderWidth: 1,
+      borderColor: theme.border,
+      backgroundColor: theme.card,
+      borderRadius: 12,
+      padding: 10,
+      rowGap: 10,
     },
-    setLabel: { fontWeight: '600', width: 64 },
-    removeButton: { paddingHorizontal: 8 },
-    removeButtonText: { color: '#D9534F', fontWeight: '700' },
-    notesInput: { height: 50 },
-    modalFooter: { flexDirection: 'row', gap: 10, marginTop: 8 },
+    setHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    setInputsRow: {
+      flexDirection: 'row',
+      gap: 8,
+    },
+    setLabel: { fontWeight: '700', color: theme.textPrimary },
+    removeButton: { paddingHorizontal: 8, paddingVertical: 4 },
+    removeButtonText: { color: theme.error, fontWeight: '700' },
+    notesInput: { flex: 0, minHeight: 88, maxHeight: 110, marginTop: 4 },
+    modalFooter: {
+      flexDirection: 'row',
+      gap: 10,
+      paddingTop: 12,
+      paddingBottom: 20,
+      borderTopWidth: 1,
+      borderTopColor: theme.border,
+      backgroundColor: theme.background,
+    },
     buttonFlex: { flex: 1 },
     footerButtonPadding: { paddingVertical: 10 },
     confirmButtonDisabled: { opacity: 0.5 },

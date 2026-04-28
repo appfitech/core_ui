@@ -12,7 +12,6 @@ import { getUserAvatarURL } from '@/utils/user';
 import { AppText } from '../AppText';
 import { ChatButton } from '../ChatButton';
 import { NotificationsButton } from '../NotificationsButton';
-import { SearchBar } from '../SearchBar';
 import { SupportButton } from '../SupportButton';
 
 export function GreetingHeader() {
@@ -46,18 +45,6 @@ export function GreetingHeader() {
 
       {/* Quote */}
       <AppText style={styles.subtext}>{getRandomMotivationalQuote()}</AppText>
-
-      {/* Search */}
-      <View style={styles.searchWrapper}>
-        <TouchableOpacity onPress={() => router.push(ROUTES.trainers)}>
-          <SearchBar
-            placeholder={isTrainer ? 'Buscar clientes…' : 'Buscar trainers…'}
-            readOnly
-            onPress={() => router.push(ROUTES.trainers)}
-            containerStyle={styles.searchBarContainer}
-          />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

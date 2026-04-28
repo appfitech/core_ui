@@ -26,7 +26,7 @@ export function Card({ children, style }: Props) {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     card: {
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.card,
       borderRadius: 16,
       padding: 16,
       shadowColor: theme.background,

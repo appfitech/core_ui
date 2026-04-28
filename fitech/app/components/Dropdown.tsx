@@ -59,9 +59,23 @@ export function Dropdown({
         }}
         dropDownContainerStyle={{
           backgroundColor: theme.backgroundDropdown,
-          borderColor: 'transparent',
+          borderColor: theme.border,
           zIndex: zIndex,
           elevation,
+        }}
+        listItemContainerStyle={{
+          backgroundColor: theme.backgroundDropdown,
+        }}
+        listItemLabelStyle={{
+          color: theme.textPrimary,
+          fontSize: 15,
+        }}
+        selectedItemContainerStyle={{
+          backgroundColor: theme.primaryBg,
+        }}
+        selectedItemLabelStyle={{
+          color: theme.primaryText,
+          fontWeight: '700',
         }}
         ArrowDownIconComponent={({ style }) => (
           <Ionicons

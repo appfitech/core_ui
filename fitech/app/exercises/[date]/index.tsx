@@ -27,12 +27,12 @@ export default function WorkoutDayScreen() {
     refetch: refetchDailyWorkouts,
   } = useGetDailyWorkouts(date);
 
-  const exerciseCount = sessions?.length;
+  const exerciseCount = sessions?.length ?? 0;
 
   const handleCallback = useCallback(() => {
     close();
     refetchDailyWorkouts();
-  }, []);
+  }, [close, refetchDailyWorkouts]);
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function WorkoutDayScreen() {
         style={styles.pageStyle}
         hasBottomPadding={false}
       >
-        {exerciseCount && (
+        {exerciseCount > 0 && (
           <View style={styles.summaryRow}>
             <Tag
               backgroundColor={theme.primary}
@@ -131,9 +131,9 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 12,
       alignItems: 'center',
     },
-    btnPrimary: { backgroundColor: theme.backgroundInverted },
-    btnGhost: { backgroundColor: '#EFEFEF' },
+    btnPrimary: { backgroundColor: theme.primary },
+    btnGhost: { backgroundColor: theme.backgroundInput },
     buttonText: { fontSize: 16, fontWeight: '700' },
     buttonTextGhost: { color: theme.textPrimary },
-    buttonTextPrimary: { color: theme.dark100 },
+    buttonTextPrimary: { color: theme.background },
   });

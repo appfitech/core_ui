@@ -39,6 +39,7 @@
     "expo-application": "~6.0.2",
     "expo-blur": "~14.0.3",
     "expo-constants": "~17.0.8",
+    "expo-dev-client": "~5.0.20",
     "expo-device": "~7.0.3",
     "expo-document-picker": "~13.0.3",
     "expo-font": "~13.0.4",
@@ -79,8 +80,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "zustand": "^5.0.8",
-    "expo-dev-client": "~5.0.20"
+    "zustand": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -89,6 +89,7 @@
     "@types/moment-timezone": "^0.5.30",
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
+    "eas-cli": "^16.32.0",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^10.1.5",

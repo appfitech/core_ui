@@ -159,7 +159,7 @@ const COLORS = {
 };
 
 export const LIGHT_THEME: FullTheme = {
-  ...COLORS.light,
+  ...COLORS.dark,
 };
 
 export const DARK_THEME: FullTheme = {

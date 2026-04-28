@@ -14,11 +14,11 @@ export const PROFILE_LIST_ITEMS: {
     route: ROUTES.personalInfo,
     label: 'Información Personal',
   },
-  {
-    icon: 'contrast-outline',
-    route: ROUTES.appearance,
-    label: 'Apariencia',
-  },
+  // {
+  //   icon: 'contrast-outline',
+  //   route: ROUTES.appearance,
+  //   label: 'Apariencia',
+  // },
   {
     icon: 'images-outline',
     route: ROUTES.imageGallery,
