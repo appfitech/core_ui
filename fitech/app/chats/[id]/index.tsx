@@ -116,15 +116,19 @@ export default function ChatDetailScreen() {
 
   /** websocket */
   useEffect(() => {
-    console.log('[WebSocket] Effect triggered with:', {
-      conversationId: conversationIdNumber,
-      hasToken: !!token,
-      tokenLength: token?.length || 0,
-      userId: currentUserId,
-    });
+    if (__DEV__) {
+      console.log('[WebSocket] Effect triggered with:', {
+        conversationId: conversationIdNumber,
+        hasToken: !!token,
+        tokenLength: token?.length || 0,
+        userId: currentUserId,
+      });
+    }
 
     if (!conversationIdNumber || !token || !currentUserId) {
-      console.log('[WebSocket] ❌ Missing requirements - not connecting');
+      if (__DEV__) {
+        console.log('[WebSocket] ❌ Missing requirements - not connecting');
+      }
       return;
     }
 
@@ -132,21 +136,29 @@ export default function ChatDetailScreen() {
 
     const connect = () => {
       const url = buildWsUrl(token);
-      console.log('[WebSocket] 🔌 Attempting connection to:', url);
+      if (__DEV__) {
+        console.log('[WebSocket] 🔌 Attempting connection to:', url);
+      }
       const ws = new WebSocket(url);
 
       wsRef.current = ws;
 
       ws.onopen = () => {
         setWsStatus('open');
-        console.log('Chat WebSocket connected');
+        if (__DEV__) {
+          console.log('Chat WebSocket connected');
+        }
       };
 
       ws.onmessage = (event) => {
-        console.log('[K] event', event);
+        if (__DEV__) {
+          console.log('[K] event', event);
+        }
         try {
           const msgFromApi: MessageDto = JSON.parse(event.data);
-          console.log('[K] msgFromApi', msgFromApi);
+          if (__DEV__) {
+            console.log('[K] msgFromApi', msgFromApi);
+          }
 
           if (msgFromApi.conversationId !== conversationIdNumber) return;
 
@@ -163,9 +175,13 @@ export default function ChatDetailScreen() {
 
       ws.onclose = (event) => {
         setWsStatus('closed');
-        console.log('[K] event.code', event.code);
+        if (__DEV__) {
+          console.log('[K] event.code', event.code);
+        }
         wsRef.current = null;
-        console.log('Chat WebSocket closed', event.code, event.reason);
+        if (__DEV__) {
+          console.log('Chat WebSocket closed', event.code, event.reason);
+        }
 
         if (isUnmounted) return;
 
@@ -179,7 +195,9 @@ export default function ChatDetailScreen() {
 
       ws.onerror = (event) => {
         setWsStatus('error');
-        console.log('[K] error', JSON.stringify(event));
+        if (__DEV__) {
+          console.log('[K] error', JSON.stringify(event));
+        }
         console.error('Chat WebSocket error', event);
       };
     };

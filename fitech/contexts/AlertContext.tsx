@@ -1,21 +1,10 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
-
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import React, { createContext, useCallback, useContext, useState } from 'react';
+import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/app/components/AppText';
 import { Button } from '@/app/components/Button';
+import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
 
 export type AlertButton = {
   text: string;
@@ -88,6 +77,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
         visible={state.visible}
         transparent
         animationType="fade"
+        statusBarTranslucent={Platform.OS === 'android'}
         onRequestClose={hide}
       >
         <Pressable style={styles.backdrop} onPress={hide}>

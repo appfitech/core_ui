@@ -19,7 +19,7 @@ import * as Notifications from 'expo-notifications';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect, useRef } from 'react';
-import { InteractionManager, StyleSheet, View } from 'react-native';
+import { InteractionManager, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
@@ -92,9 +92,8 @@ function RoutedApp() {
       navigateFromPush(data);
     };
 
-    const sub = Notifications.addNotificationResponseReceivedListener(
-      onResponse,
-    );
+    const sub =
+      Notifications.addNotificationResponseReceivedListener(onResponse);
 
     (async () => {
       if (coldStartPushChecked.current) return;
@@ -122,14 +121,23 @@ function RoutedApp() {
   return (
     <View style={styles.flex1}>
       <Stack screenOptions={{ headerShown: false }} />
-      <Toast config={toastConfig} />
       {!shouldHideNav && <NavBar />}
+      <View
+        pointerEvents="box-none"
+        style={[StyleSheet.absoluteFillObject, styles.toastLayer]}
+      >
+        <Toast config={toastConfig} />
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   flex1: { flex: 1 },
+  toastLayer: {
+    zIndex: 1000,
+    elevation: Platform.OS === 'android' ? 1000 : 0,
+  },
 });
 
 const RoutedAppWithPush = withPushNotifications(RoutedApp);

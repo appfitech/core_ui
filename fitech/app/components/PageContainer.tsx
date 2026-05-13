@@ -36,6 +36,11 @@ type Props = {
   /** Bottom padding for scroll content so the last content is visible above nav/tab bar. Applied after style. */
   contentPaddingBottom?: number;
   styleContainer?: ViewStyle;
+  /**
+   * When true, children are not wrapped in ScrollView (use with FlatList / FlashList as main scroll).
+   * Avoids nested scroll + renders all rows at once on long lists (bad on Android).
+   */
+  disableScroll?: boolean;
 };
 
 export default function PageContainer({
@@ -50,6 +55,7 @@ export default function PageContainer({
   hasBottomPadding = true,
   contentPaddingBottom,
   styleContainer = {},
+  disableScroll = false,
 }: Props) {
   const scrollPaddingBottom =
     contentPaddingBottom ??
@@ -67,6 +73,23 @@ export default function PageContainer({
         ? 64
         : 56
     : 0;
+
+  const contentPaddingTop = hasNoTopPadding
+    ? 0
+    : hasFixedHeader
+      ? fixedHeaderHeight + insets.top + 8
+      : insets.top;
+
+  const sharedInnerStyle = [
+    styles.scrollContent,
+    {
+      paddingHorizontal: 24,
+      paddingVertical: 16,
+      paddingTop: contentPaddingTop,
+    },
+    style,
+    { paddingBottom: scrollPaddingBottom },
+  ] as const;
 
   return (
     <View style={[styles.container, styleContainer]}>
@@ -106,59 +129,51 @@ export default function PageContainer({
         style={styles.flex}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <ScrollView
-            contentContainerStyle={[
-              styles.scrollContent,
-              {
-                paddingHorizontal: 24,
-                paddingVertical: 16,
-                paddingTop: hasNoTopPadding
-                  ? 0
-                  : hasFixedHeader
-                    ? fixedHeaderHeight + insets.top + 8
-                    : insets.top,
-              },
-              style,
-              { paddingHorizontal: 24 },
-              {
-                paddingBottom: scrollPaddingBottom,
-                flexGrow: 1,
-                flexShrink: 0,
-              },
-            ]}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            {((subheader && !title) || includeLogo || (header && !title)) && (
-              <View style={styles.headerWrapper}>
-                {includeLogo && (
-                  <Animated.Image
-                    entering={FadeInUp.duration(600)}
-                    source={require('../../assets/images/logos/logo.webp')}
-                    style={styles.logo}
-                    resizeMode="contain"
-                  />
-                )}
-                {header && !title && (
-                  <AnimatedAppText
-                    entering={FadeInUp.delay(200)}
-                    style={styles.headerTitle}
-                  >
-                    {header}
-                  </AnimatedAppText>
-                )}
-                {subheader && (
-                  <AnimatedAppText
-                    entering={FadeInUp.delay(300)}
-                    style={styles.headerSubtitle}
-                  >
-                    {subheader}
-                  </AnimatedAppText>
-                )}
-              </View>
-            )}
-            {children}
-          </ScrollView>
+          {disableScroll ? (
+            <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
+          ) : (
+            <ScrollView
+              contentContainerStyle={[
+                ...sharedInnerStyle,
+                {
+                  flexGrow: 1,
+                  flexShrink: 0,
+                },
+              ]}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {((subheader && !title) || includeLogo || (header && !title)) && (
+                <View style={styles.headerWrapper}>
+                  {includeLogo && (
+                    <Animated.Image
+                      entering={FadeInUp.duration(600)}
+                      source={require('../../assets/images/logos/logo.webp')}
+                      style={styles.logo}
+                      resizeMode="contain"
+                    />
+                  )}
+                  {header && !title && (
+                    <AnimatedAppText
+                      entering={FadeInUp.delay(200)}
+                      style={styles.headerTitle}
+                    >
+                      {header}
+                    </AnimatedAppText>
+                  )}
+                  {subheader && (
+                    <AnimatedAppText
+                      entering={FadeInUp.delay(300)}
+                      style={styles.headerSubtitle}
+                    >
+                      {subheader}
+                    </AnimatedAppText>
+                  )}
+                </View>
+              )}
+              {children}
+            </ScrollView>
+          )}
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </View>

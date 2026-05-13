@@ -285,8 +285,8 @@ export default function TrainerPaymentsScreen() {
     setStartDate(null);
     setEndDate(null);
   };
-  const onCollect = (p: Payment) => {
-    console.log('Collect pressed for payment:', p.id);
+  const onCollect = (_p: Payment) => {
+    // TODO: wire collect flow when backend is ready
   };
 
   const TABLE_MIN_WIDTH = 920; // give columns breathing room

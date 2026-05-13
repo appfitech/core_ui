@@ -1,5 +1,5 @@
-import React, { useCallback } from 'react';
-import { Image, TouchableOpacity, View } from 'react-native';
+import React, { memo, useCallback } from 'react';
+import { Image, Platform, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto } from '@/types/api/types.gen';
@@ -13,7 +13,7 @@ type Props = {
   isSelected?: boolean;
 };
 
-export function MacroFoodCard({
+function MacroFoodCardInner({
   foodItem,
   onSelectFood,
   isSelected = false,
@@ -26,10 +26,10 @@ export function MacroFoodCard({
     }
 
     onSelectFood(foodItem);
-  }, [foodItem]);
+  }, [foodItem, onSelectFood]);
 
   return (
-    <TouchableOpacity key={foodItem?.id} onPress={handleSelect}>
+    <TouchableOpacity onPress={handleSelect} activeOpacity={0.85}>
       <View
         style={[
           {
@@ -50,6 +50,7 @@ export function MacroFoodCard({
           source={{ uri: foodItem?.imageUrl }}
           style={{ width: '100%', height: 100 }}
           resizeMode="cover"
+          resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
         />
         <View style={{ padding: 16, rowGap: 4 }}>
           <AppText
@@ -58,10 +59,14 @@ export function MacroFoodCard({
               fontWeight: '500',
               color: theme.textPrimary,
             }}
+            numberOfLines={2}
           >
             {foodItem?.name}
           </AppText>
-          <AppText style={{ fontSize: 15, color: theme.textSecondary }}>
+          <AppText
+            style={{ fontSize: 15, color: theme.textSecondary }}
+            numberOfLines={2}
+          >
             {foodItem?.description}
           </AppText>
           <View
@@ -131,3 +136,5 @@ export function MacroFoodCard({
     </TouchableOpacity>
   );
 }
+
+export const MacroFoodCard = memo(MacroFoodCardInner);
