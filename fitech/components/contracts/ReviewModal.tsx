@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -242,5 +242,5 @@ const getStyles = (theme: FullTheme) =>
       fontSize: 14,
       flex: 1,
     },
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
   });

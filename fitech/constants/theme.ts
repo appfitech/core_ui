@@ -1,14 +1,23 @@
 import { FullTheme } from '@/types/theme';
 
 /**
- * Kinetic Obsidian — dark-only design system.
- * @see DESIGN.md (Primary #39CC39, Secondary #1A1C23, Tertiary #4A5568, Neutral #050608)
+ * Kinetic Obsidian — dark-only. Primary stays #39CC39; surfaces and text tuned
+ * for clearer hierarchy and stronger contrast on obsidian backgrounds.
  */
 const BRAND_PRIMARY = '#39CC39';
+
 const OBSIDIAN = '#050608';
-const SURFACE_CARD = '#1A1C23';
-const TERTIARY = '#4A5568';
-const ON_SURFACE = '#E3E2E5';
+const SURFACE_CARD = '#121820';
+const SURFACE_RAISED = '#1A2230';
+const SURFACE_INPUT = '#0C0F14';
+const ON_SURFACE = '#ECEEF2';
+const ON_SURFACE_MUTED = '#9DA8B9';
+const ON_SURFACE_SUBTLE = '#6F7D92';
+const BORDER_DEFAULT = '#2E3D34';
+const BORDER_HEADER = 'rgba(82, 226, 77, 0.28)';
+/** Elevated chrome — must read clearly above OBSIDIAN page background */
+const SURFACE_HEADER = '#1A2230';
+const GREEN_GLOW = '#52E24D';
 
 /** Single app theme (dark). Scales: 100 = darkest, 900 = lightest. */
 export const THEME: FullTheme = {
@@ -16,75 +25,76 @@ export const THEME: FullTheme = {
 
   primary: BRAND_PRIMARY,
   secondary: SURFACE_CARD,
-  tertiary: TERTIARY,
+  tertiary: ON_SURFACE_SUBTLE,
 
-  green100: '#002201',
-  green200: '#005007',
-  green300: '#006E0D',
-  green400: '#249F24',
+  green100: '#041806',
+  green200: '#0A3D12',
+  green300: '#0F5C1A',
+  green400: '#1F8A2A',
   green500: BRAND_PRIMARY,
-  green600: '#52E24D',
-  green700: '#5AE953',
-  green800: '#75FF69',
-  green900: '#B8F5B8',
+  green600: GREEN_GLOW,
+  green700: '#6BEF66',
+  green800: '#8FF589',
+  green900: '#C2FFC0',
 
   dark100: OBSIDIAN,
   dark200: SURFACE_CARD,
-  dark300: '#1E2022',
-  dark400: TERTIARY,
-  dark500: '#879580',
-  dark600: '#BCCBB4',
-  dark700: '#879580',
-  dark800: '#C5C6CF',
+  dark300: SURFACE_RAISED,
+  dark400: ON_SURFACE_SUBTLE,
+  dark500: '#7D8A9C',
+  dark600: ON_SURFACE_MUTED,
+  dark700: '#7A8799',
+  dark800: '#B8C0CC',
   dark900: ON_SURFACE,
 
-  success: '#52E24D',
-  successBackground: '#0F2910',
-  successBorder: '#39CC39',
-  successText: '#75FF69',
+  success: GREEN_GLOW,
+  successBackground: '#0F2E14',
+  successBorder: '#2FA838',
+  successText: '#A8F5A4',
 
-  warning: '#FACC15',
+  warning: '#FFD54F',
   warningBackground: '#3D3208',
-  warningBorder: '#A16207',
-  warningText: '#FEF08A',
+  warningBorder: '#E6B800',
+  warningText: '#FFF4C2',
 
-  error: '#FFB4AB',
-  errorBackground: '#93000A',
-  errorBorder: '#FFB4AB',
+  error: '#FF8A80',
+  errorBackground: '#4A0A0E',
+  errorBorder: '#E85A52',
   errorText: '#FFDAD6',
 
-  info: '#A7B2C8',
-  infoBackground: '#263142',
-  infoBorder: '#3A4557',
-  infoText: '#D8E3FA',
+  info: '#8EB4FF',
+  infoBackground: '#152238',
+  infoBorder: '#3D6BB3',
+  infoText: '#D4E4FF',
 
-  orange: '#FB923C',
+  orange: '#FFAB5C',
   orangeBackground: '#3D220F',
-  orangeBorder: '#C2410C',
-  orangeText: '#FFEDD5',
+  orangeBorder: '#E07A2E',
+  orangeText: '#FFE2C4',
 
   background: OBSIDIAN,
   backgroundInverted: ON_SURFACE,
-  backgroundInput: '#121316',
-  backgroundDropdown: '#292A2D',
-  backgroundHeader: SURFACE_CARD,
+  backgroundInput: SURFACE_INPUT,
+  backgroundDropdown: SURFACE_RAISED,
+  backgroundHeader: SURFACE_HEADER,
   card: SURFACE_CARD,
   textPrimary: ON_SURFACE,
-  textSecondary: TERTIARY,
-  border: '#3D4A39',
-  icon: BRAND_PRIMARY,
-  primaryText: BRAND_PRIMARY,
-  primaryBg: '#1A3D1A',
+  textSecondary: ON_SURFACE_MUTED,
+  border: BORDER_DEFAULT,
+  icon: GREEN_GLOW,
+  primaryText: GREEN_GLOW,
+  primaryBg: '#143D18',
 
   fixedHeaderTitleColor: ON_SURFACE,
-  fixedHeaderSubheaderColor: 'rgba(227, 226, 229, 0.75)',
-  headerBackButtonBg: 'rgba(74, 85, 104, 0.35)',
-  headerBackButtonBorder: 'rgba(74, 85, 104, 0.5)',
+  fixedHeaderSubheaderColor: 'rgba(236, 238, 242, 0.85)',
+  fixedHeaderBorder: BORDER_HEADER,
+  headerBackButtonBg: 'rgba(57, 204, 57, 0.22)',
+  headerBackButtonBorder: 'rgba(82, 226, 77, 0.5)',
   headerBackButtonBorderWidth: 1,
 };
 
-/** @deprecated Use `THEME`. Light mode is no longer supported. */
+/** @deprecated Use `THEME`. */
 export const DARK_THEME: FullTheme = THEME;
 
-/** @deprecated Use `THEME`. Alias kept for imports that referenced light theme. */
+/** @deprecated Use `THEME`. */
 export const LIGHT_THEME: FullTheme = THEME;

@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import PageContainer from '@/components/PageContainer';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles, textStyles } from '@/constants/typography';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -181,8 +181,8 @@ export default function MacrosCalculatorCalculateScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...HEADING_STYLES(theme),
-    ...SHARED_STYLES(theme),
+    ...textStyles(theme),
+    ...formStyles(theme),
     banner: {
       backgroundColor: theme.warningBackground,
       borderColor: theme.warningBorder,

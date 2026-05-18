@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { TYPOGRAPHY } from '@/constants/typography';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -68,8 +68,9 @@ export function SelectableCard({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     card: {
       borderWidth: 1,
       borderColor: theme.border,
@@ -98,12 +99,12 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     title: {
-      ...TYPOGRAPHY.body,
+      ...text.body,
       fontFamily: 'Inter_700Bold',
-      color: theme.textPrimary,
     },
     description: {
-      color: theme.textSecondary,
+      ...text.caption,
       marginTop: 4,
     },
   });
+};

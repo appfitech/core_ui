@@ -6,7 +6,7 @@ import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import AvatarSvg from '@/assets/images/avatar.svg';
 import { ROUTES } from '@/constants/routes';
 import { PROFILE_LIST_ITEMS } from '@/constants/screens';
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
@@ -132,12 +132,12 @@ const getStyles = (theme: FullTheme) =>
       overflow: 'hidden',
     },
     name: {
-      ...HEADING_STYLES(theme).title,
+      ...textStyles(theme).title,
       fontWeight: '700',
       color: theme.textPrimary,
     },
     email: {
-      ...HEADING_STYLES(theme).subtitle,
+      ...textStyles(theme).subtitle,
       marginTop: 4,
       color: theme.textSecondary,
     },

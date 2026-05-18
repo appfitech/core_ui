@@ -9,7 +9,7 @@ import {
   findLocationById,
   formatLocationName,
 } from '@/constants/locations';
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { useUserStore } from '@/stores/user';
@@ -340,5 +340,5 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 10,
       paddingHorizontal: 20,
     },
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
   });

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { TYPOGRAPHY } from '@/constants/typography';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -102,25 +102,26 @@ function getStyles(theme: FullTheme): ButtonStyles {
       minHeight: undefined,
     },
   };
-  const text: Record<ButtonType, TextStyle> = {
+  const text = textStyles(theme);
+  const buttonText: Record<ButtonType, TextStyle> = {
     primary: {
-      ...TYPOGRAPHY.button,
+      ...text.button,
       color: theme.background,
     },
     secondary: {
-      ...TYPOGRAPHY.button,
+      ...text.button,
       color: theme.primaryText,
     },
     destructive: {
-      ...TYPOGRAPHY.button,
+      ...text.button,
       color: theme.background,
     },
     tertiary: {
-      ...TYPOGRAPHY.button,
+      ...text.button,
       color: theme.textPrimary,
     },
     link: {
-      ...TYPOGRAPHY.caption,
+      ...text.caption,
       fontFamily: 'Inter_600SemiBold',
       color: theme.primary,
       textDecorationLine: 'underline',
@@ -129,7 +130,7 @@ function getStyles(theme: FullTheme): ButtonStyles {
   return {
     base,
     container,
-    text,
+    text: buttonText,
     disabledContainer: { opacity: 0.55 },
     disabledText: {},
   };

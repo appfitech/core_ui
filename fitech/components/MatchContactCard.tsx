@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   GymBroCandidateResponseDto,
@@ -125,7 +125,7 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
 }
 
 const getStyles = (theme: FullTheme) => {
-  const headings = HEADING_STYLES(theme);
+  const headings = textStyles(theme);
   return StyleSheet.create({
     card: {
       borderRadius: 16,

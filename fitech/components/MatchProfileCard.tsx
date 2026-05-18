@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   GymBroCandidateResponseDto,
@@ -158,11 +158,11 @@ const getStyles = (theme: FullTheme) =>
       borderTopRightRadius: 24,
     },
     nameText: {
-      ...HEADING_STYLES(theme).title,
+      ...textStyles(theme).title,
       textAlign: 'left',
     },
     otherText: {
-      ...HEADING_STYLES(theme).subtitle,
+      ...textStyles(theme).subtitle,
       textAlign: 'left',
       marginTop: 4,
     },
@@ -174,7 +174,7 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 4,
     },
     bioText: {
-      ...HEADING_STYLES(theme).content,
+      ...textStyles(theme).content,
       marginTop: 10,
       lineHeight: 22,
       paddingBottom: 16,

@@ -4,7 +4,7 @@ import {
   type TextInputProps,
 } from 'react-native';
 
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -39,5 +39,5 @@ export function TextInput(props: Props) {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
   });

@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles, textStyles } from '@/constants/typography';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -195,8 +195,8 @@ export default function MacrosCalculatorScreen() {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...HEADING_STYLES(theme),
-    ...SHARED_STYLES(theme),
+    ...textStyles(theme),
+    ...formStyles(theme),
     pageContent: {
       paddingHorizontal: 0,
       paddingVertical: 0,

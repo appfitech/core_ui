@@ -9,7 +9,7 @@ import {
 
 import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
 import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { textStyles } from '@/constants/typography';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -711,7 +711,7 @@ function ChipsList({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...HEADING_STYLES(theme),
+    ...textStyles(theme),
     pageStyle: {
       paddingHorizontal: 16,
       rowGap: 20,
@@ -724,12 +724,12 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 10,
     },
     titleLeft: {
-      ...HEADING_STYLES(theme).title,
+      ...textStyles(theme).title,
       textAlign: 'left',
       fontWeight: '700',
     },
     subtitleLeft: {
-      ...HEADING_STYLES(theme).subtitle,
+      ...textStyles(theme).subtitle,
       textAlign: 'left',
     },
     addLocationText: {

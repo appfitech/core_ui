@@ -1,6 +1,6 @@
 import { StyleSheet, TextInputProps, View } from 'react-native';
 
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -31,7 +31,7 @@ export function InputWrapper({ label, id, disabled, ...props }: Props) {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
     inputDisabled: {
       backgroundColor: theme.backgroundInput,
       opacity: 0.9,

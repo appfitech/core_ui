@@ -12,7 +12,7 @@ import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useLogin } from '@/lib/api/mutations/useLogin';
@@ -92,12 +92,14 @@ export default function LoginScreen() {
         />
         <AnimatedAppText
           entering={FadeInUp.delay(200)}
+          variant="header"
           style={styles.headerTitle}
         >
           {loginScreen.header}
         </AnimatedAppText>
         <AnimatedAppText
           entering={FadeInUp.delay(300)}
+          variant="subheader"
           style={styles.headerSubtitle}
         >
           {loginScreen.subheader}
@@ -194,11 +196,9 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 10,
     },
     headerTitle: {
-      ...HEADING_STYLES(theme).header,
       marginTop: 30,
     },
     headerSubtitle: {
-      ...HEADING_STYLES(theme).subheader,
       marginTop: 8,
     },
     optionsRow: {
@@ -225,7 +225,7 @@ const getStyles = (theme: FullTheme) =>
     iconLeft: {
       marginRight: 8,
     },
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
     inputWrapper: {
       flexDirection: 'row',
       alignItems: 'center',

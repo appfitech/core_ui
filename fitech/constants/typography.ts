@@ -1,6 +1,16 @@
-import { TextStyle } from 'react-native';
+import { TextStyle, ViewStyle } from 'react-native';
 
-/** Kinetic Obsidian / Inter type scale */
+import { FullTheme } from '@/types/theme';
+
+/**
+ * Design system — typography & form text styles in one place.
+ *
+ * Prefer `<AppText variant="sectionTitle">` for UI copy.
+ * Use `textStyles(theme).header` when building StyleSheet objects.
+ * Use `formStyles(theme)` for inputs, labels, and submit rows.
+ */
+
+/** Raw Inter scale (no theme colors). */
 export const TYPOGRAPHY = {
   title: {
     fontFamily: 'Inter_700Bold',
@@ -29,7 +39,20 @@ export const TYPOGRAPHY = {
   },
 } as const satisfies Record<string, TextStyle>;
 
-export type TypographyVariant = keyof typeof TYPOGRAPHY;
+/** Base scale keys (maps 1:1 to TYPOGRAPHY). */
+export type TypographyScale = keyof typeof TYPOGRAPHY;
+
+/** Semantic text presets (includes theme colors). */
+export type TextVariant =
+  | TypographyScale
+  | 'header'
+  | 'subheader'
+  | 'subtitle'
+  | 'screenTitle'
+  | 'content'
+  | 'label';
+
+const TAP_TARGET_MIN = 44;
 
 /** Map React Native fontWeight to loaded Inter faces. */
 export function getInterFontFamily(weight?: TextStyle['fontWeight']): string {
@@ -57,4 +80,120 @@ export function getInterFontFamily(weight?: TextStyle['fontWeight']): string {
     return 'Inter_700Bold';
   }
   return 'Inter_400Regular';
+}
+
+/** Themed text preset — use with AppText or StyleSheet. */
+export function getTextStyle(
+  theme: FullTheme,
+  variant: TextVariant,
+): TextStyle {
+  return textStyles(theme)[variant];
+}
+
+export type TextStyles = Record<TextVariant, TextStyle>;
+
+/** All semantic text styles for the active theme. */
+export function textStyles(theme: FullTheme): TextStyles {
+  return {
+    title: {
+      ...TYPOGRAPHY.title,
+      color: theme.textPrimary,
+    },
+    sectionTitle: {
+      ...TYPOGRAPHY.sectionTitle,
+      color: theme.textPrimary,
+    },
+    body: {
+      ...TYPOGRAPHY.body,
+      color: theme.textPrimary,
+    },
+    caption: {
+      ...TYPOGRAPHY.caption,
+      color: theme.textSecondary,
+    },
+    button: {
+      ...TYPOGRAPHY.button,
+      color: theme.textPrimary,
+    },
+    header: {
+      ...TYPOGRAPHY.title,
+      color: theme.textPrimary,
+      textAlign: 'center',
+    },
+    subheader: {
+      ...TYPOGRAPHY.body,
+      fontFamily: 'Inter_500Medium',
+      color: theme.textSecondary,
+      textAlign: 'center',
+    },
+    subtitle: {
+      ...TYPOGRAPHY.body,
+      fontFamily: 'Inter_600SemiBold',
+      color: theme.textSecondary,
+    },
+    screenTitle: {
+      ...TYPOGRAPHY.body,
+      fontFamily: 'Inter_600SemiBold',
+      color: theme.textPrimary,
+    },
+    content: {
+      ...TYPOGRAPHY.body,
+      color: theme.textPrimary,
+    },
+    label: {
+      ...TYPOGRAPHY.caption,
+      fontFamily: 'Inter_600SemiBold',
+      color: theme.textPrimary,
+      marginBottom: 8,
+      marginTop: 12,
+    },
+  };
+}
+
+export type FormStyles = {
+  label: TextStyle;
+  inputWrapper: ViewStyle;
+  input: TextStyle;
+  dropdown: TextStyle;
+  submitButton: ViewStyle;
+  submitText: TextStyle;
+};
+
+/** Form fields & actions — pairs with `textStyles` for screens. */
+export function formStyles(theme: FullTheme): FormStyles {
+  const text = textStyles(theme);
+  return {
+    label: text.label,
+    inputWrapper: {
+      marginBottom: 8,
+    },
+    input: {
+      ...text.body,
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      minHeight: TAP_TARGET_MIN,
+    },
+    dropdown: {
+      ...text.body,
+      backgroundColor: theme.backgroundInput,
+      borderColor: 'transparent',
+      borderRadius: 12,
+      minHeight: TAP_TARGET_MIN,
+    },
+    submitButton: {
+      backgroundColor: theme.primary,
+      paddingVertical: 16,
+      paddingHorizontal: 24,
+      borderRadius: 12,
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: TAP_TARGET_MIN,
+    },
+    submitText: {
+      ...text.button,
+      color: theme.backgroundInverted,
+    },
+  };
 }

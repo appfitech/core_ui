@@ -3,7 +3,6 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { getRandomMotivationalQuote } from '@/constants/quotes';
 import { ROUTES } from '@/constants/routes';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
@@ -30,7 +29,7 @@ export function GreetingHeader() {
             <Image source={{ uri: userAvatarURL }} style={styles.avatar} />
           )}
           <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
-            <AppText style={styles.greeting}>
+            <AppText variant="sectionTitle" style={styles.greeting}>
               {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}!`}
             </AppText>
           </TouchableOpacity>
@@ -44,7 +43,9 @@ export function GreetingHeader() {
       </View>
 
       {/* Quote */}
-      <AppText style={styles.subtext}>{getRandomMotivationalQuote()}</AppText>
+      <AppText variant="subtitle" style={styles.subtext}>
+        {getRandomMotivationalQuote()}
+      </AppText>
     </View>
   );
 }
@@ -75,15 +76,11 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 10,
     },
     greeting: {
-      ...HEADING_STYLES(theme).title,
-      fontWeight: '700',
       color: theme.fixedHeaderTitleColor,
       textAlign: 'left',
     },
     subtext: {
-      ...HEADING_STYLES(theme).subtitle,
       textAlign: 'left',
-      color: theme.fixedHeaderSubheaderColor,
       flexShrink: 1,
       paddingRight: 100,
     },

@@ -3,7 +3,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
@@ -108,5 +108,5 @@ export function Dropdown({
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...SHARED_STYLES(theme),
+    ...formStyles(theme),
   });

@@ -71,6 +71,7 @@ export type FullTheme = {
   // Fixed header bar (text and controls on backgroundHeader)
   fixedHeaderTitleColor: string;
   fixedHeaderSubheaderColor: string;
+  fixedHeaderBorder: string;
   headerBackButtonBg: string;
   headerBackButtonBorder: string;
   headerBackButtonBorderWidth: number;

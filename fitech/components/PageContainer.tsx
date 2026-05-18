@@ -12,7 +12,7 @@ import {
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HEADING_STYLES } from '@/constants/shared_styles';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -112,12 +112,14 @@ export default function PageContainer({
             {hasBackButton && <BackButton variant="light" />}
             <View style={styles.fixedHeaderTextWrap}>
               {title ? (
-                <AppText style={styles.fixedTitle} numberOfLines={1}>
+                <AppText variant="screenTitle" numberOfLines={1}>
                   {title}
                 </AppText>
               ) : null}
               {hasFixedSubheader ? (
-                <AppText style={styles.fixedSubheader}>{subheader}</AppText>
+                <AppText variant="caption" style={styles.fixedSubheader}>
+                  {subheader}
+                </AppText>
               ) : null}
             </View>
           </View>
@@ -196,8 +198,13 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 8,
       paddingBottom: 12,
       backgroundColor: theme.backgroundHeader,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.fixedHeaderBorder,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.35,
+      shadowRadius: 8,
+      elevation: 8,
     },
     fixedHeaderRow: {
       flexDirection: 'row',
@@ -212,14 +219,8 @@ const getStyles = (theme: FullTheme) =>
       flex: 1,
       minWidth: 0,
     },
-    fixedTitle: {
-      ...HEADING_STYLES(theme).screenTitle,
-      color: theme.fixedHeaderTitleColor,
-    },
     fixedSubheader: {
       marginTop: 2,
-      fontSize: 13,
-      fontWeight: '500',
       color: theme.fixedHeaderSubheaderColor,
     },
     scrollContent: {
@@ -231,11 +232,10 @@ const getStyles = (theme: FullTheme) =>
       flex: 1,
     },
     headerTitle: {
-      ...HEADING_STYLES(theme).title,
-      fontWeight: '700',
+      ...textStyles(theme).sectionTitle,
     },
     headerSubtitle: {
-      ...HEADING_STYLES(theme).subtitle,
+      ...textStyles(theme).subtitle,
       marginTop: 8,
     },
     headerWrapper: {

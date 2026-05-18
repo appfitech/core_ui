@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { TextInput } from '@/components/TextInput';
-import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
+import { formStyles, textStyles } from '@/constants/typography';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto, SelectedFoodDto } from '@/types/api/types.gen';
@@ -74,6 +74,6 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...HEADING_STYLES(theme),
-    ...SHARED_STYLES(theme),
+    ...textStyles(theme),
+    ...formStyles(theme),
   });

@@ -4,7 +4,6 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { FullTheme } from '@/types/theme';
@@ -46,8 +45,8 @@ export default function WelcomeScreen() {
         entering={FadeInUp.delay(200).duration(800)}
         style={styles.textContainer}
       >
-        <AppText style={styles.title}>{welcomeScreen.header}</AppText>
-        <AppText style={styles.subtitle}>{welcomeScreen.subheader}</AppText>
+        <AppText variant="header">{welcomeScreen.header}</AppText>
+        <AppText variant="subheader">{welcomeScreen.subheader}</AppText>
       </Animated.View>
 
       <Animated.View
@@ -89,15 +88,6 @@ const getThemedStyles = (theme: FullTheme) =>
     textContainer: {
       marginBottom: 40,
       alignItems: 'center',
-    },
-    title: {
-      ...HEADING_STYLES(theme).header,
-      fontWeight: '900',
-      marginTop: 12,
-    },
-    subtitle: {
-      ...HEADING_STYLES(theme).subheader,
-      marginTop: 8,
     },
     buttonContainer: {
       width: '100%',
