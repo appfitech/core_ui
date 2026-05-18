@@ -2,23 +2,26 @@ import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
 import { ROUTES } from '@/constants/routes';
+import { bootstrapAuthSession } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
 
 export const useAuthRedirect = (redirectPath: string = ROUTES.home) => {
   const router = useRouter();
-  const { loadSession } = useUserStore();
+  const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
 
   useEffect(() => {
     const checkAuth = async () => {
-      await loadSession();
+      if (!isSessionHydrated) {
+        await bootstrapAuthSession();
+      }
 
-      const currentUser = useUserStore.getState().user;
+      const token = useUserStore.getState().getToken();
 
-      if (currentUser) {
+      if (token) {
         router.replace(redirectPath);
       }
     };
 
-    checkAuth();
-  }, [redirectPath, router]);
+    void checkAuth();
+  }, [isSessionHydrated, redirectPath, router]);
 };

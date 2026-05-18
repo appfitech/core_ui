@@ -19,9 +19,13 @@ const SECURE_USER_ID_KEY = 'user_id';
 type UserStore = {
   user: LoginResponseDtoReadable | null;
   token: string | null;
+  isSessionHydrated: boolean;
+  isSessionHydrating: boolean;
 
   setUser: (data: LoginResponseDtoReadable) => Promise<void>;
   setToken: (token: string | null) => Promise<void>;
+  setSessionHydrated: (value: boolean) => void;
+  setSessionHydrating: (value: boolean) => void;
 
   logout: () => Promise<void>;
   loadSession: () => Promise<void>;
@@ -35,18 +39,21 @@ type UserStore = {
   getUserId: () => number | null;
   getToken: () => string | null;
   getIsTrainer: () => boolean;
-
-  refreshToken: () => Promise<string | null>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
   token: null,
+  isSessionHydrated: false,
+  isSessionHydrating: false,
+
+  setSessionHydrated: (value) => set({ isSessionHydrated: value }),
+  setSessionHydrating: (value) => set({ isSessionHydrating: value }),
 
   setUser: async (data) => {
     await SecureStore.setItemAsync(SECURE_USER_KEY, JSON.stringify(data));
 
-    set({ user: data });
+    set({ user: data, isSessionHydrated: true });
 
     const token = data?.token ?? null;
     if (token) {
@@ -83,7 +90,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
     await SecureStore.deleteItemAsync(SECURE_TOKEN_KEY);
     await SecureStore.deleteItemAsync(SECURE_USER_ID_KEY);
 
-    set({ user: null, token: null });
+    set({
+      user: null,
+      token: null,
+      isSessionHydrated: true,
+      isSessionHydrating: false,
+    });
   },
 
   getStoredUserId: async () => {
@@ -142,41 +154,4 @@ export const useUserStore = create<UserStore>((set, get) => ({
   getToken: () => get().token,
 
   getIsTrainer: () => get().user?.user?.type === UserType.TRAINER,
-
-  refreshToken: async () => {
-    const currentToken = get().token;
-
-    if (!currentToken) return null;
-
-    try {
-      const res = await fetch(
-        `https://appfitech.com/v1/app/user/refresh-token`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: currentToken }), // RefreshTokenRequestDto
-        },
-      );
-
-      if (!res.ok) {
-        await get().logout();
-        return null;
-      }
-
-      const data = await res.json();
-      const newToken: string | undefined =
-        data?.token ?? data?.result?.token ?? data?.data?.token;
-
-      if (!newToken) {
-        await get().logout();
-        return null;
-      }
-
-      await get().setToken(newToken);
-      return newToken;
-    } catch {
-      await get().logout();
-      return null;
-    }
-  },
 }));

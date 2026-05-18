@@ -1,4 +1,6 @@
+import { refreshAccessToken } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
+import { extractAccessToken } from '@/utils/auth-token';
 
 const API_BASE_URL = 'https://appfitech.com/v1/app';
 
@@ -23,41 +25,14 @@ async function handleResponse(res: Response) {
   return parsed;
 }
 
-let refreshingPromise: Promise<string | null> | null = null;
-
 async function refreshTokenOnce(): Promise<string | null> {
-  if (!refreshingPromise) {
-    const token = useUserStore.getState().getToken();
+  const result = await refreshAccessToken();
 
-    if (!token) {
-      return null;
-    }
-
-    refreshingPromise = api
-      .post('/user/refresh-token', { token }, false, {
-        auth: false,
-        retryOn401: false,
-      })
-      .then(async (data) => {
-        const newToken: string | undefined =
-          data?.token ?? data?.result?.token ?? data?.data?.token;
-
-        if (!newToken) {
-          return null;
-        }
-
-        await useUserStore.getState().setToken(newToken);
-        return newToken;
-      })
-      .catch(async () => {
-        await useUserStore.getState().logout();
-        return null;
-      })
-      .finally(() => {
-        refreshingPromise = null;
-      });
+  if (result === 'logged_out') {
+    return null;
   }
-  return refreshingPromise;
+
+  return useUserStore.getState().getToken();
 }
 
 type RequestOptions = {
@@ -110,7 +85,7 @@ async function request(path: string, opts: RequestOptions = {}) {
 
   let res = await doFetch();
 
-  if ((res.status === 401 || res.status === 403) && auth && retryOn401) {
+  if (res.status === 401 && auth && retryOn401) {
     const newToken = await refreshTokenOnce();
 
     if (newToken) {
@@ -122,7 +97,8 @@ async function request(path: string, opts: RequestOptions = {}) {
     }
   }
 
-  if (res.status === 401 || res.status === 403) {
+  // Only clear session when the token is actually rejected (401), not for permission errors (403).
+  if (res.status === 401 && auth) {
     await useUserStore.getState().logout();
   }
 
@@ -151,3 +127,5 @@ export const api = {
     opts?: Omit<RequestOptions, 'method' | 'isFormData'>,
   ) => request(path, { ...opts, method: 'DELETE', body }),
 };
+
+export { extractAccessToken };

@@ -1,10 +1,12 @@
-// src/hooks/use-auto-refresh-token.ts
 import { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
+import { api } from '@/app/api/api';
+import {
+  bootstrapAuthSession,
+  refreshAccessToken,
+} from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
-
-import { api } from '../app/api/api';
 
 async function hydrateUserIfNeeded() {
   const store = useUserStore.getState();
@@ -29,40 +31,57 @@ async function hydrateUserIfNeeded() {
       await store.setUser({ token, user: userData as any });
     }
   } catch {
-    // Non-fatal: user stays null/incomplete; next login will fix
+    // Non-fatal: profile can be refetched later
   }
 }
 
+const REFRESH_INTERVAL_MS = 12 * 60 * 1000;
+
 export function useAutoRefreshToken() {
-  const refreshToken = useUserStore((s) => s.refreshToken);
-  const loadSession = useUserStore((s) => s.loadSession);
   const appState = useRef<AppStateStatus>(AppState.currentState);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    (async () => {
-      // On mount: restore session from SecureStore, then refresh token
-      await loadSession();
-      try {
-        await refreshToken();
-      } catch {}
+    void bootstrapAuthSession().then(() => hydrateUserIfNeeded());
 
-      // If we have a token but user is missing/incomplete (e.g. SecureStore evicted user blob),
-      // refetch current user so "Hola" and profile work without re-login
-      await hydrateUserIfNeeded();
-    })();
+    const clearRefreshInterval = () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
 
-    const sub = AppState.addEventListener('change', async (nextState) => {
+    const startRefreshInterval = () => {
+      clearRefreshInterval();
+      intervalRef.current = setInterval(() => {
+        if (useUserStore.getState().getToken()) {
+          void refreshAccessToken();
+        }
+      }, REFRESH_INTERVAL_MS);
+    };
+
+    const sub = AppState.addEventListener('change', (nextState) => {
       const prev = appState.current;
       appState.current = nextState;
 
       if (prev.match(/inactive|background/) && nextState === 'active') {
-        try {
-          await refreshToken();
-          await hydrateUserIfNeeded();
-        } catch {}
+        void refreshAccessToken().then(() => hydrateUserIfNeeded());
+        startRefreshInterval();
+        return;
+      }
+
+      if (nextState.match(/inactive|background/)) {
+        clearRefreshInterval();
       }
     });
 
-    return () => sub.remove();
-  }, [loadSession, refreshToken]);
+    if (AppState.currentState === 'active') {
+      startRefreshInterval();
+    }
+
+    return () => {
+      sub.remove();
+      clearRefreshInterval();
+    };
+  }, []);
 }

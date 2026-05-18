@@ -46,6 +46,7 @@ function RoutedApp() {
   const router = useRouter();
   const segments = useSegments();
   const token = useUserStore((s) => s.token);
+  const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
   const currentRoute = segments[0];
 
   const pendingPushHref = useRef<string | null>(null);
@@ -106,6 +107,8 @@ function RoutedApp() {
   }, [navigateFromPush]);
 
   useEffect(() => {
+    if (!isSessionHydrated) return;
+
     if (
       token === null &&
       currentRoute &&
@@ -113,7 +116,7 @@ function RoutedApp() {
     ) {
       router.replace('/');
     }
-  }, [token, currentRoute, router]);
+  }, [isSessionHydrated, token, currentRoute, router]);
 
   const shouldHideNav =
     HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
