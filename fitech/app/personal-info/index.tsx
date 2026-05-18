@@ -16,7 +16,7 @@ import {
   findLocationById,
   formatLocationName,
 } from '@/constants/locations';
-import { formStyles } from '@/constants/typography';
+import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';

@@ -8,7 +8,7 @@ import { getRegisterFieldValue } from '@/lib/register/form';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { getDOBMaxDate } from '@/utils/dates';
 
-import { ResidencePicker } from '../ResidencePicker';
+import { LocalLocationPicker } from '../LocalLocationPicker';
 
 type Props = {
   fields: CreateUserFormField[];
@@ -71,11 +71,14 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
           );
         }
 
-        if (inputType === 'residence-picker') {
+        if (inputType === 'location-picker') {
           return (
-            <ResidencePicker
+            <LocalLocationPicker
               key={field.field}
+              label={field.label}
+              placeholder={placeholder}
               id={field.field}
+              required={!field.isOptional}
               value={form.person?.residenceLocationId ?? null}
               onChange={(locationId) =>
                 setForm((prev) => ({

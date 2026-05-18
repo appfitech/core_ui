@@ -11,7 +11,7 @@ import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
 import { PROFILE_LIST_ITEMS } from '@/constants/screens';
-import { textStyles } from '@/constants/typography';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';

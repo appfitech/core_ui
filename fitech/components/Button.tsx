@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { textStyles } from '@/constants/typography';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -48,7 +48,6 @@ export function Button({
   buttonStyle = {},
   disabled = false,
   animated = true,
-  loading = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);

@@ -9,7 +9,7 @@ import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
 import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
-import { textStyles } from '@/constants/typography';
+import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';

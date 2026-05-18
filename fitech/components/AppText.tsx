@@ -5,7 +5,7 @@ import {
   getInterFontFamily,
   getTextStyle,
   TextVariant,
-} from '@/constants/typography';
+} from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 
 type Props = TextProps & {

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Dimensions, ImageBackground, StyleSheet, View } from 'react-native';
 
-import { textStyles } from '@/constants/typography';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   GymBroCandidateResponseDto,

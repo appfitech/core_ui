@@ -6,7 +6,7 @@ export type RegisterFieldInputType =
   | 'text'
   | 'dropdown'
   | 'date'
-  | 'residence-picker';
+  | 'location-picker';
 
 export type CreateUserFormField = {
   label: string;
@@ -37,6 +37,11 @@ export const REGISTER_ACCOUNT_TYPE_FIELDS: CreateUserFormField[] = [
     placeholder: 'Selecciona tipo de cuenta',
     zIndex: 3000,
   },
+  {
+    label: 'Correo electrónico',
+    field: 'email',
+    keyboardType: 'email-address',
+  },
 ];
 
 export const REGISTER_DOCUMENT_FIELDS: CreateUserFormField[] = [
@@ -63,11 +68,6 @@ export const REGISTER_DOCUMENT_FIELDS: CreateUserFormField[] = [
 
 export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
   {
-    label: 'Correo electrónico',
-    field: 'email',
-    keyboardType: 'email-address',
-  },
-  {
     label: 'Teléfono',
     field: 'phoneNumber',
     keyboardType: 'phone-pad',
@@ -90,20 +90,18 @@ export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
     inputType: 'date',
   },
   {
+    label: 'Ubicación',
+    field: 'residenceLocationId',
+    inputType: 'location-picker',
+    isOptional: true,
+  },
+  {
     label: 'Acerca de ti',
     field: 'about',
     inputType: 'text',
     multiline: true,
     placeholder: 'Cuéntanos un poco sobre ti...',
     isOptional: true,
-  },
-];
-
-export const REGISTER_RESIDENCE_FIELDS: CreateUserFormField[] = [
-  {
-    label: 'Ubicación',
-    field: 'residenceLocationId',
-    inputType: 'residence-picker',
   },
 ];
 

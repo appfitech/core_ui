@@ -11,7 +11,7 @@ import {
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
-import { formStyles } from '@/constants/typography';
+import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { FullTheme } from '@/types/theme';

@@ -3,7 +3,7 @@ import { TextStyle, ViewStyle } from 'react-native';
 import { FullTheme } from '@/types/theme';
 
 /**
- * Design system — typography & form text styles in one place.
+ * Design system — shared text & form styles.
  *
  * Prefer `<AppText variant="sectionTitle">` for UI copy.
  * Use `textStyles(theme).header` when building StyleSheet objects.
@@ -158,6 +158,8 @@ export type FormStyles = {
   dropdown: TextStyle;
   submitButton: ViewStyle;
   submitText: TextStyle;
+  labelContainer: ViewStyle;
+  optionalTag: ViewStyle;
 };
 
 /** Form fields & actions — pairs with `textStyles` for screens. */
@@ -203,6 +205,16 @@ export function formStyles(theme: FullTheme): FormStyles {
     submitText: {
       ...text.button,
       color: theme.backgroundInverted,
+    },
+    labelContainer: {
+      columnGap: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    optionalTag: {
+      paddingVertical: 2,
+      paddingHorizontal: 8,
+      alignSelf: 'center',
     },
   };
 }

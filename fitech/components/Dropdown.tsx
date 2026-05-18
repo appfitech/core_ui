@@ -8,12 +8,13 @@ import {
 } from 'react-native';
 import { Dropdown as DropdownElement } from 'react-native-element-dropdown';
 
-import { formStyles } from '@/constants/typography';
+import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
+import { Tag } from './Tag';
 
 type DropdownItem = {
   label: string;
@@ -31,6 +32,7 @@ export type Props = {
   search?: boolean;
   disabled?: boolean;
   searchPlaceholder?: string;
+  required?: boolean;
 };
 
 export function Dropdown({
@@ -44,6 +46,7 @@ export function Dropdown({
   search,
   disabled = false,
   searchPlaceholder = 'Buscar...',
+  required = true,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -66,7 +69,19 @@ export function Dropdown({
 
   return (
     <View key={id || 'dropdown'} style={{ zIndex }}>
-      {label && <AppText style={styles.label}>{label}</AppText>}
+      {label && (
+        <View style={styles.labelContainer}>
+          <AppText style={styles.label}>{label}</AppText>
+          {!required && (
+            <Tag
+              backgroundColor={theme.warningBackground}
+              textColor={theme.warningText}
+              style={styles.optionalTag}
+              label="Opcional"
+            />
+          )}
+        </View>
+      )}
       <DropdownElement
         disable={disabled}
         data={data}
@@ -134,6 +149,8 @@ const getStyles = (theme: FullTheme) => {
 
   return StyleSheet.create({
     label: base.label,
+    labelContainer: base.labelContainer,
+    optionalTag: base.optionalTag,
     dropdown: {
       backgroundColor: theme.backgroundInput,
       borderRadius: 12,

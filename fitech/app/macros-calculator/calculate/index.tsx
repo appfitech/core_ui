@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import MacroInput from '@/components/macros/MacroInput';
 import PageContainer from '@/components/PageContainer';
-import { formStyles, textStyles } from '@/constants/typography';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';

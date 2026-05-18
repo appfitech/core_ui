@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 
-import { formStyles } from '@/constants/typography';
+import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -127,15 +127,5 @@ const getStyles = (theme: FullTheme) =>
     },
     endElement: {
       marginLeft: 12,
-    },
-    labelContainer: {
-      columnGap: 4,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    optionalTag: {
-      paddingVertical: 2,
-      paddingHorizontal: 8,
-      alignSelf: 'center',
     },
   });

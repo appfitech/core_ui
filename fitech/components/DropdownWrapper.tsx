@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
-import { formStyles } from '@/constants/typography';
+import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 

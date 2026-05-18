@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { TextInput } from '@/components/TextInput';
-import { formStyles, textStyles } from '@/constants/typography';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto, SelectedFoodDto } from '@/types/api/types.gen';

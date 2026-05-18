@@ -26,6 +26,9 @@ export function validateRegisterStep(
       if (form.type == null) {
         return 'Selecciona un tipo de cuenta';
       }
+      if (!person?.email?.trim()) {
+        return 'Ingresa tu correo electrónico';
+      }
       return null;
     case 1:
       if (!person?.documentType) {
@@ -42,9 +45,6 @@ export function validateRegisterStep(
       }
       return null;
     case 2:
-      if (!person?.email?.trim()) {
-        return 'Ingresa tu correo electrónico';
-      }
       if (!person?.phoneNumber?.trim()) {
         return 'Ingresa tu teléfono';
       }
@@ -56,11 +56,6 @@ export function validateRegisterStep(
       }
       return null;
     case 3:
-      if (person?.residenceLocationId == null) {
-        return 'Selecciona tu ubicación';
-      }
-      return null;
-    case 4:
       if (!form.username?.trim()) {
         return 'Ingresa un nombre de usuario';
       }

@@ -15,7 +15,7 @@ import { AppText } from '@/components/AppText';
 import { MacroFoodCard } from '@/components/macros/MacroFoodCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
-import { formStyles, textStyles } from '@/constants/typography';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
