@@ -1032,6 +1032,17 @@ export type UpdateFoodItemRequestDto = {
   categoryId?: number;
   imageUrl?: string;
   servingSizeGrams?: number;
+  unitType?:
+    | 'GRAMS'
+    | 'UNIT'
+    | 'SCOOP'
+    | 'CUP'
+    | 'TABLESPOON'
+    | 'TEASPOON'
+    | 'PIECE'
+    | 'ML';
+  unitName?: string;
+  unitsPerServing?: number;
   caloriesPerServing?: number;
   proteinsPerServing?: number;
   carbohydratesPerServing?: number;
@@ -1048,6 +1059,116 @@ export type CreateFoodCategoryRequestDto = {
   description?: string;
   icon?: string;
   isActive?: boolean;
+};
+
+/**
+ * Request para crear/actualizar un video de ejercicio
+ */
+export type CreateExerciseVideoRequest = {
+  /**
+   * Título del ejercicio
+   */
+  title: string;
+  /**
+   * Descripción del ejercicio
+   */
+  description?: string;
+  /**
+   * URL del video de YouTube
+   */
+  youtubeUrl: string;
+  /**
+   * Duración del video en segundos
+   */
+  durationSeconds?: number;
+  /**
+   * Dificultad del ejercicio
+   */
+  difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  /**
+   * Equipamiento necesario
+   */
+  equipment?: string;
+  /**
+   * IDs de los grupos musculares que trabaja el ejercicio
+   */
+  muscleGroupIds: number[];
+};
+
+/**
+ * Video de ejercicio
+ */
+export type ExerciseVideoDto = {
+  /**
+   * ID del video
+   */
+  id?: number;
+  /**
+   * Título del ejercicio
+   */
+  title?: string;
+  /**
+   * Descripción del ejercicio
+   */
+  description?: string;
+  /**
+   * URL del video de YouTube
+   */
+  youtubeUrl?: string;
+  /**
+   * ID del video de YouTube
+   */
+  youtubeVideoId?: string;
+  /**
+   * URL de la miniatura del video
+   */
+  thumbnailUrl?: string;
+  /**
+   * Duración del video en segundos
+   */
+  durationSeconds?: number;
+  /**
+   * Dificultad del ejercicio
+   */
+  difficulty?: string;
+  /**
+   * Equipamiento necesario
+   */
+  equipment?: string;
+  /**
+   * Número de vistas
+   */
+  viewCount?: number;
+  /**
+   * Grupos musculares que trabaja el ejercicio
+   */
+  muscleGroups?: MuscleGroupDto[];
+  /**
+   * Fecha de creación
+   */
+  createdAt?: string;
+};
+
+/**
+ * Grupo muscular
+ */
+export type MuscleGroupDto = {
+  /**
+   * ID del grupo muscular
+   */
+  id?: number;
+  /**
+   * Nombre del grupo muscular
+   */
+  name?: string;
+  /**
+   * Icono del grupo muscular
+   */
+  icon?: string;
+  /**
+   * Orden de visualización
+   */
+  displayOrder?: number;
 };
 
 /**
@@ -1646,6 +1767,17 @@ export type CreateFoodItemRequestDto = {
   categoryId: number;
   imageUrl?: string;
   servingSizeGrams: number;
+  unitType?:
+    | 'GRAMS'
+    | 'UNIT'
+    | 'SCOOP'
+    | 'CUP'
+    | 'TABLESPOON'
+    | 'TEASPOON'
+    | 'PIECE'
+    | 'ML';
+  unitName?: string;
+  unitsPerServing?: number;
   caloriesPerServing: number;
   proteinsPerServing: number;
   carbohydratesPerServing: number;
@@ -2141,7 +2273,6 @@ export type MembershipPayment = {
   collectionRequestedAt?: string;
   failureReason?: string;
   cancelled?: boolean;
-  availableForCollection?: boolean;
   collected?: boolean;
   pending?: boolean;
   observed?: boolean;
@@ -2153,6 +2284,7 @@ export type MembershipPayment = {
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
+  availableForCollection?: boolean;
 };
 
 export type MembershipPlan = {
@@ -2176,11 +2308,11 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
-  annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
   monthly?: boolean;
+  annual?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {
@@ -2254,6 +2386,43 @@ export type ResultPageFitnessGoalStatusDto = {
   totalItems?: number;
   totalPages?: number;
   currentPage?: number;
+};
+
+/**
+ * Filtros aplicados en la búsqueda
+ */
+export type AppliedFilters = {
+  /**
+   * IDs de grupos musculares filtrados
+   */
+  muscleGroupIds?: number[];
+  /**
+   * Dificultad filtrada
+   */
+  difficulty?: string;
+  /**
+   * Término de búsqueda
+   */
+  searchTerm?: string;
+};
+
+/**
+ * Respuesta de búsqueda de videos de ejercicios
+ */
+export type ExerciseVideoSearchResponse = {
+  /**
+   * Lista de videos encontrados
+   */
+  videos?: ExerciseVideoDto[];
+  /**
+   * Lista de grupos musculares disponibles
+   */
+  muscleGroups?: MuscleGroupDto[];
+  /**
+   * Total de videos encontrados
+   */
+  totalCount?: number;
+  filters?: AppliedFilters;
 };
 
 /**
@@ -4253,6 +4422,70 @@ export type UpdateFoodCategoryResponses = {
 export type UpdateFoodCategoryResponse =
   UpdateFoodCategoryResponses[keyof UpdateFoodCategoryResponses];
 
+export type DeleteVideoData = {
+  body?: never;
+  path: {
+    /**
+     * ID del video
+     */
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/admin/exercises/videos/{id}';
+};
+
+export type DeleteVideoErrors = {
+  /**
+   * Video no encontrado
+   */
+  404: unknown;
+};
+
+export type DeleteVideoResponses = {
+  /**
+   * Video eliminado exitosamente
+   */
+  204: void;
+};
+
+export type DeleteVideoResponse =
+  DeleteVideoResponses[keyof DeleteVideoResponses];
+
+export type UpdateVideoData = {
+  body: CreateExerciseVideoRequest;
+  path: {
+    /**
+     * ID del video
+     */
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/admin/exercises/videos/{id}';
+};
+
+export type UpdateVideoErrors = {
+  /**
+   * Datos inválidos
+   */
+  400: ExerciseVideoDto;
+  /**
+   * Video no encontrado
+   */
+  404: ExerciseVideoDto;
+};
+
+export type UpdateVideoError = UpdateVideoErrors[keyof UpdateVideoErrors];
+
+export type UpdateVideoResponses = {
+  /**
+   * Video actualizado exitosamente
+   */
+  200: ExerciseVideoDto;
+};
+
+export type UpdateVideoResponse =
+  UpdateVideoResponses[keyof UpdateVideoResponses];
+
 export type DeleteAchievementData = {
   body?: never;
   path: {
@@ -4415,6 +4648,48 @@ export type SaveResponses = {
 };
 
 export type SaveResponse = SaveResponses[keyof SaveResponses];
+
+export type TestVerificationEmailData = {
+  body?: never;
+  path?: never;
+  query: {
+    email: string;
+  };
+  url: '/v1/app/user/test-verification-email';
+};
+
+export type TestVerificationEmailResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type TestVerificationEmailResponse =
+  TestVerificationEmailResponses[keyof TestVerificationEmailResponses];
+
+export type TestNewUserNotificationData = {
+  body?: never;
+  path?: never;
+  query: {
+    email: string;
+  };
+  url: '/v1/app/user/test-new-user-notification';
+};
+
+export type TestNewUserNotificationResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type TestNewUserNotificationResponse =
+  TestNewUserNotificationResponses[keyof TestNewUserNotificationResponses];
 
 export type TestEmailData = {
   body?: never;
@@ -5828,6 +6103,32 @@ export type CreateFoodCategoryResponses = {
 
 export type CreateFoodCategoryResponse =
   CreateFoodCategoryResponses[keyof CreateFoodCategoryResponses];
+
+export type CreateVideoData = {
+  body: CreateExerciseVideoRequest;
+  path?: never;
+  query?: never;
+  url: '/v1/app/admin/exercises/videos';
+};
+
+export type CreateVideoErrors = {
+  /**
+   * Datos inválidos
+   */
+  400: ExerciseVideoDto;
+};
+
+export type CreateVideoError = CreateVideoErrors[keyof CreateVideoErrors];
+
+export type CreateVideoResponses = {
+  /**
+   * Video creado exitosamente
+   */
+  201: ExerciseVideoDto;
+};
+
+export type CreateVideoResponse =
+  CreateVideoResponses[keyof CreateVideoResponses];
 
 export type ListAchievementsData = {
   body?: never;
@@ -8114,6 +8415,101 @@ export type DownloadFileResponses = {
 
 export type DownloadFileResponse =
   DownloadFileResponses[keyof DownloadFileResponses];
+
+export type SearchVideosData = {
+  body?: never;
+  path?: never;
+  query?: {
+    /**
+     * IDs de grupos musculares (separados por coma)
+     */
+    muscleGroups?: number[];
+    /**
+     * Nivel de dificultad
+     */
+    difficulty?: string;
+    /**
+     * Término de búsqueda en título o descripción
+     */
+    q?: string;
+  };
+  url: '/v1/app/exercises/videos';
+};
+
+export type SearchVideosResponses = {
+  /**
+   * Resultados de búsqueda
+   */
+  200: ExerciseVideoSearchResponse;
+};
+
+export type SearchVideosResponse =
+  SearchVideosResponses[keyof SearchVideosResponses];
+
+export type GetVideoByIdData = {
+  body?: never;
+  path: {
+    /**
+     * ID del video
+     */
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/exercises/videos/{id}';
+};
+
+export type GetVideoByIdErrors = {
+  /**
+   * Video no encontrado
+   */
+  404: ExerciseVideoDto;
+};
+
+export type GetVideoByIdError = GetVideoByIdErrors[keyof GetVideoByIdErrors];
+
+export type GetVideoByIdResponses = {
+  /**
+   * Detalle del video
+   */
+  200: ExerciseVideoDto;
+};
+
+export type GetVideoByIdResponse =
+  GetVideoByIdResponses[keyof GetVideoByIdResponses];
+
+export type GetPopularVideosData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/exercises/videos/popular';
+};
+
+export type GetPopularVideosResponses = {
+  /**
+   * Lista de videos populares
+   */
+  200: ExerciseVideoDto[];
+};
+
+export type GetPopularVideosResponse =
+  GetPopularVideosResponses[keyof GetPopularVideosResponses];
+
+export type GetMuscleGroupsData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/exercises/muscle-groups';
+};
+
+export type GetMuscleGroupsResponses = {
+  /**
+   * Lista de grupos musculares
+   */
+  200: MuscleGroupDto[];
+};
+
+export type GetMuscleGroupsResponse =
+  GetMuscleGroupsResponses[keyof GetMuscleGroupsResponses];
 
 export type GetContractByIdData = {
   body?: never;
