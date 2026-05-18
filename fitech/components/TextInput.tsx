@@ -1,4 +1,5 @@
 import {
+  Platform,
   StyleSheet,
   TextInput as NativeTextInput,
   type TextInputProps,
@@ -17,7 +18,38 @@ type Props = TextInputProps & {
   endElement?: React.ReactNode;
   label?: string;
   required?: boolean;
+  /** Use on sign-up password fields so iOS offers a strong password once (not on confirm). */
+  newPasswordAutofill?: boolean;
 };
+
+function resolveSecureTextProps(
+  secureTextEntry: boolean | undefined,
+  newPasswordAutofill: boolean | undefined,
+  rest: TextInputProps,
+): Pick<TextInputProps, 'textContentType' | 'autoComplete'> {
+  if (!secureTextEntry) {
+    return {};
+  }
+
+  if (rest.textContentType != null || rest.autoComplete != null) {
+    return {
+      textContentType: rest.textContentType,
+      autoComplete: rest.autoComplete,
+    };
+  }
+
+  if (newPasswordAutofill) {
+    return {
+      textContentType: 'newPassword',
+      autoComplete: 'password-new',
+    };
+  }
+
+  return {
+    textContentType: 'password',
+    autoComplete: Platform.OS === 'android' ? 'password' : 'off',
+  };
+}
 
 export function TextInput(props: Props) {
   const { theme } = useTheme();
@@ -27,9 +59,18 @@ export function TextInput(props: Props) {
     startElement = null,
     endElement = null,
     label = null,
-    required = false,
+    required = true,
+    newPasswordAutofill = false,
+    secureTextEntry,
+    style: inputStyleProp,
     ...rest
   } = props;
+
+  const secureAutofillProps = resolveSecureTextProps(
+    secureTextEntry,
+    newPasswordAutofill,
+    props,
+  );
 
   const minHeight = props.multiline
     ? (props.numberOfLines ?? 1) * 16 + 16 * 2
@@ -56,11 +97,13 @@ export function TextInput(props: Props) {
         )}
         <NativeTextInput
           {...rest}
+          {...secureAutofillProps}
+          secureTextEntry={secureTextEntry}
           placeholderTextColor={theme.dark700}
           style={[
             styles.input,
             { flex: 1 },
-            props.style ?? {},
+            inputStyleProp ?? {},
             props.multiline && {
               height: undefined,
               minHeight,

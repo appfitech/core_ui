@@ -36,7 +36,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const setUser = useUserStore((s) => s.setUser);
 
-  const { mutate: submitLogin } = useLogin();
+  const { mutate: submitLogin, isPending } = useLogin();
 
   useEffect(() => {
     const t = setTimeout(() => setShowUI(true), 600);
@@ -157,6 +157,8 @@ export default function LoginScreen() {
             label={'Iniciar sesión'}
             onPress={handleLogin}
             style={styles.loginButton}
+            disabled={!username || !password}
+            loading={isPending}
           />
 
           <View style={styles.footerText}>
@@ -183,6 +185,7 @@ const getStyles = (theme: FullTheme) => {
       },
       card: {
         marginTop: 20,
+        rowGap: 12,
       },
       headerWrapper: {
         width: '100%',

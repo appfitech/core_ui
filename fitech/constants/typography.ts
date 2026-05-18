@@ -174,14 +174,14 @@ export function formStyles(theme: FullTheme): FormStyles {
       paddingHorizontal: 12,
       borderWidth: 1,
       borderColor: theme.border,
+      overflow: 'hidden',
     },
     input: {
       ...text.body,
-      backgroundColor: theme.backgroundInput,
-      borderRadius: 12,
+      backgroundColor: 'transparent',
       paddingVertical: 12,
       minHeight: TAP_TARGET_MIN,
-      lineHeight: 0,
+      lineHeight: 22,
     },
     dropdown: {
       ...text.body,

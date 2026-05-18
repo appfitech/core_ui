@@ -1,6 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useMemo } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  TextInput as NativeTextInput,
+  View,
+} from 'react-native';
 import { Dropdown as DropdownElement } from 'react-native-element-dropdown';
 
 import { formStyles } from '@/constants/typography';
@@ -82,9 +87,24 @@ export function Dropdown({
         itemContainerStyle={styles.itemContainer}
         itemTextStyle={styles.itemText}
         activeColor={theme.primaryBg}
-        inputSearchStyle={styles.searchInput}
         searchPlaceholderTextColor={theme.dark700}
         iconColor={theme.icon}
+        renderInputSearch={
+          enableSearch
+            ? (onSearch) => (
+                <View style={styles.searchWrap}>
+                  <NativeTextInput
+                    style={styles.searchInput}
+                    placeholder={searchPlaceholder}
+                    placeholderTextColor={theme.dark700}
+                    selectionColor={theme.primary}
+                    autoCorrect={false}
+                    onChangeText={onSearch}
+                  />
+                </View>
+              )
+            : undefined
+        }
         renderRightIcon={() => (
           <Ionicons name="chevron-down" size={20} color={theme.icon} />
         )}
@@ -174,6 +194,11 @@ const getStyles = (theme: FullTheme) => {
       color: theme.primaryText,
       fontWeight: '600',
     },
+    searchWrap: {
+      marginHorizontal: 12,
+      marginTop: 12,
+      marginBottom: 8,
+    },
     searchInput: {
       backgroundColor: theme.backgroundInput,
       borderRadius: 10,
@@ -181,9 +206,6 @@ const getStyles = (theme: FullTheme) => {
       borderColor: theme.border,
       color: theme.textPrimary,
       fontSize: 15,
-      marginHorizontal: 12,
-      marginTop: 12,
-      marginBottom: 8,
       paddingHorizontal: 12,
       height: 44,
     },

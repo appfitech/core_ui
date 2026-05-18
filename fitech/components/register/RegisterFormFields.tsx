@@ -2,7 +2,6 @@ import type { Dispatch, SetStateAction } from 'react';
 
 import { DatePicker } from '@/components/DatePicker';
 import { Dropdown } from '@/components/Dropdown';
-import { FormWrapper } from '@/components/FormWrapper';
 import { TextInput } from '@/components/TextInput';
 import { CreateUserFormField } from '@/constants/forms';
 import { getRegisterFieldValue } from '@/lib/register/form';
@@ -93,14 +92,14 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
 
         if (inputType === 'date') {
           return (
-            <FormWrapper key={field.field} label={field.label}>
-              <DatePicker
-                placeholder={placeholder}
-                value={form.person?.birthDate ?? ''}
-                maxDate={getDOBMaxDate()}
-                onChange={(value) => handleChange(field, value ?? '')}
-              />
-            </FormWrapper>
+            <DatePicker
+              key={field.field}
+              label={field.label}
+              placeholder={placeholder}
+              value={form.person?.birthDate ?? ''}
+              maxDate={getDOBMaxDate()}
+              onChange={(value) => handleChange(field, value ?? '')}
+            />
           );
         }
 
@@ -111,6 +110,9 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
             label={field.label}
             placeholder={placeholder}
             secureTextEntry={field.secureTextEntry}
+            newPasswordAutofill={
+              field.secureTextEntry && field.field === 'password'
+            }
             keyboardType={field.keyboardType}
             value={getFieldValue(form, field) as string | undefined}
             onChangeText={(text) => handleChange(field, text)}

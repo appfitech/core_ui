@@ -36,6 +36,7 @@ type Props = {
   disabled?: boolean;
   /** When false, skips the entrance animation (e.g. alerts). Default true. */
   animated?: boolean;
+  loading?: boolean;
 };
 
 export function Button({
@@ -47,6 +48,7 @@ export function Button({
   buttonStyle = {},
   disabled = false,
   animated = true,
+  loading = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -56,7 +58,7 @@ export function Button({
   const Wrapper = animated ? Animated.View : View;
   const wrapperProps = animated
     ? { entering: ZoomIn.delay(200), style }
-  : { style };
+    : { style };
 
   return (
     <Wrapper {...wrapperProps}>

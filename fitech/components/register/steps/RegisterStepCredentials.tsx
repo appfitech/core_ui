@@ -33,7 +33,7 @@ export function RegisterStepCredentials({
         value={confirmPassword}
         onChangeText={onConfirmPasswordChange}
         textContentType="password"
-        autoComplete="password-new"
+        autoComplete="off"
       />
     </>
   );

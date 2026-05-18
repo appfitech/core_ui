@@ -1,13 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Modal,
-  Platform,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -26,6 +20,7 @@ type Props = {
   placeholder?: string;
   minDate?: Date | undefined;
   maxDate?: Date | undefined;
+  label?: string;
 };
 
 export function DatePicker({
@@ -34,6 +29,7 @@ export function DatePicker({
   placeholder = '',
   minDate = undefined,
   maxDate = undefined,
+  label = '',
 }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
@@ -69,21 +65,24 @@ export function DatePicker({
 
   return (
     <>
-      <Pressable style={styles.inputRow} onPress={open}>
-        <Ionicons
-          name="calendar-outline"
-          size={20}
-          color={theme.icon}
-          style={styles.leadingIcon}
-        />
-        <AppText
-          style={[styles.valueText, !value && styles.placeholderText]}
-          numberOfLines={1}
-        >
-          {displayText}
-        </AppText>
-        <Ionicons name="chevron-down" size={20} color={theme.icon} />
-      </Pressable>
+      <View>
+        {label && <AppText style={styles.label}>{label}</AppText>}
+        <Pressable style={styles.inputRow} onPress={open}>
+          <Ionicons
+            name="calendar-outline"
+            size={20}
+            color={theme.icon}
+            style={styles.leadingIcon}
+          />
+          <AppText
+            style={[styles.valueText, !value && styles.placeholderText]}
+            numberOfLines={1}
+          >
+            {displayText}
+          </AppText>
+          <Ionicons name="chevron-down" size={20} color={theme.icon} />
+        </Pressable>
+      </View>
 
       {Platform.OS === 'ios' ? (
         <Modal
@@ -170,6 +169,7 @@ const getStyles = (theme: FullTheme) => {
   const form = formStyles(theme);
 
   return StyleSheet.create({
+    label: form.label,
     inputRow: {
       ...form.inputWrapper,
       minHeight: 52,
