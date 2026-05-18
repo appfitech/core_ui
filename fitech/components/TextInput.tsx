@@ -10,11 +10,13 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
+import { Tag } from './Tag';
 
 type Props = TextInputProps & {
   startElement?: React.ReactNode;
   endElement?: React.ReactNode;
   label?: string;
+  required?: boolean;
 };
 
 export function TextInput(props: Props) {
@@ -25,6 +27,7 @@ export function TextInput(props: Props) {
     startElement = null,
     endElement = null,
     label = null,
+    required = false,
     ...rest
   } = props;
 
@@ -34,7 +37,19 @@ export function TextInput(props: Props) {
 
   return (
     <View key={props.id ?? 'text-input'}>
-      {label && <AppText style={styles.label}>{label}</AppText>}
+      {label && (
+        <View style={styles.labelContainer}>
+          <AppText style={styles.label}>{label}</AppText>
+          {!required && (
+            <Tag
+              backgroundColor={theme.warningBackground}
+              textColor={theme.warningText}
+              style={styles.optionalTag}
+              label="Opcional"
+            />
+          )}
+        </View>
+      )}
       <View style={styles.inputWrapper}>
         {startElement && (
           <View style={styles.startElement}>{startElement}</View>
@@ -69,5 +84,15 @@ const getStyles = (theme: FullTheme) =>
     },
     endElement: {
       marginLeft: 12,
+    },
+    labelContainer: {
+      columnGap: 4,
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    optionalTag: {
+      paddingVertical: 2,
+      paddingHorizontal: 8,
+      alignSelf: 'center',
     },
   });

@@ -31,31 +31,36 @@ export function validateRegisterStep(
       if (!person?.documentType) {
         return 'Selecciona un tipo de documento';
       }
-      if (!person.documentNumber?.trim()) {
+      if (!person?.documentNumber?.trim()) {
         return 'Ingresa tu número de documento';
       }
-      if (!person.firstName?.trim()) {
+      if (!person?.firstName?.trim()) {
         return 'Ingresa tus nombres';
       }
-      if (!person.lastName?.trim()) {
+      if (!person?.lastName?.trim()) {
         return 'Ingresa tus apellidos';
       }
       return null;
     case 2:
-      if (!person.email?.trim()) {
+      if (!person?.email?.trim()) {
         return 'Ingresa tu correo electrónico';
       }
-      if (!person.phoneNumber?.trim()) {
+      if (!person?.phoneNumber?.trim()) {
         return 'Ingresa tu teléfono';
       }
-      if (!person.gender) {
+      if (!person?.gender) {
         return 'Selecciona tu género';
       }
-      if (!person.birthDate) {
+      if (!person?.birthDate) {
         return 'Ingresa tu fecha de nacimiento';
       }
       return null;
     case 3:
+      if (person?.residenceLocationId == null) {
+        return 'Selecciona tu ubicación';
+      }
+      return null;
+    case 4:
       if (!form.username?.trim()) {
         return 'Ingresa un nombre de usuario';
       }

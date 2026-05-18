@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -12,14 +12,21 @@ type Props = {
   backgroundColor: string;
   textColor: string;
   label: string;
+  style: StyleProp<ViewStyle>;
 };
 
-export function Tag({ backgroundColor, icon = '', label, textColor }: Props) {
+export function Tag({
+  backgroundColor,
+  icon = '',
+  label,
+  textColor,
+  style,
+}: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
-    <View style={[styles.tagContainer, { backgroundColor }]}>
+    <View style={[styles.tagContainer, { backgroundColor }, style]}>
       {icon && <Ionicons name={icon as any} size={16} color={textColor} />}
       <AppText style={[styles.text, { color: textColor }]}>{label}</AppText>
     </View>

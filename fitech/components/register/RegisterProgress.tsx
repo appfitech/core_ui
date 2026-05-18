@@ -1,4 +1,11 @@
-import { StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { LayoutChangeEvent, StyleSheet, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -9,18 +16,40 @@ type Props = {
   total: number;
 };
 
+const PROGRESS_DURATION_MS = 400;
+
 export function RegisterProgress({ step, total }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const progress = (step + 1) / total;
+
+  const trackWidth = useSharedValue(0);
+  const progress = useSharedValue((step + 1) / total);
+
+  useEffect(() => {
+    progress.value = withTiming((step + 1) / total, {
+      duration: PROGRESS_DURATION_MS,
+      easing: Easing.out(Easing.cubic),
+    });
+  }, [progress, step, total]);
+
+  const onTrackLayout = (e: LayoutChangeEvent) => {
+    const width = e.nativeEvent.layout.width;
+    if (width > 0) {
+      trackWidth.value = width;
+    }
+  };
+
+  const fillStyle = useAnimatedStyle(() => ({
+    width: trackWidth.value * progress.value,
+  }));
 
   return (
     <View style={styles.container}>
       <AppText style={styles.stepLabel}>
         Paso {step + 1} de {total}
       </AppText>
-      <View style={styles.track}>
-        <View style={[styles.fill, { width: `${progress * 100}%` }]} />
+      <View style={styles.track} onLayout={onTrackLayout}>
+        <Animated.View style={[styles.fill, fillStyle]} />
       </View>
     </View>
   );

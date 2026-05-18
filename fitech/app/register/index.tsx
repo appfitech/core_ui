@@ -10,6 +10,7 @@ import { RegisterStepAccountType } from '@/components/register/steps/RegisterSte
 import { RegisterStepBasicInfo } from '@/components/register/steps/RegisterStepBasicInfo';
 import { RegisterStepCredentials } from '@/components/register/steps/RegisterStepCredentials';
 import { RegisterStepDocument } from '@/components/register/steps/RegisterStepDocument';
+import { RegisterStepResidence } from '@/components/register/steps/RegisterStepResidence';
 import { REGISTER_STEPS } from '@/constants/register-steps';
 import { ROUTES } from '@/constants/routes';
 import { emptyUserWritable } from '@/constants/states';
@@ -74,6 +75,8 @@ export default function Register() {
       case 2:
         return <RegisterStepBasicInfo form={form} setForm={setForm} />;
       case 3:
+        return <RegisterStepResidence form={form} setForm={setForm} />;
+      case 4:
         return (
           <RegisterStepCredentials
             form={form}
@@ -92,7 +95,7 @@ export default function Register() {
       hasBackButton={false}
       hasNoTopPadding
       hasBottomPadding={false}
-      contentPaddingBottom={16}
+      contentPaddingBottom={40}
       footer={
         <Button
           label={isLastStep ? 'Crear cuenta' : 'Siguiente'}

@@ -9,6 +9,8 @@ import { getRegisterFieldValue } from '@/lib/register/form';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { getDOBMaxDate } from '@/utils/dates';
 
+import { ResidencePicker } from '../ResidencePicker';
+
 type Props = {
   fields: CreateUserFormField[];
   form: UserDtoWritable;
@@ -70,6 +72,25 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
           );
         }
 
+        if (inputType === 'residence-picker') {
+          return (
+            <ResidencePicker
+              key={field.field}
+              id={field.field}
+              value={form.person?.residenceLocationId ?? null}
+              onChange={(locationId) =>
+                setForm((prev) => ({
+                  ...prev,
+                  person: {
+                    ...prev.person,
+                    residenceLocationId: locationId,
+                  },
+                }))
+              }
+            />
+          );
+        }
+
         if (inputType === 'date') {
           return (
             <FormWrapper key={field.field} label={field.label}>
@@ -93,8 +114,9 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
             keyboardType={field.keyboardType}
             value={getFieldValue(form, field) as string | undefined}
             onChangeText={(text) => handleChange(field, text)}
-            multiline={field.type === 'text-area'}
-            numberOfLines={field.type === 'text-area' ? 10 : 1}
+            multiline={field.multiline}
+            numberOfLines={field.multiline ? 10 : 1}
+            required={!field.isOptional}
           />
         );
       })}

@@ -1,8 +1,11 @@
+import { Ionicons } from '@expo/vector-icons';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { textStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -34,8 +37,35 @@ export function useAlert() {
 
 type AlertState = AlertOptions & { visible: boolean };
 
+function resolveBodyText(title: string, message?: string) {
+  if (message?.trim()) return message.trim();
+  return title.trim();
+}
+
+function resolveActionButton(buttons: AlertButton[]) {
+  return (
+    buttons.find((b) => b.style !== 'cancel') ??
+    buttons[buttons.length - 1] ?? { text: 'OK', onPress: () => {} }
+  );
+}
+
+function resolveIcon(button: AlertButton): keyof typeof Ionicons.glyphMap {
+  if (button.style === 'destructive') return 'warning-outline';
+  return 'information-circle-outline';
+}
+
+function resolveButtonType(
+  button: AlertButton,
+): 'primary' | 'destructive' | 'tertiary' {
+  if (button.style === 'destructive') return 'destructive';
+  if (button.style === 'cancel') return 'tertiary';
+  return 'primary';
+}
+
 export function AlertProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
+  const styles = getStyles(theme);
+
   const [state, setState] = useState<AlertState>({
     visible: false,
     title: '',
@@ -68,7 +98,11 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
     [hide],
   );
 
-  const styles = getStyles(theme);
+  const buttons = state.buttons ?? [];
+  const bodyText = resolveBodyText(state.title, state.message);
+  const actionButton = resolveActionButton(buttons);
+  const iconName = resolveIcon(actionButton);
+  const isDestructive = actionButton.style === 'destructive';
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
@@ -80,91 +114,113 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
         statusBarTranslucent={Platform.OS === 'android'}
         onRequestClose={hide}
       >
-        <Pressable style={styles.backdrop} onPress={hide}>
-          <Pressable style={styles.card} onPress={(e) => e.stopPropagation()}>
-            <AppText style={styles.title}>{state.title}</AppText>
-            {state.message ? (
-              <AppText style={styles.message}>{state.message}</AppText>
-            ) : null}
-            <View style={styles.buttons}>
-              {state.buttons!.length === 1 ? (
-                <Button
-                  label={state.buttons![0].text}
-                  onPress={() => handlePress(state.buttons![0])}
-                  type="primary"
-                  style={styles.singleButton}
+        <Animated.View entering={FadeIn.duration(160)} style={styles.backdrop}>
+          <Pressable style={styles.backdropPress} onPress={hide} />
+          <Animated.View
+            entering={FadeInDown.springify().damping(20).stiffness(240)}
+            style={styles.card}
+          >
+            <View style={styles.contentRow}>
+              <View
+                style={[
+                  styles.iconWrap,
+                  isDestructive && styles.iconWrapDestructive,
+                ]}
+              >
+                <Ionicons
+                  name={iconName}
+                  size={22}
+                  color={isDestructive ? theme.errorText : theme.primaryText}
                 />
-              ) : (
-                state.buttons!.map((btn, i) => (
-                  <Button
-                    key={i}
-                    label={btn.text}
-                    onPress={() => handlePress(btn)}
-                    type={
-                      btn.style === 'destructive'
-                        ? 'destructive'
-                        : btn.style === 'cancel'
-                          ? 'tertiary'
-                          : 'primary'
-                    }
-                    style={styles.multiButton}
-                  />
-                ))
-              )}
+              </View>
+              <AppText variant="body" style={styles.body}>
+                {bodyText}
+              </AppText>
             </View>
-          </Pressable>
-        </Pressable>
+
+            <View style={styles.footer}>
+              <Button
+                label={actionButton.text}
+                type={resolveButtonType(actionButton)}
+                onPress={() => handlePress(actionButton)}
+                animated={false}
+                style={styles.actionWrap}
+                buttonStyle={styles.actionButton}
+              />
+            </View>
+          </Animated.View>
+        </Animated.View>
       </Modal>
     </AlertContext.Provider>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+
+  return StyleSheet.create({
     backdrop: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.5)',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 24,
+      paddingHorizontal: 20,
+    },
+    backdropPress: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(5, 6, 8, 0.75)',
     },
     card: {
       width: '100%',
-      maxWidth: 340,
+      maxWidth: 360,
       backgroundColor: theme.card,
+      borderRadius: 16,
+      padding: 16,
+      ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOpacity: 0.35,
+          shadowRadius: 16,
+          shadowOffset: { width: 0, height: 8 },
+        },
+        android: { elevation: 10 },
+      }),
+    },
+    contentRow: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      columnGap: 12,
+    },
+    iconWrap: {
+      width: 40,
+      height: 40,
       borderRadius: 20,
-      borderWidth: 1,
-      borderColor: theme.border,
-      padding: 24,
       alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.primaryBg,
+      flexShrink: 0,
     },
-    title: {
-      fontSize: 18,
-      fontWeight: '700',
+    iconWrapDestructive: {
+      backgroundColor: theme.errorBackground,
+    },
+    body: {
+      ...text.body,
+      flex: 1,
       color: theme.textPrimary,
-      textAlign: 'center',
-      marginBottom: 8,
+      textAlign: 'left',
+      paddingTop: 8,
     },
-    message: {
-      fontSize: 15,
-      fontWeight: '500',
-      color: theme.textSecondary,
-      textAlign: 'center',
-      lineHeight: 22,
-      marginBottom: 24,
-    },
-    buttons: {
-      width: '100%',
+    footer: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
-      gap: 12,
-      flexWrap: 'wrap',
+      marginTop: 16,
     },
-    singleButton: {
-      minWidth: 120,
+    actionWrap: {
+      alignSelf: 'flex-end',
     },
-    multiButton: {
-      flex: 1,
-      minWidth: 100,
+    actionButton: {
+      minHeight: 40,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
     },
   });
+};

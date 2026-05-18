@@ -1,6 +1,5 @@
-import { useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { useEffect, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import {
   getDepartments,
   getDistricts,
@@ -8,22 +7,62 @@ import {
   getUbigeoData,
 } from 'ubigeo-fns';
 
+import { AppText } from '@/components/AppText';
+import { Dropdown } from '@/components/Dropdown';
+import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
+
 type Option = {
   label: string;
   value: string;
 };
 
-export function ResidencePicker() {
+type Props = {
+  id: string;
+  value?: number | null;
+  onChange: (locationId: number | undefined) => void;
+};
+
+function codesFromUbigeo(ubigeo: string) {
+  return {
+    departmentCode: ubigeo.slice(0, 2),
+    provinceCode: ubigeo.slice(0, 4),
+    districtCode: ubigeo,
+  };
+}
+
+export function ResidencePicker({ id, value, onChange }: Props) {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
+
   const [departmentCode, setDepartmentCode] = useState<string | null>(null);
   const [provinceCode, setProvinceCode] = useState<string | null>(null);
   const [districtCode, setDistrictCode] = useState<string | null>(null);
 
-  const departmentOptions: Option[] = useMemo(() => {
-    return getDepartments().map((department) => ({
-      label: department.name,
-      value: department.code,
-    }));
-  }, []);
+  useEffect(() => {
+    if (value == null) return;
+
+    const ubigeo = String(value).padStart(6, '0');
+    const codes = codesFromUbigeo(ubigeo);
+
+    try {
+      getUbigeoData(ubigeo);
+      setDepartmentCode(codes.departmentCode);
+      setProvinceCode(codes.provinceCode);
+      setDistrictCode(codes.districtCode);
+    } catch {
+      // ignore invalid stored value
+    }
+  }, [value]);
+
+  const departmentOptions: Option[] = useMemo(
+    () =>
+      getDepartments().map((department) => ({
+        label: department.name,
+        value: department.code,
+      })),
+    [],
+  );
 
   const provinceOptions: Option[] = useMemo(() => {
     if (!departmentCode) return [];
@@ -45,94 +84,77 @@ export function ResidencePicker() {
 
   const selectedResidence = districtCode ? getUbigeoData(districtCode) : null;
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Departamento</Text>
+  const clearSelection = () => onChange(undefined);
 
+  return (
+    <View key={id} style={styles.container}>
       <Dropdown
-        data={departmentOptions}
-        labelField="label"
-        valueField="value"
+        label="Departamento"
+        id={`${id}-department`}
+        options={departmentOptions}
         value={departmentCode}
         placeholder="Selecciona departamento"
         search
         searchPlaceholder="Buscar departamento..."
-        onChange={(item: Option) => {
-          setDepartmentCode(item.value);
+        zIndex={3000}
+        onChange={(code) => {
+          setDepartmentCode(code);
           setProvinceCode(null);
           setDistrictCode(null);
+          clearSelection();
         }}
-        style={styles.dropdown}
       />
 
-      <Text style={styles.label}>Provincia</Text>
-
       <Dropdown
-        data={provinceOptions}
-        labelField="label"
-        valueField="value"
+        label="Provincia"
+        id={`${id}-province`}
+        options={provinceOptions}
         value={provinceCode}
         placeholder="Selecciona provincia"
         search
         searchPlaceholder="Buscar provincia..."
-        disable={!departmentCode}
-        onChange={(item: Option) => {
-          setProvinceCode(item.value);
+        zIndex={2000}
+        disabled={!departmentCode}
+        onChange={(code) => {
+          setProvinceCode(code);
           setDistrictCode(null);
+          clearSelection();
         }}
-        style={styles.dropdown}
       />
 
-      <Text style={styles.label}>Distrito</Text>
-
       <Dropdown
-        data={districtOptions}
-        labelField="label"
-        valueField="value"
+        label="Distrito"
+        id={`${id}-district`}
+        options={districtOptions}
         value={districtCode}
         placeholder="Selecciona distrito"
         search
         searchPlaceholder="Buscar distrito..."
-        disable={!provinceCode}
-        onChange={(item: Option) => {
-          setDistrictCode(item.value);
-
-          const residence = getUbigeoData(item.value);
-
-          console.log('Residence to save:', residence);
+        zIndex={1000}
+        disabled={!provinceCode}
+        onChange={(code) => {
+          setDistrictCode(code);
+          onChange(Number(code));
         }}
-        style={styles.dropdown}
       />
 
-      {selectedResidence && (
-        <Text style={styles.selectedText}>
+      {selectedResidence ? (
+        <AppText variant="caption" style={styles.selectedText}>
           {selectedResidence.district}, {selectedResidence.province},{' '}
           {selectedResidence.department}
-        </Text>
-      )}
+        </AppText>
+      ) : null}
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    gap: 10,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  dropdown: {
-    height: 52,
-    borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 14,
-    paddingHorizontal: 14,
-    backgroundColor: '#FFF',
-  },
-  selectedText: {
-    marginTop: 8,
-    fontSize: 14,
-    color: '#555',
-  },
-});
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    container: {
+      gap: 10,
+    },
+    selectedText: {
+      marginTop: 4,
+      color: theme.textSecondary,
+    },
+  });

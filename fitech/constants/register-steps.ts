@@ -21,6 +21,11 @@ export const REGISTER_STEPS: RegisterStepConfig[] = [
     subtitle: 'Correo, teléfono, género y fecha de nacimiento.',
   },
   {
+    id: 'residence',
+    title: 'Ubicación',
+    subtitle: 'Selecciona departamento, provincia y distrito donde vives.',
+  },
+  {
     id: 'credentials',
     title: 'Acceso',
     subtitle: 'Elige un usuario y una contraseña segura.',

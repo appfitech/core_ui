@@ -2,19 +2,24 @@ import type { KeyboardTypeOptions } from 'react-native';
 
 import type { Option } from '@/types/forms';
 
-export type RegisterFieldInputType = 'text' | 'dropdown' | 'date';
+export type RegisterFieldInputType =
+  | 'text'
+  | 'dropdown'
+  | 'date'
+  | 'residence-picker';
 
 export type CreateUserFormField = {
   label: string;
   field: string;
   inputType?: RegisterFieldInputType;
-  type?: 'text-area';
   keyboardType?: KeyboardTypeOptions;
   secureTextEntry?: boolean;
   isBase?: boolean;
   options?: Option[];
   placeholder?: string;
   zIndex?: number;
+  multiline?: boolean;
+  isOptional?: boolean;
 };
 
 export const USER_TYPES: Option[] = [
@@ -83,6 +88,22 @@ export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
     label: 'Fecha de nacimiento',
     field: 'birthDate',
     inputType: 'date',
+  },
+  {
+    label: 'Acerca de ti',
+    field: 'about',
+    inputType: 'text',
+    multiline: true,
+    placeholder: 'Cuéntanos un poco sobre ti...',
+    isOptional: true,
+  },
+];
+
+export const REGISTER_RESIDENCE_FIELDS: CreateUserFormField[] = [
+  {
+    label: 'Ubicación',
+    field: 'residenceLocationId',
+    inputType: 'residence-picker',
   },
 ];
 

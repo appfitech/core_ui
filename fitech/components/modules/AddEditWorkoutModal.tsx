@@ -61,7 +61,6 @@ export function AddEditExerciseModal({
   const [notes, setNotes] = useState(initial?.exerciseNotes || '');
   const [sets, setSets] = useState<ExerciseSetDto[]>([]);
 
-
   const prevIsLoading = usePreviousValue(isLoading);
 
   useEffect(() => {

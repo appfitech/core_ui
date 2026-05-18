@@ -3,6 +3,7 @@ import {
   StyleProp,
   TextStyle,
   TouchableOpacity,
+  View,
   ViewStyle,
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
@@ -33,6 +34,8 @@ type Props = {
   buttonStyle?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
   disabled?: boolean;
+  /** When false, skips the entrance animation (e.g. alerts). Default true. */
+  animated?: boolean;
 };
 
 export function Button({
@@ -43,14 +46,20 @@ export function Button({
   style = {},
   buttonStyle = {},
   disabled = false,
+  animated = true,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const containerStyle = styles.container[type];
   const textStyle = styles.text[type];
 
+  const Wrapper = animated ? Animated.View : View;
+  const wrapperProps = animated
+    ? { entering: ZoomIn.delay(200), style }
+  : { style };
+
   return (
-    <Animated.View entering={ZoomIn.delay(200)} style={style}>
+    <Wrapper {...wrapperProps}>
       <TouchableOpacity
         style={[
           styles.base,
@@ -69,7 +78,7 @@ export function Button({
         ) : null}
         {children}
       </TouchableOpacity>
-    </Animated.View>
+    </Wrapper>
   );
 }
 

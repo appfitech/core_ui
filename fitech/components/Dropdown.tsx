@@ -25,6 +25,7 @@ export type Props = {
   label?: string;
   search?: boolean;
   disabled?: boolean;
+  searchPlaceholder?: string;
 };
 
 export function Dropdown({
@@ -37,6 +38,7 @@ export function Dropdown({
   label = '',
   search,
   disabled = false,
+  searchPlaceholder = 'Buscar...',
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -59,7 +61,7 @@ export function Dropdown({
 
   return (
     <View key={id || 'dropdown'} style={{ zIndex }}>
-      {label ? <AppText style={styles.label}>{label}</AppText> : null}
+      {label && <AppText style={styles.label}>{label}</AppText>}
       <DropdownElement
         disable={disabled}
         data={data}
@@ -67,7 +69,7 @@ export function Dropdown({
         valueField="value"
         value={selectedValue}
         search={enableSearch}
-        searchPlaceholder="Buscar..."
+        searchPlaceholder={searchPlaceholder}
         onChange={(item: DropdownItem) => {
           onChange(item.value);
         }}
@@ -93,13 +95,13 @@ export function Dropdown({
             >
               {item.label}
             </AppText>
-            {selected ? (
+            {selected && (
               <Ionicons
                 name="checkmark-circle"
                 size={20}
                 color={theme.primary}
               />
-            ) : null}
+            )}
           </View>
         )}
       />

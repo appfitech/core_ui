@@ -30,7 +30,8 @@
         "foregroundImage": "./assets/images/icon_2.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.fitech"
+      "package": "com.fitech",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "bundler": "metro",

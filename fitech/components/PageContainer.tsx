@@ -1,14 +1,12 @@
 import React from 'react';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   StyleSheet,
-  TouchableWithoutFeedback,
   View,
   ViewStyle,
 } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -21,6 +19,8 @@ import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
 const DEFAULT_CONTENT_PADDING_BOTTOM = 220;
+/** Extra scroll past focused field — larger when a fixed footer sits below the scroll area */
+const KEYBOARD_EXTRA_SCROLL = { default: 24, withFooter: 100 } as const;
 
 type Props = {
   children: React.ReactNode;
@@ -96,6 +96,54 @@ export default function PageContainer({
     { paddingBottom: scrollPaddingBottom },
   ] as const;
 
+  const keyboardScrollProps = {
+    enableOnAndroid: true,
+    enableAutomaticScroll: true,
+    extraScrollHeight: footer
+      ? KEYBOARD_EXTRA_SCROLL.withFooter
+      : KEYBOARD_EXTRA_SCROLL.default,
+    keyboardShouldPersistTaps: 'handled' as const,
+    keyboardDismissMode: 'on-drag' as const,
+    showsVerticalScrollIndicator: false,
+  };
+
+  const scrollHeader =
+    (subheader && !title) || includeLogo || (header && !title) ? (
+      <View style={styles.headerWrapper}>
+        {includeLogo && (
+          <Animated.Image
+            entering={FadeInUp.duration(600)}
+            source={require('@/assets/images/logos/logo.webp')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        )}
+        {header && !title && (
+          <AnimatedAppText
+            entering={FadeInUp.delay(200)}
+            style={styles.headerTitle}
+          >
+            {header}
+          </AnimatedAppText>
+        )}
+        {subheader && (
+          <AnimatedAppText
+            entering={FadeInUp.delay(300)}
+            style={styles.headerSubtitle}
+          >
+            {subheader}
+          </AnimatedAppText>
+        )}
+      </View>
+    ) : null;
+
+  const scrollContent = (
+    <>
+      {scrollHeader}
+      {children}
+    </>
+  );
+
   return (
     <View style={[styles.container, styleContainer]}>
       {hasFixedHeader && (
@@ -137,108 +185,40 @@ export default function PageContainer({
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.flex}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          {disableScroll ? (
-            <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
-          ) : footer ? (
-            <View style={styles.flex}>
-              <ScrollView
-                style={styles.flex}
-                contentContainerStyle={[
-                  ...sharedInnerStyle,
-                  {
-                    flexGrow: 1,
-                    flexShrink: 0,
-                  },
-                ]}
-                keyboardShouldPersistTaps="handled"
-                showsVerticalScrollIndicator={false}
-              >
-                {((subheader && !title) ||
-                  includeLogo ||
-                  (header && !title)) && (
-                  <View style={styles.headerWrapper}>
-                    {includeLogo && (
-                      <Animated.Image
-                        entering={FadeInUp.duration(600)}
-                        source={require('@/assets/images/logos/logo.webp')}
-                        style={styles.logo}
-                        resizeMode="contain"
-                      />
-                    )}
-                    {header && !title && (
-                      <AnimatedAppText
-                        entering={FadeInUp.delay(200)}
-                        style={styles.headerTitle}
-                      >
-                        {header}
-                      </AnimatedAppText>
-                    )}
-                    {subheader && (
-                      <AnimatedAppText
-                        entering={FadeInUp.delay(300)}
-                        style={styles.headerSubtitle}
-                      >
-                        {subheader}
-                      </AnimatedAppText>
-                    )}
-                  </View>
-                )}
-                {children}
-              </ScrollView>
-              <View
-                style={[
-                  styles.footer,
-                  { paddingBottom: Math.max(insets.bottom, 16) },
-                ]}
-              >
-                {footer}
-              </View>
-            </View>
-          ) : (
-            <ScrollView
+        {disableScroll ? (
+          <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
+        ) : footer ? (
+          <View style={styles.flex}>
+            <KeyboardAwareScrollView
+              style={styles.flex}
               contentContainerStyle={[
                 ...sharedInnerStyle,
-                {
-                  flexGrow: 1,
-                  flexShrink: 0,
-                },
+                { flexGrow: 1, flexShrink: 0 },
               ]}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
+              {...keyboardScrollProps}
             >
-              {((subheader && !title) || includeLogo || (header && !title)) && (
-                <View style={styles.headerWrapper}>
-                  {includeLogo && (
-                    <Animated.Image
-                      entering={FadeInUp.duration(600)}
-                      source={require('@/assets/images/logos/logo.webp')}
-                      style={styles.logo}
-                      resizeMode="contain"
-                    />
-                  )}
-                  {header && !title && (
-                    <AnimatedAppText
-                      entering={FadeInUp.delay(200)}
-                      style={styles.headerTitle}
-                    >
-                      {header}
-                    </AnimatedAppText>
-                  )}
-                  {subheader && (
-                    <AnimatedAppText
-                      entering={FadeInUp.delay(300)}
-                      style={styles.headerSubtitle}
-                    >
-                      {subheader}
-                    </AnimatedAppText>
-                  )}
-                </View>
-              )}
-              {children}
-            </ScrollView>
-          )}
-        </TouchableWithoutFeedback>
+              {scrollContent}
+            </KeyboardAwareScrollView>
+            <View
+              style={[
+                styles.footer,
+                { paddingBottom: Math.max(insets.bottom, 16) },
+              ]}
+            >
+              {footer}
+            </View>
+          </View>
+        ) : (
+          <KeyboardAwareScrollView
+            contentContainerStyle={[
+              ...sharedInnerStyle,
+              { flexGrow: 1, flexShrink: 0 },
+            ]}
+            {...keyboardScrollProps}
+          >
+            {scrollContent}
+          </KeyboardAwareScrollView>
+        )}
       </KeyboardAvoidingView>
     </View>
   );
