@@ -1,20 +1,10 @@
 import {
-  PlusJakartaSans_200ExtraLight,
-  PlusJakartaSans_200ExtraLight_Italic,
-  PlusJakartaSans_300Light,
-  PlusJakartaSans_300Light_Italic,
-  PlusJakartaSans_400Regular,
-  PlusJakartaSans_400Regular_Italic,
-  PlusJakartaSans_500Medium,
-  PlusJakartaSans_500Medium_Italic,
-  PlusJakartaSans_600SemiBold,
-  PlusJakartaSans_600SemiBold_Italic,
-  PlusJakartaSans_700Bold,
-  PlusJakartaSans_700Bold_Italic,
-  PlusJakartaSans_800ExtraBold,
-  PlusJakartaSans_800ExtraBold_Italic,
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
   useFonts,
-} from '@expo-google-fonts/plus-jakarta-sans';
+} from '@expo-google-fonts/inter';
 import * as Notifications from 'expo-notifications';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -149,20 +139,10 @@ const RoutedAppWithPush = withPushNotifications(RoutedApp);
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    PlusJakartaSans_200ExtraLight,
-    PlusJakartaSans_200ExtraLight_Italic,
-    PlusJakartaSans_300Light,
-    PlusJakartaSans_300Light_Italic,
-    PlusJakartaSans_400Regular,
-    PlusJakartaSans_400Regular_Italic,
-    PlusJakartaSans_500Medium,
-    PlusJakartaSans_500Medium_Italic,
-    PlusJakartaSans_600SemiBold,
-    PlusJakartaSans_600SemiBold_Italic,
-    PlusJakartaSans_700Bold,
-    PlusJakartaSans_700Bold_Italic,
-    PlusJakartaSans_800ExtraBold,
-    PlusJakartaSans_800ExtraBold_Italic,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
   });
 
   useEffect(() => {

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
+import { TYPOGRAPHY } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -103,28 +104,24 @@ function getStyles(theme: FullTheme): ButtonStyles {
   };
   const text: Record<ButtonType, TextStyle> = {
     primary: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...TYPOGRAPHY.button,
       color: theme.background,
     },
     secondary: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...TYPOGRAPHY.button,
       color: theme.primaryText,
     },
     destructive: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...TYPOGRAPHY.button,
       color: theme.background,
     },
     tertiary: {
-      fontSize: 16,
-      fontWeight: '600',
+      ...TYPOGRAPHY.button,
       color: theme.textPrimary,
     },
     link: {
-      fontSize: 15,
-      fontWeight: '600',
+      ...TYPOGRAPHY.caption,
+      fontFamily: 'Inter_600SemiBold',
       color: theme.primary,
       textDecorationLine: 'underline',
     },

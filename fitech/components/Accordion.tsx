@@ -6,11 +6,12 @@ import {
   LayoutAnimation,
   Platform,
   StyleSheet,
-  Text,
   TouchableOpacity,
   UIManager,
   View,
 } from 'react-native';
+
+import { AppText } from '@/components/AppText';
 
 type AccordionProps = {
   title: string;
@@ -59,9 +60,12 @@ export const Accordion = ({ title, children, themeColors }: AccordionProps) => {
         onPress={toggleExpand}
         style={[styles.header, { backgroundColor: themeColors?.background }]}
       >
-        <Text style={[styles.title, { color: themeColors?.text }]}>
+        <AppText
+          variant="caption"
+          style={[styles.title, { color: themeColors?.text }]}
+        >
           {title}
-        </Text>
+        </AppText>
         <Ionicons
           name={expanded ? 'chevron-up' : 'chevron-down'}
           size={18}
@@ -94,8 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontFamily: 'Inter_500Medium',
   },
   content: {
     // padding: 16,

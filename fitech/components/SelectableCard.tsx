@@ -1,7 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { TYPOGRAPHY } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -52,8 +54,12 @@ export function SelectableCard({
         <Ionicons name={iconName} size={26} color={theme.primary} />
       </View>
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+        <AppText variant="body" style={styles.title}>
+          {title}
+        </AppText>
+        <AppText variant="caption" style={styles.description}>
+          {description}
+        </AppText>
       </View>
       {selected && (
         <Ionicons name="checkmark-circle" size={24} color={theme.primary} />
@@ -92,14 +98,12 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     title: {
-      fontWeight: '700',
-      fontSize: 16,
+      ...TYPOGRAPHY.body,
+      fontFamily: 'Inter_700Bold',
       color: theme.textPrimary,
     },
     description: {
-      fontSize: 14,
       color: theme.textSecondary,
       marginTop: 4,
-      lineHeight: 20,
     },
   });
