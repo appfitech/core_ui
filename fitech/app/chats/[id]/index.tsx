@@ -15,9 +15,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   useGetChat,
   useGetChatMessages,
-} from '@/app/api/queries/use-chat-queries';
-import { AppText } from '@/app/components/AppText';
-import PageContainer from '@/app/components/PageContainer';
+} from '@/lib/api/queries/use-chat-queries';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';

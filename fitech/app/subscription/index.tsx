@@ -7,11 +7,11 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetUserPayments } from '../api/queries/use-get-user-payments';
-import { useGetUserSubscription } from '../api/queries/use-get-user-subscription';
-import { Accordion } from '../components/Accordion';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+import { useGetUserPayments } from '@/lib/api/queries/use-get-user-payments';
+import { useGetUserSubscription } from '@/lib/api/queries/use-get-user-subscription';
+import { Accordion } from '@/components/Accordion';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 const PAYMENT_METHODS_MAPPER: Record<string, string> = {
   CONTRACT_PAYMENT: 'Pago de Contrato',

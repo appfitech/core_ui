@@ -10,11 +10,11 @@ import { FullTheme } from '@/types/theme';
 import {
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
-} from '../api/mutations/use-actions-notifications';
-import { useGetUserNotifications } from '../api/queries/use-get-notifications';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import PageContainer from '../components/PageContainer';
+} from '@/lib/api/mutations/use-actions-notifications';
+import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
 
 function getNotificationIcon(type?: string): keyof typeof Ionicons.glyphMap {
   const t = (type ?? '').toUpperCase();

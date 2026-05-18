@@ -8,10 +8,10 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useSearchTrainers } from '../api/mutations/use-search-trainers';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { SearchBar } from '../components/SearchBar';
+import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { SearchBar } from '@/components/SearchBar';
 
 export default function TrainersSearchScreen() {
   const [query, setQuery] = useState('');

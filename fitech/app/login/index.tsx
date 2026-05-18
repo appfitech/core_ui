@@ -4,23 +4,23 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { AnimatedAppText } from '@/components/AnimatedAppText';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { ErrorBanner } from '@/components/ErrorBanner';
+import PageContainer from '@/components/PageContainer';
+import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
+import { useLogin } from '@/lib/api/mutations/useLogin';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 
 import { TRANSLATIONS } from '../../constants/strings';
-import { useLogin } from '../api/mutations/useLogin';
-import { AnimatedAppText } from '../components/AnimatedAppText';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
-import { ErrorBanner } from '../components/ErrorBanner';
-import PageContainer from '../components/PageContainer';
-import { TextInput } from '../components/TextInput';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
@@ -58,8 +58,8 @@ export default function LoginScreen() {
     submitLogin(
       { username, password },
       {
-        onSuccess: (response) => {
-          setUser(response);
+        onSuccess: async (response) => {
+          await setUser(response);
           router.replace(ROUTES.home);
         },
         onError: (error) => {
@@ -67,7 +67,7 @@ export default function LoginScreen() {
         },
       },
     );
-  }, [username, password]);
+  }, [username, password, router, setUser, submitLogin]);
 
   const handleSignUp = () => {
     router.replace(ROUTES.register);

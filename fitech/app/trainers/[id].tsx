@@ -9,13 +9,13 @@ import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 
-import { useCheckContractAvailability } from '../api/queries/use-check-contract-availability';
-import { useGetTrainer } from '../api/queries/use-get-trainer';
-import { useGetTrainerPhotos } from '../api/queries/use-get-trainer-photos';
-import { useGetTrainerServices } from '../api/queries/use-get-trainer-services';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import PageContainer from '../components/PageContainer';
+import { useCheckContractAvailability } from '@/lib/api/queries/use-check-contract-availability';
+import { useGetTrainer } from '@/lib/api/queries/use-get-trainer';
+import { useGetTrainerPhotos } from '@/lib/api/queries/use-get-trainer-photos';
+import { useGetTrainerServices } from '@/lib/api/queries/use-get-trainer-services';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
 
 export default function TrainerProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

@@ -6,9 +6,9 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetUserMatchPreferences } from '../api/queries/use-get-user-match-preferences';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 export default function PremiumFeaturesScreen() {
   const { theme } = useTheme();

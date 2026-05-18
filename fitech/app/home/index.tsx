@@ -6,10 +6,10 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 
-import { GreetingHeader } from '../components/modules/GreetingHeader';
-import PageContainer from '../components/PageContainer';
-import { TrainerHomeContent } from './TrainerHomeContent';
-import { UserHomeContent } from './UserHomeContent';
+import { GreetingHeader } from '@/components/modules/GreetingHeader';
+import PageContainer from '@/components/PageContainer';
+import { TrainerHomeContent } from '@/components/home/TrainerHomeContent';
+import { UserHomeContent } from '@/components/home/UserHomeContent';
 
 export default function HomeScreen() {
   const { theme } = useTheme();

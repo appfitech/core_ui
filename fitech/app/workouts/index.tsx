@@ -13,8 +13,8 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 /**
  * SVG/illustration search suggestions (unDraw, Storyset, Blush, etc.):

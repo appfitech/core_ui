@@ -2,15 +2,15 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import PageContainer from '@/app/components/PageContainer';
+import PageContainer from '@/components/PageContainer';
 import { HEADING_STYLES, SHARED_STYLES } from '@/constants/shared_styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useCalculateMacros } from '../../api/mutations/use-calculate-macros';
-import { AppText } from '../../components/AppText';
-import MacroInput from './MacroInput';
+import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';
+import { AppText } from '@/components/AppText';
+import MacroInput from '@/components/macros/MacroInput';
 
 export default function MacrosCalculatorCalculateScreen() {
   const { theme } = useTheme();

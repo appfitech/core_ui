@@ -5,10 +5,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetRoutines } from '../api/queries/use-get-routines';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { ResourceCard } from '../components/ResourceCard';
+import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { ResourceCard } from '@/components/ResourceCard';
 
 export default function RoutinesScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');

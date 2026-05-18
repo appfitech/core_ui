@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
 
-import { api } from '@/app/api/api';
+import { api } from '@/lib/api/api';
 import {
   bootstrapAuthSession,
   refreshAccessToken,

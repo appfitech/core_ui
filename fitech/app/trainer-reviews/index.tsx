@@ -10,11 +10,11 @@ import {
   useTrainerGetReviews,
   useTrainerGetReviewsBreakdown,
   useTrainerGetReviewsStats,
-} from '../api/queries/use-trainer-get-reviews';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { Tag } from '../components/Tag';
-import { RatingDistribution } from './RatingBreakdown';
+} from '@/lib/api/queries/use-trainer-get-reviews';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
+import { RatingDistribution } from '@/components/trainer-reviews/RatingBreakdown';
 
 /** Review item as returned by trainer my-reviews API (content array). */
 type TrainerReviewItem = {

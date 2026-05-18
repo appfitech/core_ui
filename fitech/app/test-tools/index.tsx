@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { useResetMatchList } from '../api/mutations/matches/use-reset-match-list';
-import { useSendTestNotification } from '../api/mutations/test/use-send-test-notification';
-import { Button } from '../components/Button';
-import PageContainer from '../components/PageContainer';
+import { useResetMatchList } from '@/lib/api/mutations/matches/use-reset-match-list';
+import { useSendTestNotification } from '@/lib/api/mutations/test/use-send-test-notification';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
 
 export default function Register() {
   const { mutate: sendTestNotification } = useSendTestNotification();

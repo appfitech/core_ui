@@ -8,14 +8,14 @@ import {
   View,
 } from 'react-native';
 
-import { AppText } from '@/app/components/AppText';
-import PageContainer from '@/app/components/PageContainer';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useGetChats } from '../api/queries/use-chat-queries';
+import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 
 const CONTRACT_LOGO = require('../../assets/images/logos/rounded_logo.webp');
 

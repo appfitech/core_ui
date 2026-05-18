@@ -3,12 +3,12 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { useGetDailyWorkouts } from '@/app/api/queries/workouts/use-get-user-workouts';
-import { AppText } from '@/app/components/AppText';
-import { AddEditExerciseModal } from '@/app/components/modules/AddEditWorkoutModal';
-import { ExerciseCard } from '@/app/components/modules/ExerciseCard';
-import PageContainer from '@/app/components/PageContainer';
-import { Tag } from '@/app/components/Tag';
+import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
+import { AppText } from '@/components/AppText';
+import { AddEditExerciseModal } from '@/components/modules/AddEditWorkoutModal';
+import { ExerciseCard } from '@/components/modules/ExerciseCard';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';

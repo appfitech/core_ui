@@ -18,11 +18,11 @@ import { useDebounce } from '@/hooks/use-debounce';
 import { FoodItemDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useSearchMacros } from '../api/queries/use-search-macros';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { SearchBar } from '../components/SearchBar';
-import { MacroFoodCard } from './MacroFoodCard';
+import { useSearchMacros } from '@/lib/api/queries/use-search-macros';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { SearchBar } from '@/components/SearchBar';
+import { MacroFoodCard } from '@/components/macros/MacroFoodCard';
 
 const LIST_ITEM_GAP = 10;
 

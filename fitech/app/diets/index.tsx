@@ -5,10 +5,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetDiets } from '../api/queries/use-get-diets';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { ResourceCard } from '../components/ResourceCard';
+import { useGetDiets } from '@/lib/api/queries/use-get-diets';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { ResourceCard } from '@/components/ResourceCard';
 
 export default function DietsScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');

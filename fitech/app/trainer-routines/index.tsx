@@ -19,9 +19,9 @@ import { FullTheme } from '@/types/theme';
 
 import {
   useClientResourcesGrouped,
-} from '../api/queries/use-client-resources-grouped';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+} from '@/lib/api/queries/use-client-resources-grouped';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 const RESOURCE_TYPE = 'RUTINA' as const;
 const FILE_DOWNLOAD_BASE = 'https://appfitech.com/v1/app/file-upload/download';

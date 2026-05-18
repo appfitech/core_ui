@@ -1,125 +1,59 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import {
-  THEME_PREFERENCE_LABELS,
-  ThemePreference,
-} from '@/constants/theme-storage';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-
-const PREFERENCES: ThemePreference[] = ['system', 'light', 'dark'];
-
-const PREFERENCE_ICONS: Record<ThemePreference, string> = {
-  system: 'phone-portrait-outline',
-  light: 'sunny-outline',
-  dark: 'moon-outline',
-};
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 export default function AppearanceScreen() {
-  const router = useRouter();
-  const { theme, themePreference, setThemePreference } = useTheme();
+  const { theme } = useTheme();
   const styles = getStyles(theme);
-
-  const handleSelect = useCallback(
-    async (preference: ThemePreference) => {
-      await setThemePreference(preference);
-      router.back();
-    },
-    [setThemePreference, router],
-  );
 
   return (
     <PageContainer
       title="Apariencia"
-      subheader="Elige el tema de la app. Sistema sigue la configuración de tu dispositivo."
+      subheader="Fitech usa el tema oscuro Kinetic Obsidian de forma fija."
       style={styles.container}
     >
-      <View style={styles.list}>
-        {PREFERENCES.map((preference, index) => {
-          const isSelected = themePreference === preference;
-          const isLast = index === PREFERENCES.length - 1;
-          const iconName = PREFERENCE_ICONS[preference];
-          const iconColor = isSelected ? theme.primary : theme.textSecondary;
-          return (
-            <TouchableOpacity
-              key={preference}
-              style={[
-                styles.row,
-                isSelected && styles.rowSelected,
-                isLast && styles.rowLast,
-              ]}
-              onPress={() => handleSelect(preference)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.labelRow}>
-                <Ionicons name={iconName as any} size={22} color={iconColor} />
-                <AppText
-                  style={[styles.label, isSelected && styles.labelSelected]}
-                >
-                  {THEME_PREFERENCE_LABELS[preference]}
-                </AppText>
-              </View>
-              {isSelected && (
-                <Ionicons
-                  name="checkmark-circle"
-                  size={24}
-                  color={theme.primary}
-                />
-              )}
-            </TouchableOpacity>
-          );
-        })}
+      <View style={styles.card}>
+        <Ionicons name="moon" size={28} color={theme.primary} />
+        <AppText style={styles.title}>Kinetic Obsidian</AppText>
+        <AppText style={styles.body}>
+          Modo claro y tema del sistema ya no están disponibles. La interfaz
+          usa fondo obsidiana, acentos en verde cinético y tipografía de alto
+          contraste.
+        </AppText>
       </View>
     </PageContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+function getStyles(theme: FullTheme) {
+  return StyleSheet.create({
     container: {
-      paddingBottom: 180,
+      paddingHorizontal: 16,
     },
-    list: {
-      marginTop: 16,
-      borderRadius: 14,
-      overflow: 'hidden',
+    card: {
+      marginTop: 8,
+      padding: 20,
+      borderRadius: 16,
       backgroundColor: theme.card,
       borderWidth: 1,
       borderColor: theme.border,
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingVertical: 18,
-      paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.border,
-    },
-    rowSelected: {
-      backgroundColor: theme.primaryBg,
-    },
-    rowLast: {
-      borderBottomWidth: 0,
-    },
-    labelRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
       gap: 12,
     },
-    label: {
-      fontSize: 16,
-      fontWeight: '500',
+    title: {
+      fontSize: 18,
+      fontWeight: '700',
       color: theme.textPrimary,
     },
-    labelSelected: {
-      fontWeight: '600',
-      color: theme.primaryText,
+    body: {
+      fontSize: 15,
+      lineHeight: 22,
+      color: theme.textSecondary,
     },
   });
+}

@@ -19,14 +19,14 @@ import {
 } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useUpdateMatchPreferences } from '../api/mutations/use-update-match-preferences';
-import { useGetUserMatchPreferences } from '../api/queries/use-get-user-match-preferences';
-import { AppText } from '../components/AppText';
-import { SwitchRow } from '../components/atoms/SwitchRow';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
-import PageContainer from '../components/PageContainer';
-import { TextInput } from '../components/TextInput';
+import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';
+import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
+import { AppText } from '@/components/AppText';
+import { SwitchRow } from '@/components/atoms/SwitchRow';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import PageContainer from '@/components/PageContainer';
+import { TextInput } from '@/components/TextInput';
 
 /** =========================
  *  ENUMS / CONSTANTS (BE)

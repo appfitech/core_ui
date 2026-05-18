@@ -2,14 +2,14 @@ import { useRouter } from 'expo-router';
 import { Image, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
 import { HEADING_STYLES } from '@/constants/shared_styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { FullTheme } from '@/types/theme';
 
 import { TRANSLATIONS } from '../constants/strings';
-import { AppText } from './components/AppText';
-import { Button } from './components/Button';
 
 export default function WelcomeScreen() {
   const { theme } = useTheme();

@@ -13,17 +13,17 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useCreateClientResourceWithFile } from '../api/mutations/use-create-client-resource-with-file';
+import { useCreateClientResourceWithFile } from '@/lib/api/mutations/use-create-client-resource-with-file';
 import {
   useTrainerGetClientsList,
   type TrainerClientItem,
-} from '../api/queries/use-trainer-get-clients-list';
-import { AppText } from '../components/AppText';
-import { DatePicker } from '../components/DatePicker';
-import { Dropdown } from '../components/Dropdown';
-import PageContainer from '../components/PageContainer';
-import { TextInput } from '../components/TextInput';
-import { showInfoToast } from '../components/Toast';
+} from '@/lib/api/queries/use-trainer-get-clients-list';
+import { AppText } from '@/components/AppText';
+import { DatePicker } from '@/components/DatePicker';
+import { Dropdown } from '@/components/Dropdown';
+import PageContainer from '@/components/PageContainer';
+import { TextInput } from '@/components/TextInput';
+import { showInfoToast } from '@/components/Toast';
 import { fromISODate, today } from '@/utils/dates';
 
 type Step = 1 | 2;

@@ -21,8 +21,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { AppText } from '@/app/components/AppText';
-import PageContainer from '@/app/components/PageContainer';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import ConfettiAnimation from '@/assets/lottie/confetti.json';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -34,16 +34,16 @@ import { getCandidateProfileImageUrl } from '@/utils/user';
 import {
   useDiscardGymBro,
   useMatchGymBro,
-} from '../api/mutations/matches/use-match-action';
+} from '@/lib/api/mutations/matches/use-match-action';
 import {
   useGetGymBroCandidates,
   useGetGymBroMutuals,
-} from '../api/queries/matches/use-get-gymbro-list';
-import { MatchButtonSection } from '../components/MatchButtonSection';
-import { MatchContactCard } from '../components/MatchContactCard';
-import { MatchProfileCard } from '../components/MatchProfileCard';
-import { Tabs } from '../components/Tabs';
-import { showMatchToast } from '../components/Toast';
+} from '@/lib/api/queries/matches/use-get-gymbro-list';
+import { MatchButtonSection } from '@/components/MatchButtonSection';
+import { MatchContactCard } from '@/components/MatchContactCard';
+import { MatchProfileCard } from '@/components/MatchProfileCard';
+import { Tabs } from '@/components/Tabs';
+import { showMatchToast } from '@/components/Toast';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const CARD_W = SCREEN_W * 0.9;

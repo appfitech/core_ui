@@ -8,11 +8,11 @@ import { StyleSheet, View } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useGetRoutineById } from '../../api/queries/use-get-routine-by-id';
-import { AppText } from '../../components/AppText';
-import { Button } from '../../components/Button';
-import PageContainer from '../../components/PageContainer';
-import { Tag } from '../../components/Tag';
+import { useGetRoutineById } from '@/lib/api/queries/use-get-routine-by-id';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 
 moment.locale('es');
 

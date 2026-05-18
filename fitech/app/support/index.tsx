@@ -6,13 +6,13 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
 
-import { useSendInquiry } from '../api/mutations/useSendInquiry';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import { Card } from '../components/Card';
-import { Dropdown } from '../components/Dropdown';
-import PageContainer from '../components/PageContainer';
-import { TextInput } from '../components/TextInput';
+import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
+import { Dropdown } from '@/components/Dropdown';
+import PageContainer from '@/components/PageContainer';
+import { TextInput } from '@/components/TextInput';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnicos', value: 'technical' },

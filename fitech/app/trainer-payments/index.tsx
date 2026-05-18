@@ -16,9 +16,9 @@ import { FullTheme } from '@/types/theme';
 import {
   useTrainerGetPayments,
   useTrainerGetPaymentsSummary,
-} from '../api/queries/use-trainer-get-payments';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+} from '@/lib/api/queries/use-trainer-get-payments';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 type Payment = {
   id: number;

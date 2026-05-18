@@ -8,15 +8,15 @@ import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useCancelContract } from '../../api/mutations/use-cancel-contract';
-import { useCompleteContract } from '../../api/mutations/use-complete-contract';
-import { AppText } from '../../components/AppText';
-import { Button } from '../../components/Button';
-import PageContainer from '../../components/PageContainer';
-import { Tag } from '../../components/Tag';
+import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
+import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 
-import CancelModal from './CancelModal';
-import CompleteModal from './CompleteModal';
+import CancelModal from '@/components/contracts/CancelModal';
+import CompleteModal from '@/components/contracts/CompleteModal';
 
 moment.locale('es');
 

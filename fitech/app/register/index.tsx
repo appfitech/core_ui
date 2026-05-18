@@ -17,13 +17,13 @@ import { UserDtoWritable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { getDOBMaxDate } from '@/utils/dates';
 
-import { useCreateUser } from '../api/mutations/user/use-create-user';
-import { Button } from '../components/Button';
-import { DatePicker } from '../components/DatePicker';
-import { DropdownWrapper } from '../components/DropdownWrapper';
-import { FormWrapper } from '../components/FormWrapper';
-import { InputWrapper } from '../components/InputWrapper';
-import PageContainer from '../components/PageContainer';
+import { useCreateUser } from '@/lib/api/mutations/user/use-create-user';
+import { Button } from '@/components/Button';
+import { DatePicker } from '@/components/DatePicker';
+import { DropdownWrapper } from '@/components/DropdownWrapper';
+import { FormWrapper } from '@/components/FormWrapper';
+import { InputWrapper } from '@/components/InputWrapper';
+import PageContainer from '@/components/PageContainer';
 
 export default function Register() {
   const { theme } = useTheme();

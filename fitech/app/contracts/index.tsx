@@ -12,14 +12,14 @@ import { FullTheme } from '@/types/theme';
 import {
   useSubmitReview,
   useUpdateReview,
-} from '../api/mutations/use-submit-review';
-import { useGetActiveContracts } from '../api/queries/use-get-active-contracts';
-import { useGetInactiveContracts } from '../api/queries/use-get-inactive-contracts';
-import { useGetReviews } from '../api/queries/use-get-reviews';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { Tag } from '../components/Tag';
-import { ReviewModal } from './ReviewModal';
+} from '@/lib/api/mutations/use-submit-review';
+import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contracts';
+import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
+import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
+import { ReviewModal } from '@/components/contracts/ReviewModal';
 
 moment.locale('es');
 const formatDate = (iso?: string) =>

@@ -16,14 +16,14 @@ import { useUserStore } from '@/stores/user';
 import { LocationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useUpdateUser } from '../api/mutations/useUpdateUser';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import { DatePicker } from '../components/DatePicker';
-import { DropdownWrapper } from '../components/DropdownWrapper';
-import { FormWrapper } from '../components/FormWrapper';
-import { InputWrapper } from '../components/InputWrapper';
-import PageContainer from '../components/PageContainer';
+import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { DatePicker } from '@/components/DatePicker';
+import { DropdownWrapper } from '@/components/DropdownWrapper';
+import { FormWrapper } from '@/components/FormWrapper';
+import { InputWrapper } from '@/components/InputWrapper';
+import PageContainer from '@/components/PageContainer';
 
 export default function PersonalInfoScreen() {
   const router = useRouter();

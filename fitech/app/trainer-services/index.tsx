@@ -11,9 +11,9 @@ import {
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { useTrainerGetServices } from '../api/queries/use-trainer-get-services';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 type Service = {
   id: number;

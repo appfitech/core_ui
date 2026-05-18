@@ -8,10 +8,10 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { FullTheme } from '@/types/theme';
 
-import { useTrainerGetClients } from '../api/queries/use-trainer-get-clients';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
-import { SearchBar } from '../components/SearchBar';
+import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { SearchBar } from '@/components/SearchBar';
 
 type ServiceItem = {
   serviceId: number;

@@ -8,12 +8,12 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 
-import { useDeletePhoto } from '../api/mutations/useDeletePhoto';
-import { useSetProfilePhoto } from '../api/mutations/useSetProfilePhoto';
-import { useUploadPhoto } from '../api/mutations/useUploadPhoto';
-import { useGetUserPhotos } from '../api/queries/useGetUserPhotos';
-import { AppText } from '../components/AppText';
-import PageContainer from '../components/PageContainer';
+import { useDeletePhoto } from '@/lib/api/mutations/useDeletePhoto';
+import { useSetProfilePhoto } from '@/lib/api/mutations/useSetProfilePhoto';
+import { useUploadPhoto } from '@/lib/api/mutations/useUploadPhoto';
+import { useGetUserPhotos } from '@/lib/api/queries/useGetUserPhotos';
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 
 const MAX_PHOTOS = 10;
 

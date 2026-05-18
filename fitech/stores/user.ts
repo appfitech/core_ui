@@ -6,6 +6,7 @@ import {
   LoginResponseDtoReadable,
   UserResponseDtoReadable,
 } from '@/types/api/types.gen';
+import { extractAccessToken } from '@/utils/auth-token';
 
 enum UserType {
   CLIENT = 0,
@@ -51,14 +52,17 @@ export const useUserStore = create<UserStore>((set, get) => ({
   setSessionHydrating: (value) => set({ isSessionHydrating: value }),
 
   setUser: async (data) => {
+    const token = extractAccessToken(data) ?? data?.token ?? null;
+
+    // Memory first — navigation guards read token synchronously after login.
+    set({ user: data, token, isSessionHydrated: true });
+
     await SecureStore.setItemAsync(SECURE_USER_KEY, JSON.stringify(data));
 
-    set({ user: data, isSessionHydrated: true });
-
-    const token = data?.token ?? null;
     if (token) {
       await SecureStore.setItemAsync(SECURE_TOKEN_KEY, token);
-      set({ token });
+    } else {
+      await SecureStore.deleteItemAsync(SECURE_TOKEN_KEY);
     }
 
     const userId = data?.user?.id;

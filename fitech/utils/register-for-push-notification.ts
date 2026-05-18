@@ -3,6 +3,8 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
+let warnedSimulatorPush = false;
+
 export async function registerForPushNotificationsAsync(): Promise<
   string | undefined
 > {
@@ -14,7 +16,10 @@ export async function registerForPushNotificationsAsync(): Promise<
   }
 
   if (!Device.isDevice) {
-    console.warn('Push notifications require a physical device.');
+    if (__DEV__ && !warnedSimulatorPush) {
+      warnedSimulatorPush = true;
+      console.warn('Push notifications require a physical device.');
+    }
     return;
   }
 

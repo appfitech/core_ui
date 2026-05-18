@@ -8,12 +8,12 @@ import { useUserStore } from '@/stores/user';
 import { FitnessGoal } from '@/types/fitness-goals';
 import { FullTheme } from '@/types/theme';
 
-import { useUpdateFitnessGoals } from '../api/mutations/use-update-fitness-goals';
-import { useGetAllFitnessGoalTypes } from '../api/queries/use-get-all-fitness-goal-types';
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import PageContainer from '../components/PageContainer';
-import { SelectableCard } from '../components/SelectableCard';
+import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
+import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
+import { SelectableCard } from '@/components/SelectableCard';
 
 export default function FitnessGoalsScreen() {
   const { theme } = useTheme();

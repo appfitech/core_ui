@@ -23,16 +23,16 @@ import { InteractionManager, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 
+import { NavBar } from '@/components/NavBar';
+import { toastConfig } from '@/components/Toast';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
+import { withPushNotifications } from '@/hoc/withPushNotifications';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 import { useUserStore } from '@/stores/user';
 import { getHrefFromPushData } from '@/utils/navigate-from-push-notification';
 
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
-import { NavBar } from './components/NavBar';
-import { toastConfig } from './components/Toast';
-import { withPushNotifications } from './hoc/withPushNotifications';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,8 +46,10 @@ function RoutedApp() {
   const router = useRouter();
   const segments = useSegments();
   const token = useUserStore((s) => s.token);
+  const user = useUserStore((s) => s.user);
   const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
   const currentRoute = segments[0];
+  const isAuthenticated = Boolean(token ?? user);
 
   const pendingPushHref = useRef<string | null>(null);
   /** Only read getLastNotificationResponseAsync once per app session (avoid stale repeats on effect re-run). */
@@ -110,13 +112,13 @@ function RoutedApp() {
     if (!isSessionHydrated) return;
 
     if (
-      token === null &&
+      !isAuthenticated &&
       currentRoute &&
       !PUBLIC_ROUTES.includes(currentRoute)
     ) {
       router.replace('/');
     }
-  }, [isSessionHydrated, token, currentRoute, router]);
+  }, [isSessionHydrated, isAuthenticated, currentRoute, router]);
 
   const shouldHideNav =
     HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;

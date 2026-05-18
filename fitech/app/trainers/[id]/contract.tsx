@@ -9,10 +9,10 @@ import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 
-import { useCreateContract } from '../../api/mutations/use-create-contract';
-import { AppText } from '../../components/AppText';
-import { Button } from '../../components/Button';
-import PageContainer from '../../components/PageContainer';
+import { useCreateContract } from '@/lib/api/mutations/use-create-contract';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
 
 const TERMS_SECTIONS: { title: string; body: string }[] = [
   {

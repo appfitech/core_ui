@@ -12,11 +12,11 @@ import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
-import { AppText } from '../components/AppText';
-import { Button } from '../components/Button';
-import { ListItem } from '../components/ListItem';
-import PageContainer from '../components/PageContainer';
-import { Tag } from '../components/Tag';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { ListItem } from '@/components/ListItem';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();

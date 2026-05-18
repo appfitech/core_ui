@@ -9,11 +9,11 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-import { useGetMuscleGroups } from '../api/queries/use-get-muscle-groups';
-import { useGetWorkoutsFiltered } from '../api/queries/workouts/use-get-user-workouts';
-import { AppText } from '../components/AppText';
-import { ChipsList } from '../components/molecules/ChipsList';
-import PageContainer from '../components/PageContainer';
+import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
+import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
+import { AppText } from '@/components/AppText';
+import { ChipsList } from '@/components/molecules/ChipsList';
+import PageContainer from '@/components/PageContainer';
 
 LocaleConfig.locales.es = {
   monthNames: [

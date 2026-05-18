@@ -1,8 +1,8 @@
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText } from '@/app/components/AppText';
-import { Button } from '@/app/components/Button';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
