@@ -15,7 +15,6 @@ import { Dropdown } from '@/components/Dropdown';
 import { TextInput } from '@/components/TextInput';
 import { MUSCLE_GROUPS } from '@/constants/exercise';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
 import usePreviousValue from '@/hooks/use-previous-value';
 import {
   useCreateWorkout,
@@ -62,7 +61,6 @@ export function AddEditExerciseModal({
   const [notes, setNotes] = useState(initial?.exerciseNotes || '');
   const [sets, setSets] = useState<ExerciseSetDto[]>([]);
 
-  const { isOpen, setIsOpen } = useOpenable();
 
   const prevIsLoading = usePreviousValue(isLoading);
 
@@ -196,8 +194,6 @@ export function AddEditExerciseModal({
                   value: item,
                 }))}
                 zIndex={6000}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
                 onChange={setMuscleGroup}
                 value={muscleGroup}
               />

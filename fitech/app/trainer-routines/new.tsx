@@ -35,7 +35,6 @@ export default function NewTrainerRoutineScreen() {
 
   const [step, setStep] = useState<Step>(1);
   const [clientId, setClientId] = useState<string | number | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [routineName, setRoutineName] = useState('');
   const [startDate, setStartDate] = useState('');
@@ -184,13 +183,12 @@ export default function NewTrainerRoutineScreen() {
           </AppText>
           <View style={styles.dropdownWrap}>
             <Dropdown
-              isOpen={dropdownOpen}
-              setIsOpen={setDropdownOpen}
               options={clientOptions}
               value={clientId}
-              onChange={(v) => setClientId(v ?? null)}
+              onChange={(v) => setClientId(v)}
               placeholder="Buscar Cliente*"
               zIndex={1000}
+              search
             />
           </View>
           <TouchableOpacity

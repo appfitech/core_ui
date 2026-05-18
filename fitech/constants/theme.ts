@@ -7,7 +7,7 @@ import { FullTheme } from '@/types/theme';
 const BRAND_PRIMARY = '#39CC39';
 
 const OBSIDIAN = '#050608';
-const SURFACE_CARD = '#121820';
+const SURFACE_CARD = '#18242E';
 const SURFACE_RAISED = '#1A2230';
 const SURFACE_INPUT = '#0C0F14';
 const ON_SURFACE = '#ECEEF2';

@@ -1,179 +1,133 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated, { SlideInDown } from 'react-native-reanimated';
+import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { Button } from '@/components/Button';
-import { DatePicker } from '@/components/DatePicker';
-import { DropdownWrapper } from '@/components/DropdownWrapper';
-import { FormWrapper } from '@/components/FormWrapper';
-import { InputWrapper } from '@/components/InputWrapper';
 import PageContainer from '@/components/PageContainer';
-import {
-  CREATE_USER_FORM,
-  DOCUMENT_TYPES,
-  GENDER_TYPES,
-  USER_TYPES,
-} from '@/constants/forms';
+import { RegisterWizardHeader } from '@/components/register/RegisterWizardHeader';
+import { RegisterStepAccountType } from '@/components/register/steps/RegisterStepAccountType';
+import { RegisterStepBasicInfo } from '@/components/register/steps/RegisterStepBasicInfo';
+import { RegisterStepCredentials } from '@/components/register/steps/RegisterStepCredentials';
+import { RegisterStepDocument } from '@/components/register/steps/RegisterStepDocument';
+import { REGISTER_STEPS } from '@/constants/register-steps';
 import { ROUTES } from '@/constants/routes';
 import { emptyUserWritable } from '@/constants/states';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
+import { useAlert } from '@/contexts/AlertContext';
 import { useCreateUser } from '@/lib/api/mutations/user/use-create-user';
+import { validateRegisterStep } from '@/lib/register/form';
 import { UserDtoWritable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-import { getDOBMaxDate } from '@/utils/dates';
+
+const TOTAL_STEPS = REGISTER_STEPS.length;
 
 export default function Register() {
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-
-  const { isOpen: isUserTypeOpen, setIsOpen: setIsUserTypeOpen } =
-    useOpenable();
-  const { isOpen: isDocTypeOpen, setIsOpen: setIsDocTypeOpen } = useOpenable();
-  const { isOpen: isGenderOpen, setIsOpen: setIsGenderOpen } = useOpenable();
-  const [form, setForm] = useState<UserDtoWritable>(emptyUserWritable);
-
+  const styles = getStyles();
+  const { showAlert } = useAlert();
   const router = useRouter();
-  const { mutate: createUser } = useCreateUser();
 
-  const handlePersonChange = (field: string, value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      person: { ...prev.person, [field]: value },
-    }));
-  };
+  const [step, setStep] = useState(0);
+  const [form, setForm] = useState<UserDtoWritable>(emptyUserWritable);
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleBaseChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
+  const { mutate: createUser, isPending } = useCreateUser();
 
-  const handleSubmit = () => {
+  const currentStep = REGISTER_STEPS[step];
+  const isLastStep = step === TOTAL_STEPS - 1;
+
+  const handleBack = useCallback(() => {
+    if (step > 0) {
+      setStep((prev) => prev - 1);
+      return;
+    }
+    router.back();
+  }, [router, step]);
+
+  const handleNext = useCallback(() => {
+    const error = validateRegisterStep(step, form, { confirmPassword });
+    if (error) {
+      showAlert({ title: 'Completa los campos', message: error });
+      return;
+    }
+    setStep((prev) => prev + 1);
+  }, [confirmPassword, form, showAlert, step]);
+
+  const handleSubmit = useCallback(() => {
+    const error = validateRegisterStep(step, form, { confirmPassword });
+    if (error) {
+      showAlert({ title: 'Completa los campos', message: error });
+      return;
+    }
+
     createUser(form, {
       onSuccess: () => {
         router.replace(ROUTES.login);
       },
     });
+  }, [confirmPassword, createUser, form, router, showAlert, step]);
+
+  const renderStep = () => {
+    switch (step) {
+      case 0:
+        return <RegisterStepAccountType form={form} setForm={setForm} />;
+      case 1:
+        return <RegisterStepDocument form={form} setForm={setForm} />;
+      case 2:
+        return <RegisterStepBasicInfo form={form} setForm={setForm} />;
+      case 3:
+        return (
+          <RegisterStepCredentials
+            form={form}
+            setForm={setForm}
+            confirmPassword={confirmPassword}
+            onConfirmPasswordChange={setConfirmPassword}
+          />
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <PageContainer
-      title="Crear cuenta"
-      subheader="Ingresa tus datos para registrarte"
-      style={{ padding: 16 }}
-    >
-      <Animated.View entering={SlideInDown.springify()} style={styles.card}>
-        <DropdownWrapper
-          id={'type'}
-          label={'Tipo de cuenta'}
-          options={USER_TYPES}
-          isOpen={isUserTypeOpen}
-          setIsOpen={setIsUserTypeOpen}
-          value={form.type}
-          onChange={(value) =>
-            setForm((prev) => ({
-              ...prev,
-              type: value,
-            }))
-          }
-          zIndex={3000}
-        />
-
-        <DropdownWrapper
-          id={'documentType'}
-          label={'Tipo de documento'}
-          options={DOCUMENT_TYPES}
-          isOpen={isDocTypeOpen}
-          setIsOpen={setIsDocTypeOpen}
-          value={form.person?.documentType}
-          onChange={(value) =>
-            setForm((prev) => ({
-              ...prev,
-              person: {
-                ...prev.person,
-                documentType: value,
-              },
-            }))
-          }
-          zIndex={2000}
-        />
-
-        <DropdownWrapper
-          id={'gender'}
-          label={'Genero'}
-          options={GENDER_TYPES}
-          isOpen={isGenderOpen}
-          setIsOpen={setIsGenderOpen}
-          value={form.person?.gender}
-          onChange={(value) =>
-            setForm((prev) => ({
-              ...prev,
-              person: {
-                ...prev.person,
-                gender: value,
-              },
-            }))
-          }
-          zIndex={1000}
-        />
-
-        <FormWrapper label={'Fecha de nacimiento'}>
-          <DatePicker
-            placeholder="Fecha de nacimiento"
-            value={form?.person?.birthDate ?? ''}
-            maxDate={getDOBMaxDate()}
-            onChange={(value) =>
-              setForm((prev) => ({
-                ...prev,
-                person: {
-                  ...prev.person,
-                  birthDate: value ?? '',
-                },
-              }))
-            }
-          />
-        </FormWrapper>
-
-        {CREATE_USER_FORM.map(({ label, field, type, ...rest }) => {
-          const isBase = rest?.isBase ?? false;
-
-          return (
-            <InputWrapper
-              key={field}
-              id={field}
-              label={label}
-              placeholder={label}
-              secureTextEntry={rest?.secureTextEntry}
-              keyboardType={rest?.keyboardType}
-              value={isBase ? form?.[field] : form?.person?.[field]}
-              onChangeText={(text) =>
-                isBase
-                  ? handleBaseChange(field, text)
-                  : handlePersonChange(field, text)
-              }
-              multiline={type === 'text-area' ? true : false}
-              numberOfLines={type === 'text-area' ? 10 : 1}
-            />
-          );
-        })}
-
+      hasBackButton={false}
+      hasNoTopPadding
+      hasBottomPadding={false}
+      contentPaddingBottom={16}
+      footer={
         <Button
-          label={'Crear cuenta'}
-          style={{ marginTop: 30 }}
-          onPress={handleSubmit}
+          label={isLastStep ? 'Crear cuenta' : 'Siguiente'}
+          onPress={isLastStep ? handleSubmit : handleNext}
+          disabled={isPending}
+          style={styles.primaryAction}
         />
+      }
+    >
+      <RegisterWizardHeader
+        step={step}
+        total={TOTAL_STEPS}
+        title={currentStep.title}
+        subtitle={currentStep.subtitle}
+        onBack={handleBack}
+      />
+
+      <Animated.View
+        key={currentStep.id}
+        entering={FadeInRight.duration(280)}
+        exiting={FadeOutLeft.duration(200)}
+        style={styles.stepContent}
+      >
+        {renderStep()}
       </Animated.View>
     </PageContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = () =>
   StyleSheet.create({
-    card: {
-      backgroundColor: theme.background,
+    stepContent: {
+      rowGap: 12,
+    },
+    primaryAction: {
       width: '100%',
-      borderRadius: 16,
-      padding: 16,
-      elevation: 6,
     },
   });

@@ -41,6 +41,9 @@ type Props = {
    * Avoids nested scroll + renders all rows at once on long lists (bad on Android).
    */
   disableScroll?: boolean;
+  /** Rendered below the scroll area, fixed at the bottom of the screen */
+  footer?: React.ReactNode;
+  onBackPress?: () => void;
 };
 
 export default function PageContainer({
@@ -56,6 +59,8 @@ export default function PageContainer({
   contentPaddingBottom,
   styleContainer = {},
   disableScroll = false,
+  footer,
+  onBackPress,
 }: Props) {
   const scrollPaddingBottom =
     contentPaddingBottom ??
@@ -109,7 +114,9 @@ export default function PageContainer({
               !hasBackButton && styles.fixedHeaderRowCentered,
             ]}
           >
-            {hasBackButton && <BackButton variant="light" />}
+            {hasBackButton && (
+              <BackButton variant="light" onPress={onBackPress} />
+            )}
             <View style={styles.fixedHeaderTextWrap}>
               {title ? (
                 <AppText variant="screenTitle" numberOfLines={1}>
@@ -133,6 +140,61 @@ export default function PageContainer({
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           {disableScroll ? (
             <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
+          ) : footer ? (
+            <View style={styles.flex}>
+              <ScrollView
+                style={styles.flex}
+                contentContainerStyle={[
+                  ...sharedInnerStyle,
+                  {
+                    flexGrow: 1,
+                    flexShrink: 0,
+                  },
+                ]}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+              >
+                {((subheader && !title) ||
+                  includeLogo ||
+                  (header && !title)) && (
+                  <View style={styles.headerWrapper}>
+                    {includeLogo && (
+                      <Animated.Image
+                        entering={FadeInUp.duration(600)}
+                        source={require('@/assets/images/logos/logo.webp')}
+                        style={styles.logo}
+                        resizeMode="contain"
+                      />
+                    )}
+                    {header && !title && (
+                      <AnimatedAppText
+                        entering={FadeInUp.delay(200)}
+                        style={styles.headerTitle}
+                      >
+                        {header}
+                      </AnimatedAppText>
+                    )}
+                    {subheader && (
+                      <AnimatedAppText
+                        entering={FadeInUp.delay(300)}
+                        style={styles.headerSubtitle}
+                      >
+                        {subheader}
+                      </AnimatedAppText>
+                    )}
+                  </View>
+                )}
+                {children}
+              </ScrollView>
+              <View
+                style={[
+                  styles.footer,
+                  { paddingBottom: Math.max(insets.bottom, 16) },
+                ]}
+              >
+                {footer}
+              </View>
+            </View>
           ) : (
             <ScrollView
               contentContainerStyle={[
@@ -230,6 +292,13 @@ const getStyles = (theme: FullTheme) =>
     },
     flex: {
       flex: 1,
+    },
+    footer: {
+      paddingHorizontal: 24,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: theme.border,
+      backgroundColor: theme.background,
     },
     headerTitle: {
       ...textStyles(theme).sectionTitle,

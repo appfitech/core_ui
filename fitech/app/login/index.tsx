@@ -12,15 +12,13 @@ import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
-import { formStyles } from '@/constants/typography';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useLogin } from '@/lib/api/mutations/useLogin';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
-
-import { TRANSLATIONS } from '../../constants/strings';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
@@ -81,12 +79,12 @@ export default function LoginScreen() {
     <PageContainer
       hasBackButton={false}
       hasBottomPadding={false}
-      style={{ paddingHorizontal: 24 }}
+      style={styles.page}
     >
       <View style={styles.headerWrapper}>
         <Animated.Image
           entering={FadeInUp.duration(600)}
-          source={require('../../assets/images/logos/rounded_logo.webp')}
+          source={require('@/assets/images/logos/rounded_logo.webp')}
           style={styles.logo}
           resizeMode="contain"
         />
@@ -107,50 +105,45 @@ export default function LoginScreen() {
       </View>
 
       {showUI && (
-        <Card style={{ marginTop: 20 }}>
+        <Card style={styles.card}>
           <ErrorBanner
             errorMessage={errorMsg}
             onClear={() => setErrorMsg(null)}
           />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="at"
-              size={20}
-              color={theme.dark800}
-              style={styles.iconLeft}
-            />
-            <TextInput
-              placeholder="Usuario"
-              placeholderTextColor={theme.dark800}
-              keyboardType="email-address"
-              value={username}
-              onChangeText={setUsername}
-            />
-          </View>
+          <TextInput
+            startElement={
+              <Ionicons name="at" size={20} color={styles.iconColor} />
+            }
+            placeholder="Usuario"
+            keyboardType="email-address"
+            value={username}
+            onChangeText={setUsername}
+          />
 
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name="lock-closed-outline"
-              size={20}
-              color={theme.dark800}
-              style={styles.iconLeft}
-            />
-            <TextInput
-              placeholder="Contraseña"
-              secureTextEntry={!displayPass}
-              value={password}
-              style={{ marginBottom: 0 }}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity onPress={handleToggleDisplayPass}>
+          <TextInput
+            startElement={
               <Ionicons
-                name={!displayPass ? 'eye-outline' : 'eye-off-outline'}
+                name="lock-closed-outline"
                 size={20}
-                color={theme.dark800}
+                color={styles.iconColor}
               />
-            </TouchableOpacity>
-          </View>
+            }
+            endElement={
+              <TouchableOpacity onPress={handleToggleDisplayPass}>
+                <Ionicons
+                  name={!displayPass ? 'eye-outline' : 'eye-off-outline'}
+                  size={20}
+                  color={styles.iconColor}
+                />
+              </TouchableOpacity>
+            }
+            placeholder="Contraseña"
+            secureTextEntry={!displayPass}
+            value={password}
+            style={styles.passwordInput}
+            onChangeText={setPassword}
+          />
 
           <View style={styles.optionsRow}>
             <TouchableOpacity>
@@ -163,13 +156,11 @@ export default function LoginScreen() {
           <Button
             label={'Iniciar sesión'}
             onPress={handleLogin}
-            style={{ marginTop: 24 }}
+            style={styles.loginButton}
           />
 
           <View style={styles.footerText}>
-            <AppText
-              style={{ color: theme.dark400, fontSize: 15, fontWeight: '500' }}
-            >
+            <AppText style={styles.footerPrompt}>
               {'¿No tienes una cuenta?'}
             </AppText>
             <TouchableOpacity onPress={handleSignUp}>
@@ -182,56 +173,66 @@ export default function LoginScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
-    headerWrapper: {
-      width: '100%',
-      alignItems: 'center',
-      marginBottom: 32,
-      marginTop: 36,
-    },
-    logo: {
-      width: 80,
-      height: 80,
-      marginBottom: 10,
-    },
-    headerTitle: {
-      marginTop: 30,
-    },
-    headerSubtitle: {
-      marginTop: 8,
-    },
-    optionsRow: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginBottom: 16,
-    },
-    forgotText: {
-      fontSize: 15,
-      color: theme.dark100,
-      fontWeight: '500',
-    },
-    footerText: {
-      marginTop: 50,
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-    },
-    signUp: {
-      color: theme.dark100,
-      fontWeight: '600',
-      marginLeft: 10,
-      fontSize: 15,
-    },
-    iconLeft: {
-      marginRight: 8,
-    },
-    ...formStyles(theme),
-    inputWrapper: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.backgroundInput,
-      borderRadius: 10,
-      paddingHorizontal: 12,
-      marginBottom: 16,
-    },
-  });
+const getStyles = (theme: FullTheme) => {
+  const iconColor = theme.dark800;
+
+  return {
+    ...StyleSheet.create({
+      page: {
+        paddingHorizontal: 24,
+      },
+      card: {
+        marginTop: 20,
+      },
+      headerWrapper: {
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 32,
+        marginTop: 36,
+      },
+      logo: {
+        width: 80,
+        height: 80,
+        marginBottom: 10,
+      },
+      headerTitle: {
+        marginTop: 30,
+      },
+      headerSubtitle: {
+        marginTop: 8,
+      },
+      passwordInput: {
+        marginBottom: 0,
+      },
+      optionsRow: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        marginBottom: 16,
+      },
+      forgotText: {
+        fontSize: 15,
+        textDecorationLine: 'underline',
+      },
+      loginButton: {
+        marginTop: 24,
+      },
+      footerText: {
+        marginTop: 50,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+      },
+      footerPrompt: {
+        color: theme.textSecondary,
+        fontSize: 15,
+        fontWeight: '500',
+      },
+      signUp: {
+        color: theme.green700,
+        fontWeight: '600',
+        marginLeft: 10,
+        fontSize: 15,
+      },
+    }),
+    iconColor,
+  };
+};

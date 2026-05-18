@@ -29,8 +29,8 @@ export const TYPOGRAPHY = {
   },
   caption: {
     fontFamily: 'Inter_400Regular',
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 16,
   },
   button: {
     fontFamily: 'Inter_600SemiBold',
@@ -143,7 +143,8 @@ export function textStyles(theme: FullTheme): TextStyles {
     label: {
       ...TYPOGRAPHY.caption,
       fontFamily: 'Inter_600SemiBold',
-      color: theme.textPrimary,
+      color: theme.dark800,
+      textTransform: 'uppercase',
       marginBottom: 8,
       marginTop: 12,
     },
@@ -162,25 +163,33 @@ export type FormStyles = {
 /** Form fields & actions — pairs with `textStyles` for screens. */
 export function formStyles(theme: FullTheme): FormStyles {
   const text = textStyles(theme);
+
   return {
     label: text.label,
     inputWrapper: {
-      marginBottom: 8,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     input: {
       ...text.body,
       backgroundColor: theme.backgroundInput,
       borderRadius: 12,
-      paddingHorizontal: 16,
-      paddingVertical: 14,
+      paddingVertical: 12,
       minHeight: TAP_TARGET_MIN,
+      lineHeight: 0,
     },
     dropdown: {
       ...text.body,
       backgroundColor: theme.backgroundInput,
-      borderColor: 'transparent',
       borderRadius: 12,
       minHeight: TAP_TARGET_MIN,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     submitButton: {
       backgroundColor: theme.primary,

@@ -9,7 +9,6 @@ import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
 import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
 import { FullTheme } from '@/types/theme';
 
@@ -30,7 +29,6 @@ const initialState = {
 export default function SupportScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const { isOpen, setIsOpen } = useOpenable();
 
   const [form, setForm] = useState(initialState);
 
@@ -98,10 +96,8 @@ export default function SupportScreen() {
       >
         <AppText style={styles.formCardTitle}>Enviar consulta</AppText>
         <Dropdown
-          isOpen={isOpen}
           value={form.type}
           options={SUPPORT_TYPES}
-          setIsOpen={setIsOpen}
           onChange={(value) =>
             setForm((prev) => ({
               ...prev,

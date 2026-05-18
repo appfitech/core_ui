@@ -35,8 +35,6 @@ export default function NewTrainerDietScreen() {
 
   const [step, setStep] = useState<Step>(1);
   const [clientId, setClientId] = useState<string | number | null>(null);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const [dietName, setDietName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -183,13 +181,12 @@ export default function NewTrainerDietScreen() {
           </AppText>
           <View style={styles.dropdownWrap}>
             <Dropdown
-              isOpen={dropdownOpen}
-              setIsOpen={setDropdownOpen}
               options={clientOptions}
               value={clientId}
-              onChange={(v) => setClientId(v ?? null)}
+              onChange={(v) => setClientId(v)}
               placeholder="Buscar Cliente*"
               zIndex={1000}
+              search
             />
           </View>
           <TouchableOpacity

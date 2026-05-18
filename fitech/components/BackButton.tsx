@@ -9,15 +9,19 @@ import { FullTheme } from '@/types/theme';
 type Props = {
   /** Use "light" when the button sits on a dark background (e.g. PageContainer fixed header) */
   variant?: 'default' | 'light';
+  onPress?: () => void;
 };
 
-export function BackButton({ variant = 'default' }: Props) {
+export function BackButton({ variant = 'default', onPress }: Props) {
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme, variant);
 
   return (
-    <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+    <TouchableOpacity
+      style={styles.backButton}
+      onPress={onPress ?? (() => router.back())}
+    >
       <Ionicons
         name="arrow-back"
         size={22}

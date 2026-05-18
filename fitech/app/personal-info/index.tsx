@@ -18,7 +18,6 @@ import {
 } from '@/constants/locations';
 import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';
 import { LocationDto } from '@/types/api/types.gen';
@@ -38,7 +37,6 @@ export default function PersonalInfoScreen() {
     null,
   );
   const [locationModalOpen, setLocationModalOpen] = useState(false);
-  const { isOpen, setIsOpen } = useOpenable();
 
   // Load user's initial location
   useEffect(() => {
@@ -159,17 +157,22 @@ export default function PersonalInfoScreen() {
         />
 
         <DropdownWrapper
+          id="residence"
           label={'Distrito de residencia'}
           placeholder={'Seleccionar distrito'}
-          setIsOpen={setIsOpen}
-          isOpen={isOpen}
-          onChange={setSelectedLocation}
+          onChange={(value) => {
+            const location = findLocationById(Number(value));
+            if (!location) return;
+            setSelectedLocation(location);
+            handleLocationChange(location);
+          }}
           options={ALL_LOCATIONS.map((item) => ({
-            value: item.id,
-            label: item.fullName,
+            value: String(item.id),
+            label: item.fullName ?? '',
           }))}
-          value={selectedLocation}
+          value={selectedLocation?.id}
           zIndex={10000}
+          search
         />
 
         <InputWrapper
