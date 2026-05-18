@@ -1,6 +1,10 @@
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { ChatButton } from '@/components/ChatButton';
+import { NotificationsButton } from '@/components/NotificationsButton';
+import { SupportButton } from '@/components/SupportButton';
 import { getRandomMotivationalQuote } from '@/constants/quotes';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -8,18 +12,12 @@ import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
-import { AppText } from '@/components/AppText';
-import { ChatButton } from '@/components/ChatButton';
-import { NotificationsButton } from '@/components/NotificationsButton';
-import { SupportButton } from '@/components/SupportButton';
-
 export function GreetingHeader() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const user = useUserStore((s) => s.user);
   const userAvatarURL = getUserAvatarURL(user?.user?.person);
-  const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   return (
     <View style={styles.headerWrapper}>

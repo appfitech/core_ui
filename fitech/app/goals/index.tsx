@@ -2,18 +2,17 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { UserResponseDtoReadable } from '@/types/api/types.gen';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useUserStore } from '@/stores/user';
-import { FitnessGoal } from '@/types/fitness-goals';
-import { FullTheme } from '@/types/theme';
-
-import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
-import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { SelectableCard } from '@/components/SelectableCard';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
+import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
+import { useUserStore } from '@/stores/user';
+import { UserResponseDtoReadable } from '@/types/api/types.gen';
+import { FitnessGoal } from '@/types/fitness-goals';
+import { FullTheme } from '@/types/theme';
 
 export default function FitnessGoalsScreen() {
   const { theme } = useTheme();

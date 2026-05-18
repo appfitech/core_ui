@@ -2,14 +2,13 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { TrainerHomeContent } from '@/components/home/TrainerHomeContent';
+import { UserHomeContent } from '@/components/home/UserHomeContent';
+import { GreetingHeader } from '@/components/modules/GreetingHeader';
+import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
-
-import { GreetingHeader } from '@/components/modules/GreetingHeader';
-import PageContainer from '@/components/PageContainer';
-import { TrainerHomeContent } from '@/components/home/TrainerHomeContent';
-import { UserHomeContent } from '@/components/home/UserHomeContent';
 
 export default function HomeScreen() {
   const { theme } = useTheme();

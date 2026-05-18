@@ -3,16 +3,15 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useAlert } from '@/contexts/AlertContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
-import { TrainerService } from '@/types/trainer';
-
-import { useCreateContract } from '@/lib/api/mutations/use-create-contract';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import { useAlert } from '@/contexts/AlertContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useCreateContract } from '@/lib/api/mutations/use-create-contract';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
+import { TrainerService } from '@/types/trainer';
 
 const TERMS_SECTIONS: { title: string; body: string }[] = [
   {

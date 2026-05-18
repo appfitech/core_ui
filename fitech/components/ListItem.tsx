@@ -50,7 +50,7 @@ export function ListItem({
     }
 
     router.push(route);
-  }, [route]);
+  }, [route, onClick, router]);
 
   return (
     <TouchableOpacity style={[styles.listItem, style]} onPress={handleClick}>
@@ -64,11 +64,17 @@ export function ListItem({
           {label}
         </AppText>
         {description && (
-          <AppText style={{ color: theme.textSecondary }}>{description}</AppText>
+          <AppText style={{ color: theme.textSecondary }}>
+            {description}
+          </AppText>
         )}
       </View>
       {hasChevron && (
-        <Ionicons name="chevron-forward" size={20} color={theme.textSecondary} />
+        <Ionicons
+          name="chevron-forward"
+          size={20}
+          color={theme.textSecondary}
+        />
       )}
     </TouchableOpacity>
   );

@@ -7,7 +7,7 @@ import { api } from '../../api';
 export const useSavePushToken = () => {
   return useMutation<boolean, Error, RegisterPushTokenRequest>({
     mutationFn: async (request) => {
-      const data = await api.post('/user/register-push-token', request);
+      await api.post('/user/register-push-token', request);
 
       return true;
     },

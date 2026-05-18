@@ -1,4 +1,8 @@
-import moment, { ISO_8601, parseZone } from 'moment';
+import moment, { ISO_8601, locale, parseZone } from 'moment';
+
+locale('es');
+
+export { moment };
 
 export type DateInput = Date | string | number;
 

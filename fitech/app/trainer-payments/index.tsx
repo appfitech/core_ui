@@ -10,15 +10,14 @@ import {
   View,
 } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 import {
   useTrainerGetPayments,
   useTrainerGetPaymentsSummary,
 } from '@/lib/api/queries/use-trainer-get-payments';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
+import { FullTheme } from '@/types/theme';
 
 type Payment = {
   id: number;

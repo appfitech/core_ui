@@ -3,6 +3,12 @@ import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, { SlideInDown } from 'react-native-reanimated';
 
+import { Button } from '@/components/Button';
+import { DatePicker } from '@/components/DatePicker';
+import { DropdownWrapper } from '@/components/DropdownWrapper';
+import { FormWrapper } from '@/components/FormWrapper';
+import { InputWrapper } from '@/components/InputWrapper';
+import PageContainer from '@/components/PageContainer';
 import {
   CREATE_USER_FORM,
   DOCUMENT_TYPES,
@@ -13,17 +19,10 @@ import { ROUTES } from '@/constants/routes';
 import { emptyUserWritable } from '@/constants/states';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
+import { useCreateUser } from '@/lib/api/mutations/user/use-create-user';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { getDOBMaxDate } from '@/utils/dates';
-
-import { useCreateUser } from '@/lib/api/mutations/user/use-create-user';
-import { Button } from '@/components/Button';
-import { DatePicker } from '@/components/DatePicker';
-import { DropdownWrapper } from '@/components/DropdownWrapper';
-import { FormWrapper } from '@/components/FormWrapper';
-import { InputWrapper } from '@/components/InputWrapper';
-import PageContainer from '@/components/PageContainer';
 
 export default function Register() {
   const { theme } = useTheme();

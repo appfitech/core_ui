@@ -3,19 +3,18 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import PageContainer from '@/components/PageContainer';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
-import { TrainerService } from '@/types/trainer';
-
 import { useCheckContractAvailability } from '@/lib/api/queries/use-check-contract-availability';
 import { useGetTrainer } from '@/lib/api/queries/use-get-trainer';
 import { useGetTrainerPhotos } from '@/lib/api/queries/use-get-trainer-photos';
 import { useGetTrainerServices } from '@/lib/api/queries/use-get-trainer-services';
-import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
-import PageContainer from '@/components/PageContainer';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
+import { TrainerService } from '@/types/trainer';
 
 export default function TrainerProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();

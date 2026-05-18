@@ -1,10 +1,5 @@
 import React, { forwardRef } from 'react';
-import {
-  StyleSheet,
-  Text as RNText,
-  Text,
-  TextProps,
-} from 'react-native';
+import { StyleSheet, Text as RNText, Text, TextProps } from 'react-native';
 
 import {
   getInterFontFamily,

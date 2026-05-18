@@ -2,19 +2,18 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useGetDiets } from '@/lib/api/queries/use-get-diets';
-import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
-import { ROUTES } from '@/constants/routes';
-import { useTheme } from '@/contexts/ThemeContext';
-import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
 import DietSVG from '@/assets/images/vectors/diet.svg';
 import RoutineSVG from '@/assets/images/vectors/routine.svg';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { Tag } from '@/components/Tag';
+import { ROUTES } from '@/constants/routes';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGetDiets } from '@/lib/api/queries/use-get-diets';
+import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
+import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 export function UserActivitiesSection() {
   const router = useRouter();
@@ -38,7 +37,7 @@ export function UserActivitiesSection() {
 
       router.push(`${ROUTES.routines}/${item.id}`);
     },
-    [],
+    [router],
   );
 
   return (

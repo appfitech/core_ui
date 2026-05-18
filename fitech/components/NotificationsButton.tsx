@@ -5,9 +5,9 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
 import { FullTheme } from '@/types/theme';
 
-import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
 import { AppText } from './AppText';
 
 export function NotificationsButton() {
@@ -19,7 +19,7 @@ export function NotificationsButton() {
 
   const handleButtonClick = useCallback(
     () => router.push(ROUTES.notifications),
-    [],
+    [router],
   );
 
   return (

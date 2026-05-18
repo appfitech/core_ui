@@ -9,7 +9,9 @@ export const getUserAvatarURL = (person?: PersonDto) => {
 };
 
 /** Build full image URL from candidate profilePhotoUrl (GymBro/GymCrush). Use for display and prefetch. */
-export function getCandidateProfileImageUrl(profilePhotoUrl?: string | null): string | null {
+export function getCandidateProfileImageUrl(
+  profilePhotoUrl?: string | null,
+): string | null {
   const raw = profilePhotoUrl ?? '';
   if (!raw) return null;
   if (raw.startsWith('http')) return raw;

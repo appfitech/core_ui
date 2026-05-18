@@ -1,32 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
-import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
-import { textStyles } from '@/constants/typography';
-import { useAlert } from '@/contexts/AlertContext';
-import { useTheme } from '@/contexts/ThemeContext';
-import {
-  CreateMatchPreferencesRequest,
-  LocationDto,
-  MatchPreferencesDto,
-} from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
-import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';
-import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
 import { AppText } from '@/components/AppText';
 import { SwitchRow } from '@/components/atoms/SwitchRow';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
+import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
+import { textStyles } from '@/constants/typography';
+import { useAlert } from '@/contexts/AlertContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';
+import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
+import {
+  CreateMatchPreferencesRequest,
+  LocationDto,
+  MatchPreferencesDto,
+} from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 /** =========================
  *  ENUMS / CONSTANTS (BE)
@@ -164,9 +157,9 @@ export default function MatchPreferencesScreen() {
         onSuccess: () => {
           refetch();
           showAlert({
-          title: '¡Listo!',
-          message: 'Preferencias guardadas correctamente.',
-        });
+            title: '¡Listo!',
+            message: 'Preferencias guardadas correctamente.',
+          });
         },
       });
     } catch (err: any) {
@@ -244,7 +237,11 @@ export default function MatchPreferencesScreen() {
                         (prev?.gymBroWorkoutTimes || []) as TimePref[],
                       );
 
-                      set.has(value) ? set.delete(value) : set.add(value);
+                      if (set.has(value)) {
+                        set.delete(value);
+                      } else {
+                        set.add(value);
+                      }
 
                       return {
                         ...(prev || {}),

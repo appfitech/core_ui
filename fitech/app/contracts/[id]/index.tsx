@@ -1,24 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import moment from 'moment';
 import { useCallback, useMemo, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
-import { ROUTES } from '@/constants/routes';
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
-import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
-import PageContainer from '@/components/PageContainer';
-import { Tag } from '@/components/Tag';
-
 import CancelModal from '@/components/contracts/CancelModal';
 import CompleteModal from '@/components/contracts/CompleteModal';
-
-moment.locale('es');
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
+import { ROUTES } from '@/constants/routes';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
+import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
+import { FullTheme } from '@/types/theme';
+import { moment } from '@/utils/dates';
 
 const formatDate = (iso?: string) =>
   iso ? moment(iso).format('D MMM YYYY') : '—';
@@ -46,7 +42,12 @@ export default function ContractDetailScreen() {
         router.push(ROUTES.contracts);
       },
     });
-  }, [parsedContract?.id, parsedContract?.contractId, completeContract, router]);
+  }, [
+    parsedContract?.id,
+    parsedContract?.contractId,
+    completeContract,
+    router,
+  ]);
 
   const handleCancel = useCallback(() => {
     cancelContract(parsedContract?.id ?? parsedContract?.contractId, {
@@ -56,8 +57,7 @@ export default function ContractDetailScreen() {
     });
   }, [parsedContract?.id, parsedContract?.contractId, cancelContract, router]);
 
-  const hasDates =
-    parsedContract?.startDate || parsedContract?.endDate;
+  const hasDates = parsedContract?.startDate || parsedContract?.endDate;
   const createdAtFormatted = parsedContract?.createdAt
     ? moment(parsedContract.createdAt).format('D MMM YYYY')
     : '—';
@@ -88,9 +88,7 @@ export default function ContractDetailScreen() {
       style={styles.pageStyle}
     >
       <View style={styles.card}>
-        {statusTag ? (
-          <View style={styles.chipsRow}>{statusTag}</View>
-        ) : null}
+        {statusTag ? <View style={styles.chipsRow}>{statusTag}</View> : null}
 
         {parsedContract?.trainerName ? (
           <View style={styles.row}>

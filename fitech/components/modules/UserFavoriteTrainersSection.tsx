@@ -8,18 +8,17 @@ import {
   View,
 } from 'react-native';
 
-import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
+import { AppText } from '@/components/AppText';
+import { Card } from '@/components/Card';
+import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { useUserStore } from '@/stores/user';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { truncateWords } from '@/utils/strings';
 import { getUserAvatarURL } from '@/utils/user';
-
-import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
-import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 
 export function UserFavoriteTrainersSection() {
   const router = useRouter();
@@ -42,7 +41,7 @@ export function UserFavoriteTrainersSection() {
         onSuccess: (data) => setTrainers(data),
       },
     );
-  }, [token]);
+  }, [token, searchTrainers]);
 
   return (
     <HomeSectionContainer

@@ -4,14 +4,13 @@ import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
-import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
+import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 export default function TrainersSearchScreen() {
   const [query, setQuery] = useState('');

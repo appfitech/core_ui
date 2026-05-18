@@ -3,12 +3,11 @@ import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
+import { FullTheme } from '@/types/theme';
 
 export default function PremiumFeaturesScreen() {
   const { theme } = useTheme();

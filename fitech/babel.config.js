@@ -7,10 +7,7 @@ module.exports = function (api) {
 
   const plugins = [];
   if (isProd) {
-    plugins.push([
-      'transform-remove-console',
-      { exclude: ['error', 'warn'] },
-    ]);
+    plugins.push(['transform-remove-console', { exclude: ['error', 'warn'] }]);
   }
   plugins.push('react-native-reanimated/plugin');
 

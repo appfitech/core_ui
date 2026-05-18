@@ -1,7 +1,5 @@
 import { StyleSheet, Switch, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-
 import { AppText } from '@/components/AppText';
 
 type Props = {
@@ -12,7 +10,6 @@ type Props = {
 };
 
 export function SwitchRow({ label, labelStyle, value, onChange }: Props) {
-  const { theme } = useTheme();
   const styles = getStyles();
 
   return (

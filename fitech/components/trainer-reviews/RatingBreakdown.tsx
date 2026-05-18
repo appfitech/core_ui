@@ -2,10 +2,9 @@ import { FontAwesome } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
-
-import { AppText } from '@/components/AppText';
 
 type RatingBreakdown = {
   averageRating: number;
@@ -27,12 +26,7 @@ export const RatingDistribution = ({ data }: { data: RatingBreakdown }) => {
         <View key={item.stars} style={styles.row}>
           <View style={styles.stars}>
             {Array.from({ length: item.stars }).map((_, i) => (
-              <FontAwesome
-                key={i}
-                name="star"
-                size={14}
-                color={theme.orange}
-              />
+              <FontAwesome key={i} name="star" size={14} color={theme.orange} />
             ))}
           </View>
           <View style={styles.progressContainer}>

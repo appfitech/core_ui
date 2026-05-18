@@ -4,6 +4,11 @@ import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 import AvatarSvg from '@/assets/images/avatar.svg';
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { ListItem } from '@/components/ListItem';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
 import { PROFILE_LIST_ITEMS } from '@/constants/screens';
 import { textStyles } from '@/constants/typography';
@@ -11,12 +16,6 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
-
-import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
-import { ListItem } from '@/components/ListItem';
-import PageContainer from '@/components/PageContainer';
-import { Tag } from '@/components/Tag';
 
 export default function ProfileScreen() {
   const { theme } = useTheme();

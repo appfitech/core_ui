@@ -3,27 +3,21 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useCreateClientResourceWithFile } from '@/lib/api/mutations/use-create-client-resource-with-file';
-import {
-  useTrainerGetClientsList,
-  type TrainerClientItem,
-} from '@/lib/api/queries/use-trainer-get-clients-list';
 import { AppText } from '@/components/AppText';
 import { DatePicker } from '@/components/DatePicker';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { showInfoToast } from '@/components/Toast';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useCreateClientResourceWithFile } from '@/lib/api/mutations/use-create-client-resource-with-file';
+import {
+  type TrainerClientItem,
+  useTrainerGetClientsList,
+} from '@/lib/api/queries/use-trainer-get-clients-list';
+import { FullTheme } from '@/types/theme';
 import { fromISODate, today } from '@/utils/dates';
 
 type Step = 1 | 2;
@@ -31,7 +25,8 @@ type Step = 1 | 2;
 const ROUTINE_TEMPLATE_URL =
   'https://appfitech.com/v1/app/templates/plantilla_rutinas.xlsx';
 
-const XLSX_MIME = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const XLSX_MIME =
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
 export default function NewTrainerRoutineScreen() {
   const { theme } = useTheme();
@@ -45,9 +40,13 @@ export default function NewTrainerRoutineScreen() {
   const [routineName, setRoutineName] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
-  const [pickedFile, setPickedFile] = useState<{ uri: string; name: string } | null>(null);
+  const [pickedFile, setPickedFile] = useState<{
+    uri: string;
+    name: string;
+  } | null>(null);
 
-  const { mutate: createRoutine, isPending } = useCreateClientResourceWithFile();
+  const { mutate: createRoutine, isPending } =
+    useCreateClientResourceWithFile();
 
   const { data: clientsData } = useTrainerGetClientsList({
     page: 0,
@@ -56,7 +55,10 @@ export default function NewTrainerRoutineScreen() {
     sortDir: 'asc',
   });
 
-  const clients: TrainerClientItem[] = clientsData?.content ?? [];
+  const clients = useMemo<TrainerClientItem[]>(
+    () => clientsData?.content ?? [],
+    [clientsData?.content],
+  );
   const clientOptions = useMemo(
     () =>
       clients.map((c) => ({
@@ -66,7 +68,9 @@ export default function NewTrainerRoutineScreen() {
     [clients],
   );
 
-  const selectedClient = clients.find((c) => String(c.clientId) === String(clientId));
+  const selectedClient = clients.find(
+    (c) => String(c.clientId) === String(clientId),
+  );
 
   const canGoStep2 = clientId != null && clientId !== '';
   const goStep2 = () => {
@@ -161,10 +165,14 @@ export default function NewTrainerRoutineScreen() {
         </View>
       </View>
       <View style={styles.stepLabels}>
-        <AppText style={[styles.stepLabel, step >= 1 && styles.stepLabelActive]}>
+        <AppText
+          style={[styles.stepLabel, step >= 1 && styles.stepLabelActive]}
+        >
           Cliente
         </AppText>
-        <AppText style={[styles.stepLabel, step >= 2 && styles.stepLabelActive]}>
+        <AppText
+          style={[styles.stepLabel, step >= 2 && styles.stepLabelActive]}
+        >
           Detalles
         </AppText>
       </View>
@@ -209,7 +217,9 @@ export default function NewTrainerRoutineScreen() {
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
             <Ionicons name="arrow-back" size={20} color={theme.primary} />
-            <AppText style={styles.backToStep1Text}>Atrás (cambiar cliente)</AppText>
+            <AppText style={styles.backToStep1Text}>
+              Atrás (cambiar cliente)
+            </AppText>
           </TouchableOpacity>
           <AppText style={styles.fieldLabel}>Nombre de la Rutina*</AppText>
           <View style={styles.inputRow}>
@@ -269,15 +279,14 @@ export default function NewTrainerRoutineScreen() {
               </AppText>
             </TouchableOpacity>
             <AppText style={styles.downloadHint}>
-              Descarga la plantilla, llénala con el plan de entrenamiento del cliente
+              Descarga la plantilla, llénala con el plan de entrenamiento del
+              cliente
             </AppText>
 
             <AppText style={[styles.plantillaStepTitle, { marginTop: 16 }]}>
               Paso 2: Sube la plantilla completada
             </AppText>
-            <AppText style={styles.uploadHint}>
-              Solo archivos .xlsx
-            </AppText>
+            <AppText style={styles.uploadHint}>Solo archivos .xlsx</AppText>
             <TouchableOpacity
               style={styles.uploadArea}
               activeOpacity={0.8}
@@ -289,7 +298,8 @@ export default function NewTrainerRoutineScreen() {
                 color={theme.textSecondary}
               />
               <AppText style={styles.uploadText}>
-                {pickedFile?.name ?? 'Toca para seleccionar archivo Excel (.xlsx)'}
+                {pickedFile?.name ??
+                  'Toca para seleccionar archivo Excel (.xlsx)'}
               </AppText>
             </TouchableOpacity>
 
@@ -303,7 +313,10 @@ export default function NewTrainerRoutineScreen() {
                 <AppText style={styles.cancelBtnText}>Cancelar</AppText>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.createSubmitBtn, !canCreate && styles.createSubmitBtnDisabled]}
+                style={[
+                  styles.createSubmitBtn,
+                  !canCreate && styles.createSubmitBtnDisabled,
+                ]}
                 onPress={handleCreate}
                 activeOpacity={0.8}
                 disabled={!canCreate || isPending}

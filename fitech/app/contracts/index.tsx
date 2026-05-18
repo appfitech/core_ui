@@ -1,14 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import moment from 'moment';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { ReviewModal } from '@/components/contracts/ReviewModal';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
-import { ReviewableContractDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
 import {
   useSubmitReview,
   useUpdateReview,
@@ -16,12 +16,10 @@ import {
 import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contracts';
 import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
-import { Tag } from '@/components/Tag';
-import { ReviewModal } from '@/components/contracts/ReviewModal';
+import { ReviewableContractDto } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
+import { moment } from '@/utils/dates';
 
-moment.locale('es');
 const formatDate = (iso?: string) =>
   iso ? moment(iso).format('D MMM YYYY') : '—';
 
@@ -150,102 +148,104 @@ export default function ContractsScreen() {
           filteredContracts?.map((contract, index) => {
             const statusTag = getStatusTag(contract);
             return (
-            <View
-              key={contract.contractId ?? contract.serviceId ?? index}
-              style={styles.card}
-            >
-              <AppText style={styles.cardTitle}>{contract.serviceName}</AppText>
+              <View
+                key={contract.contractId ?? contract.serviceId ?? index}
+                style={styles.card}
+              >
+                <AppText style={styles.cardTitle}>
+                  {contract.serviceName}
+                </AppText>
 
-              {contract.trainerName ? (
-                <View style={styles.cardRow}>
-                  <Ionicons
-                    name="person-outline"
-                    size={18}
-                    color={theme.textSecondary}
-                    style={styles.cardRowIcon}
-                  />
-                  <AppText style={styles.cardInfo}>
-                    {contract.trainerName}
-                  </AppText>
+                {contract.trainerName ? (
+                  <View style={styles.cardRow}>
+                    <Ionicons
+                      name="person-outline"
+                      size={18}
+                      color={theme.textSecondary}
+                      style={styles.cardRowIcon}
+                    />
+                    <AppText style={styles.cardInfo}>
+                      {contract.trainerName}
+                    </AppText>
+                  </View>
+                ) : null}
+
+                {(contract as any)?.startDate || contract?.endDate ? (
+                  <View style={styles.cardRow}>
+                    <Ionicons
+                      name="calendar-outline"
+                      size={18}
+                      color={theme.textSecondary}
+                      style={styles.cardRowIcon}
+                    />
+                    <AppText style={styles.cardInfo} numberOfLines={1}>
+                      {(contract as any)?.startDate && contract?.endDate
+                        ? `${formatDate((contract as any).startDate)} – ${formatDate(contract.endDate)}`
+                        : (contract as any)?.startDate
+                          ? `Desde ${formatDate((contract as any).startDate)}`
+                          : `Hasta ${formatDate(contract.endDate)}`}
+                    </AppText>
+                  </View>
+                ) : null}
+
+                {(contract as any)?.totalAmount != null ? (
+                  <View style={styles.cardRow}>
+                    <Ionicons
+                      name="cash-outline"
+                      size={18}
+                      color={theme.textSecondary}
+                      style={styles.cardRowIcon}
+                    />
+                    <AppText style={styles.cardInfo}>
+                      S/ {(contract as any).totalAmount.toFixed(2)}
+                    </AppText>
+                  </View>
+                ) : null}
+
+                {statusTag ? (
+                  <View style={styles.tagsRow}>{statusTag}</View>
+                ) : null}
+
+                <View style={styles.ctaRow}>
+                  <TouchableOpacity
+                    style={styles.ctaButton}
+                    onPress={() => handleDetails(contract)}
+                  >
+                    <AppText style={styles.ctaText}>Ver detalle</AppText>
+                    <Ionicons
+                      name="chevron-forward"
+                      size={18}
+                      color={theme.primaryText}
+                    />
+                  </TouchableOpacity>
                 </View>
-              ) : null}
 
-              {(contract as any)?.startDate || contract?.endDate ? (
-                <View style={styles.cardRow}>
-                  <Ionicons
-                    name="calendar-outline"
-                    size={18}
-                    color={theme.textSecondary}
-                    style={styles.cardRowIcon}
-                  />
-                  <AppText style={styles.cardInfo} numberOfLines={1}>
-                    {(contract as any)?.startDate && contract?.endDate
-                      ? `${formatDate((contract as any).startDate)} – ${formatDate(contract.endDate)}`
-                      : (contract as any)?.startDate
-                        ? `Desde ${formatDate((contract as any).startDate)}`
-                        : `Hasta ${formatDate(contract.endDate)}`}
-                  </AppText>
-                </View>
-              ) : null}
-
-              {(contract as any)?.totalAmount != null ? (
-                <View style={styles.cardRow}>
-                  <Ionicons
-                    name="cash-outline"
-                    size={18}
-                    color={theme.textSecondary}
-                    style={styles.cardRowIcon}
-                  />
-                  <AppText style={styles.cardInfo}>
-                    S/ {(contract as any).totalAmount.toFixed(2)}
-                  </AppText>
-                </View>
-              ) : null}
-
-              {statusTag ? (
-                <View style={styles.tagsRow}>{statusTag}</View>
-              ) : null}
-
-              <View style={styles.ctaRow}>
-                <TouchableOpacity
-                  style={styles.ctaButton}
-                  onPress={() => handleDetails(contract)}
-                >
-                  <AppText style={styles.ctaText}>Ver detalle</AppText>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={18}
-                    color={theme.primaryText}
-                  />
-                </TouchableOpacity>
+                {['CANCELLED', 'COMPLETED'].includes(
+                  contract.contractStatus ?? '',
+                ) && (
+                  <TouchableOpacity
+                    style={styles.reviewButton}
+                    onPress={() => {
+                      setDisplayReview(true);
+                      contract?.contractId &&
+                        setSelectedContractId(contract.contractId);
+                      contract?.existingReviewId &&
+                        setSelectedReviewId(contract.existingReviewId);
+                    }}
+                  >
+                    <AppText style={styles.reviewButtonText}>
+                      {contract?.existingReviewId
+                        ? 'Editar Reseña'
+                        : 'Dejar Reseña'}
+                    </AppText>
+                    <Ionicons
+                      name="chevron-forward"
+                      size={16}
+                      color={theme.infoText}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
-
-              {['CANCELLED', 'COMPLETED'].includes(
-                contract.contractStatus ?? '',
-              ) && (
-                <TouchableOpacity
-                  style={styles.reviewButton}
-                  onPress={() => {
-                    setDisplayReview(true);
-                    contract?.contractId &&
-                      setSelectedContractId(contract.contractId);
-                    contract?.existingReviewId &&
-                      setSelectedReviewId(contract.existingReviewId);
-                  }}
-                >
-                  <AppText style={styles.reviewButtonText}>
-                    {contract?.existingReviewId
-                      ? 'Editar Reseña'
-                      : 'Dejar Reseña'}
-                  </AppText>
-                  <Ionicons
-                    name="chevron-forward"
-                    size={16}
-                    color={theme.infoText}
-                  />
-                </TouchableOpacity>
-              )}
-            </View>
             );
           })
         )}

@@ -3,17 +3,16 @@ import * as ImagePicker from 'expo-image-picker';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
-
 import { useDeletePhoto } from '@/lib/api/mutations/useDeletePhoto';
 import { useSetProfilePhoto } from '@/lib/api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '@/lib/api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '@/lib/api/queries/useGetUserPhotos';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
 
 const MAX_PHOTOS = 10;
 
@@ -169,8 +168,17 @@ export default function ImageGalleryScreen() {
               />
 
               {profilePhotoId === item.id ? (
-                <View style={[styles.avatarBadge, { backgroundColor: theme.primary }]}>
-                  <Ionicons name="checkmark-circle" size={16} color={theme.background} />
+                <View
+                  style={[
+                    styles.avatarBadge,
+                    { backgroundColor: theme.primary },
+                  ]}
+                >
+                  <Ionicons
+                    name="checkmark-circle"
+                    size={16}
+                    color={theme.background}
+                  />
                 </View>
               ) : (
                 <TouchableOpacity

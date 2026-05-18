@@ -3,18 +3,17 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
+import { RatingDistribution } from '@/components/trainer-reviews/RatingBreakdown';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 import {
   useTrainerGetReviews,
   useTrainerGetReviewsBreakdown,
   useTrainerGetReviewsStats,
 } from '@/lib/api/queries/use-trainer-get-reviews';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
-import { Tag } from '@/components/Tag';
-import { RatingDistribution } from '@/components/trainer-reviews/RatingBreakdown';
+import { FullTheme } from '@/types/theme';
 
 /** Review item as returned by trainer my-reviews API (content array). */
 type TrainerReviewItem = {

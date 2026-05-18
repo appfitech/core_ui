@@ -3,7 +3,6 @@ import moment from 'moment';
 import React, { useCallback } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { AppText } from '@/components/AppText';
 import { AddEditExerciseModal } from '@/components/modules/AddEditWorkoutModal';
 import { ExerciseCard } from '@/components/modules/ExerciseCard';
@@ -11,6 +10,7 @@ import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
+import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { FullTheme } from '@/types/theme';
 
 export default function WorkoutDayScreen() {

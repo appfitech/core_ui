@@ -4,6 +4,13 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { DatePicker } from '@/components/DatePicker';
+import { DropdownWrapper } from '@/components/DropdownWrapper';
+import { FormWrapper } from '@/components/FormWrapper';
+import { InputWrapper } from '@/components/InputWrapper';
+import PageContainer from '@/components/PageContainer';
 import {
   ALL_LOCATIONS,
   findLocationById,
@@ -12,18 +19,10 @@ import {
 import { formStyles } from '@/constants/typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
+import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';
 import { LocationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
-import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
-import { DatePicker } from '@/components/DatePicker';
-import { DropdownWrapper } from '@/components/DropdownWrapper';
-import { FormWrapper } from '@/components/FormWrapper';
-import { InputWrapper } from '@/components/InputWrapper';
-import PageContainer from '@/components/PageContainer';
 
 export default function PersonalInfoScreen() {
   const router = useRouter();
@@ -59,11 +58,11 @@ export default function PersonalInfoScreen() {
         router.back();
       },
     });
-  }, [form]);
+  }, [form, router, updateUser, updateUserInfo]);
 
   const handleCancel = useCallback(() => {
     router.back();
-  }, []);
+  }, [router]);
 
   const handleChange = useCallback(
     (key: string) => (text) => {

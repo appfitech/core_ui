@@ -11,11 +11,10 @@ import {
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 
 const CONTRACT_LOGO = require('../../assets/images/logos/rounded_logo.webp');
 
@@ -25,7 +24,6 @@ function ChatListAvatar({
   avatarUri,
   name,
   isTrainer,
-  theme,
   styles,
 }: {
   matchType?: string;

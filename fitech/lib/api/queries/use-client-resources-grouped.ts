@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 
 import type {
-  PageClientResourceGroupDtoReadable,
   ClientResourceGroupDtoReadable,
+  PageClientResourceGroupDtoReadable,
 } from '@/types/api/types.gen';
 
 import { api } from '../api';
@@ -13,7 +13,9 @@ export type ClientResourcesGroupedParams = {
   size?: number;
 };
 
-export function useClientResourcesGrouped(params: ClientResourcesGroupedParams) {
+export function useClientResourcesGrouped(
+  params: ClientResourcesGroupedParams,
+) {
   const { resourceType, page = 0, size = 10 } = params;
 
   return useQuery<PageClientResourceGroupDtoReadable>({
@@ -24,9 +26,7 @@ export function useClientResourcesGrouped(params: ClientResourcesGroupedParams) 
         page: String(page),
         size: String(size),
       });
-      return api.get(
-        `/client-resources/grouped-by-client/all?${q.toString()}`,
-      );
+      return api.get(`/client-resources/grouped-by-client/all?${q.toString()}`);
     },
   });
 }

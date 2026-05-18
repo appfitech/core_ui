@@ -5,14 +5,15 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 export function SupportButton() {
   const router = useRouter();
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = getStyles();
 
-  const handleSupportClick = useCallback(() => router.push(ROUTES.support), []);
+  const handleSupportClick = useCallback(
+    () => router.push(ROUTES.support),
+    [router],
+  );
 
   return (
     <TouchableOpacity
@@ -29,7 +30,7 @@ export function SupportButton() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = () =>
   StyleSheet.create({
     button: {
       width: 40,

@@ -1,15 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import moment from 'moment';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+import { moment } from '@/utils/dates';
 
 import { AppText } from './AppText';
-
-moment.locale('es');
 
 const formatDate = (iso?: string) =>
   iso ? moment(iso).format('D MMM YYYY') : '—';

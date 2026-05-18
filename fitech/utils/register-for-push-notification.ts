@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-named-as-default -- expo-constants default export is the app manifest
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';

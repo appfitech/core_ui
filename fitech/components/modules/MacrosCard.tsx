@@ -2,12 +2,11 @@ import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { Card } from '@/components/Card';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
-
-import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
 
 export function MacrosCard() {
   const router = useRouter();

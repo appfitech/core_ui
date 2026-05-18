@@ -1,20 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import moment from 'moment';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useGetDietById } from '@/lib/api/queries/use-get-diet-by-id';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
-
-moment.locale('es');
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGetDietById } from '@/lib/api/queries/use-get-diet-by-id';
+import { FullTheme } from '@/types/theme';
+import { moment } from '@/utils/dates';
 
 const DIET_TEMPLATE_URL =
   'https://appfitech.com/v1/app/templates/plantilla_dieta.xlsx';

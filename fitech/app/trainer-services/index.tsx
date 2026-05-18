@@ -8,12 +8,11 @@ import {
   View,
 } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
+import { FullTheme } from '@/types/theme';
 
 type Service = {
   id: number;
@@ -50,7 +49,10 @@ export default function TrainerServicesScreen() {
 
   const { data: services } = useTrainerGetServices();
 
-  const list: Service[] = (services as Service[]) ?? [];
+  const list = useMemo<Service[]>(
+    () => (services as Service[]) ?? [],
+    [services],
+  );
 
   // ------- Summary metrics -------
   const activeCount = useMemo(

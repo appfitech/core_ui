@@ -47,7 +47,7 @@ export const Accordion = ({ title, children, themeColors }: AccordionProps) => {
       useNativeDriver: false,
       easing: Easing.ease,
     }).start();
-  }, [expanded]);
+  }, [expanded, animation]);
 
   const maxHeight = animation.interpolate({
     inputRange: [0, 1],

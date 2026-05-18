@@ -4,11 +4,10 @@ import * as Notifications from 'expo-notifications';
 import React, { createElement, useEffect, useRef } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 
+import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 import { useUserStore } from '@/stores/user';
 import { getDeviceId } from '@/utils/device';
 import { registerForPushNotificationsAsync } from '@/utils/register-for-push-notification';
-
-import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 
 export const PUSH_TOKEN_KEY = '@push_token_v1';
 

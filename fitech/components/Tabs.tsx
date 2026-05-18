@@ -53,7 +53,7 @@ export function Tabs({ options, value, onSelect }: Props) {
       duration: 220,
       easing: Easing.out(Easing.cubic),
     });
-  }, [selectedIndex, options.length]);
+  }, [selectedIndex, options.length, containerWidthSV, indicatorX]);
 
   const indicatorStyle = useAnimatedStyle(() => {
     const tabW = containerWidthSV.value / Math.max(1, options.length);

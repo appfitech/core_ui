@@ -1,10 +1,7 @@
 import { Pressable, StyleSheet } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 import { AppText } from '@/components/AppText';
-
+import { useTheme } from '@/contexts/ThemeContext';
 type Props = {
   label: string;
   value: string;
@@ -15,7 +12,7 @@ type Props = {
 export function ChipToggle({ label, selected, value, onPress }: Props) {
   const { theme } = useTheme();
 
-  const styles = getStyles(theme);
+  const styles = getStyles();
 
   const handlePress = () => {
     onPress(value);
@@ -41,7 +38,7 @@ export function ChipToggle({ label, selected, value, onPress }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = () =>
   StyleSheet.create({
     container: {
       paddingVertical: 10,

@@ -1,16 +1,16 @@
 import React, { useCallback } from 'react';
 import { View } from 'react-native';
 
-import { useDeleteWorkout } from '@/lib/api/mutations/workouts/use-actions-user-workouts';
-import { useGetWorkoutSeries } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { Card } from '@/components/Card';
 import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
+import { useDeleteWorkout } from '@/lib/api/mutations/workouts/use-actions-user-workouts';
+import { useGetWorkoutSeries } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 
-import { Button } from '@/components/Button';
-import { Card } from '@/components/Card';
 import { AddEditExerciseModal } from './AddEditWorkoutModal';
 
 type Props = {

@@ -2,14 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
 import { TextInput } from '@/components/TextInput';
 import { formStyles, textStyles } from '@/constants/typography';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto, SelectedFoodDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-import { AppText } from '@/components/AppText';
 
 type Props = {
   foodItem: FoodItemDto;
@@ -23,7 +22,7 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
 
   const handleRemoveFoodItem = useCallback(() => {
     foodItem && onFoodSelection(foodItem);
-  }, [foodItem]);
+  }, [foodItem, onFoodSelection]);
 
   return (
     <View

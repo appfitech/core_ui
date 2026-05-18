@@ -12,13 +12,13 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
   useGetChat,
   useGetChatMessages,
 } from '@/lib/api/queries/use-chat-queries';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
@@ -88,9 +88,6 @@ export default function ChatDetailScreen() {
   } = useGetChatMessages(conversationId);
 
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
-  const [wsStatus, setWsStatus] = useState<
-    'connecting' | 'open' | 'closed' | 'error'
-  >('connecting');
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
@@ -144,7 +141,6 @@ export default function ChatDetailScreen() {
       wsRef.current = ws;
 
       ws.onopen = () => {
-        setWsStatus('open');
         if (__DEV__) {
           console.log('Chat WebSocket connected');
         }
@@ -174,7 +170,6 @@ export default function ChatDetailScreen() {
       };
 
       ws.onclose = (event) => {
-        setWsStatus('closed');
         if (__DEV__) {
           console.log('[K] event.code', event.code);
         }
@@ -194,7 +189,6 @@ export default function ChatDetailScreen() {
       };
 
       ws.onerror = (event) => {
-        setWsStatus('error');
         if (__DEV__) {
           console.log('[K] error', JSON.stringify(event));
         }

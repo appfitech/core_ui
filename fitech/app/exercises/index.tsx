@@ -5,15 +5,14 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { WorkoutSessionDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
-import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
-import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { AppText } from '@/components/AppText';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import PageContainer from '@/components/PageContainer';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
+import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
+import { WorkoutSessionDto } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 LocaleConfig.locales.es = {
   monthNames: [

@@ -5,14 +5,12 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
 export function ChatButton() {
   const router = useRouter();
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = getStyles();
 
-  const handleClick = useCallback(() => router.push(ROUTES.chats), []);
+  const handleClick = useCallback(() => router.push(ROUTES.chats), [router]);
 
   return (
     <TouchableOpacity
@@ -29,7 +27,7 @@ export function ChatButton() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = () =>
   StyleSheet.create({
     button: {
       width: 40,

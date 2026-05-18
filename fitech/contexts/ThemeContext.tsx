@@ -1,5 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useCallback, useContext, useEffect } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+} from 'react';
 
 import { THEME } from '@/constants/theme';
 import { THEME_PREFERENCE_KEY } from '@/constants/theme-storage';

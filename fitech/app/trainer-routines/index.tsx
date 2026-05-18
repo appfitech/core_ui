@@ -2,26 +2,18 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useState } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import PageContainer from '@/components/PageContainer';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useClientResourcesGrouped } from '@/lib/api/queries/use-client-resources-grouped';
 import type {
   ClientResourceGroupDtoReadable,
   ClientResourceResponseDtoReadable,
 } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-import {
-  useClientResourcesGrouped,
-} from '@/lib/api/queries/use-client-resources-grouped';
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
 
 const RESOURCE_TYPE = 'RUTINA' as const;
 const FILE_DOWNLOAD_BASE = 'https://appfitech.com/v1/app/file-upload/download';
@@ -48,8 +40,10 @@ export default function TrainerRoutinesScreen() {
     size: 50,
   });
 
-  const groups: ClientResourceGroupDtoReadable[] =
-    groupedData?.content ?? [];
+  const groups = useMemo<ClientResourceGroupDtoReadable[]>(
+    () => groupedData?.content ?? [],
+    [groupedData?.content],
+  );
 
   const summary = useMemo(() => {
     let active = 0;
@@ -96,8 +90,17 @@ export default function TrainerRoutinesScreen() {
 
         <View style={styles.summaryColumn}>
           <View style={[styles.summaryCard, styles.summaryCardSuccess]}>
-            <View style={[styles.summaryIconWrap, { backgroundColor: theme.success }]}>
-              <Ionicons name="checkmark-circle" size={20} color={theme.background} />
+            <View
+              style={[
+                styles.summaryIconWrap,
+                { backgroundColor: theme.success },
+              ]}
+            >
+              <Ionicons
+                name="checkmark-circle"
+                size={20}
+                color={theme.background}
+              />
             </View>
             <View style={styles.summaryContent}>
               <AppText style={styles.summaryValue}>
@@ -107,8 +110,17 @@ export default function TrainerRoutinesScreen() {
             </View>
           </View>
           <View style={[styles.summaryCard, styles.summaryCardOrange]}>
-            <View style={[styles.summaryIconWrap, { backgroundColor: theme.orange }]}>
-              <Ionicons name="pause-circle" size={20} color={theme.background} />
+            <View
+              style={[
+                styles.summaryIconWrap,
+                { backgroundColor: theme.orange },
+              ]}
+            >
+              <Ionicons
+                name="pause-circle"
+                size={20}
+                color={theme.background}
+              />
             </View>
             <View style={styles.summaryContent}>
               <AppText style={styles.summaryValue}>
@@ -118,7 +130,9 @@ export default function TrainerRoutinesScreen() {
             </View>
           </View>
           <View style={[styles.summaryCard, styles.summaryCardInfo]}>
-            <View style={[styles.summaryIconWrap, { backgroundColor: theme.info }]}>
+            <View
+              style={[styles.summaryIconWrap, { backgroundColor: theme.info }]}
+            >
               <MaterialCommunityIcons
                 name="account-group"
                 size={20}
@@ -129,7 +143,9 @@ export default function TrainerRoutinesScreen() {
               <AppText style={styles.summaryValue}>
                 {summary.clientsWithRoutines}
               </AppText>
-              <AppText style={styles.summaryLabel}>Clientes con Rutinas</AppText>
+              <AppText style={styles.summaryLabel}>
+                Clientes con Rutinas
+              </AppText>
             </View>
           </View>
         </View>
@@ -149,193 +165,237 @@ export default function TrainerRoutinesScreen() {
             contentContainerStyle={styles.listScrollContent}
             showsVerticalScrollIndicator={false}
           >
-          {groups.map((group) => {
-            const cid = group.clientId ?? 0;
-            const isCollapsed = collapsedByClient[cid] ?? false;
-            return (
-            <View
-              key={cid || group.clientName || Math.random()}
-              style={styles.clientGroupCard}
-            >
-              <TouchableOpacity
-                style={styles.clientHeaderRow}
-                onPress={() =>
-                  setCollapsedByClient((prev) => ({
-                    ...prev,
-                    [cid]: !prev[cid],
-                  }))
-                }
-                activeOpacity={0.8}
-              >
-                <View style={styles.clientHeaderLeft}>
-                  <View style={styles.clientAvatarWrap}>
-                    <Ionicons
-                      name="person"
-                      size={20}
-                      color={theme.primary}
-                    />
-                  </View>
-                  <View style={styles.clientHeaderText}>
-                    <AppText style={styles.clientName}>
-                      {group.clientName ?? 'Cliente'}
-                    </AppText>
-                    <View style={styles.clientChips}>
-                      <View style={styles.chipActive}>
-                        <AppText style={styles.chipActiveText}>
-                          {(group.resources ?? []).filter((r) => r.isActive).length} activas
-                        </AppText>
-                      </View>
-                      <View style={styles.chipInactive}>
-                        <AppText style={styles.chipInactiveText}>
-                          {(group.resources ?? []).filter((r) => !r.isActive).length} inactivas
-                        </AppText>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-                <Ionicons
-                  name={isCollapsed ? 'chevron-down' : 'chevron-up'}
-                  size={24}
-                  color={theme.textSecondary}
-                />
-              </TouchableOpacity>
-
-              {!isCollapsed && (
-              <View style={styles.clientBlockBody}>
-              <View style={styles.tabRow}>
-                {(['ACTIVE', 'INACTIVE'] as const).map((tab) => {
-                  const clientId = group.clientId ?? 0;
-                  const current = activeTabByClient[clientId] ?? 'ACTIVE';
-                  const isActive = current === tab;
-                  const count =
-                    tab === 'ACTIVE'
-                      ? (group.resources ?? []).filter((r) => r.isActive).length
-                      : (group.resources ?? []).filter((r) => !r.isActive).length;
-                  return (
-                    <TouchableOpacity
-                      key={tab}
-                      style={[styles.tabButton, isActive && styles.tabButtonActive]}
-                      onPress={() =>
-                        setActiveTabByClient((prev) => ({
-                          ...prev,
-                          [clientId]: tab,
-                        }))
-                      }
-                      activeOpacity={0.8}
-                    >
-                      <AppText
-                        style={[styles.tabText, isActive && styles.tabTextActive]}
-                      >
-                        {tab === 'ACTIVE' ? 'Activas' : 'Inactivas'} ({count})
-                      </AppText>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              <View style={styles.routineCards}>
-                {(group.resources ?? [])
-                  .filter((r) => {
-                    const clientId = group.clientId ?? 0;
-                    const current = activeTabByClient[clientId] ?? 'ACTIVE';
-                    return current === 'ACTIVE' ? r.isActive : !r.isActive;
-                  })
-                  .map((resource: ClientResourceResponseDtoReadable) => (
-                    <View key={resource.id} style={styles.routineCard}>
-                      <View style={styles.routineCardTop}>
-                        <View
-                          style={[
-                            styles.statusPill,
-                            resource.isActive
-                              ? styles.statusPillActive
-                              : styles.statusPillInactive,
-                          ]}
-                        >
-                          <Ionicons
-                            name={resource.isActive ? 'checkmark-circle' : 'close-circle'}
-                            size={14}
-                            color={
-                              resource.isActive ? theme.success : theme.textSecondary
-                            }
-                          />
-                          <AppText
-                            style={[
-                              styles.statusPillText,
-                              {
-                                color: resource.isActive
-                                  ? theme.successText
-                                  : theme.textSecondary,
-                              },
-                            ]}
-                          >
-                            {resource.isActive ? 'Activa' : 'Inactiva'}
-                          </AppText>
-                        </View>
-                      </View>
-                      <View style={styles.routineCardTitleRow}>
-                        <View style={styles.routineIconWrap}>
-                          <Ionicons
-                            name="barbell-outline"
-                            size={18}
-                            color={theme.primary}
-                          />
-                        </View>
-                        <AppText style={styles.routineCardTitle} numberOfLines={1}>
-                          {resource.resourceName ?? 'Rutina'}
-                        </AppText>
-                        {resource.fileId != null ? (
-                          <TouchableOpacity
-                            style={styles.docButton}
-                            onPress={async () => {
-                              try {
-                                await WebBrowser.openBrowserAsync(
-                                  `${FILE_DOWNLOAD_BASE}/${resource.fileId}`,
-                                );
-                              } catch (e) {
-                                console.error('[FITECH] error opening routine file', e);
-                              }
-                            }}
-                            activeOpacity={0.8}
-                          >
-                            <Ionicons
-                              name="document-text-outline"
-                              size={22}
-                              color={theme.info}
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <View style={styles.docButtonPlaceholder}>
-                            <Ionicons
-                              name="document-text-outline"
-                              size={22}
-                              color={theme.textSecondary}
-                            />
-                          </View>
-                        )}
-                      </View>
-                      <View style={styles.routineCardMeta}>
+            {groups.map((group) => {
+              const cid = group.clientId ?? 0;
+              const isCollapsed = collapsedByClient[cid] ?? false;
+              return (
+                <View
+                  key={cid || group.clientName || Math.random()}
+                  style={styles.clientGroupCard}
+                >
+                  <TouchableOpacity
+                    style={styles.clientHeaderRow}
+                    onPress={() =>
+                      setCollapsedByClient((prev) => ({
+                        ...prev,
+                        [cid]: !prev[cid],
+                      }))
+                    }
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.clientHeaderLeft}>
+                      <View style={styles.clientAvatarWrap}>
                         <Ionicons
-                          name="calendar-outline"
-                          size={14}
-                          color={theme.textSecondary}
-                          style={styles.metaIcon}
+                          name="person"
+                          size={20}
+                          color={theme.primary}
                         />
-                        <AppText style={styles.routineCardMetaText}>
-                          {resource.startDate && resource.endDate
-                            ? `${formatDate(resource.startDate)} - ${formatDate(resource.endDate)}`
-                            : resource.createdAt
-                              ? `Creada el ${formatDate(resource.createdAt)}`
-                              : '—'}
+                      </View>
+                      <View style={styles.clientHeaderText}>
+                        <AppText style={styles.clientName}>
+                          {group.clientName ?? 'Cliente'}
                         </AppText>
+                        <View style={styles.clientChips}>
+                          <View style={styles.chipActive}>
+                            <AppText style={styles.chipActiveText}>
+                              {
+                                (group.resources ?? []).filter(
+                                  (r) => r.isActive,
+                                ).length
+                              }{' '}
+                              activas
+                            </AppText>
+                          </View>
+                          <View style={styles.chipInactive}>
+                            <AppText style={styles.chipInactiveText}>
+                              {
+                                (group.resources ?? []).filter(
+                                  (r) => !r.isActive,
+                                ).length
+                              }{' '}
+                              inactivas
+                            </AppText>
+                          </View>
+                        </View>
                       </View>
                     </View>
-                  ))}
-              </View>
-              </View>
-              )}
-            </View>
-          );
-          })}
+                    <Ionicons
+                      name={isCollapsed ? 'chevron-down' : 'chevron-up'}
+                      size={24}
+                      color={theme.textSecondary}
+                    />
+                  </TouchableOpacity>
+
+                  {!isCollapsed && (
+                    <View style={styles.clientBlockBody}>
+                      <View style={styles.tabRow}>
+                        {(['ACTIVE', 'INACTIVE'] as const).map((tab) => {
+                          const clientId = group.clientId ?? 0;
+                          const current =
+                            activeTabByClient[clientId] ?? 'ACTIVE';
+                          const isActive = current === tab;
+                          const count =
+                            tab === 'ACTIVE'
+                              ? (group.resources ?? []).filter(
+                                  (r) => r.isActive,
+                                ).length
+                              : (group.resources ?? []).filter(
+                                  (r) => !r.isActive,
+                                ).length;
+                          return (
+                            <TouchableOpacity
+                              key={tab}
+                              style={[
+                                styles.tabButton,
+                                isActive && styles.tabButtonActive,
+                              ]}
+                              onPress={() =>
+                                setActiveTabByClient((prev) => ({
+                                  ...prev,
+                                  [clientId]: tab,
+                                }))
+                              }
+                              activeOpacity={0.8}
+                            >
+                              <AppText
+                                style={[
+                                  styles.tabText,
+                                  isActive && styles.tabTextActive,
+                                ]}
+                              >
+                                {tab === 'ACTIVE' ? 'Activas' : 'Inactivas'} (
+                                {count})
+                              </AppText>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+
+                      <View style={styles.routineCards}>
+                        {(group.resources ?? [])
+                          .filter((r) => {
+                            const clientId = group.clientId ?? 0;
+                            const current =
+                              activeTabByClient[clientId] ?? 'ACTIVE';
+                            return current === 'ACTIVE'
+                              ? r.isActive
+                              : !r.isActive;
+                          })
+                          .map(
+                            (resource: ClientResourceResponseDtoReadable) => (
+                              <View
+                                key={resource.id}
+                                style={styles.routineCard}
+                              >
+                                <View style={styles.routineCardTop}>
+                                  <View
+                                    style={[
+                                      styles.statusPill,
+                                      resource.isActive
+                                        ? styles.statusPillActive
+                                        : styles.statusPillInactive,
+                                    ]}
+                                  >
+                                    <Ionicons
+                                      name={
+                                        resource.isActive
+                                          ? 'checkmark-circle'
+                                          : 'close-circle'
+                                      }
+                                      size={14}
+                                      color={
+                                        resource.isActive
+                                          ? theme.success
+                                          : theme.textSecondary
+                                      }
+                                    />
+                                    <AppText
+                                      style={[
+                                        styles.statusPillText,
+                                        {
+                                          color: resource.isActive
+                                            ? theme.successText
+                                            : theme.textSecondary,
+                                        },
+                                      ]}
+                                    >
+                                      {resource.isActive
+                                        ? 'Activa'
+                                        : 'Inactiva'}
+                                    </AppText>
+                                  </View>
+                                </View>
+                                <View style={styles.routineCardTitleRow}>
+                                  <View style={styles.routineIconWrap}>
+                                    <Ionicons
+                                      name="barbell-outline"
+                                      size={18}
+                                      color={theme.primary}
+                                    />
+                                  </View>
+                                  <AppText
+                                    style={styles.routineCardTitle}
+                                    numberOfLines={1}
+                                  >
+                                    {resource.resourceName ?? 'Rutina'}
+                                  </AppText>
+                                  {resource.fileId != null ? (
+                                    <TouchableOpacity
+                                      style={styles.docButton}
+                                      onPress={async () => {
+                                        try {
+                                          await WebBrowser.openBrowserAsync(
+                                            `${FILE_DOWNLOAD_BASE}/${resource.fileId}`,
+                                          );
+                                        } catch (e) {
+                                          console.error(
+                                            '[FITECH] error opening routine file',
+                                            e,
+                                          );
+                                        }
+                                      }}
+                                      activeOpacity={0.8}
+                                    >
+                                      <Ionicons
+                                        name="document-text-outline"
+                                        size={22}
+                                        color={theme.info}
+                                      />
+                                    </TouchableOpacity>
+                                  ) : (
+                                    <View style={styles.docButtonPlaceholder}>
+                                      <Ionicons
+                                        name="document-text-outline"
+                                        size={22}
+                                        color={theme.textSecondary}
+                                      />
+                                    </View>
+                                  )}
+                                </View>
+                                <View style={styles.routineCardMeta}>
+                                  <Ionicons
+                                    name="calendar-outline"
+                                    size={14}
+                                    color={theme.textSecondary}
+                                    style={styles.metaIcon}
+                                  />
+                                  <AppText style={styles.routineCardMetaText}>
+                                    {resource.startDate && resource.endDate
+                                      ? `${formatDate(resource.startDate)} - ${formatDate(resource.endDate)}`
+                                      : resource.createdAt
+                                        ? `Creada el ${formatDate(resource.createdAt)}`
+                                        : '—'}
+                                  </AppText>
+                                </View>
+                              </View>
+                            ),
+                          )}
+                      </View>
+                    </View>
+                  )}
+                </View>
+              );
+            })}
           </ScrollView>
         )}
       </View>

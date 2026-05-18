@@ -75,4 +75,4 @@ export type FullTheme = {
   headerBackButtonBg: string;
   headerBackButtonBorder: string;
   headerBackButtonBorderWidth: number;
-}
+};

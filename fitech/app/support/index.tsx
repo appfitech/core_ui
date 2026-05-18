@@ -2,17 +2,16 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
-import { FullTheme } from '@/types/theme';
-
-import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
+import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
+import { FullTheme } from '@/types/theme';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnicos', value: 'technical' },
@@ -60,7 +59,16 @@ export default function SupportScreen() {
       subheader="¿Necesitas ayuda? Estamos aquí para asistirte"
       style={styles.pageStyle}
     >
-      <Card style={[styles.contactCard, { backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border }]}>
+      <Card
+        style={[
+          styles.contactCard,
+          {
+            backgroundColor: theme.card,
+            borderWidth: 1,
+            borderColor: theme.border,
+          },
+        ]}
+      >
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
           <Ionicons name="call-outline" size={20} color={theme.primary} />
@@ -78,7 +86,16 @@ export default function SupportScreen() {
         </View>
       </Card>
 
-      <Card style={[styles.formCard, { backgroundColor: theme.card, borderWidth: 1, borderColor: theme.border }]}>
+      <Card
+        style={[
+          styles.formCard,
+          {
+            backgroundColor: theme.card,
+            borderWidth: 1,
+            borderColor: theme.border,
+          },
+        ]}
+      >
         <AppText style={styles.formCardTitle}>Enviar consulta</AppText>
         <Dropdown
           isOpen={isOpen}
@@ -109,8 +126,17 @@ export default function SupportScreen() {
       </Card>
 
       <View style={styles.buttonRow}>
-        <Button type="secondary" onPress={handleClear} label="Limpiar" style={styles.buttonFull} />
-        <Button onPress={handleSubmit} label="Enviar Consulta" style={styles.buttonFull} />
+        <Button
+          type="secondary"
+          onPress={handleClear}
+          label="Limpiar"
+          style={styles.buttonFull}
+        />
+        <Button
+          onPress={handleSubmit}
+          label="Enviar Consulta"
+          style={styles.buttonFull}
+        />
       </View>
     </PageContainer>
   );

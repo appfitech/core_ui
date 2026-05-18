@@ -20,16 +20,16 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { AppText } from '@/components/AppText';
-import PageContainer from '@/components/PageContainer';
 import ConfettiAnimation from '@/assets/lottie/confetti.json';
+import { AppText } from '@/components/AppText';
+import { MatchButtonSection } from '@/components/MatchButtonSection';
+import { MatchContactCard } from '@/components/MatchContactCard';
+import { MatchProfileCard } from '@/components/MatchProfileCard';
+import PageContainer from '@/components/PageContainer';
+import { Tabs } from '@/components/Tabs';
+import { showMatchToast } from '@/components/Toast';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
-import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
-import { MatchScreenTab } from '@/types/forms';
-import { FullTheme } from '@/types/theme';
-import { getCandidateProfileImageUrl } from '@/utils/user';
-
 import {
   useDiscardGymCrush,
   useMatchGymCrush,
@@ -38,11 +38,10 @@ import {
   useGetGymCrushCandidates,
   useGetGymCrushMutuals,
 } from '@/lib/api/queries/matches/use-get-gymcrush-list';
-import { MatchButtonSection } from '@/components/MatchButtonSection';
-import { MatchContactCard } from '@/components/MatchContactCard';
-import { MatchProfileCard } from '@/components/MatchProfileCard';
-import { Tabs } from '@/components/Tabs';
-import { showMatchToast } from '@/components/Toast';
+import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
+import { MatchScreenTab } from '@/types/forms';
+import { FullTheme } from '@/types/theme';
+import { getCandidateProfileImageUrl } from '@/utils/user';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 const CARD_W = SCREEN_W * 0.9;
@@ -93,10 +92,18 @@ export default function GymCrushScreen() {
 
   const [matchName, setMatchName] = useState<string | null>(null);
 
-  const resetCard = () => {
+  const resetCard = useCallback(() => {
     translateX.value = withSpring(0);
     rotation.value = withSpring(0);
-  };
+  }, [translateX, rotation]);
+
+  const handleRefetchAll = useCallback(() => {
+    setIndex(0);
+    setDiscardedIds(new Set());
+    setSavedMap({});
+    refetchMutuals();
+    refetchCandidates();
+  }, [refetchMutuals, refetchCandidates]);
 
   const onSwiped = useCallback(
     (dir: 'left' | 'right') => {
@@ -140,40 +147,42 @@ export default function GymCrushScreen() {
       setIndex((prev) => Math.min(prev + 1, Math.max(available.length - 1, 0)));
       resetCard();
     },
-    [current, available.length, matchGymCrush, discardGymCrush],
+    [
+      current,
+      available.length,
+      matchGymCrush,
+      discardGymCrush,
+      refetchMutuals,
+      resetCard,
+    ],
   );
 
-  const handleRefetchAll = () => {
-    setIndex(0);
-    setDiscardedIds(new Set());
-    setSavedMap({});
-    refetchMutuals();
-    refetchCandidates();
-  };
+  const handleRemoveMatch = useCallback(
+    (targetUserId: number | undefined) => {
+      if (!targetUserId) {
+        return;
+      }
 
-  const handleRemoveMatch = useCallback((targetUserId: number | undefined) => {
-    if (!targetUserId) {
-      return;
-    }
+      const id = String(targetUserId);
 
-    const id = String(targetUserId);
+      setSavedMap((prev) => {
+        const next = { ...prev };
 
-    setSavedMap((prev) => {
-      const next = { ...prev };
+        delete next[id];
 
-      delete next[id];
+        return next;
+      });
 
-      return next;
-    });
+      setDiscardedIds((prev) => new Set(prev).add(id));
 
-    setDiscardedIds((prev) => new Set(prev).add(id));
-
-    discardGymCrush(targetUserId, {
-      onSuccess: () => {
-        handleRefetchAll();
-      },
-    });
-  }, []);
+      discardGymCrush(targetUserId, {
+        onSuccess: () => {
+          handleRefetchAll();
+        },
+      });
+    },
+    [discardGymCrush, handleRefetchAll],
+  );
 
   const cardStyle = useAnimatedStyle(() => ({
     transform: [

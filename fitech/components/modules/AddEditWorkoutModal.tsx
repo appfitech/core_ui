@@ -9,26 +9,25 @@ import {
   View,
 } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { Dropdown } from '@/components/Dropdown';
+import { TextInput } from '@/components/TextInput';
+import { MUSCLE_GROUPS } from '@/constants/exercise';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useOpenable } from '@/hooks/use-openable';
+import usePreviousValue from '@/hooks/use-previous-value';
 import {
   useCreateWorkout,
   useEditWorkout,
 } from '@/lib/api/mutations/workouts/use-actions-user-workouts';
 import { useGetWorkoutSeries } from '@/lib/api/queries/workouts/use-get-user-workouts';
-import { AppText } from '@/components/AppText';
-import { MUSCLE_GROUPS } from '@/constants/exercise';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
-import usePreviousValue from '@/hooks/use-previous-value';
 import {
   CreateExerciseWithSetsRequest,
   ExerciseSetDto,
   WorkoutSessionDto,
 } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-import { Button } from '@/components/Button';
-import { Dropdown } from '@/components/Dropdown';
-import { TextInput } from '@/components/TextInput';
 
 type Props = {
   mode: 'add' | 'edit';

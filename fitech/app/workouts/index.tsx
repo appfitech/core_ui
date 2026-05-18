@@ -1,20 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-
-import { useTheme } from '@/contexts/ThemeContext';
-import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useUserStore } from '@/stores/user';
+import { FullTheme } from '@/types/theme';
 
 /**
  * SVG/illustration search suggestions (unDraw, Storyset, Blush, etc.):

@@ -1,11 +1,10 @@
 import React, { memo, useCallback } from 'react';
 import { Image, Platform, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FoodItemDto } from '@/types/api/types.gen';
-
 import { AppText } from '@/components/AppText';
 import { Tag } from '@/components/Tag';
+import { useTheme } from '@/contexts/ThemeContext';
+import { FoodItemDto } from '@/types/api/types.gen';
 
 type Props = {
   foodItem: FoodItemDto;

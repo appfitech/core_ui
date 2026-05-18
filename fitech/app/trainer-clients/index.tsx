@@ -3,15 +3,14 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { ROUTES } from '@/constants/routes';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useDebounce } from '@/hooks/use-debounce';
-import { FullTheme } from '@/types/theme';
-
-import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
+import { ROUTES } from '@/constants/routes';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useDebounce } from '@/hooks/use-debounce';
+import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
+import { FullTheme } from '@/types/theme';
 
 type ServiceItem = {
   serviceId: number;

@@ -1,10 +1,9 @@
 import { StyleSheet, View } from 'react-native';
 
+import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
-
-import { ChipToggle } from '@/components/atoms/ChipToggle';
 
 type Props = {
   options: Option[];
@@ -19,7 +18,11 @@ export function ChipsList({ options, selectedValues, onChange }: Props) {
   const handlePress = (newValue: string) => {
     const set = new Set(selectedValues || []);
 
-    set.has(newValue) ? set.delete(newValue) : set.add(newValue);
+    if (set.has(newValue)) {
+      set.delete(newValue);
+    } else {
+      set.add(newValue);
+    }
 
     onChange(Array.from(set));
   };

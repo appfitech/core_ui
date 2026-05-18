@@ -10,13 +10,14 @@
     "web": "expo start --web",
     "test": "jest --watchAll",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "format": "prettier --write .",
     "generate_apk": "eas build --platform android --profile apk",
     "generate_ios": "eas build --platform ios --profile production",
     "generate_ios_autosubmit": "eas build --platform ios --profile production --auto-submit",
     "submit_ios": "eas submit --platform ios --latest",
-    "codegen": "openapi-ts --file openapi/fitech.config.ts"
+    "codegen": "openapi-ts --file openapi/fitech.config.ts",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint:fix": "npx eslint . --fix"
   },
   "jest": {
     "preset": "jest-expo"

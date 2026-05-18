@@ -2,13 +2,12 @@ import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
-
-import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
 import { ResourceCard } from '@/components/ResourceCard';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGetDiets } from '@/lib/api/queries/use-get-diets';
+import { FullTheme } from '@/types/theme';
 
 export default function DietsScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');
