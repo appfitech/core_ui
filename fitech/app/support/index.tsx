@@ -56,6 +56,7 @@ export default function SupportScreen() {
     <PageContainer
       title="Centro de Soporte"
       subheader="¿Necesitas ayuda? Estamos aquí para asistirte"
+      includeTabBarPadding={false}
       style={styles.pageStyle}
     >
       <Card
@@ -148,7 +149,6 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
-      paddingBottom: 160,
       rowGap: 16,
     },
     contactCard: {

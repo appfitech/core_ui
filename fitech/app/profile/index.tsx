@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -9,6 +10,7 @@ import { Button } from '@/components/Button';
 import { ListItem } from '@/components/ListItem';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
+import { clearAppQueryCache } from '@/lib/api/mutation-cache';
 import { ROUTES } from '@/constants/routes';
 import { PROFILE_LIST_ITEMS } from '@/constants/screens';
 import { textStyles } from '@/constants/styles';
@@ -27,9 +29,11 @@ export default function ProfileScreen() {
   const userType = useUserStore((s) => s.user?.user?.type);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
 
+  const queryClient = useQueryClient();
   const styles = getStyles(theme);
 
   const handleLogout = async () => {
+    clearAppQueryCache(queryClient);
     await useUserStore.getState().logout();
     router.replace('/');
   };

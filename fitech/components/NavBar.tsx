@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { type Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   Image,
   Pressable,
@@ -12,6 +12,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
+import { useSetTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
@@ -21,6 +22,7 @@ import { AppText } from './AppText';
 SplashScreen.preventAutoHideAsync();
 
 const FAB_LOGO = require('@/assets/images/logos/rounded_logo.webp');
+const FAB_SIZE = 64;
 
 const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
   home: { icon: 'home-outline', route: ROUTES.home, label: 'Home' },
@@ -49,8 +51,21 @@ export function NavBar() {
     '/' + (Array.isArray(segments) ? segments.filter(Boolean).join('/') : '');
   const isPremium = Boolean(user?.user?.premium);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const setTabBarInset = useSetTabBarInset();
   const fabBottom = (insets.bottom || 10) + 32;
   const navBarPaddingBottom = insets.bottom > 0 ? insets.bottom : 10;
+
+  const reportTabBarInset = useCallback(
+    (navBarHeight: number) => {
+      const fabTopFromBottom = fabBottom + FAB_SIZE;
+      setTabBarInset(Math.max(navBarHeight, fabTopFromBottom) + 12);
+    },
+    [fabBottom, setTabBarInset],
+  );
+
+  useEffect(() => {
+    return () => setTabBarInset(0);
+  }, [setTabBarInset]);
 
   const handleNavItemClick = useCallback(
     (route: Href) => () => {
@@ -65,7 +80,10 @@ export function NavBar() {
 
   return (
     <>
-      <View style={[styles.navBar, { paddingBottom: navBarPaddingBottom }]}>
+      <View
+        style={[styles.navBar, { paddingBottom: navBarPaddingBottom }]}
+        onLayout={(e) => reportTabBarInset(e.nativeEvent.layout.height)}
+      >
         {Object.entries(NAV_ITEMS_MAPPER(isTrainer)).map(
           ([key, { icon, route, label }]) => {
             const isCurrentRoute =
@@ -152,9 +170,9 @@ const getStyles = (theme: FullTheme) =>
     fab: {
       position: 'absolute',
       alignSelf: 'center',
-      width: 64,
-      height: 64,
-      borderRadius: 32,
+      width: FAB_SIZE,
+      height: FAB_SIZE,
+      borderRadius: FAB_SIZE / 2,
       backgroundColor: theme.button.primaryBg,
       justifyContent: 'center',
       alignItems: 'center',

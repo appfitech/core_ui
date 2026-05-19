@@ -5,13 +5,14 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { textStyles } from '@/constants/styles';
+import { useTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import {
-  CONTENT_GAP_BELOW_HEADER,
+  getFixedHeaderScrollOffset,
   getFooterScrollPaddingBottom,
+  getScreenScrollPaddingBottom,
   getScrollPaddingBottom,
-  PAGE_FIXED_HEADER_HEIGHT,
   PAGE_HEADER_TOP_EXTRA,
 } from '@/utils/layout';
 import { authFadeInUp } from '@/utils/platform-animations';
@@ -51,6 +52,11 @@ type Props = {
   onBackPress?: () => void;
   /** Shorter fades on Android for register / forgot-password style flows. */
   authOptimized?: boolean;
+  /**
+   * When false, bottom padding is only safe-area sized (support, auth stack).
+   * @default true
+   */
+  includeTabBarPadding?: boolean;
 };
 
 export default function PageContainer({
@@ -69,41 +75,38 @@ export default function PageContainer({
   footer,
   onBackPress,
   authOptimized = false,
+  includeTabBarPadding = true,
 }: Props) {
   const insets = useSafeAreaInsets();
+  const tabBarInset = useTabBarInset();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
+  const defaultBottomPadding =
+    includeTabBarPadding && hasBottomPadding
+      ? Math.max(tabBarInset, getScrollPaddingBottom(insets))
+      : includeTabBarPadding
+        ? getScrollPaddingBottom(insets, { includeFab: false })
+        : getScreenScrollPaddingBottom(insets);
+
   const scrollPaddingBottom =
     contentPaddingBottom ??
-    (footer
-      ? getFooterScrollPaddingBottom(insets)
-      : hasBottomPadding
-        ? getScrollPaddingBottom(insets)
-        : getScrollPaddingBottom(insets, { includeFab: false }));
+    (footer ? getFooterScrollPaddingBottom(insets) : defaultBottomPadding);
 
   const hasFixedHeader = hasBackButton || !!title;
   const hasFixedSubheader = !!(title && subheader);
-  const fixedHeaderHeight = hasFixedHeader
-    ? hasFixedSubheader
-      ? 88
-      : title && !hasBackButton
-        ? 68
-        : PAGE_FIXED_HEADER_HEIGHT
-    : 0;
-
-  const contentGapBelowHeader = hasNoTopPadding ? 16 : CONTENT_GAP_BELOW_HEADER;
 
   const headerTopInset = insets.top + PAGE_HEADER_TOP_EXTRA;
 
-  const contentPaddingTop = hasFixedHeader
-    ? fixedHeaderHeight + headerTopInset + contentGapBelowHeader
-    : hasNoTopPadding
-      ? 0
-      : insets.top + PAGE_HEADER_TOP_EXTRA;
+  const fixedHeaderScrollOffset = hasFixedHeader
+    ? getFixedHeaderScrollOffset(insets, {
+        hasSubheader: hasFixedSubheader,
+        titleOnlyNoBack: !!title && !hasBackButton,
+      })
+    : 0;
 
   const scrollPaddingTop = hasFixedHeader
-    ? contentPaddingTop
+    ? fixedHeaderScrollOffset
     : hasNoTopPadding
       ? 0
       : insets.top + PAGE_HEADER_TOP_EXTRA;
@@ -120,7 +123,7 @@ export default function PageContainer({
   ];
 
   const keyboardVerticalOffset = hasFixedHeader
-    ? fixedHeaderHeight + headerTopInset
+    ? fixedHeaderScrollOffset
     : headerTopInset;
 
   const keyboardPlatform = Platform.OS === 'android' ? 'android' : 'ios';
@@ -186,13 +189,7 @@ export default function PageContainer({
     <View style={[styles.container, styleContainer]}>
       {hasFixedHeader && (
         <View
-          style={[
-            styles.fixedHeader,
-            {
-              paddingTop: headerTopInset,
-              minHeight: fixedHeaderHeight + headerTopInset,
-            },
-          ]}
+          style={[styles.fixedHeader, { paddingTop: headerTopInset }]}
         >
           <View
             style={[
@@ -267,7 +264,7 @@ const getStyles = (theme: FullTheme) => {
       left: 0,
       zIndex: 10,
       paddingHorizontal: 20,
-      paddingBottom: 16,
+      paddingBottom: 10,
       backgroundColor: theme.background.elevated,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: theme.border.subtle,
@@ -293,9 +290,11 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 4,
       color: theme.text.secondary,
     },
-    scrollContent: {
-      flexGrow: 1,
-    },
+    scrollContent: Platform.select({
+      ios: { flexGrow: 1 },
+      android: { flexGrow: 0 },
+      default: { flexGrow: 1 },
+    }),
     flex: {
       flex: 1,
     },

@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -122,56 +121,60 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
         animationType="fade"
         statusBarTranslucent
         onRequestClose={hide}
+        hardwareAccelerated
       >
-        <View
-          style={[
-            styles.overlay,
-            {
-              paddingTop: insets.top + 16,
-              paddingBottom: insets.bottom + 16,
-            },
-          ]}
-        >
+        <View style={styles.root}>
           <Pressable
-            style={styles.backdropPress}
+            style={styles.backdrop}
             onPress={hide}
             accessibilityRole="button"
             accessibilityLabel="Cerrar"
           />
-          <Animated.View entering={FadeIn.duration(180)} style={styles.card}>
-            <View style={styles.contentRow}>
-              <View
-                style={[
-                  styles.iconWrap,
-                  isDestructive && styles.iconWrapDestructive,
-                ]}
-              >
-                <Ionicons
-                  name={iconName}
-                  size={22}
-                  color={
-                    isDestructive
-                      ? theme.status.error.text
-                      : theme.brand.primaryLight
-                  }
+          <View
+            style={[
+              styles.center,
+              {
+                paddingTop: insets.top + 24,
+                paddingBottom: insets.bottom + 24,
+              },
+            ]}
+            pointerEvents="box-none"
+          >
+            <View style={styles.card} pointerEvents="auto">
+              <View style={styles.contentRow}>
+                <View
+                  style={[
+                    styles.iconWrap,
+                    isDestructive && styles.iconWrapDestructive,
+                  ]}
+                >
+                  <Ionicons
+                    name={iconName}
+                    size={22}
+                    color={
+                      isDestructive
+                        ? theme.status.error.text
+                        : theme.brand.primaryLight
+                    }
+                  />
+                </View>
+                <AppText variant="body" style={styles.body}>
+                  {bodyText}
+                </AppText>
+              </View>
+
+              <View style={styles.footer}>
+                <Button
+                  label={actionButton.text}
+                  type={resolveButtonType(actionButton)}
+                  onPress={() => handlePress(actionButton)}
+                  animated={false}
+                  style={styles.actionWrap}
+                  buttonStyle={styles.actionButton}
                 />
               </View>
-              <AppText variant="body" style={styles.body}>
-                {bodyText}
-              </AppText>
             </View>
-
-            <View style={styles.footer}>
-              <Button
-                label={actionButton.text}
-                type={resolveButtonType(actionButton)}
-                onPress={() => handlePress(actionButton)}
-                animated={false}
-                style={styles.actionWrap}
-                buttonStyle={styles.actionButton}
-              />
-            </View>
-          </Animated.View>
+          </View>
         </View>
       </Modal>
     </AlertContext.Provider>
@@ -182,15 +185,18 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({
-    overlay: {
+    root: {
+      flex: 1,
+    },
+    backdrop: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(5, 6, 8, 0.85)',
+    },
+    center: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 20,
-      backgroundColor: 'rgba(5, 6, 8, 0.82)',
-    },
-    backdropPress: {
-      ...StyleSheet.absoluteFillObject,
     },
     card: {
       width: '100%',
@@ -198,7 +204,6 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
-      zIndex: 1,
       ...Platform.select({
         ios: {
           shadowColor: '#000',
@@ -206,7 +211,7 @@ const getStyles = (theme: FullTheme) => {
           shadowRadius: 16,
           shadowOffset: { width: 0, height: 8 },
         },
-        android: { elevation: 12 },
+        android: { elevation: 24 },
       }),
     },
     contentRow: {

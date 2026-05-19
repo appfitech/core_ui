@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { invalidateClientResourceQueries } from '@/lib/api/mutation-cache';
+
 import { api } from '../api';
 
 export function useCreateClientResourceWithFile() {
@@ -10,8 +12,8 @@ export function useCreateClientResourceWithFile() {
     mutationFn: async (formData: FormData) => {
       return api.post('/client-resources/with-file', formData, true);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['client-resources-grouped'] });
+    onSuccess: async () => {
+      await invalidateClientResourceQueries(queryClient);
     },
   });
 }

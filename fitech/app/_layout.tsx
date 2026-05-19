@@ -12,12 +12,14 @@ import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useRef } from 'react';
 import { InteractionManager, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 
 import { NavBar } from '@/components/NavBar';
 import { toastConfig } from '@/components/Toast';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
+import { TabBarInsetProvider } from '@/contexts/TabBarInsetContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { withPushNotifications } from '@/hoc/withPushNotifications';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
@@ -171,14 +173,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.flex1}>
-      <StatusBar style="light" backgroundColor={THEME.background.app} />
-      <ThemeProvider>
-        <AlertProvider>
-          <ReactQueryProvider>
-            <RoutedAppWithPush />
-          </ReactQueryProvider>
-        </AlertProvider>
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <StatusBar style="light" backgroundColor={THEME.background.app} />
+        <ThemeProvider>
+          <TabBarInsetProvider>
+            <AlertProvider>
+              <ReactQueryProvider>
+                <RoutedAppWithPush />
+              </ReactQueryProvider>
+            </AlertProvider>
+          </TabBarInsetProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }
