@@ -32,10 +32,5 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.card,
       borderRadius: 16,
       padding: 16,
-      shadowColor: theme.background,
-      shadowOpacity: 0.1,
-      shadowOffset: { width: 0, height: 4 },
-      shadowRadius: 12,
-      elevation: 6,
     },
   });

@@ -22,7 +22,7 @@ export function UserHomeContent() {
 const getStyles = () =>
   StyleSheet.create({
     contentWrapper: {
-      rowGap: 24,
+      rowGap: 20,
     },
     macrosCardWrap: {
       width: '100%',

@@ -251,7 +251,7 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 20,
       paddingTop: 8,
       paddingBottom: 16,
-      backgroundColor: theme.card,
+      backgroundColor: theme.backgroundHeader,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: theme.fixedHeaderBorder,
     },

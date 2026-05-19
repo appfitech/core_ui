@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
+import { colors } from '@/constants/colors';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -119,13 +120,13 @@ function getStyles(theme: FullTheme): ButtonStyles {
     justifyContent: 'center',
   };
   const container: Record<ButtonType, ViewStyle> = {
-    primary: { backgroundColor: theme.primary },
+    primary: { backgroundColor: colors.button.primaryBg },
     secondary: {
-      backgroundColor: 'transparent',
-      borderWidth: 2,
-      borderColor: theme.primary,
+      backgroundColor: colors.button.secondaryBg,
+      borderWidth: 1,
+      borderColor: colors.button.secondaryBorder,
     },
-    destructive: { backgroundColor: theme.error },
+    destructive: { backgroundColor: colors.button.dangerBg },
     tertiary: {
       backgroundColor: theme.backgroundInput,
       borderWidth: 1,
@@ -142,15 +143,15 @@ function getStyles(theme: FullTheme): ButtonStyles {
   const buttonText: Record<ButtonType, TextStyle> = {
     primary: {
       ...text.button,
-      color: theme.background,
+      color: colors.button.primaryText,
     },
     secondary: {
       ...text.button,
-      color: theme.primaryText,
+      color: colors.button.secondaryText,
     },
     destructive: {
       ...text.button,
-      color: theme.background,
+      color: colors.button.dangerText,
     },
     tertiary: {
       ...text.button,
@@ -164,9 +165,9 @@ function getStyles(theme: FullTheme): ButtonStyles {
     },
   };
   const spinnerColor: Record<ButtonType, string> = {
-    primary: theme.background,
-    secondary: theme.primary,
-    destructive: theme.background,
+    primary: colors.button.primaryText,
+    secondary: colors.button.secondaryText,
+    destructive: colors.button.dangerText,
     tertiary: theme.textPrimary,
     link: theme.primary,
   };

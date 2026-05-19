@@ -41,15 +41,13 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.card,
     },
     pageContainer: {
-      padding: 0,
       paddingBottom: 0,
+      paddingTop: 12,
     },
     contentWrapper: {
       backgroundColor: theme.background,
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
       paddingTop: 12,
-
-      paddingBottom: 180,
     },
   });

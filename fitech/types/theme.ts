@@ -59,6 +59,7 @@ export type FullTheme = {
   backgroundInverted: string;
   backgroundInput: string;
   backgroundDropdown: string;
+  backgroundHeader: string;
   card: string;
   textPrimary: string;
   textSecondary: string;

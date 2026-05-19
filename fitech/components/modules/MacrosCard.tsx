@@ -3,9 +3,9 @@ import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Card } from '@/components/Card';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -20,17 +20,17 @@ export function MacrosCard() {
       activeOpacity={0.85}
     >
       <Card style={styles.card}>
-        <View style={{ width: 70 }}>
+        <View style={{ width: 85 }}>
           <Image
-            source={require('@/assets/images/vectors/macro_icon.png')}
+            source={require('@/assets/images/products/macros.jpg')}
             style={styles.image}
-            resizeMode={'contain'}
+            resizeMode={'cover'}
           />
         </View>
         <View style={styles.textContainer}>
-          <AppText style={styles.title}>{'¿Este snack es fit o fat?'}</AppText>
-          <AppText style={styles.subtitle}>
-            {'Busca tus alimentos favoritos y revisa sus macros sin juzgar 😌'}
+          <AppText style={styles.body}>{'¿Qué lleva tu plato?'}</AppText>
+          <AppText style={styles.caption}>
+            {'Busca un alimento y calcula calorías y macros al instante.'}
           </AppText>
         </View>
       </Card>
@@ -39,36 +39,21 @@ export function MacrosCard() {
 }
 
 const getStyles = (theme: FullTheme) => {
-  const text = textStyles(theme);
   return StyleSheet.create({
+    ...textStyles(theme),
     card: {
       flexDirection: 'row',
       columnGap: 16,
       alignItems: 'center',
-      backgroundColor: theme.background,
-      borderLeftWidth: 5,
-      borderLeftColor: theme.primary,
-      borderRadius: 16,
-      padding: 18,
-      shadowColor: theme.backgroundInverted,
-      shadowOpacity: 0.08,
-      shadowOffset: { width: 0, height: 4 },
-      shadowRadius: 12,
-      elevation: 4,
-    },
-    image: {
-      width: '100%',
+      padding: 0,
       height: 100,
     },
-    title: {
-      color: theme.textPrimary,
-      ...text.sectionTitle,
+    image: {
+      borderTopLeftRadius: 16,
+      borderBottomLeftRadius: 16,
+      width: '100%',
+      height: '100%',
     },
-    subtitle: {
-      color: theme.textSecondary,
-      ...text.link,
-      lineHeight: 22,
-    },
-    textContainer: { flex: 1, rowGap: 6 },
+    textContainer: { flex: 1, rowGap: 6, padding: 12 },
   });
 };

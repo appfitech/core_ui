@@ -28,7 +28,7 @@ export function GreetingHeader() {
           )}
           <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
             <AppText variant="greeting" style={styles.greeting}>
-              {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}!`}
+              {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}`}
             </AppText>
           </TouchableOpacity>
         </View>
