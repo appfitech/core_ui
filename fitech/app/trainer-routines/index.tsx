@@ -80,9 +80,7 @@ export default function TrainerRoutinesScreen() {
           <AppText style={styles.sectionTitle}>RESUMEN</AppText>
           <TouchableOpacity
             style={styles.createBtn}
-            onPress={() =>
-              router.push(`${ROUTES.trainerRoutines}/new` as Href)
-            }
+            onPress={() => router.push(`${ROUTES.trainerRoutines}/new` as Href)}
             activeOpacity={0.8}
           >
             <Ionicons name="add" size={18} color={theme.background} />

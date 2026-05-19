@@ -20,10 +20,7 @@ import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';
-import {
-  LocationDto,
-  UserResponseDtoReadable,
-} from '@/types/api/types.gen';
+import { LocationDto, UserResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 export default function PersonalInfoScreen() {

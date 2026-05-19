@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { type Href, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -7,7 +7,6 @@ import { AppText } from '@/components/AppText';
 import { ReviewModal } from '@/components/contracts/ReviewModal';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
-import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useSubmitReview,
