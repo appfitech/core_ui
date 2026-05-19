@@ -22,8 +22,12 @@ export const useUpdateMatchPreferences = () => {
           queryClient.invalidateQueries({
             queryKey: queryKeys.matchPreferences.all,
           }),
-          queryClient.invalidateQueries({ queryKey: queryKeys.gymbro.candidates }),
-          queryClient.invalidateQueries({ queryKey: queryKeys.gymcrush.candidates }),
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.gymbro.candidates,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryKeys.gymcrush.candidates,
+          }),
         ]);
       },
     },

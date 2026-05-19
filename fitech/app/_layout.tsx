@@ -17,6 +17,7 @@ import Toast from 'react-native-toast-message';
 
 import { NavBar } from '@/components/NavBar';
 import { toastConfig } from '@/components/Toast';
+import { STACK_SCREEN_OPTIONS } from '@/constants/navigation';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { TabBarInsetProvider } from '@/contexts/TabBarInsetContext';
@@ -133,12 +134,7 @@ function RoutedApp() {
 
   return (
     <View style={styles.flex1}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { flex: 1 },
-        }}
-      />
+      <Stack screenOptions={STACK_SCREEN_OPTIONS} />
       {!shouldHideNav && <NavBar />}
       <View
         pointerEvents="box-none"

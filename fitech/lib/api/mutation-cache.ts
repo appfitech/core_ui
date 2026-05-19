@@ -1,15 +1,13 @@
 import type { QueryClient } from '@tanstack/react-query';
 
 import { useUserStore } from '@/stores/user';
-import type { LoginResponseDtoReadable, UserResponseDtoReadable } from '@/types/api/types.gen';
+import type {
+  LoginResponseDtoReadable,
+  UserResponseDtoReadable,
+} from '@/types/api/types.gen';
 import type { LoginResponse } from '@/types/user';
 
 import { queryKeys } from './query-keys';
-
-type UserLike =
-  | UserResponseDtoReadable
-  | LoginResponseDtoReadable['user']
-  | LoginResponse['user'];
 
 type MutationUserPayload =
   | LoginResponse
@@ -19,7 +17,9 @@ type MutationUserPayload =
   | null
   | undefined;
 
-function extractUser(data: MutationUserPayload): UserResponseDtoReadable | null {
+function extractUser(
+  data: MutationUserPayload,
+): UserResponseDtoReadable | null {
   if (data == null) return null;
   if ('user' in data && data.user) {
     return data.user as UserResponseDtoReadable;
@@ -61,7 +61,9 @@ export async function invalidateContractQueries(
     queryClient.invalidateQueries({ queryKey: queryKeys.contracts.inactive }),
     queryClient.invalidateQueries({ queryKey: queryKeys.routines.user }),
     queryClient.invalidateQueries({ queryKey: queryKeys.diets.user }),
-    queryClient.invalidateQueries({ queryKey: queryKeys.trainers.clients.list }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.trainers.clients.list,
+    }),
   ]);
 }
 
@@ -88,7 +90,9 @@ export async function invalidateClientResourceQueries(
     }),
     queryClient.invalidateQueries({ queryKey: queryKeys.routines.user }),
     queryClient.invalidateQueries({ queryKey: queryKeys.diets.user }),
-    queryClient.invalidateQueries({ queryKey: queryKeys.trainers.clients.list }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.trainers.clients.list,
+    }),
   ]);
 }
 
@@ -123,7 +127,9 @@ export async function invalidateReviewQueries(
     queryClient.invalidateQueries({
       queryKey: queryKeys.trainers.reviews.breakdown,
     }),
-    queryClient.invalidateQueries({ queryKey: queryKeys.trainers.reviews.list }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.trainers.reviews.list,
+    }),
   ]);
 }
 
@@ -131,7 +137,11 @@ export async function invalidateTrainerServiceQueries(
   queryClient: QueryClient,
 ): Promise<void> {
   await Promise.all([
-    queryClient.invalidateQueries({ queryKey: queryKeys.trainers.servicesList }),
-    queryClient.invalidateQueries({ queryKey: queryKeys.trainers.servicesTypes }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.trainers.servicesList,
+    }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.trainers.servicesTypes,
+    }),
   ]);
 }

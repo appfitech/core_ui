@@ -198,9 +198,7 @@ export default function PageContainer({
   return (
     <View style={[styles.container, styleContainer]}>
       {hasFixedHeader && (
-        <View
-          style={[styles.fixedHeader, { paddingTop: headerTopInset }]}
-        >
+        <View style={[styles.fixedHeader, { paddingTop: headerTopInset }]}>
           <View
             style={[
               styles.fixedHeaderRow,

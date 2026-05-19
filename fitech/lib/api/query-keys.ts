@@ -41,8 +41,10 @@ export const queryKeys = {
   workouts: {
     root: ['workouts'] as const,
     user: ['get-user-workouts'] as const,
-    byDate: (date: string) => [`/workouts/exercises/user/date/${date}`] as const,
-    sets: (workoutId: number) => [`/workouts/exercises/${workoutId}/sets`] as const,
+    byDate: (date: string) =>
+      [`/workouts/exercises/user/date/${date}`] as const,
+    sets: (workoutId: number) =>
+      [`/workouts/exercises/${workoutId}/sets`] as const,
   },
   notifications: {
     all: ['get-user-notifications'] as const,
