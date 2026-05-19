@@ -13,6 +13,8 @@ import { FullTheme } from '@/types/theme';
 import { AppText } from './AppText';
 import { Tag } from './Tag';
 
+const MULTILINE_LINE_HEIGHT = 22;
+
 type Props = TextInputProps & {
   startElement?: React.ReactNode;
   endElement?: React.ReactNode;
@@ -72,9 +74,9 @@ export function TextInput(props: Props) {
     props,
   );
 
-  const minHeight = props.multiline
-    ? (props.numberOfLines ?? 1) * 16 + 16 * 2
-    : undefined;
+  const multiline = Boolean(props.multiline);
+  const lineCount = multiline ? Math.max(props.numberOfLines ?? 4, 4) : 1;
+  const multilineMinHeight = lineCount * MULTILINE_LINE_HEIGHT + 24;
 
   return (
     <View key={props.id ?? 'text-input'} style={styles.field}>
@@ -91,7 +93,13 @@ export function TextInput(props: Props) {
           )}
         </View>
       )}
-      <View style={styles.inputWrapper}>
+      <View
+        style={[
+          styles.inputWrapper,
+          multiline && styles.inputWrapperMultiline,
+          multiline && { minHeight: multilineMinHeight },
+        ]}
+      >
         {startElement && (
           <View style={styles.startElement}>{startElement}</View>
         )}
@@ -99,16 +107,24 @@ export function TextInput(props: Props) {
           {...rest}
           {...secureAutofillProps}
           secureTextEntry={secureTextEntry}
+          multiline={multiline}
+          scrollEnabled={multiline ? false : rest.scrollEnabled}
           placeholderTextColor={theme.icon.muted}
           style={[
             styles.input,
             inputStyleProp ?? {},
-            props.multiline
+            multiline
               ? {
-                  height: undefined,
-                  minHeight,
+                  flex: 1,
+                  alignSelf: 'stretch',
+                  width: '100%',
+                  minHeight: multilineMinHeight - 16,
+                  maxHeight: undefined,
                   textAlignVertical: 'top',
-                  paddingVertical: 12,
+                  paddingVertical: 10,
+                  ...(Platform.OS === 'android'
+                    ? { includeFontPadding: false }
+                    : null),
                 }
               : Platform.OS === 'android'
                 ? {
@@ -139,5 +155,10 @@ const getStyles = (theme: FullTheme) =>
     },
     endElement: {
       marginLeft: 12,
+    },
+    inputWrapperMultiline: {
+      alignItems: 'flex-start',
+      maxHeight: undefined,
+      paddingVertical: 8,
     },
   });

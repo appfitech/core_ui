@@ -9,7 +9,8 @@ import { AppText } from './AppText';
 
 type Props = {
   errorMessage?: string | null;
-  onClear: () => void;
+  /** When omitted, the banner cannot be dismissed (e.g. verify-email errors). */
+  onClear?: () => void;
 };
 
 export function ErrorBanner({ errorMessage = '', onClear }: Props) {
@@ -30,16 +31,20 @@ export function ErrorBanner({ errorMessage = '', onClear }: Props) {
       <AppText style={styles.errorText} numberOfLines={3}>
         {errorMessage}
       </AppText>
-      <TouchableOpacity
-        onPress={onClear}
-        hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-      >
-        <Ionicons
-          name="close"
-          size={18}
-          color={styles.errorText.color as string}
-        />
-      </TouchableOpacity>
+      {onClear ? (
+        <TouchableOpacity
+          onPress={onClear}
+          hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+          accessibilityRole="button"
+          accessibilityLabel="Cerrar mensaje de error"
+        >
+          <Ionicons
+            name="close"
+            size={18}
+            color={styles.errorText.color as string}
+          />
+        </TouchableOpacity>
+      ) : null}
     </Animated.View>
   );
 }

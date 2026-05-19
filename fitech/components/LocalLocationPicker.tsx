@@ -112,7 +112,11 @@ export function LocalLocationPicker({
             {districtLabel}
           </AppText>
           {selected && (
-            <Ionicons name="checkmark-circle" size={20} color={theme.brand.primary} />
+            <Ionicons
+              name="checkmark-circle"
+              size={20}
+              color={theme.brand.primary}
+            />
           )}
         </View>
       );

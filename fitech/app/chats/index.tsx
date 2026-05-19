@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';

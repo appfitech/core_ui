@@ -27,7 +27,12 @@ export const RatingDistribution = ({ data }: { data: RatingBreakdown }) => {
         <View key={item.stars} style={styles.row}>
           <View style={styles.stars}>
             {Array.from({ length: item.stars }).map((_, i) => (
-              <FontAwesome key={i} name="star" size={14} color={theme.status.warning.icon} />
+              <FontAwesome
+                key={i}
+                name="star"
+                size={14}
+                color={theme.status.warning.icon}
+              />
             ))}
           </View>
           <View style={styles.progressContainer}>

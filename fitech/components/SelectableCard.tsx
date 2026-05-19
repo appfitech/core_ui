@@ -62,7 +62,11 @@ export function SelectableCard({
         </AppText>
       </View>
       {selected && (
-        <Ionicons name="checkmark-circle" size={24} color={theme.brand.primary} />
+        <Ionicons
+          name="checkmark-circle"
+          size={24}
+          color={theme.brand.primary}
+        />
       )}
     </TouchableOpacity>
   );

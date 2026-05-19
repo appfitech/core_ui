@@ -159,7 +159,9 @@ export const ReviewModal: React.FC<Props> = ({
             onPress={handleClose}
             disabled={!rating}
           >
-            <AppText style={[styles.modalActionText, { color: theme.icon.secondary }]}>
+            <AppText
+              style={[styles.modalActionText, { color: theme.icon.secondary }]}
+            >
               Cancelar
             </AppText>
           </TouchableOpacity>

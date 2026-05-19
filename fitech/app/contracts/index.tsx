@@ -7,6 +7,7 @@ import { AppText } from '@/components/AppText';
 import { ReviewModal } from '@/components/contracts/ReviewModal';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useSubmitReview,
@@ -16,7 +17,6 @@ import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contract
 import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { ReviewableContractDto } from '@/types/api/types.gen';
-import { textStyles } from '@/constants/styles';
 import { FullTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
 

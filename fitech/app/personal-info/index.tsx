@@ -88,11 +88,7 @@ export default function PersonalInfoScreen() {
   }, []);
 
   return (
-    <PageContainer
-      title="Editar Información Personal"
-      style={styles.pageStyle}
-      contentPaddingBottom={120}
-    >
+    <PageContainer title="Editar Información Personal" style={styles.pageStyle}>
       <Animated.View entering={FadeInUp.delay(100).duration(500)}>
         <InputWrapper
           id={'firstName'}

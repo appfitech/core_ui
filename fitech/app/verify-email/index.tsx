@@ -12,7 +12,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useVerifyEmail } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
-import { extractErrorMessage } from '@/utils/errors';
+import { resolveVerifyEmailError } from '@/utils/errors';
 
 function resolveTokenParam(
   token: string | string[] | undefined,
@@ -65,7 +65,10 @@ export default function VerifyEmailScreen() {
   const errorMessage = !token
     ? verifyEmailScreen.missingToken
     : isError
-      ? extractErrorMessage(error) || verifyEmailScreen.errorFallback
+      ? resolveVerifyEmailError(error, {
+          invalidToken: verifyEmailScreen.invalidToken,
+          fallback: verifyEmailScreen.errorFallback,
+        })
       : null;
 
   const showLoading = Boolean(token) && isPending && !isSuccess && !isError;
@@ -120,12 +123,7 @@ export default function VerifyEmailScreen() {
           ) : null}
         </View>
 
-        <ErrorBanner
-          errorMessage={errorMessage}
-          onClear={() => {
-            if (isError) reset();
-          }}
-        />
+        <ErrorBanner errorMessage={errorMessage} />
 
         {(showSuccess || isError || !token) && (
           <Button

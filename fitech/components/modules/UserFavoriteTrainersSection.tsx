@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Card } from '@/components/Card';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { useUserStore } from '@/stores/user';
@@ -83,7 +83,10 @@ export function UserFavoriteTrainersSection() {
                 >
                   {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
                 </AppText>
-                <AppText variant="small" style={{ color: theme.text.secondary }}>
+                <AppText
+                  variant="small"
+                  style={{ color: theme.text.secondary }}
+                >
                   {truncateWords(trainer?.person?.bio ?? '', 20)}
                 </AppText>
               </View>
@@ -96,7 +99,6 @@ export function UserFavoriteTrainersSection() {
 }
 
 const getStyles = (theme: FullTheme) => {
-  const text = textStyles(theme);
   return StyleSheet.create({
     card: {
       backgroundColor: theme.background.app,

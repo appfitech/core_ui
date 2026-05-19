@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useTheme } from '@/contexts/ThemeContext';
 import { textStyles } from '@/constants/styles';
+import { useTheme } from '@/contexts/ThemeContext';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';

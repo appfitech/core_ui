@@ -4,10 +4,10 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { RatingDistribution } from '@/components/trainer-reviews/RatingBreakdown';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useTrainerGetReviews,
@@ -55,7 +55,6 @@ export default function TrainerReviewsScreen() {
     <PageContainer
       title="Mis Calificaciones"
       subheader="Revisa las calificaciones y comentarios de tus clientes"
-      contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
         <AppText style={styles.sectionTitle}>RESUMEN</AppText>

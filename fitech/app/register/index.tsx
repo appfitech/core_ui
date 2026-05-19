@@ -128,7 +128,6 @@ export default function Register() {
       hasBackButton={false}
       hasNoTopPadding
       hasBottomPadding={false}
-      contentPaddingBottom={40}
       footer={
         <Button
           label={

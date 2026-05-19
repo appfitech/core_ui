@@ -27,7 +27,7 @@ export function RegisterWizardHeader({
   const styles = getStyles(theme);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
+    <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
       <BackButton variant="light" onPress={onBack} />
       <RegisterProgress step={step} total={total} />
       <AppText variant="header" style={styles.title}>

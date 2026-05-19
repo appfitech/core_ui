@@ -101,7 +101,11 @@ export default function NotificationsScreen() {
               activeOpacity={0.7}
             >
               <View style={styles.iconBox}>
-                <Ionicons name={iconName} size={24} color={theme.brand.primary} />
+                <Ionicons
+                  name={iconName}
+                  size={24}
+                  color={theme.brand.primary}
+                />
               </View>
               <View style={styles.cardContent}>
                 <AppText style={styles.cardTitle} numberOfLines={1}>

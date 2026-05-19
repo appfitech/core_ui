@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
 import { FullTheme } from '@/types/theme';
@@ -195,7 +195,6 @@ export default function TrainerServicesScreen() {
       hasBackButton
       title="Gestión de Servicios"
       subheader="Administra los servicios que ofreces a tus clientes"
-      contentPaddingBottom={120}
     >
       <View style={styles.topSection}>
         <View style={styles.summaryColumn}>
@@ -211,7 +210,13 @@ export default function TrainerServicesScreen() {
             label="Servicios Activos"
           />
           <SummaryCard
-            icon={<Ionicons name="people" size={18} color={theme.status.info.icon} />}
+            icon={
+              <Ionicons
+                name="people"
+                size={18}
+                color={theme.status.info.icon}
+              />
+            }
             value={String(enrolledTotal)}
             label="Clientes Inscritos"
           />

@@ -70,7 +70,6 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 5,
     },
     badgeText: {
-      
       ...text.caption,
       color: theme.background.app,
     },

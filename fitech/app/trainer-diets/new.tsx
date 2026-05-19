@@ -6,12 +6,12 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { DatePicker } from '@/components/DatePicker';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { showInfoToast } from '@/components/Toast';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCreateClientResourceWithFile } from '@/lib/api/mutations/use-create-client-resource-with-file';
 import {
@@ -143,11 +143,7 @@ export default function NewTrainerDietScreen() {
   };
 
   return (
-    <PageContainer
-      title="Crear Nueva Dieta"
-      contentPaddingBottom={120}
-      hasBackButton
-    >
+    <PageContainer title="Crear Nueva Dieta" hasBackButton>
       <View style={styles.stepIndicator}>
         <View style={[styles.stepDot, step >= 1 && styles.stepDotActive]}>
           <AppText style={[styles.stepNum, step >= 1 && styles.stepNumActive]}>
@@ -196,7 +192,11 @@ export default function NewTrainerDietScreen() {
             activeOpacity={0.8}
           >
             <AppText style={styles.nextBtnText}>Siguiente</AppText>
-            <Ionicons name="arrow-forward" size={18} color={theme.background.app} />
+            <Ionicons
+              name="arrow-forward"
+              size={18}
+              color={theme.background.app}
+            />
           </TouchableOpacity>
         </View>
       )}

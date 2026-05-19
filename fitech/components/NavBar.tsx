@@ -80,7 +80,9 @@ export function NavBar() {
                 <Ionicons
                   name={icon as keyof typeof Ionicons.glyphMap}
                   size={26}
-                  color={isCurrentRoute ? theme.brand.primary : theme.icon.muted}
+                  color={
+                    isCurrentRoute ? theme.brand.primary : theme.icon.muted
+                  }
                 />
                 <AppText
                   variant="nav"

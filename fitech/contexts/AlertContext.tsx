@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { createContext, useCallback, useContext, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -71,6 +72,7 @@ function resolveButtonType(
 
 export function AlertProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const styles = getStyles(theme);
 
   const [state, setState] = useState<AlertState>({
@@ -118,15 +120,25 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
         visible={state.visible}
         transparent
         animationType="fade"
-        statusBarTranslucent={Platform.OS === 'android'}
+        statusBarTranslucent
         onRequestClose={hide}
       >
-        <Animated.View entering={FadeIn.duration(160)} style={styles.backdrop}>
-          <Pressable style={styles.backdropPress} onPress={hide} />
-          <Animated.View
-            entering={FadeInDown.springify().damping(20).stiffness(240)}
-            style={styles.card}
-          >
+        <View
+          style={[
+            styles.overlay,
+            {
+              paddingTop: insets.top + 16,
+              paddingBottom: insets.bottom + 16,
+            },
+          ]}
+        >
+          <Pressable
+            style={styles.backdropPress}
+            onPress={hide}
+            accessibilityRole="button"
+            accessibilityLabel="Cerrar"
+          />
+          <Animated.View entering={FadeIn.duration(180)} style={styles.card}>
             <View style={styles.contentRow}>
               <View
                 style={[
@@ -137,7 +149,11 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
                 <Ionicons
                   name={iconName}
                   size={22}
-                  color={isDestructive ? theme.status.error.text : theme.brand.primaryLight}
+                  color={
+                    isDestructive
+                      ? theme.status.error.text
+                      : theme.brand.primaryLight
+                  }
                 />
               </View>
               <AppText variant="body" style={styles.body}>
@@ -156,7 +172,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
               />
             </View>
           </Animated.View>
-        </Animated.View>
+        </View>
       </Modal>
     </AlertContext.Provider>
   );
@@ -166,15 +182,15 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({
-    backdrop: {
+    overlay: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       paddingHorizontal: 20,
+      backgroundColor: 'rgba(5, 6, 8, 0.82)',
     },
     backdropPress: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(5, 6, 8, 0.75)',
     },
     card: {
       width: '100%',
@@ -182,6 +198,7 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
+      zIndex: 1,
       ...Platform.select({
         ios: {
           shadowColor: '#000',
@@ -189,7 +206,7 @@ const getStyles = (theme: FullTheme) => {
           shadowRadius: 16,
           shadowOffset: { width: 0, height: 8 },
         },
-        android: { elevation: 10 },
+        android: { elevation: 12 },
       }),
     },
     contentRow: {

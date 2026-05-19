@@ -7,19 +7,24 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+import {
+  CONTENT_GAP_BELOW_HEADER,
+  getFooterScrollPaddingBottom,
+  getScrollPaddingBottom,
+  PAGE_FIXED_HEADER_HEIGHT,
+  PAGE_HEADER_TOP_EXTRA,
+} from '@/utils/layout';
 import { authFadeInUp } from '@/utils/platform-animations';
 
 import { AnimatedAppText } from './AnimatedAppText';
 import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
-const DEFAULT_CONTENT_PADDING_BOTTOM = 220;
-/** Space between fixed header chrome and scroll content */
-const CONTENT_GAP_BELOW_HEADER = 24;
 /** Space between focused field and keyboard (keep small — KASV already positions the field). */
 const KEYBOARD_EXTRA_SCROLL = {
-  default: { ios: 12, android: 8 },
-  withFooter: { ios: 40, android: 24 },
+  default: { ios: 16, android: 24 },
+  /** Sticky footer (e.g. register) — field must clear keyboard + footer button */
+  withFooter: { ios: 88, android: 120 },
 } as const;
 
 type Props = {
@@ -65,45 +70,58 @@ export default function PageContainer({
   onBackPress,
   authOptimized = false,
 }: Props) {
-  const scrollPaddingBottom =
-    contentPaddingBottom ??
-    (hasBottomPadding ? DEFAULT_CONTENT_PADDING_BOTTOM : 80);
   const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const hasFixedHeader = hasBackButton || title;
+  const scrollPaddingBottom =
+    contentPaddingBottom ??
+    (footer
+      ? getFooterScrollPaddingBottom(insets)
+      : hasBottomPadding
+        ? getScrollPaddingBottom(insets)
+        : getScrollPaddingBottom(insets, { includeFab: false }));
+
+  const hasFixedHeader = hasBackButton || !!title;
   const hasFixedSubheader = !!(title && subheader);
   const fixedHeaderHeight = hasFixedHeader
     ? hasFixedSubheader
       ? 88
       : title && !hasBackButton
         ? 68
-        : 60
+        : PAGE_FIXED_HEADER_HEIGHT
     : 0;
 
   const contentGapBelowHeader = hasNoTopPadding ? 16 : CONTENT_GAP_BELOW_HEADER;
 
-  const headerContentOffset = hasFixedHeader
-    ? fixedHeaderHeight + insets.top + contentGapBelowHeader
-    : insets.top;
+  const headerTopInset = insets.top + PAGE_HEADER_TOP_EXTRA;
 
-  const contentPaddingTop = headerContentOffset;
+  const contentPaddingTop = hasFixedHeader
+    ? fixedHeaderHeight + headerTopInset + contentGapBelowHeader
+    : hasNoTopPadding
+      ? 0
+      : insets.top + PAGE_HEADER_TOP_EXTRA;
+
+  const scrollPaddingTop = hasFixedHeader
+    ? contentPaddingTop
+    : hasNoTopPadding
+      ? 0
+      : insets.top + PAGE_HEADER_TOP_EXTRA;
 
   const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
     {
       paddingHorizontal: 24,
-      paddingVertical: 16,
-      paddingTop: contentPaddingTop,
+      paddingTop: scrollPaddingTop,
+      paddingBottom: 16,
     },
     style,
     { paddingBottom: scrollPaddingBottom },
   ];
 
   const keyboardVerticalOffset = hasFixedHeader
-    ? fixedHeaderHeight + insets.top
-    : insets.top;
+    ? fixedHeaderHeight + headerTopInset
+    : headerTopInset;
 
   const keyboardPlatform = Platform.OS === 'android' ? 'android' : 'ios';
   const headerEnter = (duration: number, delay = 0) =>
@@ -117,14 +135,14 @@ export default function PageContainer({
     enableResetScrollToCoords: false,
     keyboardOpeningTime: 0,
     extraScrollHeight: footer
-      ? KEYBOARD_EXTRA_SCROLL.withFooter[
-          authOptimized ? keyboardPlatform : 'ios'
-        ]
-      : KEYBOARD_EXTRA_SCROLL.default[authOptimized ? keyboardPlatform : 'ios'],
+      ? KEYBOARD_EXTRA_SCROLL.withFooter[keyboardPlatform]
+      : KEYBOARD_EXTRA_SCROLL.default[keyboardPlatform],
     keyboardVerticalOffset,
     keyboardShouldPersistTaps: 'handled' as const,
     keyboardDismissMode: 'on-drag' as const,
     showsVerticalScrollIndicator: false,
+    nestedScrollEnabled: true,
+    overScrollMode: 'always' as const,
   };
 
   const scrollHeader =
@@ -171,8 +189,8 @@ export default function PageContainer({
           style={[
             styles.fixedHeader,
             {
-              paddingTop: insets.top,
-              minHeight: fixedHeaderHeight + insets.top,
+              paddingTop: headerTopInset,
+              minHeight: fixedHeaderHeight + headerTopInset,
             },
           ]}
         >
@@ -249,7 +267,6 @@ const getStyles = (theme: FullTheme) => {
       left: 0,
       zIndex: 10,
       paddingHorizontal: 20,
-      paddingTop: 8,
       paddingBottom: 16,
       backgroundColor: theme.background.elevated,
       borderBottomWidth: StyleSheet.hairlineWidth,
@@ -277,7 +294,6 @@ const getStyles = (theme: FullTheme) => {
       color: theme.text.secondary,
     },
     scrollContent: {
-      paddingBottom: 80,
       flexGrow: 1,
     },
     flex: {

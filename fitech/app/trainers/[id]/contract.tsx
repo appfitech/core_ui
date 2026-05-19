@@ -4,9 +4,9 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCreateContract } from '@/lib/api/mutations/use-create-contract';
@@ -93,10 +93,7 @@ export default function TrainerContractScreen() {
   }
 
   return (
-    <PageContainer
-      title="Contratar servicio"
-      subheader={service.name}
-    >
+    <PageContainer title="Contratar servicio" subheader={service.name}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -162,7 +159,11 @@ export default function TrainerContractScreen() {
         >
           <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
             {accepted && (
-              <Ionicons name="checkmark" size={14} color={theme.background.app} />
+              <Ionicons
+                name="checkmark"
+                size={14}
+                color={theme.background.app}
+              />
             )}
           </View>
           <AppText style={styles.checkboxLabel}>

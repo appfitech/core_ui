@@ -4,6 +4,11 @@ import { extractAccessToken } from '@/utils/auth-token';
 
 const API_BASE_URL = 'https://appfitech.com/v1/app';
 
+export type ApiError = Error & {
+  status?: number;
+  data?: Record<string, unknown>;
+};
+
 async function handleResponse(res: Response) {
   const raw = await res.text();
   let parsed: any = {};
@@ -18,8 +23,11 @@ async function handleResponse(res: Response) {
       url: res.url,
       ...parsed,
     });
-    const error = new Error(parsed?.message || 'Unknown API error');
-    (error as any).status = res.status;
+    const message =
+      parsed?.message ?? parsed?.error ?? parsed?.detail ?? `Error ${res.status}`;
+    const error = new Error(String(message));
+    (error as ApiError).status = res.status;
+    (error as ApiError).data = parsed;
     throw error;
   }
   return parsed;

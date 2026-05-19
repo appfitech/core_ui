@@ -36,7 +36,9 @@ export const TRANSLATIONS = {
     missingToken:
       'El enlace de verificación no es válido. Revisa el correo e inténtalo de nuevo.',
     errorFallback:
-      'No pudimos verificar tu correo. El enlace puede haber expirado.',
+      'No pudimos verificar tu correo. Inténtalo de nuevo en unos minutos.',
+    invalidToken:
+      'Este enlace no es válido o ya expiró. Si ya verificaste tu correo, inicia sesión. Si no, revisa tu bandeja y abre el enlace más reciente.',
     goToLogin: 'Ir a iniciar sesión',
     retryButton: 'Reintentar',
   },

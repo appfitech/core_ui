@@ -4,13 +4,13 @@ import { useCallback, useMemo, useState } from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import CancelModal from '@/components/contracts/CancelModal';
 import CompleteModal from '@/components/contracts/CompleteModal';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
 import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';

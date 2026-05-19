@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { TextInput } from '@/components/TextInput';
-import { formStyles, textStyles } from '@/constants/styles';
+import { formStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto, SelectedFoodDto } from '@/types/api/types.gen';
@@ -61,7 +61,11 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
           flexGrow: 0,
         }}
       >
-        <Ionicons name="trash-outline" size={24} color={theme.status.error.text} />
+        <Ionicons
+          name="trash-outline"
+          size={24}
+          color={theme.status.error.text}
+        />
       </TouchableOpacity>
     </View>
   );

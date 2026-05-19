@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useTrainerGetPayments,
@@ -221,11 +221,7 @@ const PaymentRow = ({
         {formatPEN(item.platformCommission)}
       </AppText>
       <AppText
-        style={[
-          styles.td,
-          styles.numCol,
-          { color: theme.brand.primary },
-        ]}
+        style={[styles.td, styles.numCol, { color: theme.brand.primary }]}
       >
         {formatPEN(item.trainerEarnings)}
       </AppText>
@@ -297,7 +293,6 @@ export default function TrainerPaymentsScreen() {
     <PageContainer
       title="Mis Pagos"
       subheader="Gestiona y revisa todos tus ingresos por servicios de entrenamiento"
-      contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
         <AppText style={styles.sectionTitle}>RESUMEN</AppText>

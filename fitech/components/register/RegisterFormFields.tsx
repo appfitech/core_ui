@@ -120,7 +120,9 @@ export function RegisterFormFields({ fields, form, setForm }: Props) {
             value={getFieldValue(form, field) as string | undefined}
             onChangeText={(text) => handleChange(field, text)}
             multiline={field.multiline}
-            numberOfLines={field.multiline ? 10 : 1}
+            numberOfLines={
+              field.numberOfLines ?? (field.multiline ? 5 : undefined)
+            }
             required={!field.isOptional}
           />
         );

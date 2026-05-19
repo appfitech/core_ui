@@ -154,7 +154,11 @@ export function Dropdown({
             : undefined
         }
         renderRightIcon={() => (
-          <Ionicons name="chevron-down" size={20} color={theme.icon.secondary} />
+          <Ionicons
+            name="chevron-down"
+            size={20}
+            color={theme.icon.secondary}
+          />
         )}
         renderItem={
           renderItemProp ??

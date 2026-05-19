@@ -28,12 +28,7 @@ export function ChipToggle({ label, selected, value, onPress }: Props) {
         selected && { backgroundColor: theme.text.primary },
       ]}
     >
-      <AppText
-        style={[
-          styles.label,
-          selected && styles.labelSelected,
-        ]}
-      >
+      <AppText style={[styles.label, selected && styles.labelSelected]}>
         {label}
       </AppText>
     </Pressable>

@@ -6,9 +6,9 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, type DateData, LocaleConfig } from 'react-native-calendars';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
 import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';

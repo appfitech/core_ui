@@ -4,9 +4,9 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCheckContractAvailability } from '@/lib/api/queries/use-check-contract-availability';
@@ -72,7 +72,11 @@ export default function TrainerProfileScreen() {
           <AppText style={styles.role}>Entrenador personal</AppText>
           {trainer.premium && (
             <View style={styles.premiumTag}>
-              <Ionicons name="star" size={14} color={theme.status.warning.icon} />
+              <Ionicons
+                name="star"
+                size={14}
+                color={theme.status.warning.icon}
+              />
               <AppText style={styles.premiumText}>
                 Entrenador certificado
               </AppText>

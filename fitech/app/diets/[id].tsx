@@ -5,10 +5,10 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDietById } from '@/lib/api/queries/use-get-diet-by-id';
 import { FullTheme } from '@/types/theme';

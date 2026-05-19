@@ -5,9 +5,9 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';

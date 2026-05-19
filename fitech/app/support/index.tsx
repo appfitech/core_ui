@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
 import { FullTheme } from '@/types/theme';
@@ -78,7 +78,11 @@ export default function SupportScreen() {
           <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="location-outline" size={20} color={theme.brand.primary} />
+          <Ionicons
+            name="location-outline"
+            size={20}
+            color={theme.brand.primary}
+          />
           <AppText style={styles.contactText}>
             Av. El Derby 254, Surco, Lima
           </AppText>
@@ -162,7 +166,6 @@ const getStyles = (theme: FullTheme) => {
     contactText: {
       ...text.link,
       color: theme.text.secondary,
-      
     },
     formCard: {
       borderRadius: 14,

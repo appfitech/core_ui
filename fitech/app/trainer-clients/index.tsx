@@ -246,7 +246,6 @@ export default function TrainerClientsScreen() {
       hasBackButton={false}
       title="Mis Clientes"
       subheader="Gestiona tus clientes y el progreso de sus entrenamientos"
-      contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
         <View style={styles.searchRow}>

@@ -35,7 +35,11 @@ export default function PremiumFeaturesScreen() {
           activeOpacity={0.85}
         >
           <View style={styles.cardIconWrap}>
-            <Ionicons name="library-outline" size={28} color={theme.brand.primary} />
+            <Ionicons
+              name="library-outline"
+              size={28}
+              color={theme.brand.primary}
+            />
           </View>
           <View style={styles.cardContent}>
             <AppText style={styles.cardTitle}>Biblioteca</AppText>
@@ -57,7 +61,11 @@ export default function PremiumFeaturesScreen() {
             activeOpacity={0.85}
           >
             <View style={styles.cardIconWrap}>
-              <Ionicons name="people-outline" size={28} color={theme.brand.primary} />
+              <Ionicons
+                name="people-outline"
+                size={28}
+                color={theme.brand.primary}
+              />
             </View>
             <View style={styles.cardContent}>
               <AppText style={styles.cardTitle}>GymBro</AppText>
@@ -80,7 +88,11 @@ export default function PremiumFeaturesScreen() {
             activeOpacity={0.85}
           >
             <View style={styles.cardIconWrap}>
-              <Ionicons name="heart-outline" size={28} color={theme.brand.primary} />
+              <Ionicons
+                name="heart-outline"
+                size={28}
+                color={theme.brand.primary}
+              />
             </View>
             <View style={styles.cardContent}>
               <AppText style={styles.cardTitle}>GymCrush</AppText>

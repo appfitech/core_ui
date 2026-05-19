@@ -19,6 +19,7 @@ export type CreateUserFormField = {
   placeholder?: string;
   zIndex?: number;
   multiline?: boolean;
+  numberOfLines?: number;
   isOptional?: boolean;
 };
 
@@ -97,9 +98,10 @@ export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
   },
   {
     label: 'Acerca de ti',
-    field: 'about',
+    field: 'bio',
     inputType: 'text',
     multiline: true,
+    numberOfLines: 5,
     placeholder: 'Cuéntanos un poco sobre ti...',
     isOptional: true,
   },

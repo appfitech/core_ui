@@ -1,8 +1,17 @@
-export const extractErrorMessage = (err: unknown): string => {
-  const anyErr: any = err;
+const DEFAULT_ERROR_MESSAGE = 'Ocurrió un error. Inténtalo nuevamente.';
 
-  if (typeof anyErr === 'string') {
-    return anyErr;
+export const extractErrorMessage = (
+  err: unknown,
+  fallback: string = DEFAULT_ERROR_MESSAGE,
+): string => {
+  const anyErr = err as {
+    message?: string;
+    data?: { message?: string; error?: string };
+    response?: { data?: { message?: string; error?: string } };
+  };
+
+  if (typeof err === 'string') {
+    return err;
   }
 
   if (anyErr?.response?.data?.message) {
@@ -17,9 +26,40 @@ export const extractErrorMessage = (err: unknown): string => {
     return String(anyErr.data.message);
   }
 
-  if (anyErr?.message) {
+  if (anyErr?.data?.error) {
+    return String(anyErr.data.error);
+  }
+
+  if (anyErr?.message && anyErr.message !== 'Unknown API error') {
     return String(anyErr.message);
   }
 
-  return 'Ocurrió un error al iniciar sesión. Inténtalo nuevamente.';
+  return fallback;
 };
+
+type VerifyEmailErrorCopy = {
+  invalidToken: string;
+  fallback: string;
+};
+
+/** User-facing copy for verify-email API failures (400 invalid/expired token, etc.). */
+export function resolveVerifyEmailError(
+  err: unknown,
+  copy: VerifyEmailErrorCopy,
+): string {
+  const raw = extractErrorMessage(err, copy.fallback);
+  const normalized = raw.toLowerCase();
+
+  if (
+    normalized.includes('inválido') ||
+    normalized.includes('invalid') ||
+    normalized.includes('expirado') ||
+    normalized.includes('expired') ||
+    normalized.includes('ya verif') ||
+    normalized.includes('already verif')
+  ) {
+    return copy.invalidToken;
+  }
+
+  return raw;
+}

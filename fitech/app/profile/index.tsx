@@ -41,7 +41,7 @@ export default function ProfileScreen() {
   const userAvatarURL = getUserAvatarURL(person);
 
   return (
-    <PageContainer hasBackButton={false} contentPaddingBottom={120}>
+    <PageContainer hasBackButton={false}>
       <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
         {userAvatarURL ? (
           <Image

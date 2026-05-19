@@ -10,11 +10,11 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import { Dropdown } from '@/components/Dropdown';
 import { TextInput } from '@/components/TextInput';
 import { MUSCLE_GROUPS } from '@/constants/exercise';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import usePreviousValue from '@/hooks/use-previous-value';
 import {

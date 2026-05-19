@@ -2,7 +2,6 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useEffect, useMemo, useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/Button';
@@ -63,6 +62,15 @@ export function DatePicker({
     close();
   };
 
+  const androidApiLevel =
+    Platform.OS === 'android' ? Number(Platform.Version) : 0;
+  const pickerDisplay =
+    Platform.OS === 'ios'
+      ? 'spinner'
+      : androidApiLevel >= 31
+        ? 'inline'
+        : 'calendar';
+
   return (
     <>
       <View>
@@ -80,87 +88,66 @@ export function DatePicker({
           >
             {displayText}
           </AppText>
-          <Ionicons name="chevron-down" size={20} color={theme.icon.secondary} />
+          <Ionicons
+            name="chevron-down"
+            size={20}
+            color={theme.icon.secondary}
+          />
         </Pressable>
       </View>
 
-      {Platform.OS === 'ios' ? (
-        <Modal
-          visible={isOpen}
-          transparent
-          animationType="fade"
-          statusBarTranslucent
-          onRequestClose={close}
-        >
-          <View style={styles.modalRoot}>
-            <Pressable style={styles.backdrop} onPress={close} />
-            <View
-              style={[
-                styles.sheet,
-                { paddingBottom: Math.max(insets.bottom, 16) },
-              ]}
-            >
-              <DateTimePicker
-                value={draftDate}
-                mode="date"
-                display="spinner"
-                locale="es-PE"
-                themeVariant="dark"
-                accentColor={theme.brand.primary}
-                textColor={theme.text.primary}
-                minimumDate={minDate}
-                maximumDate={maxDate}
-                onChange={(_, date) => {
-                  if (date) setDraftDate(date);
-                }}
-                style={styles.picker}
-              />
+      <Modal
+        visible={isOpen}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={close}
+      >
+        <View style={styles.modalRoot}>
+          <Pressable style={styles.backdrop} onPress={close} />
+          <View
+            style={[
+              styles.sheet,
+              { paddingBottom: Math.max(insets.bottom, 16) },
+            ]}
+          >
+            <DateTimePicker
+              value={draftDate}
+              mode="date"
+              display={pickerDisplay}
+              locale="es-PE"
+              themeVariant="dark"
+              accentColor={theme.brand.primary}
+              textColor={theme.text.primary}
+              minimumDate={minDate}
+              maximumDate={maxDate}
+              onChange={(_, date) => {
+                if (date) setDraftDate(date);
+              }}
+              style={styles.picker}
+            />
 
-              <View style={styles.actions}>
-                <Button
-                  label="Cancelar"
-                  type="tertiary"
-                  onPress={close}
-                  animated={false}
-                  style={styles.action}
-                  buttonStyle={styles.actionButton}
-                />
-                <Button
-                  label="Confirmar"
-                  type="primary"
-                  onPress={handleConfirm}
-                  animated={false}
-                  style={styles.action}
-                  buttonStyle={styles.actionButton}
-                />
-              </View>
+            <View style={styles.actions}>
+              <Button
+                label="Cancelar"
+                type="tertiary"
+                onPress={close}
+                animated={false}
+                style={styles.action}
+                buttonStyle={styles.actionButton}
+              />
+              <Button
+                label="Confirmar"
+                type="primary"
+                onPress={handleConfirm}
+                animated={false}
+                style={styles.action}
+                buttonStyle={styles.actionButton}
+              />
             </View>
           </View>
-        </Modal>
-      ) : (
-        <DateTimePickerModal
-          isVisible={isOpen}
-          mode="date"
-          date={initialDate}
-          maximumDate={maxDate}
-          minimumDate={minDate}
-          onConfirm={(picked) => {
-            close();
-            onChange(toISODate(picked));
-          }}
-          onCancel={close}
-          display="default"
-          locale="es-PE"
-          positiveButton={{
-            label: 'Confirmar',
-            textColor: theme.brand.primary,
-          }}
-          negativeButton={{
-            label: 'Cancelar',
-            textColor: theme.text.secondary,
-          }}
-        />
-      )}
+        </View>
+      </Modal>
     </>
   );
 }
@@ -194,10 +181,10 @@ const getStyles = (theme: FullTheme) => {
     modalRoot: {
       flex: 1,
       justifyContent: 'flex-end',
+      backgroundColor: 'rgba(5, 6, 8, 0.75)',
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(5, 6, 8, 0.75)',
     },
     sheet: {
       backgroundColor: theme.background.card,

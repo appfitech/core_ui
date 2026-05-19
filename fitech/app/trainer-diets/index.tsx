@@ -73,7 +73,6 @@ export default function TrainerDietsScreen() {
     <PageContainer
       title="Dietas de Clientes"
       subheader="Gestiona las dietas asignadas a tus clientes"
-      contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
         <View style={styles.topRow}>
@@ -131,7 +130,10 @@ export default function TrainerDietsScreen() {
           </View>
           <View style={[styles.summaryCard, styles.summaryCardInfo]}>
             <View
-              style={[styles.summaryIconWrap, { backgroundColor: theme.status.info.icon }]}
+              style={[
+                styles.summaryIconWrap,
+                { backgroundColor: theme.status.info.icon },
+              ]}
             >
               <MaterialCommunityIcons
                 name="account-group"

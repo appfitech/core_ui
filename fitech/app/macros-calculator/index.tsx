@@ -56,7 +56,11 @@ function MacrosSearchHeader({
           style={styles.searchButton}
           accessibilityRole="button"
         >
-          <Ionicons name="chevron-forward" size={22} color={theme.background.app} />
+          <Ionicons
+            name="chevron-forward"
+            size={22}
+            color={theme.background.app}
+          />
         </TouchableOpacity>
       </View>
 
@@ -168,7 +172,6 @@ export default function MacrosCalculatorScreen() {
       title="¿Cuántos gramos tiene tu antojo?"
       subheader="Descubre si estás alimentando músculo, energía... o puro gustito."
       style={styles.pageContent}
-      contentPaddingBottom={120}
       disableScroll
     >
       <FlatList

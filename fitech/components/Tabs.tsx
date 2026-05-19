@@ -13,8 +13,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { useTheme } from '@/contexts/ThemeContext';
 import { textStyles } from '@/constants/styles';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
 import { rippleFromHex } from '@/utils/theme';

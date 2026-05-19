@@ -13,11 +13,11 @@ import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useLogin } from '@/lib/api/mutations/use-account-mutations';
 import { useUserStore } from '@/stores/user';
-import { textStyles } from '@/constants/styles';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 import {

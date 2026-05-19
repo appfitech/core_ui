@@ -21,7 +21,6 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import ConfettiAnimation from '@/assets/lottie/confetti.json';
-import { textStyles } from '@/constants/styles';
 import { AppText } from '@/components/AppText';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import { MatchContactCard } from '@/components/MatchContactCard';
@@ -30,6 +29,7 @@ import PageContainer from '@/components/PageContainer';
 import { Tabs } from '@/components/Tabs';
 import { showMatchToast } from '@/components/Toast';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useDiscardGymBro,

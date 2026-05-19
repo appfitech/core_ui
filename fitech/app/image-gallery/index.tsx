@@ -109,11 +109,7 @@ export default function ImageGalleryScreen() {
   };
 
   return (
-    <PageContainer
-      title="Gestiona tus fotos"
-      style={styles.pageContent}
-      contentPaddingBottom={120}
-    >
+    <PageContainer title="Gestiona tus fotos" style={styles.pageContent}>
       <View style={styles.bannerCard}>
         <AppText style={styles.trainerBannerTitle}>
           🎯 ¡Haz que tu perfil destaque!
@@ -182,15 +178,25 @@ export default function ImageGalleryScreen() {
                 </View>
               ) : (
                 <TouchableOpacity
-                  style={[styles.starBadge, { backgroundColor: theme.brand.primary }]}
+                  style={[
+                    styles.starBadge,
+                    { backgroundColor: theme.brand.primary },
+                  ]}
                   onPress={() => confirmSetAsProfile(item.id)}
                 >
-                  <Ionicons name="star" size={16} color={theme.background.app} />
+                  <Ionicons
+                    name="star"
+                    size={16}
+                    color={theme.background.app}
+                  />
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity
-                style={[styles.deleteBtn, { backgroundColor: theme.status.error.icon }]}
+                style={[
+                  styles.deleteBtn,
+                  { backgroundColor: theme.status.error.icon },
+                ]}
                 onPress={() => removePhoto(index)}
               >
                 <Ionicons name="close" size={16} color={theme.background.app} />

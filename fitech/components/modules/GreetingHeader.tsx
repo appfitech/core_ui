@@ -51,8 +51,8 @@ export function GreetingHeader() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     headerWrapper: {
-      paddingTop: 16,
-      paddingBottom: 24,
+      paddingTop: 12,
+      paddingBottom: 20,
       paddingHorizontal: 16,
       rowGap: 4,
       backgroundColor: theme.background.card,

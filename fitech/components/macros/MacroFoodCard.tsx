@@ -2,8 +2,8 @@ import React, { memo, useCallback } from 'react';
 import { Image, Platform, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import { Tag } from '@/components/Tag';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto } from '@/types/api/types.gen';
 
@@ -99,9 +99,7 @@ function MacroFoodCardInner({
                 borderRadius: 999,
               }}
             >
-              <AppText
-                style={{ ...text.nav, color: theme.text.primary }}
-              >
+              <AppText style={{ ...text.nav, color: theme.text.primary }}>
                 {`${foodItem?.macros?.calories} kcal`}
               </AppText>
             </View>
@@ -117,9 +115,7 @@ function MacroFoodCardInner({
                 borderRadius: 999,
               }}
             >
-              <AppText
-                style={{ ...text.nav, color: theme.text.primary }}
-              >
+              <AppText style={{ ...text.nav, color: theme.text.primary }}>
                 {`${foodItem?.macros?.proteins} proteína`}
               </AppText>
             </View>
