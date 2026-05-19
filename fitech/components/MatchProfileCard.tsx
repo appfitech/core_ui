@@ -83,15 +83,15 @@ export function MatchProfileCard({ candidate }: Props) {
           <View style={styles.tagsContainer}>
             {candidate.city && (
               <Tag
-                backgroundColor={theme.primary}
-                textColor={theme.background}
+                backgroundColor={theme.brand.primary}
+                textColor={theme.background.app}
                 label={candidate.city}
               />
             )}
             {candidate.fitnessLevel && (
               <Tag
-                backgroundColor={theme.primary}
-                textColor={theme.background}
+                backgroundColor={theme.brand.primary}
+                textColor={theme.background.app}
                 label={candidate.fitnessLevel}
               />
             )}
@@ -115,7 +115,7 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 24,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     cardSize: {
       width: CARD_W,
@@ -127,11 +127,11 @@ const getStyles = (theme: FullTheme) => {
       overflow: 'hidden',
     },
     imagePlaceholder: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
     },
     imagePlaceholderOverlay: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
     },
     imagePlaceholderOverlayHidden: {
       opacity: 0,
@@ -144,7 +144,7 @@ const getStyles = (theme: FullTheme) => {
     cardFooter: {
       flex: 1,
       minHeight: 140,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderBottomLeftRadius: 24,
       borderBottomRightRadius: 24,
       paddingHorizontal: 20,

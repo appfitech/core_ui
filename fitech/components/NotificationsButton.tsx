@@ -32,7 +32,7 @@ export function NotificationsButton() {
       <Ionicons
         name="notifications-outline"
         size={22}
-        color={theme.fixedHeaderTitleColor}
+        color={theme.text.primary}
       />
       {!!data?.unreadCount && (
         <View style={styles.badge}>
@@ -61,7 +61,7 @@ const getStyles = (theme: FullTheme) => {
       position: 'absolute',
       right: -2,
       top: -2,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
@@ -72,7 +72,7 @@ const getStyles = (theme: FullTheme) => {
     badgeText: {
       
       ...text.caption,
-      color: theme.background,
+      color: theme.background.app,
     },
   });
 };

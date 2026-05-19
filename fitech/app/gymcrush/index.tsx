@@ -338,7 +338,7 @@ const getStyles = (theme: FullTheme) => {
     emptyCard: {
       width: CARD_W,
       height: CARD_H,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     listContent: { gap: 12, paddingBottom: 24 },
     listEmptyWrapper: {
@@ -347,7 +347,7 @@ const getStyles = (theme: FullTheme) => {
       alignItems: 'center',
     },
     emptyText: {
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       ...text.bodyMedium,
       textAlign: 'center',
     },

@@ -82,7 +82,7 @@ export default function MacrosCalculatorCalculateScreen() {
               padding: 10,
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: theme.primary,
+              backgroundColor: theme.brand.primary,
               borderRadius: 12,
               columnGap: 10,
               marginTop: 30,
@@ -91,20 +91,20 @@ export default function MacrosCalculatorCalculateScreen() {
           >
             <AppText
               style={{
-                color: theme.background,
+                color: theme.background.app,
                 ...text.leadSemibold,
               }}
             >
               {'Mostrar resultados'}
             </AppText>
-            <Ionicons name="play" size={20} color={theme.background} />
+            <Ionicons name="play" size={20} color={theme.background.app} />
           </TouchableOpacity>
         </View>
       )}
       {!!selectedItems.length && !!calculation && (
         <View
           style={{
-            backgroundColor: theme.background,
+            backgroundColor: theme.background.app,
             padding: 14,
             borderRadius: 12,
             marginTop: 20,
@@ -114,7 +114,7 @@ export default function MacrosCalculatorCalculateScreen() {
         >
           <AppText
             style={{
-              color: theme.infoText,
+              color: theme.status.info.text,
               ...text.sectionTitle,
             }}
           >
@@ -122,7 +122,7 @@ export default function MacrosCalculatorCalculateScreen() {
           </AppText>
           <View
             style={{
-              backgroundColor: theme.successBackground,
+              backgroundColor: theme.status.success.bg,
               borderRadius: '50%',
               padding: 30,
               alignItems: 'center',
@@ -130,7 +130,7 @@ export default function MacrosCalculatorCalculateScreen() {
           >
             <AppText
               style={{
-                color: theme.successText,
+                color: theme.status.success.text,
                 ...text.display,
               }}
             >
@@ -138,7 +138,7 @@ export default function MacrosCalculatorCalculateScreen() {
             </AppText>
             <AppText
               style={{
-                color: theme.successText,
+                color: theme.status.success.text,
                 ...text.sectionTitle,
               }}
             >
@@ -157,7 +157,7 @@ export default function MacrosCalculatorCalculateScreen() {
                 <AppText
                   style={{
                     ...text.lead,
-                    color: theme.dark500,
+                    color: theme.text.disabled,
                     paddingLeft: 20,
                   }}
                 >
@@ -166,7 +166,7 @@ export default function MacrosCalculatorCalculateScreen() {
                 <AppText
                   style={{
                     ...text.lead,
-                    color: theme.infoText,
+                    color: theme.status.info.text,
                     paddingLeft: 20,
                   }}
                 >
@@ -186,8 +186,8 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     ...formStyles(theme),
     banner: {
-      backgroundColor: theme.warningBackground,
-      borderColor: theme.warningBorder,
+      backgroundColor: theme.status.warning.bg,
+      borderColor: theme.status.warning.border,
       borderWidth: 2,
       borderRadius: 20,
       padding: 16,
@@ -195,7 +195,7 @@ const getStyles = (theme: FullTheme) => {
     },
     bannerLabel: {
       ...text.sectionTitle,
-      color: theme.warningText,
+      color: theme.status.warning.text,
     },
   });
 };

@@ -35,11 +35,11 @@ export function SearchBar({
 
   return (
     <View style={[styles.searchBar, containerStyle]}>
-      <Ionicons name="search-outline" size={18} color={theme.dark600} />
+      <Ionicons name="search-outline" size={18} color={theme.text.secondary} />
       <TextInput
         placeholder={placeholder}
         readOnly={readOnly}
-        placeholderTextColor={theme.dark600}
+        placeholderTextColor={theme.text.secondary}
         style={[styles.input, style]}
         onPress={onPress}
         onChangeText={onChangeText}
@@ -61,17 +61,17 @@ const getStyles = (theme: FullTheme) => {
       width: '100%',
       height: INPUT_HEIGHT,
       paddingHorizontal: 14,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     input: {
       ...text.link,
       flex: 1,
       height: INPUT_HEIGHT,
       paddingVertical: 0,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
     },
   });

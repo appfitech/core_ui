@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
@@ -95,18 +95,18 @@ const StatusPill = ({ status }: { status: ServiceItem['status'] }) => {
 
   const map: Record<string, { bg: string; text: string; label: string }> = {
     active: {
-      bg: theme.successBackground,
-      text: theme.successText,
+      bg: theme.status.success.bg,
+      text: theme.status.success.text,
       label: 'Activo',
     },
     paused: {
-      bg: theme.warningBackground,
-      text: theme.warningText,
+      bg: theme.status.warning.bg,
+      text: theme.status.warning.text,
       label: 'Pausado',
     },
     finished: {
-      bg: theme.backgroundInput,
-      text: theme.textSecondary,
+      bg: theme.background.input,
+      text: theme.text.secondary,
       label: 'Finalizado',
     },
   };
@@ -158,7 +158,7 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Entypo
               name="dots-three-vertical"
               size={16}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
             />
           </TouchableOpacity>
         </View>
@@ -173,7 +173,7 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
           <Ionicons
             name="cash-outline"
             size={20}
-            color={theme.success}
+            color={theme.status.success.icon}
             style={styles.priceIconLeft}
           />
           <AppText style={styles.priceText}>
@@ -187,7 +187,7 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name={s.modality === 'remoto' ? 'videocam' : 'walk'}
               size={14}
-              color={theme.textPrimary}
+              color={theme.text.primary}
               style={styles.modalityIcon}
             />
             <AppText style={styles.modalityText}>
@@ -203,7 +203,7 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name="play"
               size={14}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.metaIcon}
             />
           }
@@ -215,7 +215,7 @@ const ServiceCard = ({ s }: { s: ServiceItem }) => {
             <Ionicons
               name="card"
               size={14}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.metaIcon}
             />
           }
@@ -246,7 +246,6 @@ export default function TrainerClientsScreen() {
       hasBackButton={false}
       title="Mis Clientes"
       subheader="Gestiona tus clientes y el progreso de sus entrenamientos"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
@@ -262,7 +261,7 @@ export default function TrainerClientsScreen() {
             <Ionicons
               name="chevron-forward"
               size={22}
-              color={theme.background}
+              color={theme.background.app}
             />
           </TouchableOpacity>
         </View>
@@ -324,7 +323,7 @@ export default function TrainerClientsScreen() {
               <Ionicons
                 name="chatbubble-outline"
                 size={18}
-                color={theme.background}
+                color={theme.background.app}
               />
               <AppText style={styles.contactarButtonText}>Contactar</AppText>
             </TouchableOpacity>
@@ -350,7 +349,6 @@ export default function TrainerClientsScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     contentWrap: {
       rowGap: 12,
       paddingVertical: 8,
@@ -362,7 +360,7 @@ const getStyles = (theme: FullTheme) => {
     },
     searchBarContainer: { flex: 1 },
     searchButton: {
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 12,
@@ -371,16 +369,16 @@ const getStyles = (theme: FullTheme) => {
     },
     resultCount: {
       ...text.smallSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 4,
     },
     clientCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
       marginBottom: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     clientHeaderRow: {
       flexDirection: 'row',
@@ -397,13 +395,13 @@ const getStyles = (theme: FullTheme) => {
     avatar: {
       width: 56,
       height: 56,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
     },
     avatarPlaceholder: {
       width: 56,
       height: 56,
       borderRadius: 28,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
     },
     clientInfo: {
       flex: 1,
@@ -411,11 +409,11 @@ const getStyles = (theme: FullTheme) => {
     },
     clientName: {
       ...text.leadSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     bio: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 0,
       marginBottom: 10,
       lineHeight: 20,
@@ -426,7 +424,7 @@ const getStyles = (theme: FullTheme) => {
     },
     sectionTitle: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
     },
@@ -440,7 +438,7 @@ const getStyles = (theme: FullTheme) => {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 12,
@@ -450,18 +448,18 @@ const getStyles = (theme: FullTheme) => {
     },
     contactarButtonText: {
       ...text.linkSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     chip: {
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
     },
-    chipNeutral: { backgroundColor: theme.backgroundInput },
-    chipSuccess: { backgroundColor: theme.successBackground },
+    chipNeutral: { backgroundColor: theme.background.input },
+    chipSuccess: { backgroundColor: theme.status.success.bg },
     chipText: { ...text.captionSemibold },
-    chipTextNeutral: { color: theme.textSecondary },
-    chipTextSuccess: { color: theme.successText },
+    chipTextNeutral: { color: theme.text.secondary },
+    chipTextSuccess: { color: theme.status.success.text },
     servicesList: { gap: 12 },
     serviceCardWrap: {
       position: 'relative',
@@ -474,15 +472,15 @@ const getStyles = (theme: FullTheme) => {
       width: 4,
       borderTopLeftRadius: 10,
       borderBottomLeftRadius: 10,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
     },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 12,
       padding: 14,
       paddingLeft: 18,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     cardHeader: {
       flexDirection: 'row',
@@ -492,20 +490,20 @@ const getStyles = (theme: FullTheme) => {
     },
     cardTitle: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       flex: 1,
       marginRight: 8,
     },
     cardDesc: {
       ...text.small,
       lineHeight: 20,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 12,
     },
     priceBox: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.successBackground,
+      backgroundColor: theme.status.success.bg,
       borderRadius: 10,
       paddingVertical: 10,
       paddingHorizontal: 12,
@@ -517,17 +515,17 @@ const getStyles = (theme: FullTheme) => {
     },
     priceText: {
       ...text.linkSemibold,
-      color: theme.successText,
+      color: theme.status.success.text,
     },
     priceSuffix: {
       ...text.link,
-      color: theme.successText,
+      color: theme.status.success.text,
       opacity: 0.9,
     },
     modalityPill: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
@@ -536,7 +534,7 @@ const getStyles = (theme: FullTheme) => {
     modalityIcon: { marginRight: 0 },
     modalityText: {
       ...text.captionSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     statusPill: {
       paddingHorizontal: 10,
@@ -552,7 +550,7 @@ const getStyles = (theme: FullTheme) => {
     },
     metaLeft: { flexDirection: 'row', alignItems: 'center' },
     metaIcon: { marginRight: 8 },
-    metaLabel: { ...text.caption, color: theme.textSecondary },
-    metaValue: { ...text.nav, color: theme.primary },
+    metaLabel: { ...text.caption, color: theme.text.secondary },
+    metaValue: { ...text.nav, color: theme.brand.primary },
   });
 };

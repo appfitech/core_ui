@@ -96,7 +96,7 @@ export default function VerifyEmailScreen() {
               color={styles.iconSuccess.color}
             />
           ) : showLoading ? (
-            <ActivityIndicator size="large" color={theme.primary} />
+            <ActivityIndicator size="large" color={theme.brand.primary} />
           ) : (
             <Ionicons
               name="mail-outline"
@@ -169,7 +169,7 @@ const getStyles = (theme: FullTheme) => {
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: theme.primaryBg,
+        backgroundColor: theme.brand.primarySoft,
         marginBottom: 8,
       },
       title: {
@@ -184,7 +184,7 @@ const getStyles = (theme: FullTheme) => {
         rowGap: 4,
       },
     }),
-    iconAccent: { color: theme.primary },
-    iconSuccess: { color: theme.success },
+    iconAccent: { color: theme.brand.primary },
+    iconSuccess: { color: theme.status.success.icon },
   };
 };

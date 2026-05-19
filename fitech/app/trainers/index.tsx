@@ -97,7 +97,7 @@ export default function TrainersSearchScreen() {
                 <Ionicons
                   name="chevron-forward"
                   size={18}
-                  color={theme.primaryText}
+                  color={theme.brand.primaryLight}
                 />
               </View>
             </View>
@@ -113,17 +113,17 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginTop: 16,
     },
     filterHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 10,
     },
     searchBarContainer: {
@@ -131,7 +131,7 @@ const getStyles = (theme: FullTheme) => {
     },
     resultCount: {
       ...text.smallSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 16,
       marginBottom: 4,
     },
@@ -142,10 +142,10 @@ const getStyles = (theme: FullTheme) => {
     card: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 16,
       columnGap: 14,
     },
@@ -160,11 +160,11 @@ const getStyles = (theme: FullTheme) => {
     },
     name: {
       ...text.leadSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     bio: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 4,
       lineHeight: 20,
     },
@@ -177,7 +177,7 @@ const getStyles = (theme: FullTheme) => {
     },
     ctaText: {
       ...text.smallSemibold,
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
   });
 };

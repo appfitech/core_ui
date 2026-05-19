@@ -56,14 +56,14 @@ function MacrosSearchHeader({
           style={styles.searchButton}
           accessibilityRole="button"
         >
-          <Ionicons name="chevron-forward" size={22} color={theme.background} />
+          <Ionicons name="chevron-forward" size={22} color={theme.background.app} />
         </TouchableOpacity>
       </View>
 
       <View style={styles.calculateRow}>
         <TouchableOpacity style={styles.calculateButton} onPress={onCalculate}>
           <AppText style={styles.calculateButtonText}>{'Calcular'}</AppText>
-          <Ionicons name="play" size={20} color={theme.background} />
+          <Ionicons name="play" size={20} color={theme.background.app} />
         </TouchableOpacity>
       </View>
     </>
@@ -143,7 +143,7 @@ export default function MacrosCalculatorScreen() {
     if (isLoading || isFetching) {
       return (
         <View style={styles.emptyWrap}>
-          <ActivityIndicator size="large" color={theme.primary} />
+          <ActivityIndicator size="large" color={theme.brand.primary} />
         </View>
       );
     }
@@ -157,7 +157,7 @@ export default function MacrosCalculatorScreen() {
     isLoading,
     styles.emptyText,
     styles.emptyWrap,
-    theme.primary,
+    theme.brand.primary,
     trimmedDebounced.length,
   ]);
 
@@ -211,7 +211,7 @@ const getStyles = (theme: FullTheme) => {
     sectionLabel: {
       ...text.bodySemibold,
       marginBottom: 8,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     searchRow: {
       flexDirection: 'row',
@@ -225,7 +225,7 @@ const getStyles = (theme: FullTheme) => {
       minWidth: 0,
     },
     searchButton: {
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
@@ -243,17 +243,17 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 12,
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       borderRadius: 12,
       columnGap: 4,
     },
     calculateButtonText: {
-      color: theme.background,
+      color: theme.background.app,
       ...text.leadSemibold,
     },
     emptyText: {
       textAlign: 'center',
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       ...text.link,
       paddingVertical: 32,
       paddingHorizontal: 12,

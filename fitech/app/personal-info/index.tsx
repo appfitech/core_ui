@@ -123,7 +123,7 @@ export default function PersonalInfoScreen() {
               <Ionicons
                 name="checkmark-circle"
                 size={18}
-                color={theme.success}
+                color={theme.status.success.icon}
               />
               <AppText style={styles.verifiedText}>Verificado</AppText>
             </View>
@@ -227,7 +227,7 @@ export default function PersonalInfoScreen() {
                     }}
                     style={[
                       styles.locationRow,
-                      selected && { backgroundColor: theme.primary },
+                      selected && { backgroundColor: theme.brand.primary },
                     ]}
                   >
                     <AppText
@@ -289,18 +289,18 @@ const getStyles = (theme: FullTheme) => {
     verifiedTag: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.successBackground,
+      backgroundColor: theme.status.success.bg,
       paddingHorizontal: 12,
       paddingVertical: 8,
       borderRadius: 10,
       gap: 8,
       borderWidth: 1,
-      borderColor: theme.successBorder,
+      borderColor: theme.status.success.border,
       marginBottom: 8,
     },
     verifiedText: {
       ...text.smallSemibold,
-      color: theme.successText,
+      color: theme.status.success.text,
     },
     modalBackdrop: {
       flex: 1,
@@ -310,32 +310,32 @@ const getStyles = (theme: FullTheme) => {
     },
     modalCard: {
       borderRadius: 16,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       padding: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     modalTitle: {
       ...text.sectionTitle,
       marginBottom: 12,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     locationRow: {
       paddingVertical: 14,
       paddingHorizontal: 12,
       borderRadius: 12,
       marginBottom: 6,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     locationRowText: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     locationRowTextSelected: {
       ...text.linkSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     modalActions: {
       flexDirection: 'row',

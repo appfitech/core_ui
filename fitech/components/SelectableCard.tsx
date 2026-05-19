@@ -51,7 +51,7 @@ export function SelectableCard({
       activeOpacity={0.8}
     >
       <View style={styles.iconWrapper}>
-        <Ionicons name={iconName} size={26} color={theme.primary} />
+        <Ionicons name={iconName} size={26} color={theme.brand.primary} />
       </View>
       <View style={styles.content}>
         <AppText variant="body" style={styles.title}>
@@ -62,7 +62,7 @@ export function SelectableCard({
         </AppText>
       </View>
       {selected && (
-        <Ionicons name="checkmark-circle" size={24} color={theme.primary} />
+        <Ionicons name="checkmark-circle" size={24} color={theme.brand.primary} />
       )}
     </TouchableOpacity>
   );
@@ -73,23 +73,23 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     card: {
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       padding: 16,
       flexDirection: 'row',
       alignItems: 'center',
     },
     cardSelected: {
-      borderColor: theme.primary,
-      backgroundColor: theme.primaryBg ?? theme.green100,
+      borderColor: theme.brand.primary,
+      backgroundColor: theme.brand.primarySoft ?? theme.status.success.bgStrong,
     },
     iconWrapper: {
       marginRight: 14,
       width: 36,
       height: 36,
       borderRadius: 10,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },

@@ -8,10 +8,10 @@ import React, {
 
 import { THEME } from '@/constants/theme';
 import { THEME_PREFERENCE_KEY } from '@/constants/theme-storage';
-import { FullTheme } from '@/types/theme';
+import type { AppTheme } from '@/types/theme';
 
 type ThemeContextType = {
-  theme: FullTheme;
+  theme: AppTheme;
   /** Always `'dark'` — light/system themes are no longer supported. */
   themePreference: 'dark';
   setThemePreference: () => Promise<void>;

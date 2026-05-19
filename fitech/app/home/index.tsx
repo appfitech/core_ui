@@ -38,14 +38,14 @@ const getStyles = (theme: FullTheme) =>
     wrapper: {
       flex: 1,
       position: 'relative',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
     },
     pageContainer: {
       paddingBottom: 0,
       paddingTop: 12,
     },
     contentWrapper: {
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
       borderTopLeftRadius: 24,
       borderTopRightRadius: 24,
       paddingTop: 12,

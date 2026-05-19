@@ -21,7 +21,7 @@ export function ChatButton() {
       <Ionicons
         name="chatbubble-outline"
         size={22}
-        color={theme.fixedHeaderTitleColor}
+        color={theme.text.primary}
       />
     </TouchableOpacity>
   );

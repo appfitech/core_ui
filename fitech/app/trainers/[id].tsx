@@ -59,7 +59,6 @@ export default function TrainerProfileScreen() {
           ? `${trainer.person.firstName} ${trainer.person.lastName}`
           : 'Entrenador'
       }
-      style={styles.pageStyle}
       contentPaddingBottom={100}
     >
       {trainer && (
@@ -73,7 +72,7 @@ export default function TrainerProfileScreen() {
           <AppText style={styles.role}>Entrenador personal</AppText>
           {trainer.premium && (
             <View style={styles.premiumTag}>
-              <Ionicons name="star" size={14} color={theme.warning} />
+              <Ionicons name="star" size={14} color={theme.status.warning.icon} />
               <AppText style={styles.premiumText}>
                 Entrenador certificado
               </AppText>
@@ -96,7 +95,7 @@ export default function TrainerProfileScreen() {
                   <Ionicons
                     name="cash-outline"
                     size={20}
-                    color={theme.primary}
+                    color={theme.brand.primary}
                   />
                   <AppText style={styles.servicePrice}>
                     S/ {service.totalPrice.toFixed(2)}
@@ -151,7 +150,6 @@ export default function TrainerProfileScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     profileBlock: {
       alignItems: 'center',
       marginTop: 8,
@@ -165,12 +163,12 @@ const getStyles = (theme: FullTheme) => {
     },
     role: {
       ...text.smallSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     premiumTag: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.warningBackground,
+      backgroundColor: theme.status.warning.bg,
       paddingHorizontal: 10,
       paddingVertical: 6,
       borderRadius: 999,
@@ -179,14 +177,14 @@ const getStyles = (theme: FullTheme) => {
     },
     premiumText: {
       ...text.captionSemibold,
-      color: theme.warningText,
+      color: theme.status.warning.text,
     },
     section: {
       marginBottom: 24,
     },
     sectionTitle: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 10,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -195,19 +193,19 @@ const getStyles = (theme: FullTheme) => {
       rowGap: 12,
     },
     serviceCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 18,
     },
     serviceName: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     serviceDesc: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 6,
       lineHeight: 20,
     },
@@ -219,7 +217,7 @@ const getStyles = (theme: FullTheme) => {
     },
     servicePrice: {
       ...text.linkSemibold,
-      color: theme.primary,
+      color: theme.brand.primary,
     },
     serviceCta: {
       marginTop: 14,
@@ -234,15 +232,15 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 12,
     },
     aboutCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 18,
     },
     aboutText: {
       ...text.link,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       lineHeight: 22,
     },
   });

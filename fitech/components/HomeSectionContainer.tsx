@@ -11,6 +11,8 @@ type Props = {
   children: React.ReactNode;
   onClick: () => void;
   titleStyle?: TextStyle;
+  /** When false, only renders children (no title or “Ver todo”). Default true. */
+  showHeader?: boolean;
 };
 
 export function HomeSectionContainer({
@@ -18,23 +20,26 @@ export function HomeSectionContainer({
   title,
   onClick,
   titleStyle,
+  showHeader = true,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
-      <View style={styles.sectionHeader}>
-        <AppText style={[styles.sectionTitle, titleStyle]}>{title}</AppText>
-        <TouchableOpacity onPress={onClick} style={styles.sectionAction}>
-          <AppText style={styles.sectionActionText}>{'Ver todo'}</AppText>
-          <Ionicons
-            name="chevron-forward"
-            size={16}
-            color={theme.successText}
-          />
-        </TouchableOpacity>
-      </View>
+      {showHeader ? (
+        <View style={styles.sectionHeader}>
+          <AppText style={[styles.sectionTitle, titleStyle]}>{title}</AppText>
+          <TouchableOpacity onPress={onClick} style={styles.sectionAction}>
+            <AppText style={styles.sectionActionText}>{'Ver todo'}</AppText>
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={theme.status.success.text}
+            />
+          </TouchableOpacity>
+        </View>
+      ) : null}
       {children}
     </View>
   );
@@ -51,7 +56,7 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'space-between',
     },
     sectionTitle: {
-      color: theme.textPrimary,
+      color: theme.text.primary,
       fontSize: 15,
     },
     sectionAction: {
@@ -59,7 +64,7 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     sectionActionText: {
-      color: theme.successText,
+      color: theme.status.success.text,
       fontSize: 14,
       fontWeight: '700',
     },

@@ -37,7 +37,7 @@ export function MatchButtonSection({
           buttonStyle={styles.refreshButton}
         >
           <View style={styles.refreshIconRow}>
-            <Ionicons name="refresh" size={22} color={theme.primary} />
+            <Ionicons name="refresh" size={22} color={theme.brand.primary} />
           </View>
         </Button>
       </View>

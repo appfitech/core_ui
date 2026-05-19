@@ -55,7 +55,7 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 24,
       paddingHorizontal: 16,
       rowGap: 4,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
     },
     topRow: {
       flexDirection: 'row',
@@ -74,7 +74,7 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 10,
     },
     greeting: {
-      color: theme.fixedHeaderTitleColor,
+      color: theme.text.primary,
       textAlign: 'left',
     },
     subtext: {
@@ -87,8 +87,4 @@ const getStyles = (theme: FullTheme) =>
       height: 30,
       borderRadius: 70,
     },
-    searchWrapper: {
-      marginTop: 24,
-    },
-    searchBarContainer: {},
   });

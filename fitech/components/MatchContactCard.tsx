@@ -83,15 +83,15 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
           <View style={styles.tagsContainer}>
             {candidate.city && (
               <Tag
-                backgroundColor={theme.primary}
-                textColor={theme.background}
+                backgroundColor={theme.brand.primary}
+                textColor={theme.background.app}
                 label={candidate.city}
               />
             )}
             {candidate.fitnessLevel && (
               <Tag
-                backgroundColor={theme.primary}
-                textColor={theme.background}
+                backgroundColor={theme.brand.primary}
+                textColor={theme.background.app}
                 label={candidate.fitnessLevel}
               />
             )}
@@ -131,8 +131,8 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 16,
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       padding: 16,
       rowGap: 14,
     },
@@ -161,15 +161,15 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 12,
       paddingHorizontal: 18,
       borderRadius: 14,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       justifyContent: 'center',
       alignItems: 'center',
     },
     discardButtonText: {
       ...headings.subtitle,
-      color: theme.error,
+      color: theme.status.error.icon,
     },
     nameText: {
       ...headings.title,
@@ -187,7 +187,7 @@ const getStyles = (theme: FullTheme) => {
     },
     bioText: {
       ...headings.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 4,
     },
   });

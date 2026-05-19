@@ -48,13 +48,13 @@ export default function DietDetailScreen() {
       <View style={styles.card}>
         <View style={styles.chipsRow}>
           <Tag
-            backgroundColor={theme.successBackground}
-            textColor={theme.successText}
+            backgroundColor={theme.status.success.bg}
+            textColor={theme.status.success.text}
             label={diet?.isActive ? 'Activa' : 'Inactiva'}
           />
           <Tag
-            backgroundColor={theme.infoBackground}
-            textColor={theme.infoText}
+            backgroundColor={theme.status.info.bg}
+            textColor={theme.status.info.text}
             label="Contrato"
           />
         </View>
@@ -64,7 +64,7 @@ export default function DietDetailScreen() {
             <Ionicons
               name="person-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <View style={styles.rowContent}>
@@ -79,7 +79,7 @@ export default function DietDetailScreen() {
             <Ionicons
               name="calendar-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <View style={styles.rowContent}>
@@ -99,7 +99,7 @@ export default function DietDetailScreen() {
           <Ionicons
             name="create-outline"
             size={18}
-            color={theme.textSecondary}
+            color={theme.text.secondary}
             style={styles.rowIcon}
           />
           <View style={styles.rowContent}>
@@ -121,10 +121,10 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 20,
       marginTop: 16,
       rowGap: 20,
@@ -148,14 +148,14 @@ const getStyles = (theme: FullTheme) => {
     },
     rowLabel: {
       ...text.label,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: 4,
     },
     rowValue: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     buttonWrap: {
       marginTop: 24,

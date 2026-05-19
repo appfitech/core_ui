@@ -53,5 +53,13 @@ export const TRANSLATIONS = {
     successMessage:
       'Si existe una cuenta con ese correo, recibirás instrucciones para restablecer tu contraseña.',
   },
+  userActivitiesSection: {
+    sectionTitle: 'Mis actividades',
+    emptyTitle: 'Tus planes, en un solo lugar',
+    emptyBody:
+      'Contrata un entrenador para recibir rutina y dieta personalizadas. Cuando te las asigne, las verás aquí.',
+    findTrainersButton: 'Ver entrenadores',
+    trainerLabel: 'Entrenador:',
+  },
   common: {},
 };

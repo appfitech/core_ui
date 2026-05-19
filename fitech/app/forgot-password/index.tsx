@@ -132,7 +132,7 @@ const getStyles = (theme: FullTheme) => {
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: theme.primaryBg,
+        backgroundColor: theme.brand.primarySoft,
         marginBottom: 8,
       },
       title: {
@@ -147,7 +147,7 @@ const getStyles = (theme: FullTheme) => {
         rowGap: 4,
       },
     }),
-    iconColor: { color: theme.dark800 },
-    iconAccent: { color: theme.primary },
+    iconColor: { color: theme.icon.secondary },
+    iconAccent: { color: theme.brand.primary },
   };
 };

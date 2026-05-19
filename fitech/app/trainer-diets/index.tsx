@@ -73,7 +73,6 @@ export default function TrainerDietsScreen() {
     <PageContainer
       title="Dietas de Clientes"
       subheader="Gestiona las dietas asignadas a tus clientes"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
@@ -84,7 +83,7 @@ export default function TrainerDietsScreen() {
             onPress={() => router.push(`${ROUTES.trainerDiets}/new` as Href)}
             activeOpacity={0.8}
           >
-            <Ionicons name="add" size={18} color={theme.background} />
+            <Ionicons name="add" size={18} color={theme.background.app} />
             <AppText style={styles.createBtnText}>Crear Dieta</AppText>
           </TouchableOpacity>
         </View>
@@ -94,16 +93,16 @@ export default function TrainerDietsScreen() {
             <View
               style={[
                 styles.summaryIconWrap,
-                { backgroundColor: theme.success },
+                { backgroundColor: theme.status.success.icon },
               ]}
             >
               <Ionicons
                 name="checkmark-circle"
                 size={20}
-                color={theme.background}
+                color={theme.background.app}
               />
             </View>
-            <View style={styles.summaryContent}>
+            <View>
               <AppText style={styles.summaryValue}>
                 {summary.activeDiets}
               </AppText>
@@ -114,16 +113,16 @@ export default function TrainerDietsScreen() {
             <View
               style={[
                 styles.summaryIconWrap,
-                { backgroundColor: theme.orange },
+                { backgroundColor: theme.status.warning.icon },
               ]}
             >
               <Ionicons
                 name="pause-circle"
                 size={20}
-                color={theme.background}
+                color={theme.background.app}
               />
             </View>
-            <View style={styles.summaryContent}>
+            <View>
               <AppText style={styles.summaryValue}>
                 {summary.inactiveDiets}
               </AppText>
@@ -132,15 +131,15 @@ export default function TrainerDietsScreen() {
           </View>
           <View style={[styles.summaryCard, styles.summaryCardInfo]}>
             <View
-              style={[styles.summaryIconWrap, { backgroundColor: theme.info }]}
+              style={[styles.summaryIconWrap, { backgroundColor: theme.status.info.icon }]}
             >
               <MaterialCommunityIcons
                 name="account-group"
                 size={20}
-                color={theme.background}
+                color={theme.background.app}
               />
             </View>
-            <View style={styles.summaryContent}>
+            <View>
               <AppText style={styles.summaryValue}>
                 {summary.clientsWithDiets}
               </AppText>
@@ -187,7 +186,7 @@ export default function TrainerDietsScreen() {
                         <Ionicons
                           name="person"
                           size={20}
-                          color={theme.primary}
+                          color={theme.brand.primary}
                         />
                       </View>
                       <View style={styles.clientHeaderText}>
@@ -221,7 +220,7 @@ export default function TrainerDietsScreen() {
                     <Ionicons
                       name={isCollapsed ? 'chevron-down' : 'chevron-up'}
                       size={24}
-                      color={theme.textSecondary}
+                      color={theme.text.secondary}
                     />
                   </TouchableOpacity>
 
@@ -301,8 +300,8 @@ export default function TrainerDietsScreen() {
                                       size={14}
                                       color={
                                         resource.isActive
-                                          ? theme.success
-                                          : theme.textSecondary
+                                          ? theme.status.success.icon
+                                          : theme.text.secondary
                                       }
                                     />
                                     <AppText
@@ -310,8 +309,8 @@ export default function TrainerDietsScreen() {
                                         styles.statusPillText,
                                         {
                                           color: resource.isActive
-                                            ? theme.successText
-                                            : theme.textSecondary,
+                                            ? theme.status.success.text
+                                            : theme.text.secondary,
                                         },
                                       ]}
                                     >
@@ -326,7 +325,7 @@ export default function TrainerDietsScreen() {
                                     <Ionicons
                                       name="restaurant-outline"
                                       size={18}
-                                      color={theme.primary}
+                                      color={theme.brand.primary}
                                     />
                                   </View>
                                   <AppText
@@ -355,7 +354,7 @@ export default function TrainerDietsScreen() {
                                       <Ionicons
                                         name="document-text-outline"
                                         size={22}
-                                        color={theme.info}
+                                        color={theme.status.info.icon}
                                       />
                                     </TouchableOpacity>
                                   ) : (
@@ -363,7 +362,7 @@ export default function TrainerDietsScreen() {
                                       <Ionicons
                                         name="document-text-outline"
                                         size={22}
-                                        color={theme.textSecondary}
+                                        color={theme.text.secondary}
                                       />
                                     </View>
                                   )}
@@ -372,7 +371,7 @@ export default function TrainerDietsScreen() {
                                   <Ionicons
                                     name="calendar-outline"
                                     size={14}
-                                    color={theme.textSecondary}
+                                    color={theme.text.secondary}
                                     style={styles.metaIcon}
                                   />
                                   <AppText style={styles.dietCardMetaText}>
@@ -402,7 +401,6 @@ export default function TrainerDietsScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     contentWrap: {
       gap: 16,
       paddingVertical: 8,
@@ -421,14 +419,14 @@ const getStyles = (theme: FullTheme) => {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingHorizontal: 16,
       paddingVertical: 12,
       borderRadius: 14,
     },
     createBtnText: {
       ...text.smallSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     summaryColumn: {
       flexDirection: 'column',
@@ -440,31 +438,30 @@ const getStyles = (theme: FullTheme) => {
       padding: 14,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       gap: 12,
     },
     summaryCardSuccess: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.success,
+      borderLeftColor: theme.status.success.icon,
     },
     summaryCardOrange: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.orange,
+      borderLeftColor: theme.status.warning.icon,
     },
     summaryCardInfo: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.info,
+      borderLeftColor: theme.status.info.icon,
     },
     summaryIconWrap: {
       width: 44,
       height: 44,
       borderRadius: 12,
-      backgroundColor: theme.successBackground,
+      backgroundColor: theme.status.success.bg,
       alignItems: 'center',
       justifyContent: 'center',
     },
-    summaryContent: {},
     summaryValue: {
       ...text.stat,
     },
@@ -482,17 +479,17 @@ const getStyles = (theme: FullTheme) => {
     },
     emptyHint: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
       textAlign: 'center',
     },
     listScroll: { flex: 1 },
     listScrollContent: { paddingBottom: 24, gap: 12 },
     clientGroupCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       overflow: 'hidden',
     },
     clientHeaderRow: {
@@ -500,9 +497,9 @@ const getStyles = (theme: FullTheme) => {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: 16,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderBottomWidth: 1,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
     },
     clientHeaderLeft: {
       flexDirection: 'row',
@@ -514,7 +511,7 @@ const getStyles = (theme: FullTheme) => {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -529,24 +526,24 @@ const getStyles = (theme: FullTheme) => {
     },
     clientChips: { flexDirection: 'row', gap: 8, flexWrap: 'wrap' },
     chipActive: {
-      backgroundColor: theme.successBackground,
+      backgroundColor: theme.status.success.bg,
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 999,
     },
     chipActiveText: {
       ...text.captionSemibold,
-      color: theme.successText,
+      color: theme.status.success.text,
     },
     chipInactive: {
-      backgroundColor: theme.orangeBackground,
+      backgroundColor: theme.status.warning.bgStrong,
       paddingHorizontal: 8,
       paddingVertical: 4,
       borderRadius: 999,
     },
     chipInactiveText: {
       ...text.captionSemibold,
-      color: theme.orangeText,
+      color: theme.status.warning.text,
     },
     tabRow: {
       flexDirection: 'row',
@@ -557,31 +554,31 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 8,
       paddingHorizontal: 14,
       borderRadius: 999,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     tabButtonActive: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     tabText: {
       ...text.nav,
     },
     tabTextActive: {
       ...text.nav,
-      color: theme.background,
+      color: theme.background.app,
     },
     dietCards: {
       flexDirection: 'column',
       gap: 12,
     },
     dietCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 14,
       padding: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     dietCardTop: { marginBottom: 8 },
     statusPill: {
@@ -593,8 +590,8 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 999,
       gap: 6,
     },
-    statusPillActive: { backgroundColor: theme.successBackground },
-    statusPillInactive: { backgroundColor: theme.backgroundInput },
+    statusPillActive: { backgroundColor: theme.status.success.bg },
+    statusPillInactive: { backgroundColor: theme.background.input },
     statusPillText: { ...text.captionSemibold },
     dietCardTitleRow: {
       flexDirection: 'row',
@@ -606,7 +603,7 @@ const getStyles = (theme: FullTheme) => {
       width: 28,
       height: 28,
       borderRadius: 8,
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -618,7 +615,7 @@ const getStyles = (theme: FullTheme) => {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.infoBackground,
+      backgroundColor: theme.status.info.bg,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -626,7 +623,7 @@ const getStyles = (theme: FullTheme) => {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -634,7 +631,7 @@ const getStyles = (theme: FullTheme) => {
       flexDirection: 'row',
       alignItems: 'center',
       borderTopWidth: 1,
-      borderTopColor: theme.border,
+      borderTopColor: theme.border.default,
       paddingTop: 8,
     },
     metaIcon: { marginRight: 6 },

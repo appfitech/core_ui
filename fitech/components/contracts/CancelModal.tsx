@@ -31,7 +31,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
       >
         <View
           style={{
-            backgroundColor: theme.background,
+            backgroundColor: theme.background.app,
             padding: 20,
             borderRadius: 12,
             rowGap: 12,
@@ -41,8 +41,8 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
             style={{
               fontSize: 19,
               fontWeight: 600,
-              color: theme.dark900,
-              borderBottomColor: theme.errorText,
+              color: theme.text.primary,
+              borderBottomColor: theme.status.error.text,
               borderBottomWidth: 2,
               paddingBottom: 12,
             }}
@@ -51,7 +51,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
           </AppText>
 
           <AppText
-            style={{ fontSize: 17, fontWeight: 500, color: theme.dark700 }}
+            style={{ fontSize: 17, fontWeight: 500, color: theme.icon.muted }}
           >
             ¿Estás seguro de que deseas cancelar este contrato?
           </AppText>
@@ -60,7 +60,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
             style={{
               fontSize: 16,
               fontWeight: 500,
-              color: theme.dark500,
+              color: theme.text.disabled,
               marginBottom: 10,
             }}
           >
@@ -71,8 +71,8 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
 
           <Tag
             label={'Esta acción no se puede deshacer'}
-            backgroundColor={theme.warningBackground}
-            textColor={theme.warningText}
+            backgroundColor={theme.status.warning.bg}
+            textColor={theme.status.warning.text}
           />
           <View
             style={{
@@ -84,7 +84,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
           >
             <TouchableOpacity
               style={{
-                backgroundColor: theme.dark100,
+                backgroundColor: theme.background.app,
                 padding: 12,
                 borderRadius: 12,
               }}
@@ -93,7 +93,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
               <AppText
                 style={{
                   fontSize: 16,
-                  color: theme.dark900,
+                  color: theme.text.primary,
                   fontWeight: 600,
                 }}
               >
@@ -102,7 +102,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                backgroundColor: theme.errorText,
+                backgroundColor: theme.status.error.text,
                 padding: 12,
                 borderRadius: 12,
               }}
@@ -111,7 +111,7 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
               <AppText
                 style={{
                   fontSize: 16,
-                  color: theme.errorBackground,
+                  color: theme.status.error.bg,
                   fontWeight: 600,
                 }}
               >

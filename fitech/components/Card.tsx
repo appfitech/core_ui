@@ -29,7 +29,7 @@ export function Card({ children, style, authStyle = false }: Props) {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
     },

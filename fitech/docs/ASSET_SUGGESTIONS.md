@@ -13,4 +13,4 @@ Use these search terms on **unDraw**, **Storyset**, **Blush**, or **IRA Design**
 
 - **unDraw** (undraw.co): Pick one illustration style and use the same for all cards; set the accent color to your brand green.
 - **Storyset** (storyset.com): Filter by “Sport” or “Fitness”; use static (non-animated) for card icons if you want consistency.
-- Prefer **SVG** so you can tint the icon with `theme.primary` in code (e.g. via `react-native-svg`).
+- Prefer **SVG** so you can tint the icon with `theme.brand.primary` in code (e.g. via `react-native-svg`).

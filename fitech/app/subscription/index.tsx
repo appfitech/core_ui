@@ -32,7 +32,7 @@ function SectionItem({ label, sublabel, value, icon }: SectionItemProps) {
     <View style={styles.item}>
       {icon && (
         <View style={styles.iconWrapper}>
-          <Ionicons name={icon} size={18} color={theme.primary} />
+          <Ionicons name={icon} size={18} color={theme.brand.primary} />
         </View>
       )}
       <View style={styles.itemInner}>
@@ -123,10 +123,10 @@ export default function SubscriptionScreen() {
         <Accordion
           title="Ver Historial de Pagos"
           themeColors={{
-            background: theme.card,
-            text: theme.textPrimary,
-            border: theme.border,
-            icon: theme.textPrimary,
+            background: theme.background.card,
+            text: theme.text.primary,
+            border: theme.border.default,
+            icon: theme.text.primary,
           }}
         >
           <Animated.View
@@ -169,25 +169,25 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 16,
     },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 18,
       rowGap: 10,
     },
     cardPrimary: {
-      backgroundColor: theme.primaryBg ?? theme.green100,
-      borderColor: theme.successBorder ?? theme.border,
+      backgroundColor: theme.brand.primarySoft ?? theme.status.success.bgStrong,
+      borderColor: theme.status.success.border ?? theme.border.default,
     },
     cardTitle: {
       fontSize: 18,
       fontWeight: '700',
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     cardSubtitle: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 4,
     },
     item: {
@@ -195,7 +195,7 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       paddingVertical: 10,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
       columnGap: 12,
     },
     iconWrapper: {
@@ -211,27 +211,27 @@ const getStyles = (theme: FullTheme) =>
     itemLabel: {
       fontSize: 15,
       fontWeight: '500',
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     itemSubLabel: {
       fontSize: 12,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 2,
     },
     itemValue: {
       fontSize: 15,
       fontWeight: '600',
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     contractDetails: {
       fontSize: 15,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       lineHeight: 22,
       marginTop: 4,
     },
     emptyPayments: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       fontStyle: 'italic',
       marginTop: 8,
     },

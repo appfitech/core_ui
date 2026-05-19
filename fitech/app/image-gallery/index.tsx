@@ -156,7 +156,7 @@ export default function ImageGalleryScreen() {
                 profilePhotoId === item.id && {
                   borderWidth: 4,
                   borderRadius: 15,
-                  borderColor: theme.primary,
+                  borderColor: theme.brand.primary,
                 },
               ]}
             >
@@ -171,29 +171,29 @@ export default function ImageGalleryScreen() {
                 <View
                   style={[
                     styles.avatarBadge,
-                    { backgroundColor: theme.primary },
+                    { backgroundColor: theme.brand.primary },
                   ]}
                 >
                   <Ionicons
                     name="checkmark-circle"
                     size={16}
-                    color={theme.background}
+                    color={theme.background.app}
                   />
                 </View>
               ) : (
                 <TouchableOpacity
-                  style={[styles.starBadge, { backgroundColor: theme.primary }]}
+                  style={[styles.starBadge, { backgroundColor: theme.brand.primary }]}
                   onPress={() => confirmSetAsProfile(item.id)}
                 >
-                  <Ionicons name="star" size={16} color={theme.background} />
+                  <Ionicons name="star" size={16} color={theme.background.app} />
                 </TouchableOpacity>
               )}
 
               <TouchableOpacity
-                style={[styles.deleteBtn, { backgroundColor: theme.error }]}
+                style={[styles.deleteBtn, { backgroundColor: theme.status.error.icon }]}
                 onPress={() => removePhoto(index)}
               >
-                <Ionicons name="close" size={16} color={theme.background} />
+                <Ionicons name="close" size={16} color={theme.background.app} />
               </TouchableOpacity>
             </View>
           ))}
@@ -203,7 +203,7 @@ export default function ImageGalleryScreen() {
               onPress={pickImage}
               style={[styles.thumbnailWrapper, styles.uploadBtn]}
             >
-              <Ionicons name="add" size={24} color={theme.primary} />
+              <Ionicons name="add" size={24} color={theme.brand.primary} />
               <AppText style={styles.uploadText}>Agregar</AppText>
             </TouchableOpacity>
           )}
@@ -219,12 +219,12 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 16,
     },
     bannerCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       padding: 16,
       rowGap: 6,
     },
@@ -232,20 +232,20 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 12,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 16,
     },
     tipTitle: {
       fontWeight: '700',
-      color: theme.textPrimary,
+      color: theme.text.primary,
       fontSize: 16,
     },
     tipText: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       flex: 1,
     },
     mainPhotoWrapper: {
@@ -256,14 +256,14 @@ const getStyles = (theme: FullTheme) =>
       width: 200,
       height: 200,
       borderRadius: 12,
-      borderColor: theme.primary,
+      borderColor: theme.brand.primary,
       borderWidth: 2,
     },
     avatarLabel: {
       marginTop: 8,
       fontSize: 16,
       fontWeight: '600',
-      color: theme.primary,
+      color: theme.brand.primary,
     },
     galleryGrid: {
       flexDirection: 'row',
@@ -306,25 +306,25 @@ const getStyles = (theme: FullTheme) =>
     uploadBtn: {
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     uploadText: {
       fontSize: 14,
       fontWeight: '600',
-      color: theme.primary,
+      color: theme.brand.primary,
       marginTop: 4,
     },
     trainerBannerTitle: {
       fontSize: 16,
       fontWeight: '700',
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     trainerBannerText: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
     },
   });

@@ -31,7 +31,7 @@ export function BackButton({ variant = 'default', onPress }: Props) {
       <Ionicons
         name="chevron-back"
         size={ICON_SIZE}
-        color={isLight ? theme.textPrimary : theme.background}
+        color={isLight ? theme.text.primary : theme.background.app}
         style={styles.icon}
       />
     </TouchableOpacity>
@@ -46,9 +46,9 @@ const getStyles = (theme: FullTheme, isLight: boolean) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 10,
-      backgroundColor: isLight ? theme.headerBackButtonBg : theme.dark900,
-      borderWidth: isLight ? theme.headerBackButtonBorderWidth : 0,
-      borderColor: isLight ? theme.headerBackButtonBorder : 'transparent',
+      backgroundColor: isLight ? theme.header.backButtonBg : theme.text.primary,
+      borderWidth: isLight ? theme.header.backButtonBorderWidth : 0,
+      borderColor: isLight ? theme.border.default : 'transparent',
     },
     icon: {
       marginLeft: -1,

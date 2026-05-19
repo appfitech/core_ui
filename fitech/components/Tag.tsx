@@ -41,7 +41,7 @@ const getStyles = (theme: FullTheme) => {
     tagContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.warningBackground,
+      backgroundColor: theme.status.warning.bg,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 8,
@@ -50,7 +50,7 @@ const getStyles = (theme: FullTheme) => {
     },
     text: {
       ...text.smallSemibold,
-      color: theme.warningText,
+      color: theme.status.warning.text,
     },
   });
 };

@@ -2,18 +2,25 @@ import { Ionicons } from '@expo/vector-icons';
 import { type Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
-import { transparentize } from '@/utils/style';
 
 import { AppText } from './AppText';
 
 SplashScreen.preventAutoHideAsync();
+
+const FAB_LOGO = require('@/assets/images/logos/rounded_logo.webp');
 
 const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
   home: { icon: 'home-outline', route: ROUTES.home, label: 'Home' },
@@ -40,8 +47,10 @@ export function NavBar() {
 
   const currentPath =
     '/' + (Array.isArray(segments) ? segments.filter(Boolean).join('/') : '');
-  const isPremium = user?.user?.premium;
+  const isPremium = Boolean(user?.user?.premium);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const fabBottom = (insets.bottom || 10) + 32;
+  const navBarPaddingBottom = insets.bottom > 0 ? insets.bottom : 10;
 
   const handleNavItemClick = useCallback(
     (route: Href) => () => {
@@ -56,12 +65,7 @@ export function NavBar() {
 
   return (
     <>
-      <View
-        style={[
-          styles.navBar,
-          { paddingBottom: insets.bottom > 0 ? insets.bottom : 10 },
-        ]}
-      >
+      <View style={[styles.navBar, { paddingBottom: navBarPaddingBottom }]}>
         {Object.entries(NAV_ITEMS_MAPPER(isTrainer)).map(
           ([key, { icon, route, label }]) => {
             const isCurrentRoute =
@@ -74,15 +78,17 @@ export function NavBar() {
                 onPress={handleNavItemClick(route)}
               >
                 <Ionicons
-                  name={icon as any}
+                  name={icon as keyof typeof Ionicons.glyphMap}
                   size={26}
-                  color={isCurrentRoute ? theme.primary : theme.green900}
+                  color={isCurrentRoute ? theme.brand.primary : theme.icon.muted}
                 />
                 <AppText
                   variant="nav"
-                  style={{
-                    color: isCurrentRoute ? theme.primary : theme.green900,
-                  }}
+                  style={
+                    isCurrentRoute
+                      ? styles.navLabelActive
+                      : styles.navLabelInactive
+                  }
                 >
                   {label}
                 </AppText>
@@ -92,27 +98,24 @@ export function NavBar() {
         )}
       </View>
 
-      {isPremium && (
-        <TouchableOpacity
-          onPress={handlePremiumClick}
-          style={[
-            styles.fab,
-            {
-              bottom: (insets.bottom || 10) + 32,
-            },
-          ]}
-        >
-          <Image
-            source={
-              theme.isDark
-                ? require('@/assets/images/logos/rounded_logo.webp')
-                : require('@/assets/images/logos/rounded_logo.webp')
-            }
-            style={{ width: 40, height: '100%' }}
-            resizeMode={'contain'}
-          />
-        </TouchableOpacity>
-      )}
+      <Pressable
+        onPress={isPremium ? handlePremiumClick : undefined}
+        disabled={!isPremium}
+        style={[
+          styles.fab,
+          { bottom: fabBottom },
+          !isPremium && styles.fabDisabled,
+        ]}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: !isPremium }}
+        accessibilityLabel="FITECH Premium"
+      >
+        <Image
+          source={FAB_LOGO}
+          style={[styles.fabLogo, !isPremium && styles.fabLogoDisabled]}
+          resizeMode="contain"
+        />
+      </Pressable>
     </>
   );
 }
@@ -124,18 +127,25 @@ const getStyles = (theme: FullTheme) =>
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
       flexDirection: 'row',
       justifyContent: 'space-around',
       paddingVertical: 12,
-      borderTopWidth: 3,
-      borderTopColor: transparentize(theme.border, 0.8),
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: theme.border.subtle,
       zIndex: 1,
     },
     navItem: {
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
+      rowGap: 4,
+    },
+    navLabelActive: {
+      color: theme.brand.primary,
+    },
+    navLabelInactive: {
+      color: theme.icon.muted,
     },
     fab: {
       position: 'absolute',
@@ -143,14 +153,21 @@ const getStyles = (theme: FullTheme) =>
       width: 64,
       height: 64,
       borderRadius: 32,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.button.primaryBg,
       justifyContent: 'center',
       alignItems: 'center',
-      elevation: 8,
-      shadowColor: theme.background,
-      shadowOffset: { width: 0, height: 3 },
-      shadowOpacity: 0.3,
-      shadowRadius: 6,
       zIndex: 10,
+    },
+    fabDisabled: {
+      backgroundColor: theme.background.cardHover,
+      borderWidth: 1,
+      borderColor: theme.border.default,
+    },
+    fabLogo: {
+      width: 40,
+      height: 40,
+    },
+    fabLogoDisabled: {
+      opacity: 0.35,
     },
   });

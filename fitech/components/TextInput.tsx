@@ -83,8 +83,8 @@ export function TextInput(props: Props) {
           <AppText style={styles.label}>{label}</AppText>
           {!required && (
             <Tag
-              backgroundColor={theme.warningBackground}
-              textColor={theme.warningText}
+              backgroundColor={theme.status.warning.bg}
+              textColor={theme.status.warning.text}
               style={styles.optionalTag}
               label="Opcional"
             />
@@ -99,7 +99,7 @@ export function TextInput(props: Props) {
           {...rest}
           {...secureAutofillProps}
           secureTextEntry={secureTextEntry}
-          placeholderTextColor={theme.dark700}
+          placeholderTextColor={theme.icon.muted}
           style={[
             styles.input,
             inputStyleProp ?? {},

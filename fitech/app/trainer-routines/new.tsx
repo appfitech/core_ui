@@ -147,7 +147,6 @@ export default function NewTrainerRoutineScreen() {
   return (
     <PageContainer
       title="Crear Nueva Rutina"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
       hasBackButton
     >
@@ -199,7 +198,7 @@ export default function NewTrainerRoutineScreen() {
             activeOpacity={0.8}
           >
             <AppText style={styles.nextBtnText}>Siguiente</AppText>
-            <Ionicons name="arrow-forward" size={18} color={theme.background} />
+            <Ionicons name="arrow-forward" size={18} color={theme.background.app} />
           </TouchableOpacity>
         </View>
       )}
@@ -215,7 +214,7 @@ export default function NewTrainerRoutineScreen() {
             style={styles.backToStep1}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons name="arrow-back" size={20} color={theme.primary} />
+            <Ionicons name="arrow-back" size={20} color={theme.brand.primary} />
             <AppText style={styles.backToStep1Text}>
               Atrás (cambiar cliente)
             </AppText>
@@ -225,7 +224,7 @@ export default function NewTrainerRoutineScreen() {
             <Ionicons
               name="barbell-outline"
               size={20}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.inputIcon}
             />
             <TextInput
@@ -270,7 +269,7 @@ export default function NewTrainerRoutineScreen() {
               <Ionicons
                 name="download-outline"
                 size={20}
-                color={theme.background}
+                color={theme.background.app}
                 style={styles.downloadBtnIcon}
               />
               <AppText style={styles.downloadBtnText}>
@@ -294,7 +293,7 @@ export default function NewTrainerRoutineScreen() {
               <Ionicons
                 name="cloud-upload-outline"
                 size={32}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
               />
               <AppText style={styles.uploadText}>
                 {pickedFile?.name ??
@@ -335,7 +334,6 @@ export default function NewTrainerRoutineScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     stepIndicator: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -347,24 +345,24 @@ const getStyles = (theme: FullTheme) => {
       width: 32,
       height: 32,
       borderRadius: 16,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },
     stepDotActive: {
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
     },
     stepNum: {
       ...text.smallSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     stepNumActive: {
-      color: theme.background,
+      color: theme.background.app,
     },
     stepLine: {
       width: 40,
       height: 2,
-      backgroundColor: theme.border,
+      backgroundColor: theme.border.default,
       marginHorizontal: 4,
     },
     stepLabels: {
@@ -375,10 +373,10 @@ const getStyles = (theme: FullTheme) => {
     },
     stepLabel: {
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     stepLabelActive: {
-      color: theme.primary,
+      color: theme.brand.primary,
     },
     stepContent: {
       flex: 1,
@@ -395,11 +393,11 @@ const getStyles = (theme: FullTheme) => {
     },
     backToStep1Text: {
       ...text.smallSemibold,
-      color: theme.primary,
+      color: theme.brand.primary,
     },
     fieldLabel: {
       ...text.smallSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 6,
     },
     dropdownWrap: {
@@ -411,7 +409,7 @@ const getStyles = (theme: FullTheme) => {
       alignItems: 'center',
       justifyContent: 'center',
       gap: 8,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 20,
       borderRadius: 12,
@@ -422,15 +420,15 @@ const getStyles = (theme: FullTheme) => {
     },
     nextBtnText: {
       ...text.bodySemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     inputRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       paddingHorizontal: 12,
       minHeight: 48,
       marginBottom: 12,
@@ -441,33 +439,33 @@ const getStyles = (theme: FullTheme) => {
       flex: 1,
       paddingVertical: 12,
       ...text.link,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     plantillaSection: {
       marginTop: 20,
       paddingTop: 20,
       borderTopWidth: 1,
-      borderTopColor: theme.border,
+      borderTopColor: theme.border.default,
     },
     plantillaTitle: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 6,
     },
     plantillaHint: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 16,
     },
     plantillaStepTitle: {
       ...text.smallSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 8,
     },
     downloadBtn: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.orange,
+      backgroundColor: theme.status.warning.icon,
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 12,
@@ -476,33 +474,33 @@ const getStyles = (theme: FullTheme) => {
     downloadBtnIcon: { marginRight: 8 },
     downloadBtnText: {
       ...text.linkSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     downloadHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
     },
     uploadHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 6,
     },
     uploadArea: {
       borderWidth: 2,
       borderStyle: 'dashed',
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       borderRadius: 12,
       paddingVertical: 24,
       paddingHorizontal: 16,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       marginTop: 4,
     },
     uploadText: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
       textAlign: 'center',
     },
@@ -512,25 +510,25 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 28,
       paddingTop: 20,
       borderTopWidth: 1,
-      borderTopColor: theme.border,
+      borderTopColor: theme.border.default,
     },
     cancelBtn: {
       paddingVertical: 14,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.backgroundInput,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },
     cancelBtnText: {
       ...text.bodySemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     createSubmitBtn: {
       paddingVertical: 14,
       borderRadius: 12,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -539,7 +537,7 @@ const getStyles = (theme: FullTheme) => {
     },
     createSubmitBtnText: {
       ...text.bodySemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
   });
 };

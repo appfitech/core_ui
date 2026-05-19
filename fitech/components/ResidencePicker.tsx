@@ -155,6 +155,6 @@ const getStyles = (theme: FullTheme) =>
     },
     selectedText: {
       marginTop: 4,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
   });

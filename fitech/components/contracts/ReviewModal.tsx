@@ -89,7 +89,7 @@ export const ReviewModal: React.FC<Props> = ({
       >
         <View
           style={{
-            backgroundColor: theme.background,
+            backgroundColor: theme.background.app,
             padding: 16,
             borderRadius: 12,
             rowGap: 12,
@@ -117,7 +117,7 @@ export const ReviewModal: React.FC<Props> = ({
 
           {rating && (
             <AppText
-              style={[styles.ratingLabel, { color: theme.warningText }]}
+              style={[styles.ratingLabel, { color: theme.status.warning.text }]}
             >
               {EMOJIS_LABEL[rating - 1]}
             </AppText>
@@ -126,7 +126,7 @@ export const ReviewModal: React.FC<Props> = ({
           <TextInput
             style={[styles.input, { minHeight: 150, textAlignVertical: 'top' }]}
             placeholder="¿Quieres contarnos más?"
-            placeholderTextColor={theme.dark300}
+            placeholderTextColor={theme.background.elevated}
             value={comment}
             onChangeText={setComment}
             multiline
@@ -140,9 +140,9 @@ export const ReviewModal: React.FC<Props> = ({
             <Ionicons
               name={anonymous ? 'checkbox' : 'square-outline'}
               size={20}
-              color={theme.primary}
+              color={theme.brand.primary}
             />
-            <AppText style={[styles.checkboxText, { color: theme.dark700 }]}>
+            <AppText style={[styles.checkboxText, { color: theme.icon.muted }]}>
               Publicar de forma anónima (tu nombre no será visible)
             </AppText>
           </TouchableOpacity>
@@ -150,7 +150,7 @@ export const ReviewModal: React.FC<Props> = ({
           <TouchableOpacity
             style={[
               {
-                backgroundColor: theme.dark200,
+                backgroundColor: theme.background.card,
                 padding: 16,
                 borderRadius: 12,
                 marginTop: 16,
@@ -159,14 +159,14 @@ export const ReviewModal: React.FC<Props> = ({
             onPress={handleClose}
             disabled={!rating}
           >
-            <AppText style={[styles.modalActionText, { color: theme.dark800 }]}>
+            <AppText style={[styles.modalActionText, { color: theme.icon.secondary }]}>
               Cancelar
             </AppText>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
               {
-                backgroundColor: theme.infoText,
+                backgroundColor: theme.status.info.text,
                 padding: 16,
                 borderRadius: 12,
               },
@@ -175,7 +175,7 @@ export const ReviewModal: React.FC<Props> = ({
             disabled={!rating}
           >
             <AppText
-              style={[styles.modalActionText, { color: theme.infoBackground }]}
+              style={[styles.modalActionText, { color: theme.status.info.bg }]}
             >
               Enviar Reseña
             </AppText>
@@ -192,8 +192,8 @@ const getStyles = (theme: FullTheme) => {
     title: {
       ...text.sectionTitle,
       marginBottom: 8,
-      color: theme.dark900,
-      borderBottomColor: theme.infoText,
+      color: theme.text.primary,
+      borderBottomColor: theme.status.info.text,
       borderBottomWidth: 2,
       paddingBottom: 16,
     },

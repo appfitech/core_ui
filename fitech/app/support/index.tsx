@@ -62,23 +62,23 @@ export default function SupportScreen() {
         style={[
           styles.contactCard,
           {
-            backgroundColor: theme.card,
+            backgroundColor: theme.background.card,
             borderWidth: 1,
-            borderColor: theme.border,
+            borderColor: theme.border.default,
           },
         ]}
       >
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
-          <Ionicons name="call-outline" size={20} color={theme.primary} />
+          <Ionicons name="call-outline" size={20} color={theme.brand.primary} />
           <AppText style={styles.contactText}>+51 (01) 615-8900</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="mail-outline" size={20} color={theme.primary} />
+          <Ionicons name="mail-outline" size={20} color={theme.brand.primary} />
           <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="location-outline" size={20} color={theme.primary} />
+          <Ionicons name="location-outline" size={20} color={theme.brand.primary} />
           <AppText style={styles.contactText}>
             Av. El Derby 254, Surco, Lima
           </AppText>
@@ -89,9 +89,9 @@ export default function SupportScreen() {
         style={[
           styles.formCard,
           {
-            backgroundColor: theme.card,
+            backgroundColor: theme.background.card,
             borderWidth: 1,
-            borderColor: theme.border,
+            borderColor: theme.border.default,
           },
         ]}
       >
@@ -152,7 +152,7 @@ const getStyles = (theme: FullTheme) => {
     },
     contactTitle: {
       ...text.sectionTitle,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     contactRow: {
       flexDirection: 'row',
@@ -161,7 +161,7 @@ const getStyles = (theme: FullTheme) => {
     },
     contactText: {
       ...text.link,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       
     },
     formCard: {
@@ -171,7 +171,7 @@ const getStyles = (theme: FullTheme) => {
     },
     formCardTitle: {
       ...text.leadSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 4,
     },
     descriptionInput: {

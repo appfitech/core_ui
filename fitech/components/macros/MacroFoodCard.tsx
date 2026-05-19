@@ -36,13 +36,13 @@ function MacroFoodCardInner({
           {
             borderRadius: 20,
             overflow: 'hidden',
-            backgroundColor: theme.card,
+            backgroundColor: theme.background.card,
             borderWidth: 1,
-            borderColor: theme.border,
+            borderColor: theme.border.default,
           },
           isSelected && {
-            backgroundColor: theme.successBackground,
-            borderColor: theme.successBorder,
+            backgroundColor: theme.status.success.bg,
+            borderColor: theme.status.success.border,
             borderWidth: 2,
           },
         ]}
@@ -57,7 +57,7 @@ function MacroFoodCardInner({
           <AppText
             style={{
               ...text.lead,
-              color: theme.textPrimary,
+              color: theme.text.primary,
             }}
             numberOfLines={2}
           >
@@ -65,7 +65,7 @@ function MacroFoodCardInner({
           </AppText>
           <AppText
             variant="subheader"
-            style={{ color: theme.textSecondary }}
+            style={{ color: theme.text.secondary }}
             numberOfLines={2}
           >
             {foodItem?.description}
@@ -83,24 +83,24 @@ function MacroFoodCardInner({
               <Tag
                 icon="restaurant-outline"
                 label={foodItem?.category}
-                textColor={theme.successText}
-                backgroundColor={theme.successBackground}
+                textColor={theme.status.success.text}
+                backgroundColor={theme.status.success.bg}
               />
             )}
             <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: theme.backgroundInput,
+                backgroundColor: theme.background.input,
                 borderWidth: 1,
-                borderColor: theme.border,
+                borderColor: theme.border.default,
                 paddingVertical: 5,
                 paddingHorizontal: 10,
                 borderRadius: 999,
               }}
             >
               <AppText
-                style={{ ...text.nav, color: theme.textPrimary }}
+                style={{ ...text.nav, color: theme.text.primary }}
               >
                 {`${foodItem?.macros?.calories} kcal`}
               </AppText>
@@ -109,16 +109,16 @@ function MacroFoodCardInner({
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: theme.backgroundInput,
+                backgroundColor: theme.background.input,
                 borderWidth: 1,
-                borderColor: theme.border,
+                borderColor: theme.border.default,
                 paddingVertical: 5,
                 paddingHorizontal: 10,
                 borderRadius: 999,
               }}
             >
               <AppText
-                style={{ ...text.nav, color: theme.textPrimary }}
+                style={{ ...text.nav, color: theme.text.primary }}
               >
                 {`${foodItem?.macros?.proteins} proteína`}
               </AppText>

@@ -55,7 +55,6 @@ export default function TrainerReviewsScreen() {
     <PageContainer
       title="Mis Calificaciones"
       subheader="Revisa las calificaciones y comentarios de tus clientes"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
@@ -114,8 +113,8 @@ export default function TrainerReviewsScreen() {
                 </AppText>
               ) : null}
               <Tag
-                backgroundColor={theme.infoBackground}
-                textColor={theme.infoText}
+                backgroundColor={theme.status.info.bg}
+                textColor={theme.status.info.text}
                 label={review?.serviceName ?? 'Servicio'}
               />
               <TouchableOpacity
@@ -127,7 +126,7 @@ export default function TrainerReviewsScreen() {
                 <Ionicons
                   name="chevron-forward"
                   size={16}
-                  color={theme.background}
+                  color={theme.background.app}
                 />
               </TouchableOpacity>
             </View>
@@ -141,14 +140,13 @@ export default function TrainerReviewsScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     contentWrap: {
       gap: 16,
       paddingVertical: 8,
     },
     sectionTitle: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
       marginBottom: 4,
@@ -165,10 +163,10 @@ const getStyles = (theme: FullTheme) => {
       padding: 16,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       borderLeftWidth: 4,
-      borderLeftColor: theme.success,
+      borderLeftColor: theme.status.success.icon,
     },
     statCardInfo: {
       flexDirection: 'row',
@@ -177,39 +175,39 @@ const getStyles = (theme: FullTheme) => {
       padding: 16,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       borderLeftWidth: 4,
-      borderLeftColor: theme.info,
+      borderLeftColor: theme.status.info.icon,
     },
     statCardLabel: {
       ...text.smallSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     statCardValueSuccess: {
-      color: theme.successText,
+      color: theme.status.success.text,
       ...text.statLarge,
     },
     statCardValueInfo: {
-      color: theme.infoText,
+      color: theme.status.info.text,
       ...text.statLarge,
     },
     reviewsList: { gap: 12 },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 16,
       gap: 10,
     },
     cardTitle: {
       ...text.leadSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     cardComment: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
     },
     respondButton: {
@@ -218,13 +216,13 @@ const getStyles = (theme: FullTheme) => {
       justifyContent: 'center',
       gap: 8,
       marginTop: 4,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingVertical: 12,
       paddingHorizontal: 16,
       borderRadius: 12,
     },
     respondButtonText: {
-      color: theme.background,
+      color: theme.background.app,
       ...text.linkSemibold,
     },
   });

@@ -266,7 +266,7 @@ export default function ChatDetailScreen() {
       <View style={styles.messagesContainer}>
         {isMessagesLoading ? (
           <View style={styles.centered}>
-            <ActivityIndicator color={theme.backgroundInverted} />
+            <ActivityIndicator color={theme.text.primary} />
             <AppText style={styles.systemText}>Cargando mensajes...</AppText>
           </View>
         ) : hasError ? (
@@ -327,7 +327,7 @@ export default function ChatDetailScreen() {
         <TextInput
           style={styles.textInput}
           placeholder="Escribe un mensaje..."
-          placeholderTextColor={theme.textSecondary}
+          placeholderTextColor={theme.text.secondary}
           value={input}
           onChangeText={setInput}
           multiline
@@ -340,7 +340,7 @@ export default function ChatDetailScreen() {
           ]}
           disabled={!input.trim()}
         >
-          <Ionicons name="send" size={20} color={theme.background} />
+          <Ionicons name="send" size={20} color={theme.background.app} />
         </TouchableOpacity>
       </View>
     </PageContainer>
@@ -362,9 +362,9 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
       paddingVertical: 10,
       paddingHorizontal: 12,
       borderRadius: 12,
-      backgroundColor: theme.card ?? theme.backgroundInput,
+      backgroundColor: theme.background.card ?? theme.background.input,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     contractBannerLogo: {
       width: 32,
@@ -373,7 +373,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
     contractBannerText: {
       flex: 1,
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     messagesContainer: {
       flex: 1,
@@ -391,7 +391,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
     systemText: {
       marginTop: 8,
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textAlign: 'center',
     },
     messageRow: {
@@ -411,39 +411,39 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
       paddingVertical: 12,
     },
     bubbleMe: {
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.text.primary,
       borderBottomRightRadius: 6,
-      shadowColor: theme.dark900,
+      shadowColor: theme.text.primary,
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.12,
       shadowRadius: 3,
       elevation: 2,
     },
     bubbleThem: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       borderBottomLeftRadius: 6,
-      shadowColor: theme.dark900,
+      shadowColor: theme.text.primary,
       shadowOffset: { width: 0, height: 1 },
       shadowOpacity: 0.06,
       shadowRadius: 2,
       elevation: 1,
     },
     bubbleText: {
-      color: theme.textPrimary,
+      color: theme.text.primary,
       ...text.link,
       lineHeight: 22,
     },
     bubbleMeText: {
-      color: theme.background,
+      color: theme.background.app,
       ...text.link,
       lineHeight: 22,
     },
     bubbleTime: {
       marginTop: 6,
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textAlign: 'right',
     },
     inputRow: {
@@ -461,9 +461,9 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
       borderRadius: 999,
       paddingHorizontal: 14,
       paddingVertical: 8,
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
       borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       ...text.small,
     },
     sendButton: {
@@ -472,7 +472,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.backgroundInverted,
+      backgroundColor: theme.text.primary,
     },
     sendButtonDisabled: {
       opacity: 0.5,

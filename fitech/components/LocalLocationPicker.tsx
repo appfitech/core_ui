@@ -112,12 +112,12 @@ export function LocalLocationPicker({
             {districtLabel}
           </AppText>
           {selected && (
-            <Ionicons name="checkmark-circle" size={20} color={theme.primary} />
+            <Ionicons name="checkmark-circle" size={20} color={theme.brand.primary} />
           )}
         </View>
       );
     },
-    [itemByValue, locationById, styles, theme.primary],
+    [itemByValue, locationById, styles, theme.brand.primary],
   );
 
   return (
@@ -146,12 +146,12 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 16,
       paddingTop: 14,
       paddingBottom: 6,
-      backgroundColor: theme.backgroundDropdown,
+      backgroundColor: theme.background.cardHover,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
     },
     departmentText: {
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       ...text.captionSemibold,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -161,12 +161,12 @@ const getStyles = (theme: FullTheme) => {
       paddingTop: 10,
       paddingBottom: 6,
       paddingLeft: 20,
-      backgroundColor: theme.backgroundDropdown,
+      backgroundColor: theme.background.cardHover,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
     },
     provinceText: {
-      color: theme.textPrimary,
+      color: theme.text.primary,
       ...text.smallSemibold,
     },
     locationRow: {
@@ -177,18 +177,18 @@ const getStyles = (theme: FullTheme) => {
       paddingLeft: 28,
       paddingVertical: 14,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
     },
     locationRowSelected: {
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
     },
     locationText: {
-      color: theme.textPrimary,
+      color: theme.text.primary,
       ...text.link,
       flex: 1,
     },
     locationTextSelected: {
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
   });
 };

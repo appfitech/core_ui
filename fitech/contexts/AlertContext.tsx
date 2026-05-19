@@ -137,7 +137,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
                 <Ionicons
                   name={iconName}
                   size={22}
-                  color={isDestructive ? theme.errorText : theme.primaryText}
+                  color={isDestructive ? theme.status.error.text : theme.brand.primaryLight}
                 />
               </View>
               <AppText variant="body" style={styles.body}>
@@ -179,7 +179,7 @@ const getStyles = (theme: FullTheme) => {
     card: {
       width: '100%',
       maxWidth: 360,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
       ...Platform.select({
@@ -203,16 +203,16 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 20,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
       flexShrink: 0,
     },
     iconWrapDestructive: {
-      backgroundColor: theme.errorBackground,
+      backgroundColor: theme.status.error.bg,
     },
     body: {
       ...text.body,
       flex: 1,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       textAlign: 'left',
       paddingTop: 8,
     },

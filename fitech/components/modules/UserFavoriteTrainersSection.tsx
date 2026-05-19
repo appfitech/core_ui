@@ -78,12 +78,12 @@ export function UserFavoriteTrainersSection() {
                 <AppText
                   style={{
                     ...text.linkSemibold,
-                    color: theme.dark900,
+                    color: theme.text.primary,
                   }}
                 >
                   {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
                 </AppText>
-                <AppText variant="small" style={{ color: theme.textSecondary }}>
+                <AppText variant="small" style={{ color: theme.text.secondary }}>
                   {truncateWords(trainer?.person?.bio ?? '', 20)}
                 </AppText>
               </View>
@@ -99,10 +99,10 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     card: {
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
       flex: 1,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     avatar: {
       width: 50,

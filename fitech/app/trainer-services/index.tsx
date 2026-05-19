@@ -89,21 +89,21 @@ export default function TrainerServicesScreen() {
         styles.statusPill,
         {
           backgroundColor: active
-            ? theme.successBackground
-            : theme.backgroundInput,
+            ? theme.status.success.bg
+            : theme.background.input,
         },
       ]}
     >
       <Ionicons
         name={active ? 'checkmark-circle' : 'close-circle'}
         size={14}
-        color={active ? theme.success : theme.textSecondary}
+        color={active ? theme.status.success.icon : theme.text.secondary}
         style={styles.statusPillIcon}
       />
       <AppText
         style={[
           styles.statusText,
-          { color: active ? theme.successText : theme.textSecondary },
+          { color: active ? theme.status.success.text : theme.text.secondary },
         ]}
       >
         {active ? 'Activo' : 'Inactivo'}
@@ -117,13 +117,13 @@ export default function TrainerServicesScreen() {
         <StatusPill active={item.isActive} />
         <View style={styles.cardActions}>
           <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Ionicons name="pencil" size={16} color={theme.textSecondary} />
+            <Ionicons name="pencil" size={16} color={theme.text.secondary} />
           </TouchableOpacity>
           <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
             <Entypo
               name="dots-three-vertical"
               size={14}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
             />
           </TouchableOpacity>
         </View>
@@ -134,7 +134,7 @@ export default function TrainerServicesScreen() {
           <Ionicons
             name={item.isInPerson ? 'walk' : 'videocam'}
             size={16}
-            color={theme.background}
+            color={theme.background.app}
           />
         </View>
         <AppText style={styles.cardTitle}>{item.name}</AppText>
@@ -151,8 +151,7 @@ export default function TrainerServicesScreen() {
           <Ionicons
             name={item.isInPerson ? 'location' : 'laptop-outline'}
             size={14}
-            color={theme.textSecondary}
-            style={styles.metaIcon}
+            color={theme.text.secondary}
           />
           <AppText style={styles.metaText}>
             {item.isInPerson ? 'Presencial' : 'Virtual'}
@@ -162,8 +161,7 @@ export default function TrainerServicesScreen() {
           <Ionicons
             name="people-outline"
             size={14}
-            color={theme.textSecondary}
-            style={styles.metaIcon}
+            color={theme.text.secondary}
           />
           <AppText style={styles.metaText}>
             {item.enrolledUsersCount}{' '}
@@ -197,7 +195,6 @@ export default function TrainerServicesScreen() {
       hasBackButton
       title="Gestión de Servicios"
       subheader="Administra los servicios que ofreces a tus clientes"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
     >
       <View style={styles.topSection}>
@@ -207,14 +204,14 @@ export default function TrainerServicesScreen() {
               <Ionicons
                 name="checkmark-circle"
                 size={18}
-                color={theme.success}
+                color={theme.status.success.icon}
               />
             }
             value={String(activeCount)}
             label="Servicios Activos"
           />
           <SummaryCard
-            icon={<Ionicons name="people" size={18} color={theme.info} />}
+            icon={<Ionicons name="people" size={18} color={theme.status.info.icon} />}
             value={String(enrolledTotal)}
             label="Clientes Inscritos"
           />
@@ -223,7 +220,7 @@ export default function TrainerServicesScreen() {
               <MaterialCommunityIcons
                 name="trending-up"
                 size={18}
-                color={theme.orange}
+                color={theme.status.warning.icon}
               />
             }
             value={formatPEN(avgPrice || 0)}
@@ -231,7 +228,7 @@ export default function TrainerServicesScreen() {
           />
         </View>
         <TouchableOpacity style={styles.newBtn} activeOpacity={0.8}>
-          <Ionicons name="add" size={18} color={theme.background} />
+          <Ionicons name="add" size={18} color={theme.background.app} />
           <AppText style={styles.newBtnText}>Nuevo Servicio</AppText>
         </TouchableOpacity>
       </View>
@@ -292,7 +289,6 @@ export default function TrainerServicesScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     topSection: {
       marginBottom: 16,
       gap: 16,
@@ -304,45 +300,45 @@ const getStyles = (theme: FullTheme) => {
     summaryCard: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       padding: 14,
       gap: 12,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
     },
     summaryIcon: {
       width: 36,
       height: 36,
       borderRadius: 10,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },
     summaryContent: { flex: 1 },
     summaryValue: {
       ...text.sectionTitle,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     summaryLabel: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 2,
     },
     newBtn: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingHorizontal: 16,
       paddingVertical: 12,
       borderRadius: 14,
       alignSelf: 'flex-start',
     },
     newBtnText: {
-      color: theme.background,
+      color: theme.background.app,
       ...text.smallSemibold,
     },
     sectionHeader: {
@@ -350,22 +346,22 @@ const getStyles = (theme: FullTheme) => {
     },
     sectionTitle: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
     },
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginBottom: 16,
     },
     filterHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 10,
     },
     tabRow: {
@@ -378,20 +374,20 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 18,
       alignItems: 'center',
       borderRadius: 999,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     tabButtonActive: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     tabText: {
       ...text.link,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     tabTextActive: {
-      color: theme.background,
+      color: theme.background.app,
     },
     emptyWrap: {
       paddingVertical: 32,
@@ -400,12 +396,12 @@ const getStyles = (theme: FullTheme) => {
     },
     emptyText: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       textAlign: 'center',
     },
     emptyHint: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
       textAlign: 'center',
     },
@@ -418,11 +414,11 @@ const getStyles = (theme: FullTheme) => {
     listSeparator: { height: 12 },
     card: {
       flex: 1,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     cardTopRow: {
       flexDirection: 'row',
@@ -451,18 +447,18 @@ const getStyles = (theme: FullTheme) => {
       width: 32,
       height: 32,
       borderRadius: 10,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
       justifyContent: 'center',
     },
     cardTitle: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       flex: 1,
     },
     cardDesc: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
       marginBottom: 10,
     },
@@ -472,7 +468,7 @@ const getStyles = (theme: FullTheme) => {
       justifyContent: 'flex-end',
       gap: 20,
       borderTopWidth: 1,
-      borderTopColor: theme.border,
+      borderTopColor: theme.border.default,
       paddingTop: 12,
       marginTop: 6,
     },
@@ -481,10 +477,9 @@ const getStyles = (theme: FullTheme) => {
       alignItems: 'center',
       gap: 6,
     },
-    metaIcon: {},
     metaText: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
   });
 };

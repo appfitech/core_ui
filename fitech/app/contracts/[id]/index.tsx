@@ -69,15 +69,15 @@ export default function ContractDetailScreen() {
     if (status === 'CANCELLED')
       return (
         <Tag
-          backgroundColor={theme.errorBackground}
-          textColor={theme.errorText}
+          backgroundColor={theme.status.error.bg}
+          textColor={theme.status.error.text}
           label="Cancelado"
         />
       );
     return (
       <Tag
-        backgroundColor={theme.backgroundInput}
-        textColor={theme.textSecondary}
+        backgroundColor={theme.background.input}
+        textColor={theme.text.secondary}
         label="Completado"
       />
     );
@@ -104,7 +104,7 @@ export default function ContractDetailScreen() {
               <Ionicons
                 name="person-outline"
                 size={18}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
                 style={styles.rowIcon}
               />
             )}
@@ -122,7 +122,7 @@ export default function ContractDetailScreen() {
             <Ionicons
               name="calendar-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <View style={styles.rowContent}>
@@ -142,7 +142,7 @@ export default function ContractDetailScreen() {
           <Ionicons
             name="create-outline"
             size={18}
-            color={theme.textSecondary}
+            color={theme.text.secondary}
             style={styles.rowIcon}
           />
           <View style={styles.rowContent}>
@@ -156,7 +156,7 @@ export default function ContractDetailScreen() {
             <Ionicons
               name="cash-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <View style={styles.rowContent}>
@@ -172,7 +172,7 @@ export default function ContractDetailScreen() {
           <Ionicons
             name="card-outline"
             size={18}
-            color={theme.textSecondary}
+            color={theme.text.secondary}
             style={styles.rowIcon}
           />
           <View style={styles.rowContent}>
@@ -229,10 +229,10 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 20,
       marginTop: 16,
       rowGap: 20,
@@ -262,21 +262,21 @@ const getStyles = (theme: FullTheme) => {
     },
     rowLabel: {
       ...text.label,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: 4,
     },
     rowValue: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     descriptionBlock: {
       marginTop: 4,
     },
     descriptionText: {
       ...text.link,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 22,
     },
     actions: {

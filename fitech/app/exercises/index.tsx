@@ -125,8 +125,8 @@ export default function ExercisesScreen() {
     marked[selectedDate] = {
       ...(marked[selectedDate] ?? {}),
       selected: true,
-      selectedColor: theme.primary,
-      selectedTextColor: theme.background,
+      selectedColor: theme.brand.primary,
+      selectedTextColor: theme.background.app,
     };
     return marked;
   }, [selectedDate, theme]);
@@ -181,10 +181,10 @@ export default function ExercisesScreen() {
             const isDisabled = state === 'disabled';
             const hasWorkout = count > 0;
             const textColor = isSelected
-              ? theme.background
+              ? theme.background.app
               : isDisabled
-                ? theme.dark400
-                : theme.textPrimary;
+                ? theme.text.tertiary
+                : theme.text.primary;
             const dots = Array(Math.min(count, 3))
               .fill(0)
               .map((_, i) => (
@@ -194,8 +194,8 @@ export default function ExercisesScreen() {
                     styles.dayDot,
                     {
                       backgroundColor: isSelected
-                        ? theme.background
-                        : theme.primary,
+                        ? theme.background.app
+                        : theme.brand.primary,
                     },
                   ]}
                 />
@@ -211,9 +211,9 @@ export default function ExercisesScreen() {
                     styles.dayInner,
                     {
                       backgroundColor: isSelected
-                        ? theme.primary
+                        ? theme.brand.primary
                         : hasWorkout
-                          ? theme.primaryBg
+                          ? theme.brand.primarySoft
                           : 'transparent',
                     },
                   ]}
@@ -238,18 +238,18 @@ export default function ExercisesScreen() {
 }
 
 const calendarTheme = (theme: FullTheme) => ({
-  backgroundColor: theme.card,
-  calendarBackground: theme.card,
-  textSectionTitleColor: theme.textSecondary,
-  selectedDayBackgroundColor: theme.primary,
-  selectedDayTextColor: theme.background,
-  todayTextColor: theme.primary,
-  dayTextColor: theme.textPrimary,
-  textDisabledColor: theme.dark400,
-  dotColor: theme.primary,
-  selectedDotColor: theme.background,
-  arrowColor: theme.textPrimary,
-  monthTextColor: theme.textPrimary,
+  backgroundColor: theme.background.card,
+  calendarBackground: theme.background.card,
+  textSectionTitleColor: theme.text.secondary,
+  selectedDayBackgroundColor: theme.brand.primary,
+  selectedDayTextColor: theme.background.app,
+  todayTextColor: theme.brand.primary,
+  dayTextColor: theme.text.primary,
+  textDisabledColor: theme.text.tertiary,
+  dotColor: theme.brand.primary,
+  selectedDotColor: theme.background.app,
+  arrowColor: theme.text.primary,
+  monthTextColor: theme.text.primary,
   textDayFontSize: 16,
   textMonthFontSize: 18,
   textDayHeaderFontSize: 12,
@@ -260,10 +260,10 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginTop: 16,
@@ -271,20 +271,20 @@ const getStyles = (theme: FullTheme) => {
     },
     filterTitle: {
       ...text.bodySemibold,
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
     filterHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: -2,
     },
     calendarCard: {
       marginTop: 20,
       borderRadius: 16,
       overflow: 'hidden',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 12,
     },
     dayTouchable: { paddingVertical: 6, paddingHorizontal: 2 },

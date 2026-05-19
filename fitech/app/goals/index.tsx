@@ -121,7 +121,7 @@ const getStyles = (theme: FullTheme) =>
     },
     subheader: {
       fontSize: 15,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 22,
       marginBottom: 8,
     },

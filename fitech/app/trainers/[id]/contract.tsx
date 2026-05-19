@@ -86,7 +86,7 @@ export default function TrainerContractScreen() {
 
   if (!service) {
     return (
-      <PageContainer title="Contratar servicio" style={styles.pageStyle}>
+      <PageContainer title="Contratar servicio">
         <AppText style={styles.errorText}>Servicio no disponible</AppText>
       </PageContainer>
     );
@@ -96,7 +96,6 @@ export default function TrainerContractScreen() {
     <PageContainer
       title="Contratar servicio"
       subheader={service.name}
-      style={styles.pageStyle}
     >
       <ScrollView
         style={styles.scroll}
@@ -109,7 +108,7 @@ export default function TrainerContractScreen() {
             <Ionicons
               name="document-text-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <AppText style={styles.rowValue}>{service.name}</AppText>
@@ -118,7 +117,7 @@ export default function TrainerContractScreen() {
             <Ionicons
               name="cash-outline"
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <AppText style={styles.rowValue}>
@@ -129,7 +128,7 @@ export default function TrainerContractScreen() {
             <Ionicons
               name={service.isInPerson ? 'walk-outline' : 'videocam-outline'}
               size={18}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.rowIcon}
             />
             <AppText style={styles.rowValue}>
@@ -163,7 +162,7 @@ export default function TrainerContractScreen() {
         >
           <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
             {accepted && (
-              <Ionicons name="checkmark" size={14} color={theme.background} />
+              <Ionicons name="checkmark" size={14} color={theme.background.app} />
             )}
           </View>
           <AppText style={styles.checkboxLabel}>
@@ -176,13 +175,11 @@ export default function TrainerContractScreen() {
             label="Cancelar"
             onPress={() => router.back()}
             type="tertiary"
-            style={styles.actionButton}
           />
           <Button
             label="Contratar"
             onPress={handleConfirm}
             disabled={!accepted || isPending}
-            style={styles.actionButton}
           />
         </View>
       </ScrollView>
@@ -193,26 +190,25 @@ export default function TrainerContractScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     scroll: { flex: 1 },
     scrollContent: { paddingBottom: 180 },
     errorText: {
       ...text.body,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textAlign: 'center',
       marginTop: 24,
     },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 20,
       marginTop: 16,
     },
     cardTitle: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 14,
     },
     row: {
@@ -225,7 +221,7 @@ const getStyles = (theme: FullTheme) => {
     },
     rowValue: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     termsSection: {
       marginBottom: 0,
@@ -235,12 +231,12 @@ const getStyles = (theme: FullTheme) => {
     },
     termsSectionTitle: {
       ...text.smallSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 6,
     },
     termsText: {
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
     },
     checkboxRow: {
@@ -255,23 +251,22 @@ const getStyles = (theme: FullTheme) => {
       height: 24,
       borderRadius: 6,
       borderWidth: 2,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       alignItems: 'center',
       justifyContent: 'center',
     },
     checkboxChecked: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     checkboxLabel: {
       flex: 1,
       ...text.smallMedium,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     actions: {
       marginTop: 24,
       rowGap: 12,
     },
-    actionButton: {},
   });
 };

@@ -74,23 +74,23 @@ export const SummaryCard = ({
   const palette =
     tone === 'green'
       ? {
-          bg: theme.successBackground,
-          border: theme.successBorder,
-          text: theme.successText,
-          iconBg: theme.success,
+          bg: theme.status.success.bg,
+          border: theme.status.success.border,
+          text: theme.status.success.text,
+          iconBg: theme.status.success.icon,
         }
       : tone === 'blue'
         ? {
-            bg: theme.infoBackground,
-            border: theme.infoBorder,
-            text: theme.infoText,
-            iconBg: theme.info,
+            bg: theme.status.info.bg,
+            border: theme.status.info.border,
+            text: theme.status.info.text,
+            iconBg: theme.status.info.icon,
           }
         : {
-            bg: theme.orangeBackground,
-            border: theme.orangeBorder,
-            text: theme.orangeText,
-            iconBg: theme.orange,
+            bg: theme.status.warning.bgStrong,
+            border: theme.status.warning.border,
+            text: theme.status.warning.text,
+            iconBg: theme.status.warning.icon,
           };
 
   return (
@@ -102,7 +102,7 @@ export const SummaryCard = ({
       </View>
       <View style={{ flex: 1 }}>
         <AppText
-          style={[styles.summaryLabel, { color: theme.textSecondary }]}
+          style={[styles.summaryLabel, { color: theme.text.secondary }]}
           numberOfLines={1}
         >
           {label}
@@ -135,20 +135,20 @@ const StatusPill = ({ status }: { status: Payment['paymentStatus'] }) => {
   > = {
     PENDING_CLIENT_APPROVAL: {
       label: 'Pendiente aprobación',
-      bg: theme.backgroundInput,
-      text: theme.textPrimary,
+      bg: theme.background.input,
+      text: theme.text.primary,
       icon: 'time-outline',
     },
     AVAILABLE_FOR_COLLECTION: {
       label: 'Disponible para cobrar',
-      bg: theme.infoBackground,
-      text: theme.infoText,
+      bg: theme.status.info.bg,
+      text: theme.status.info.text,
       icon: 'time-outline',
     },
     COLLECTED: {
       label: 'Cobrado',
-      bg: theme.successBackground,
-      text: theme.successText,
+      bg: theme.status.success.bg,
+      text: theme.status.success.text,
       icon: 'checkmark-circle-outline',
     },
   };
@@ -224,7 +224,7 @@ const PaymentRow = ({
         style={[
           styles.td,
           styles.numCol,
-          { color: theme.primary },
+          { color: theme.brand.primary },
         ]}
       >
         {formatPEN(item.trainerEarnings)}
@@ -297,7 +297,6 @@ export default function TrainerPaymentsScreen() {
     <PageContainer
       title="Mis Pagos"
       subheader="Gestiona y revisa todos tus ingresos por servicios de entrenamiento"
-      style={styles.pageStyle}
       contentPaddingBottom={120}
     >
       <View style={styles.contentWrap}>
@@ -308,7 +307,7 @@ export default function TrainerPaymentsScreen() {
               <Ionicons
                 name="checkmark-done"
                 size={18}
-                color={theme.background}
+                color={theme.background.app}
               />
             }
             label="COBRADO HASTA LA FECHA"
@@ -320,7 +319,7 @@ export default function TrainerPaymentsScreen() {
               <Ionicons
                 name="time-outline"
                 size={18}
-                color={theme.background}
+                color={theme.background.app}
               />
             }
             label="PENDIENTE DE COBRO"
@@ -332,7 +331,7 @@ export default function TrainerPaymentsScreen() {
               <MaterialCommunityIcons
                 name="wallet-outline"
                 size={18}
-                color={theme.background}
+                color={theme.background.app}
               />
             }
             label="DISPONIBLE PARA COBRAR"
@@ -384,7 +383,7 @@ export default function TrainerPaymentsScreen() {
               <Ionicons
                 name="calendar-outline"
                 size={14}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
                 style={styles.dateChipIcon}
               />
               <AppText style={styles.dateChipLabel}>Desde</AppText>
@@ -401,7 +400,7 @@ export default function TrainerPaymentsScreen() {
               <Ionicons
                 name="calendar-outline"
                 size={14}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
                 style={styles.dateChipIcon}
               />
               <AppText style={styles.dateChipLabel}>Hasta</AppText>
@@ -417,7 +416,7 @@ export default function TrainerPaymentsScreen() {
               <Ionicons
                 name="close-circle-outline"
                 size={16}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
                 style={styles.clearFiltersIcon}
               />
               <AppText style={styles.clearFiltersText}>Limpiar</AppText>
@@ -463,14 +462,13 @@ export default function TrainerPaymentsScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {},
     contentWrap: {
       gap: 16,
       paddingVertical: 8,
     },
     sectionTitle: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
       marginBottom: 4,
@@ -487,8 +485,8 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 14,
       padding: 14,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
     },
     summaryIconWrap: {
       width: 40,
@@ -505,17 +503,17 @@ const getStyles = (theme: FullTheme) => {
     summaryAmount: { ...text.sectionTitle, marginTop: 2 },
 
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 14,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginBottom: 4,
     },
     filterHint: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 12,
     },
     tabRow: {
@@ -527,20 +525,20 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 10,
       paddingHorizontal: 14,
       borderRadius: 10,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     tabButtonActive: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     tabText: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     tabTextActive: {
-      color: theme.background,
+      color: theme.background.app,
     },
     dateRow: {
       flexDirection: 'row',
@@ -550,30 +548,30 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 12,
       paddingTop: 12,
       borderTopWidth: 1,
-      borderTopColor: theme.border,
+      borderTopColor: theme.border.default,
     },
     dateChip: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 10,
       paddingVertical: 8,
       paddingHorizontal: 12,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       minWidth: 100,
     },
     dateChipIcon: { marginRight: 6 },
     dateChipLabel: {
       ...text.label,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginRight: 6,
       textTransform: 'uppercase',
     },
     dateChipValue: {
       flex: 1,
       ...text.captionSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     clearFiltersBtn: {
       flexDirection: 'row',
@@ -584,18 +582,18 @@ const getStyles = (theme: FullTheme) => {
     clearFiltersIcon: { marginRight: 4 },
     clearFiltersText: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
 
     tableCard: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     headerRow: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderTopLeftRadius: 10,
       borderTopRightRadius: 10,
     },
@@ -607,19 +605,19 @@ const getStyles = (theme: FullTheme) => {
     },
     th: {
       ...text.captionSemibold,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       paddingHorizontal: 6,
     },
     td: {
       ...text.nav,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     tdCell: {
       paddingHorizontal: 6,
     },
     numCol: { flex: 1.2, textAlign: 'right' as const },
-    bodyRow: { backgroundColor: theme.card },
-    separator: { height: 1, backgroundColor: theme.border },
+    bodyRow: { backgroundColor: theme.background.card },
+    separator: { height: 1, backgroundColor: theme.border.default },
 
     statusPill: {
       flexDirection: 'row',
@@ -632,16 +630,16 @@ const getStyles = (theme: FullTheme) => {
     statusText: { ...text.captionSemibold },
 
     collectBtn: {
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       paddingVertical: 10,
       paddingHorizontal: 14,
       borderRadius: 10,
     },
     collectBtnText: {
       ...text.captionSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
 
-    muted: { color: theme.textSecondary },
+    muted: { color: theme.text.secondary },
   });
 };

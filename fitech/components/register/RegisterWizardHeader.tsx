@@ -52,6 +52,6 @@ const getStyles = (theme: FullTheme) =>
     subtitle: {
       textAlign: 'left',
       lineHeight: 18,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
   });

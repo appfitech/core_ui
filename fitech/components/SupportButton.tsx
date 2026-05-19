@@ -24,7 +24,7 @@ export function SupportButton() {
       <Ionicons
         name="help-circle-outline"
         size={22}
-        color={theme.fixedHeaderTitleColor}
+        color={theme.text.primary}
       />
     </TouchableOpacity>
   );

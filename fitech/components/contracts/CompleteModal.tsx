@@ -35,7 +35,7 @@ export default function CompleteModal({
       >
         <View
           style={{
-            backgroundColor: theme.background,
+            backgroundColor: theme.background.app,
             padding: 20,
             borderRadius: 12,
             rowGap: 12,
@@ -45,8 +45,8 @@ export default function CompleteModal({
             style={{
               fontSize: 19,
               fontWeight: 600,
-              color: theme.dark900,
-              borderBottomColor: theme.green400,
+              color: theme.text.primary,
+              borderBottomColor: theme.brand.primary,
               borderBottomWidth: 2,
               paddingBottom: 12,
             }}
@@ -54,7 +54,7 @@ export default function CompleteModal({
             Confirmar Finalización
           </AppText>
           <AppText
-            style={{ fontSize: 17, fontWeight: 500, color: theme.dark700 }}
+            style={{ fontSize: 17, fontWeight: 500, color: theme.icon.muted }}
           >
             ¿Estás seguro de que deseas marcar este contrato como completado?
           </AppText>
@@ -62,7 +62,7 @@ export default function CompleteModal({
             style={{
               fontSize: 16,
               fontWeight: 500,
-              color: theme.dark500,
+              color: theme.text.disabled,
               marginBottom: 10,
             }}
           >
@@ -71,8 +71,8 @@ export default function CompleteModal({
           </AppText>
           <Tag
             label={'Esta acción no se puede deshacer'}
-            backgroundColor={theme.warningBackground}
-            textColor={theme.warningText}
+            backgroundColor={theme.status.warning.bg}
+            textColor={theme.status.warning.text}
           />
           <View
             style={{
@@ -84,7 +84,7 @@ export default function CompleteModal({
           >
             <TouchableOpacity
               style={{
-                backgroundColor: theme.dark100,
+                backgroundColor: theme.background.app,
                 padding: 12,
                 borderRadius: 12,
               }}
@@ -93,7 +93,7 @@ export default function CompleteModal({
               <AppText
                 style={{
                   fontSize: 16,
-                  color: theme.dark900,
+                  color: theme.text.primary,
                   fontWeight: 600,
                 }}
               >
@@ -102,7 +102,7 @@ export default function CompleteModal({
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                backgroundColor: theme.green400,
+                backgroundColor: theme.brand.primary,
                 padding: 12,
                 borderRadius: 12,
               }}
@@ -111,7 +111,7 @@ export default function CompleteModal({
               <AppText
                 style={{
                   fontSize: 16,
-                  color: theme.green900,
+                  color: theme.text.primary,
                   fontWeight: 600,
                 }}
               >

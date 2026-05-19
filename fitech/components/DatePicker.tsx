@@ -71,7 +71,7 @@ export function DatePicker({
           <Ionicons
             name="calendar-outline"
             size={20}
-            color={theme.icon}
+            color={theme.icon.secondary}
             style={styles.leadingIcon}
           />
           <AppText
@@ -80,7 +80,7 @@ export function DatePicker({
           >
             {displayText}
           </AppText>
-          <Ionicons name="chevron-down" size={20} color={theme.icon} />
+          <Ionicons name="chevron-down" size={20} color={theme.icon.secondary} />
         </Pressable>
       </View>
 
@@ -106,8 +106,8 @@ export function DatePicker({
                 display="spinner"
                 locale="es-PE"
                 themeVariant="dark"
-                accentColor={theme.primary}
-                textColor={theme.textPrimary}
+                accentColor={theme.brand.primary}
+                textColor={theme.text.primary}
                 minimumDate={minDate}
                 maximumDate={maxDate}
                 onChange={(_, date) => {
@@ -153,11 +153,11 @@ export function DatePicker({
           locale="es-PE"
           positiveButton={{
             label: 'Confirmar',
-            textColor: theme.primary,
+            textColor: theme.brand.primary,
           }}
           negativeButton={{
             label: 'Cancelar',
-            textColor: theme.textSecondary,
+            textColor: theme.text.secondary,
           }}
         />
       )}
@@ -185,11 +185,11 @@ const getStyles = (theme: FullTheme) => {
       flex: 1,
       ...text.link,
       fontFamily: 'Inter_400Regular',
-      color: theme.textPrimary,
+      color: theme.text.primary,
       lineHeight: 22,
     },
     placeholderText: {
-      color: theme.dark700,
+      color: theme.icon.muted,
     },
     modalRoot: {
       flex: 1,
@@ -200,7 +200,7 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: 'rgba(5, 6, 8, 0.75)',
     },
     sheet: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       paddingTop: 8,

@@ -20,7 +20,7 @@ export function MacrosCard() {
       activeOpacity={0.85}
     >
       <Card style={styles.card}>
-        <View style={{ width: 85 }}>
+        <View style={styles.imageWrap}>
           <Image
             source={require('@/assets/images/products/macros.jpg')}
             style={styles.image}
@@ -47,6 +47,9 @@ const getStyles = (theme: FullTheme) => {
       alignItems: 'center',
       padding: 0,
       height: 100,
+    },
+    imageWrap: {
+      width: 85,
     },
     image: {
       borderTopLeftRadius: 16,

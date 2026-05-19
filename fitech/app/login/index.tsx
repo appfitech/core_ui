@@ -197,7 +197,7 @@ export default function LoginScreen() {
 }
 
 const getStyles = (theme: FullTheme) => {
-  const iconColor = theme.dark800;
+  const iconColor = theme.icon.secondary;
   const text = textStyles(theme);
 
   return {
@@ -248,11 +248,11 @@ const getStyles = (theme: FullTheme) => {
       },
       footerPrompt: {
         ...text.link,
-        color: theme.textSecondary,
+        color: theme.text.secondary,
       },
       signUp: {
         ...text.linkSemibold,
-        color: theme.green700,
+        color: theme.brand.primaryLight,
         marginLeft: 10,
       },
     }),

@@ -24,7 +24,7 @@ export default function PremiumFeaturesScreen() {
     >
       <View style={styles.hero}>
         <View style={styles.heroBadge}>
-          <Ionicons name="star" size={18} color={theme.warning} />
+          <Ionicons name="star" size={18} color={theme.status.warning.icon} />
           <AppText style={styles.heroBadgeText}>Premium</AppText>
         </View>
       </View>
@@ -35,7 +35,7 @@ export default function PremiumFeaturesScreen() {
           activeOpacity={0.85}
         >
           <View style={styles.cardIconWrap}>
-            <Ionicons name="library-outline" size={28} color={theme.primary} />
+            <Ionicons name="library-outline" size={28} color={theme.brand.primary} />
           </View>
           <View style={styles.cardContent}>
             <AppText style={styles.cardTitle}>Biblioteca</AppText>
@@ -57,7 +57,7 @@ export default function PremiumFeaturesScreen() {
             activeOpacity={0.85}
           >
             <View style={styles.cardIconWrap}>
-              <Ionicons name="people-outline" size={28} color={theme.primary} />
+              <Ionicons name="people-outline" size={28} color={theme.brand.primary} />
             </View>
             <View style={styles.cardContent}>
               <AppText style={styles.cardTitle}>GymBro</AppText>
@@ -80,7 +80,7 @@ export default function PremiumFeaturesScreen() {
             activeOpacity={0.85}
           >
             <View style={styles.cardIconWrap}>
-              <Ionicons name="heart-outline" size={28} color={theme.primary} />
+              <Ionicons name="heart-outline" size={28} color={theme.brand.primary} />
             </View>
             <View style={styles.cardContent}>
               <AppText style={styles.cardTitle}>GymCrush</AppText>
@@ -115,7 +115,7 @@ const getStyles = (theme: FullTheme) =>
     heroBadge: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.warningBackground,
+      backgroundColor: theme.status.warning.bg,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 999,
@@ -124,7 +124,7 @@ const getStyles = (theme: FullTheme) =>
     heroBadgeText: {
       fontSize: 13,
       fontWeight: '700',
-      color: theme.warningText,
+      color: theme.status.warning.text,
     },
 
     cardList: {
@@ -136,27 +136,27 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 16,
       padding: 18,
       borderWidth: 1,
-      borderColor: theme.border,
-      backgroundColor: theme.card,
+      borderColor: theme.border.default,
+      backgroundColor: theme.background.card,
       minHeight: 100,
     },
     cardLibrary: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
     },
     cardGymBro: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
     },
     cardGymCrush: {
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
     },
     cardIconWrap: {
       width: 48,
       height: 48,
       borderRadius: 14,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
       marginRight: 14,
@@ -169,11 +169,11 @@ const getStyles = (theme: FullTheme) =>
     cardTitle: {
       fontSize: 18,
       fontWeight: '700',
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     cardDescription: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
     },
     cardImage: {

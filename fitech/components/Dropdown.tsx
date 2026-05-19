@@ -86,8 +86,8 @@ export function Dropdown({
           <AppText style={styles.label}>{label}</AppText>
           {!required && (
             <Tag
-              backgroundColor={theme.warningBackground}
-              textColor={theme.warningText}
+              backgroundColor={theme.status.warning.bg}
+              textColor={theme.status.warning.text}
               style={styles.optionalTag}
               label="Opcional"
             />
@@ -134,9 +134,9 @@ export function Dropdown({
         containerStyle={styles.listContainer}
         itemContainerStyle={styles.itemContainer}
         itemTextStyle={styles.itemText}
-        activeColor={theme.primaryBg}
-        searchPlaceholderTextColor={theme.dark700}
-        iconColor={theme.icon}
+        activeColor={theme.brand.primarySoft}
+        searchPlaceholderTextColor={theme.icon.muted}
+        iconColor={theme.icon.secondary}
         renderInputSearch={
           enableSearch
             ? (onSearch) => (
@@ -144,8 +144,8 @@ export function Dropdown({
                   <NativeTextInput
                     style={styles.searchInput}
                     placeholder={searchPlaceholder}
-                    placeholderTextColor={theme.dark700}
-                    selectionColor={theme.primary}
+                    placeholderTextColor={theme.icon.muted}
+                    selectionColor={theme.brand.primary}
                     autoCorrect={false}
                     onChangeText={onSearch}
                   />
@@ -154,7 +154,7 @@ export function Dropdown({
             : undefined
         }
         renderRightIcon={() => (
-          <Ionicons name="chevron-down" size={20} color={theme.icon} />
+          <Ionicons name="chevron-down" size={20} color={theme.icon.secondary} />
         )}
         renderItem={
           renderItemProp ??
@@ -169,7 +169,7 @@ export function Dropdown({
                 <Ionicons
                   name="checkmark-circle"
                   size={20}
-                  color={theme.primary}
+                  color={theme.brand.primary}
                 />
               )}
             </View>
@@ -189,27 +189,27 @@ const getStyles = (theme: FullTheme) => {
     labelContainer: base.labelContainer,
     optionalTag: base.optionalTag,
     dropdown: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       minHeight: 52,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       paddingHorizontal: 16,
       paddingVertical: Platform.OS === 'ios' ? 14 : 12,
     },
     placeholder: {
       ...text.link,
-      color: theme.dark700,
+      color: theme.icon.muted,
     },
     selectedText: {
       ...text.link,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     listContainer: {
-      backgroundColor: theme.backgroundDropdown,
+      backgroundColor: theme.background.cardHover,
       borderRadius: 12,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       marginTop: 6,
       maxHeight: 280,
       overflow: 'hidden',
@@ -234,19 +234,19 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 16,
       paddingVertical: 14,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
     },
     itemRowSelected: {
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
     },
     itemText: {
       ...text.link,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       flex: 1,
     },
     itemTextSelected: {
       ...text.linkSemibold,
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
     searchWrap: {
       marginHorizontal: 12,
@@ -255,11 +255,11 @@ const getStyles = (theme: FullTheme) => {
     },
     searchInput: {
       ...text.link,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 10,
       borderWidth: 1,
-      borderColor: theme.border,
-      color: theme.textPrimary,
+      borderColor: theme.border.default,
+      color: theme.text.primary,
       paddingHorizontal: 12,
       height: 44,
     },

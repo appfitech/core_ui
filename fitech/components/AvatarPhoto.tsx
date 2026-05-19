@@ -39,6 +39,6 @@ const getStyles = (theme: FullTheme) =>
       height: 80,
       borderRadius: 40,
       overflow: 'hidden',
-      backgroundColor: theme.dark100,
+      backgroundColor: theme.background.app,
     },
   });

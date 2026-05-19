@@ -25,7 +25,7 @@ export function ChipToggle({ label, selected, value, onPress }: Props) {
       onPress={handlePress}
       style={[
         styles.container,
-        selected && { backgroundColor: theme.backgroundInverted },
+        selected && { backgroundColor: theme.text.primary },
       ]}
     >
       <AppText
@@ -49,7 +49,7 @@ const getStyles = (theme: FullTheme) => {
       borderRadius: 999,
       backgroundColor: '#F1F1F1',
     },
-    label: { ...text.linkSemibold, color: theme.textPrimary },
-    labelSelected: { ...text.linkSemibold, color: theme.dark100 },
+    label: { ...text.linkSemibold, color: theme.text.primary },
+    labelSelected: { ...text.linkSemibold, color: theme.background.app },
   });
 };

@@ -54,7 +54,7 @@ export default function ProfileScreen() {
           <View
             style={[
               styles.avatarWrapper,
-              { backgroundColor: theme.backgroundInput },
+              { backgroundColor: theme.background.input },
             ]}
           >
             <AvatarSvg width="100%" height="100%" />
@@ -68,16 +68,16 @@ export default function ProfileScreen() {
           <Tag
             icon="person-outline"
             label={userType === 1 ? 'Trainer' : 'Usuario'}
-            textColor={theme.successText}
-            backgroundColor={theme.successBackground}
+            textColor={theme.status.success.text}
+            backgroundColor={theme.status.success.bg}
           />
           {user?.premium && !isTrainer && (
             <TouchableOpacity onPress={handleSubscriptionClick}>
               <Tag
                 icon="cash-outline"
                 label={`Premium ${user?.premiumBy === 'CONTRACT' ? '(Con Contrato)' : '(Por Pago)'}`}
-                textColor={theme.warningText}
-                backgroundColor={theme.warningBackground}
+                textColor={theme.status.warning.text}
+                backgroundColor={theme.status.warning.bg}
               />
             </TouchableOpacity>
           )}
@@ -133,12 +133,12 @@ const getStyles = (theme: FullTheme) => {
     },
     name: {
       ...text.title,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     email: {
       ...text.subtitle,
       marginTop: 4,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     tagsRow: {
       flexDirection: 'row',
@@ -147,10 +147,10 @@ const getStyles = (theme: FullTheme) => {
       columnGap: 8,
     },
     section: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 16,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       paddingVertical: 4,
       paddingHorizontal: 4,
       overflow: 'hidden',

@@ -83,7 +83,7 @@ export default function NotificationsScreen() {
             <Ionicons
               name="checkmark-circle-outline"
               size={56}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
             />
             <AppText style={styles.emptyMessage}>
               Estás al día, no hay más notificaciones 🎉
@@ -101,7 +101,7 @@ export default function NotificationsScreen() {
               activeOpacity={0.7}
             >
               <View style={styles.iconBox}>
-                <Ionicons name={iconName} size={24} color={theme.primary} />
+                <Ionicons name={iconName} size={24} color={theme.brand.primary} />
               </View>
               <View style={styles.cardContent}>
                 <AppText style={styles.cardTitle} numberOfLines={1}>
@@ -117,7 +117,7 @@ export default function NotificationsScreen() {
               <Ionicons
                 name="chevron-forward"
                 size={20}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
               />
             </TouchableOpacity>
           );
@@ -148,30 +148,30 @@ const getStyles = (theme: FullTheme) =>
       gap: 16,
     },
     emptyMessage: {
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       fontSize: 16,
       textAlign: 'center',
     },
     card: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       paddingVertical: 14,
       paddingHorizontal: 14,
       columnGap: 12,
     },
     cardUnread: {
-      backgroundColor: theme.primaryBg ?? theme.green100,
-      borderColor: theme.successBorder ?? theme.border,
+      backgroundColor: theme.brand.primarySoft ?? theme.status.success.bgStrong,
+      borderColor: theme.status.success.border ?? theme.border.default,
     },
     iconBox: {
       width: 44,
       height: 44,
       borderRadius: 12,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -182,17 +182,17 @@ const getStyles = (theme: FullTheme) =>
     cardTitle: {
       fontSize: 16,
       fontWeight: '700',
-      color: theme.textPrimary,
+      color: theme.text.primary,
       marginBottom: 2,
     },
     cardMessage: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       lineHeight: 20,
     },
     cardTime: {
       fontSize: 12,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 4,
     },
   });

@@ -171,7 +171,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.flex1}>
-      <StatusBar style="light" backgroundColor={THEME.background} />
+      <StatusBar style="light" backgroundColor={THEME.background.app} />
       <ThemeProvider>
         <AlertProvider>
           <ReactQueryProvider>

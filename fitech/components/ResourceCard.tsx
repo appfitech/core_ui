@@ -45,7 +45,7 @@ export function ResourceCard({ onClick, resource }: Props) {
             <Ionicons
               name="person-outline"
               size={16}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.trainerIcon}
             />
             <View style={styles.trainerTextWrap}>
@@ -62,7 +62,7 @@ export function ResourceCard({ onClick, resource }: Props) {
             <Ionicons
               name="calendar-outline"
               size={16}
-              color={theme.textSecondary}
+              color={theme.text.secondary}
               style={styles.dateIcon}
             />
             <AppText style={styles.datesText} numberOfLines={1}>
@@ -80,7 +80,7 @@ export function ResourceCard({ onClick, resource }: Props) {
           <Ionicons
             name="chevron-forward"
             size={18}
-            color={theme.primaryText}
+            color={theme.brand.primaryLight}
           />
         </View>
       </View>
@@ -95,16 +95,16 @@ const getStyles = (theme: FullTheme) => {
       marginBottom: 4,
     },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 18,
       paddingBottom: 14,
     },
     title: {
       ...text.leadSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       lineHeight: 22,
       marginBottom: 12,
     },
@@ -122,14 +122,14 @@ const getStyles = (theme: FullTheme) => {
     },
     trainerLabel: {
       ...text.label,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: 1,
     },
     trainerName: {
       ...text.linkSemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     datesRow: {
       flexDirection: 'row',
@@ -142,7 +142,7 @@ const getStyles = (theme: FullTheme) => {
     datesText: {
       flex: 1,
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       minWidth: 0,
     },
     ctaRow: {
@@ -153,7 +153,7 @@ const getStyles = (theme: FullTheme) => {
     },
     ctaText: {
       ...text.smallSemibold,
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
   });
 };

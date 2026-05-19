@@ -85,17 +85,17 @@ const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginTop: 16,
     },
     filterHint: {
       fontSize: 12,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginBottom: 10,
     },
     tabRow: {
@@ -108,21 +108,21 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 18,
       alignItems: 'center',
       borderRadius: 999,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     tabButtonActive: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     tabText: {
       fontSize: 15,
-      color: theme.textPrimary,
+      color: theme.text.primary,
       fontWeight: '600',
     },
     tabTextActive: {
-      color: theme.background,
+      color: theme.background.app,
       fontWeight: '700',
     },
     list: {
@@ -138,12 +138,12 @@ const getStyles = (theme: FullTheme) =>
     emptyText: {
       fontSize: 16,
       fontWeight: '600',
-      color: theme.textPrimary,
+      color: theme.text.primary,
       textAlign: 'center',
     },
     emptyHint: {
       fontSize: 14,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
       textAlign: 'center',
     },

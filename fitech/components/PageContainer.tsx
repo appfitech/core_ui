@@ -240,7 +240,7 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
     },
     fixedHeader: {
       position: 'absolute',
@@ -251,9 +251,9 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 20,
       paddingTop: 8,
       paddingBottom: 16,
-      backgroundColor: theme.backgroundHeader,
+      backgroundColor: theme.background.elevated,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.fixedHeaderBorder,
+      borderBottomColor: theme.border.subtle,
     },
     fixedHeaderRow: {
       flexDirection: 'row',
@@ -274,7 +274,7 @@ const getStyles = (theme: FullTheme) => {
     },
     fixedSubheader: {
       marginTop: 4,
-      color: theme.fixedHeaderSubheaderColor,
+      color: theme.text.secondary,
     },
     scrollContent: {
       paddingBottom: 80,
@@ -287,8 +287,8 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 24,
       paddingTop: 12,
       borderTopWidth: 1,
-      borderTopColor: theme.border,
-      backgroundColor: theme.background,
+      borderTopColor: theme.border.default,
+      backgroundColor: theme.background.app,
     },
     headerTitle: {
       ...text.sectionTitle,

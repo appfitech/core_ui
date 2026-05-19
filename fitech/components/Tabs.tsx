@@ -76,7 +76,7 @@ export function Tabs({ options, value, onSelect }: Props) {
             onPress={() => onSelect(optValue)}
             android_ripple={
               Platform.OS === 'android'
-                ? { color: rippleFromHex(theme.info, 0.2) }
+                ? { color: rippleFromHex(theme.status.info.icon, 0.2) }
                 : undefined
             }
             style={({ pressed }) => [styles.tab, pressed && styles.tabPressed]}
@@ -106,7 +106,7 @@ const getStyles = (theme: FullTheme) => {
       justifyContent: 'space-between',
       borderRadius: 16,
       overflow: 'hidden',
-      backgroundColor: theme.infoBackground,
+      backgroundColor: theme.status.info.bg,
     },
     pill: {
       position: 'absolute',
@@ -114,7 +114,7 @@ const getStyles = (theme: FullTheme) => {
       top: 0,
       bottom: 0,
       borderRadius: 16,
-      backgroundColor: theme.info,
+      backgroundColor: theme.status.info.icon,
     },
     tab: {
       flex: 1,
@@ -127,10 +127,10 @@ const getStyles = (theme: FullTheme) => {
     },
     tabText: {
       ...text.body,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     textSelected: {
-      color: theme.dark100,
+      color: theme.background.app,
     },
   });
 };

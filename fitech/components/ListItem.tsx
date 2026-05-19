@@ -39,7 +39,7 @@ export function ListItem({
   const { theme } = useTheme();
 
   const styles = getStyles(theme);
-  const iconColor = theme.primary;
+  const iconColor = theme.brand.primary;
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -65,7 +65,7 @@ export function ListItem({
           {label}
         </AppText>
         {description && (
-          <AppText style={{ color: theme.textSecondary }}>
+          <AppText style={{ color: theme.text.secondary }}>
             {description}
           </AppText>
         )}
@@ -74,7 +74,7 @@ export function ListItem({
         <Ionicons
           name="chevron-forward"
           size={20}
-          color={theme.textSecondary}
+          color={theme.text.secondary}
         />
       )}
     </TouchableOpacity>
@@ -90,7 +90,7 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 14,
       paddingHorizontal: 12,
       borderBottomWidth: 1,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
       columnGap: 12,
     },
     iconWrapper: {
@@ -100,7 +100,7 @@ const getStyles = (theme: FullTheme) => {
     label: {
       flex: 1,
       ...text.body,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
   });
 };

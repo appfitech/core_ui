@@ -33,10 +33,10 @@ const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
     inputDisabled: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       opacity: 0.9,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
   });

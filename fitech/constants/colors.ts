@@ -1,6 +1,6 @@
 /**
  * FITECH color tokens — source of truth for the dark UI palette.
- * Map into `FullTheme` via `constants/theme.ts` (`THEME`).
+ * Exposed app-wide via `useTheme()` / `THEME` (`constants/theme.ts`).
  */
 export const colors = {
   brand: {

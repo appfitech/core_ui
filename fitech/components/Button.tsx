@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { colors } from '@/constants/colors';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
@@ -120,17 +119,17 @@ function getStyles(theme: FullTheme): ButtonStyles {
     justifyContent: 'center',
   };
   const container: Record<ButtonType, ViewStyle> = {
-    primary: { backgroundColor: colors.button.primaryBg },
+    primary: { backgroundColor: theme.button.primaryBg },
     secondary: {
-      backgroundColor: colors.button.secondaryBg,
+      backgroundColor: theme.button.secondaryBg,
       borderWidth: 1,
-      borderColor: colors.button.secondaryBorder,
+      borderColor: theme.button.secondaryBorder,
     },
-    destructive: { backgroundColor: colors.button.dangerBg },
+    destructive: { backgroundColor: theme.button.dangerBg },
     tertiary: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     link: {
       backgroundColor: 'transparent',
@@ -143,33 +142,33 @@ function getStyles(theme: FullTheme): ButtonStyles {
   const buttonText: Record<ButtonType, TextStyle> = {
     primary: {
       ...text.button,
-      color: colors.button.primaryText,
+      color: theme.button.primaryText,
     },
     secondary: {
       ...text.button,
-      color: colors.button.secondaryText,
+      color: theme.button.secondaryText,
     },
     destructive: {
       ...text.button,
-      color: colors.button.dangerText,
+      color: theme.button.dangerText,
     },
     tertiary: {
       ...text.button,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     link: {
       ...text.caption,
       fontFamily: 'Inter_600SemiBold',
-      color: theme.primary,
+      color: theme.brand.primary,
       textDecorationLine: 'underline',
     },
   };
   const spinnerColor: Record<ButtonType, string> = {
-    primary: colors.button.primaryText,
-    secondary: colors.button.secondaryText,
-    destructive: colors.button.dangerText,
-    tertiary: theme.textPrimary,
-    link: theme.primary,
+    primary: theme.button.primaryText,
+    secondary: theme.button.secondaryText,
+    destructive: theme.button.dangerText,
+    tertiary: theme.text.primary,
+    link: theme.brand.primary,
   };
 
   return {

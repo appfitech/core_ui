@@ -64,20 +64,20 @@ const getStyles = (theme: FullTheme) => {
       marginBottom: 20,
     },
     stepLabel: {
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       ...text.nav,
       marginBottom: 10,
     },
     track: {
       height: 4,
       borderRadius: 2,
-      backgroundColor: theme.dark300,
+      backgroundColor: theme.background.elevated,
       overflow: 'hidden',
     },
     fill: {
       height: '100%',
       borderRadius: 2,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
     },
   });
 };

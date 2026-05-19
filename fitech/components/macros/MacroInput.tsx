@@ -34,16 +34,16 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
     >
       <AppText
         variant="sectionTitle"
-        style={{ color: theme.dark700, flex: 1 }}
+        style={{ color: theme.icon.muted, flex: 1 }}
       >
         {foodItem.name}
       </AppText>
       <View style={{ flex: 1, paddingLeft: 30 }}>
-        <AppText style={{ color: theme.dark400, marginBottom: 2 }}>
+        <AppText style={{ color: theme.text.tertiary, marginBottom: 2 }}>
           {'Porciones'}
         </AppText>
         <TextInput
-          placeholderTextColor={theme.dark700}
+          placeholderTextColor={theme.icon.muted}
           placeholder=""
           keyboardType="numeric"
           style={[styles.input]}
@@ -56,12 +56,12 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
       <TouchableOpacity
         onPress={handleRemoveFoodItem}
         style={{
-          backgroundColor: theme.errorBackground,
+          backgroundColor: theme.status.error.bg,
           borderRadius: '50%',
           flexGrow: 0,
         }}
       >
-        <Ionicons name="trash-outline" size={24} color={theme.errorText} />
+        <Ionicons name="trash-outline" size={24} color={theme.status.error.text} />
       </TouchableOpacity>
     </View>
   );

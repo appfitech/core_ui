@@ -160,7 +160,7 @@ export default function ChatsScreen() {
     >
       {isLoading ? (
         <View style={styles.loadingCenter}>
-          <ActivityIndicator color={theme.backgroundInverted} />
+          <ActivityIndicator color={theme.text.primary} />
           <AppText style={styles.loadingText}>Cargando chats...</AppText>
         </View>
       ) : !isLoading && !chats.length ? (
@@ -235,7 +235,7 @@ const getStyles = (theme: FullTheme) => {
     loadingText: {
       marginTop: 8,
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     emptyCenter: {
       flex: 1,
@@ -244,7 +244,7 @@ const getStyles = (theme: FullTheme) => {
     },
     emptyText: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       textAlign: 'center',
     },
     list: {
@@ -258,21 +258,21 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 14,
       paddingHorizontal: 14,
       borderRadius: 14,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       columnGap: 12,
     },
     avatar: {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       alignItems: 'center',
       justifyContent: 'center',
       overflow: 'hidden',
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     avatarImage: {
       width: 44,
@@ -282,14 +282,14 @@ const getStyles = (theme: FullTheme) => {
       width: 44,
       height: 44,
       borderRadius: 22,
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 1,
-      borderColor: theme.primary,
+      borderColor: theme.brand.primary,
     },
     avatarInitials: {
-      color: theme.primary,
+      color: theme.brand.primary,
       ...text.lead,
     },
     chatMain: {
@@ -298,11 +298,11 @@ const getStyles = (theme: FullTheme) => {
     },
     chatName: {
       ...text.bodySemibold,
-      color: theme.textPrimary,
+      color: theme.text.primary,
     },
     chatPreview: {
       ...text.nav,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     meta: {
       alignItems: 'flex-end',
@@ -311,19 +311,19 @@ const getStyles = (theme: FullTheme) => {
     },
     chatTime: {
       ...text.caption,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
     },
     unreadBadge: {
       minWidth: 20,
       paddingHorizontal: 6,
       paddingVertical: 2,
       borderRadius: 999,
-      backgroundColor: theme.primary,
+      backgroundColor: theme.brand.primary,
       alignItems: 'center',
     },
     unreadText: {
       ...text.label,
-      color: theme.background,
+      color: theme.background.app,
     },
   });
 };

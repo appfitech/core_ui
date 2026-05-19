@@ -103,16 +103,16 @@ export default function ContractsScreen() {
     if (contract.contractStatus === 'COMPLETED')
       return (
         <Tag
-          backgroundColor={theme.backgroundInput}
-          textColor={theme.textSecondary}
+          backgroundColor={theme.background.input}
+          textColor={theme.text.secondary}
           label="Completado"
         />
       );
     if (contract.contractStatus === 'CANCELLED')
       return (
         <Tag
-          backgroundColor={theme.errorBackground}
-          textColor={theme.errorText}
+          backgroundColor={theme.status.error.bg}
+          textColor={theme.status.error.text}
           label="Cancelado"
         />
       );
@@ -176,7 +176,7 @@ export default function ContractsScreen() {
                     <Ionicons
                       name="person-outline"
                       size={18}
-                      color={theme.textSecondary}
+                      color={theme.text.secondary}
                       style={styles.cardRowIcon}
                     />
                     <AppText style={styles.cardInfo}>
@@ -190,7 +190,7 @@ export default function ContractsScreen() {
                     <Ionicons
                       name="calendar-outline"
                       size={18}
-                      color={theme.textSecondary}
+                      color={theme.text.secondary}
                       style={styles.cardRowIcon}
                     />
                     <AppText style={styles.cardInfo} numberOfLines={1}>
@@ -208,7 +208,7 @@ export default function ContractsScreen() {
                     <Ionicons
                       name="cash-outline"
                       size={18}
-                      color={theme.textSecondary}
+                      color={theme.text.secondary}
                       style={styles.cardRowIcon}
                     />
                     <AppText style={styles.cardInfo}>
@@ -230,7 +230,7 @@ export default function ContractsScreen() {
                     <Ionicons
                       name="chevron-forward"
                       size={18}
-                      color={theme.primaryText}
+                      color={theme.brand.primaryLight}
                     />
                   </TouchableOpacity>
                 </View>
@@ -256,7 +256,7 @@ export default function ContractsScreen() {
                     <Ionicons
                       name="chevron-forward"
                       size={16}
-                      color={theme.infoText}
+                      color={theme.status.info.text}
                     />
                   </TouchableOpacity>
                 )}
@@ -286,10 +286,10 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
-      backgroundColor: theme.backgroundInput,
+      backgroundColor: theme.background.input,
       borderRadius: 12,
       borderLeftWidth: 4,
-      borderLeftColor: theme.primary,
+      borderLeftColor: theme.brand.primary,
       paddingVertical: 14,
       paddingHorizontal: 16,
       marginTop: 16,
@@ -308,20 +308,20 @@ const getStyles = (theme: FullTheme) => {
       paddingHorizontal: 18,
       alignItems: 'center',
       borderRadius: 999,
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
     },
     tabButtonActive: {
-      backgroundColor: theme.primary,
-      borderColor: theme.primary,
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
     },
     tabText: {
       ...text.linkSemibold,
     },
     tabTextActive: {
       ...text.linkSemibold,
-      color: theme.background,
+      color: theme.background.app,
     },
     list: {
       marginTop: 20,
@@ -339,15 +339,15 @@ const getStyles = (theme: FullTheme) => {
     },
     emptyHint: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 8,
       textAlign: 'center',
     },
     card: {
-      backgroundColor: theme.card,
+      backgroundColor: theme.background.card,
       borderRadius: 14,
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.border.default,
       padding: 18,
       paddingBottom: 14,
     },
@@ -366,7 +366,7 @@ const getStyles = (theme: FullTheme) => {
     cardInfo: {
       ...text.smallMedium,
       flex: 1,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       minWidth: 0,
     },
     tagsRow: {
@@ -387,7 +387,7 @@ const getStyles = (theme: FullTheme) => {
     },
     ctaText: {
       ...text.smallSemibold,
-      color: theme.primaryText,
+      color: theme.brand.primaryLight,
     },
     reviewButton: {
       marginTop: 10,
@@ -398,11 +398,11 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 10,
       paddingHorizontal: 16,
       borderRadius: 10,
-      backgroundColor: theme.infoBackground,
+      backgroundColor: theme.status.info.bg,
     },
     reviewButtonText: {
       ...text.smallSemibold,
-      color: theme.infoText,
+      color: theme.status.info.text,
     },
   });
 };

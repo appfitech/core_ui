@@ -127,7 +127,7 @@ export default function WorkoutsScreen() {
               <Ionicons
                 name="chevron-forward"
                 size={20}
-                color={theme.textSecondary}
+                color={theme.text.secondary}
               />
             </TouchableOpacity>
           </Animated.View>
@@ -149,14 +149,14 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 20,
       paddingHorizontal: 8,
       borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border,
+      borderBottomColor: theme.border.default,
       columnGap: 18,
     },
     iconWrap: {
       width: 52,
       height: 52,
       borderRadius: 14,
-      backgroundColor: theme.primaryBg,
+      backgroundColor: theme.brand.primarySoft,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -173,7 +173,7 @@ const getStyles = (theme: FullTheme) => {
     },
     rowDescription: {
       ...text.small,
-      color: theme.textSecondary,
+      color: theme.text.secondary,
       marginTop: 4,
     },
   });

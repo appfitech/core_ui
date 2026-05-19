@@ -45,8 +45,8 @@ export default function WorkoutDayScreen() {
         {exerciseCount > 0 && (
           <View style={styles.summaryRow}>
             <Tag
-              backgroundColor={theme.primary}
-              textColor={theme.background}
+              backgroundColor={theme.brand.primary}
+              textColor={theme.background.app}
               label={`🏋️ ${exerciseCount} ejercicio${exerciseCount > 1 ? 's' : ''}`}
             />
           </View>
@@ -111,7 +111,7 @@ const getStyles = (theme: FullTheme) =>
     cardWrapper: { marginBottom: 12 },
     emptyText: {
       fontSize: 19,
-      color: theme.dark500,
+      color: theme.text.disabled,
       marginTop: 40,
       textAlign: 'center',
     },
@@ -123,7 +123,7 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
       gap: 12,
       paddingTop: 20,
-      backgroundColor: theme.background,
+      backgroundColor: theme.background.app,
     },
     button: {
       flex: 1,
@@ -131,9 +131,9 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 12,
       alignItems: 'center',
     },
-    btnPrimary: { backgroundColor: theme.primary },
-    btnGhost: { backgroundColor: theme.backgroundInput },
+    btnPrimary: { backgroundColor: theme.brand.primary },
+    btnGhost: { backgroundColor: theme.background.input },
     buttonText: { fontSize: 16, fontWeight: '700' },
-    buttonTextGhost: { color: theme.textPrimary },
-    buttonTextPrimary: { color: theme.background },
+    buttonTextGhost: { color: theme.text.primary },
+    buttonTextPrimary: { color: theme.background.app },
   });
