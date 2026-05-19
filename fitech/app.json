@@ -66,8 +66,7 @@
         }
       ],
       "expo-font",
-      "expo-secure-store",
-      "expo-localization"
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
