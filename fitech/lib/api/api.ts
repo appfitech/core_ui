@@ -24,7 +24,10 @@ async function handleResponse(res: Response) {
       ...parsed,
     });
     const message =
-      parsed?.message ?? parsed?.error ?? parsed?.detail ?? `Error ${res.status}`;
+      parsed?.message ??
+      parsed?.error ??
+      parsed?.detail ??
+      `Error ${res.status}`;
     const error = new Error(String(message));
     (error as ApiError).status = res.status;
     (error as ApiError).data = parsed;
