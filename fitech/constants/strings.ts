@@ -13,6 +13,19 @@ export const TRANSLATIONS = {
     forgotPasswordLink: '¿Olvidaste tu contraseña?',
     alternativeLoginCaption: 'O inicia sesión con',
   },
+  verifyEmailScreen: {
+    title: 'Verifica tu correo',
+    verifying: 'Verificando tu correo electrónico…',
+    successTitle: '¡Correo verificado!',
+    successMessage:
+      'Tu cuenta ha sido verificada correctamente. Ya puedes iniciar sesión.',
+    missingToken:
+      'El enlace de verificación no es válido. Revisa el correo e inténtalo de nuevo.',
+    errorFallback:
+      'No pudimos verificar tu correo. El enlace puede haber expirado.',
+    goToLogin: 'Ir a iniciar sesión',
+    retryButton: 'Reintentar',
+  },
   forgotPasswordScreen: {
     title: '¿Olvidaste tu contraseña?',
     description:

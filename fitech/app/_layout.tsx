@@ -34,6 +34,7 @@ const HIDE_NAV_ROUTES = [
   'register',
   'chats',
   'forgot-password',
+  'verify-email',
 ];
 
 const PUBLIC_ROUTES = [
@@ -41,6 +42,7 @@ const PUBLIC_ROUTES = [
   'register',
   'support',
   'forgot-password',
+  'verify-email',
   'index',
 ];
 
