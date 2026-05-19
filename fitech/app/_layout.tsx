@@ -8,6 +8,7 @@ import {
 import * as Notifications from 'expo-notifications';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useRef } from 'react';
 import { InteractionManager, Platform, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -15,6 +16,7 @@ import Toast from 'react-native-toast-message';
 
 import { NavBar } from '@/components/NavBar';
 import { toastConfig } from '@/components/Toast';
+import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { withPushNotifications } from '@/hoc/withPushNotifications';
@@ -26,9 +28,21 @@ import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 
 SplashScreen.preventAutoHideAsync();
 
-const HIDE_NAV_ROUTES = ['login', 'support', 'register', 'chats'];
+const HIDE_NAV_ROUTES = [
+  'login',
+  'support',
+  'register',
+  'chats',
+  'forgot-password',
+];
 
-const PUBLIC_ROUTES = ['login', 'register', 'support', 'index'];
+const PUBLIC_ROUTES = [
+  'login',
+  'register',
+  'support',
+  'forgot-password',
+  'index',
+];
 
 function RoutedApp() {
   useAutoRefreshToken();
@@ -155,6 +169,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.flex1}>
+      <StatusBar style="light" backgroundColor={THEME.background} />
       <ThemeProvider>
         <AlertProvider>
           <ReactQueryProvider>

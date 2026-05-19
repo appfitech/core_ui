@@ -15,7 +15,7 @@ import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
-import { useLogin } from '@/lib/api/mutations/useLogin';
+import { useLogin } from '@/lib/api/mutations/use-account-mutations';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
@@ -69,6 +69,10 @@ export default function LoginScreen() {
 
   const handleSignUp = () => {
     router.replace(ROUTES.register);
+  };
+
+  const handleForgotPassword = () => {
+    router.push(ROUTES.forgotPassword);
   };
 
   const handleToggleDisplayPass = () => {
@@ -146,9 +150,9 @@ export default function LoginScreen() {
           />
 
           <View style={styles.optionsRow}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleForgotPassword}>
               <AppText style={styles.forgotText}>
-                {'¿Olvidaste tu contraseña?'}
+                {loginScreen.forgotPasswordLink}
               </AppText>
             </TouchableOpacity>
           </View>

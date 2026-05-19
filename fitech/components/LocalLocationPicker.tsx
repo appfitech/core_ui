@@ -1,4 +1,17 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useCallback, useMemo, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import { AppText } from '@/components/AppText';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useGetLocations } from '@/lib/api/queries/use-get-locations';
+import {
+  buildGroupedLocationItems,
+  filterLocationsForSearch,
+  getLocationDistrictLabel,
+} from '@/lib/locations/grouped-location-options';
+import { LocationDto } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 import { Dropdown } from './Dropdown';
 
@@ -19,22 +32,163 @@ export function LocalLocationPicker({
   placeholder = '',
   required = true,
 }: Props) {
-  const { data: locations } = useGetLocations();
+  const { theme } = useTheme();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+  const { data: locations = [] } = useGetLocations();
+  const [searchText, setSearchText] = useState('');
+
+  const filteredLocations = useMemo(
+    () => filterLocationsForSearch(locations, searchText),
+    [locations, searchText],
+  );
+
+  const groupedItems = useMemo(
+    () => buildGroupedLocationItems(filteredLocations),
+    [filteredLocations],
+  );
+
+  const itemByValue = useMemo(
+    () => new Map(groupedItems.map((item) => [item.value, item])),
+    [groupedItems],
+  );
+
+  const locationById = useMemo(
+    () =>
+      new Map(
+        locations
+          .filter((loc): loc is LocationDto & { id: number } => loc.id != null)
+          .map((loc) => [loc.id, loc]),
+      ),
+    [locations],
+  );
+
+  const options = useMemo(
+    () =>
+      groupedItems.map((item) => ({
+        label: item.label,
+        value: item.value,
+        disabled: item.disabled,
+      })),
+    [groupedItems],
+  );
+
+  const renderItem = useCallback(
+    (item: { label: string; value: string }, selected?: boolean) => {
+      const meta = itemByValue.get(item.value);
+      if (!meta) return null;
+
+      if (meta.kind === 'department') {
+        return (
+          <View style={styles.departmentRow}>
+            <AppText style={styles.departmentText}>{meta.label}</AppText>
+          </View>
+        );
+      }
+
+      if (meta.kind === 'province') {
+        return (
+          <View style={styles.provinceRow}>
+            <AppText style={styles.provinceText}>{meta.label}</AppText>
+          </View>
+        );
+      }
+
+      const location = locationById.get(Number(item.value));
+      const districtLabel = location
+        ? getLocationDistrictLabel(location)
+        : item.label;
+
+      return (
+        <View
+          style={[styles.locationRow, selected && styles.locationRowSelected]}
+        >
+          <AppText
+            style={[
+              styles.locationText,
+              selected && styles.locationTextSelected,
+            ]}
+          >
+            {districtLabel}
+          </AppText>
+          {selected && (
+            <Ionicons name="checkmark-circle" size={20} color={theme.primary} />
+          )}
+        </View>
+      );
+    },
+    [itemByValue, locationById, styles, theme.primary],
+  );
 
   return (
     <Dropdown
       id={id}
       placeholder={placeholder}
       label={label}
-      value={String(value)}
-      onChange={(value) => onChange(value ? Number(value) : undefined)}
-      options={
-        locations?.map(({ id, fullName }) => ({
-          label: fullName ?? '',
-          value: id ? String(id) : '',
-        })) ?? []
+      value={value == null ? '' : String(value)}
+      onChange={(nextValue) =>
+        onChange(nextValue ? Number(nextValue) : undefined)
       }
+      options={options}
       required={required}
+      search
+      searchPlaceholder="Buscar distrito..."
+      onSearchChange={setSearchText}
+      renderItem={renderItem}
     />
   );
 }
+
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    departmentRow: {
+      paddingHorizontal: 16,
+      paddingTop: 14,
+      paddingBottom: 6,
+      backgroundColor: theme.backgroundDropdown,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.border,
+    },
+    departmentText: {
+      color: theme.textSecondary,
+      fontSize: 12,
+      fontWeight: '700',
+      letterSpacing: 0.6,
+      textTransform: 'uppercase',
+    },
+    provinceRow: {
+      paddingHorizontal: 16,
+      paddingTop: 10,
+      paddingBottom: 6,
+      paddingLeft: 20,
+      backgroundColor: theme.backgroundDropdown,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.border,
+    },
+    provinceText: {
+      color: theme.textPrimary,
+      fontSize: 14,
+      fontWeight: '600',
+    },
+    locationRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingLeft: 28,
+      paddingVertical: 14,
+      borderBottomWidth: StyleSheet.hairlineWidth,
+      borderBottomColor: theme.border,
+    },
+    locationRowSelected: {
+      backgroundColor: theme.primaryBg,
+    },
+    locationText: {
+      color: theme.textPrimary,
+      fontSize: 15,
+      flex: 1,
+    },
+    locationTextSelected: {
+      color: theme.primaryText,
+      fontWeight: '600',
+    },
+  });

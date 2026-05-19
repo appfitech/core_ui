@@ -2,6 +2,7 @@ import type { Href } from 'expo-router';
 
 export const ROUTES = {
   login: '/login',
+  forgotPassword: '/forgot-password',
   register: '/register',
   onboarding: '/onboarding',
   home: '/home',

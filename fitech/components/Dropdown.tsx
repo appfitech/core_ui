@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo } from 'react';
+import { ReactElement, useMemo } from 'react';
 import {
   Platform,
   StyleSheet,
@@ -19,6 +19,7 @@ import { Tag } from './Tag';
 type DropdownItem = {
   label: string;
   value: string;
+  disabled?: boolean;
 };
 
 export type Props = {
@@ -33,6 +34,8 @@ export type Props = {
   disabled?: boolean;
   searchPlaceholder?: string;
   required?: boolean;
+  renderItem?: (item: DropdownItem, selected?: boolean) => ReactElement | null;
+  onSearchChange?: (text: string) => void;
 };
 
 export function Dropdown({
@@ -47,6 +50,8 @@ export function Dropdown({
   disabled = false,
   searchPlaceholder = 'Buscar...',
   required = true,
+  renderItem: renderItemProp,
+  onSearchChange,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -56,8 +61,14 @@ export function Dropdown({
       options.map((option) => ({
         label: option.label,
         value: String(option.value),
+        disabled: option.disabled,
       })),
     [options],
+  );
+
+  const hasDisabledItems = useMemo(
+    () => data.some((item) => item.disabled),
+    [data],
   );
 
   const selectedValue =
@@ -90,9 +101,24 @@ export function Dropdown({
         value={selectedValue}
         search={enableSearch}
         searchPlaceholder={searchPlaceholder}
-        onChange={(item: DropdownItem) => {
-          onChange(item.value);
-        }}
+        confirmSelectItem={hasDisabledItems}
+        onConfirmSelectItem={
+          hasDisabledItems
+            ? (item: DropdownItem) => {
+                if (item.disabled) return;
+                onChange(item.value);
+              }
+            : undefined
+        }
+        onChange={
+          hasDisabledItems
+            ? () => undefined
+            : (item: DropdownItem) => {
+                onChange(item.value);
+              }
+        }
+        onChangeText={onSearchChange}
+        onBlur={() => onSearchChange?.('')}
         placeholder={placeholder}
         style={styles.dropdown}
         placeholderStyle={styles.placeholder}
@@ -123,22 +149,25 @@ export function Dropdown({
         renderRightIcon={() => (
           <Ionicons name="chevron-down" size={20} color={theme.icon} />
         )}
-        renderItem={(item: DropdownItem, selected?: boolean) => (
-          <View style={[styles.itemRow, selected && styles.itemRowSelected]}>
-            <AppText
-              style={[styles.itemText, selected && styles.itemTextSelected]}
-            >
-              {item.label}
-            </AppText>
-            {selected && (
-              <Ionicons
-                name="checkmark-circle"
-                size={20}
-                color={theme.primary}
-              />
-            )}
-          </View>
-        )}
+        renderItem={
+          renderItemProp ??
+          ((item: DropdownItem, selected?: boolean) => (
+            <View style={[styles.itemRow, selected && styles.itemRowSelected]}>
+              <AppText
+                style={[styles.itemText, selected && styles.itemTextSelected]}
+              >
+                {item.label}
+              </AppText>
+              {selected && (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={20}
+                  color={theme.primary}
+                />
+              )}
+            </View>
+          ))
+        }
       />
     </View>
   );

@@ -1,0 +1,69 @@
+---
+description: Use project UI wrappers, named handlers, and shared styles
+alwaysApply: true
+---
+
+# UI Components & React Patterns
+
+## Use project wrappers, not React Native primitives
+
+Prefer components from `@/components/` over native equivalents:
+
+| Native | Use instead |
+|--------|-------------|
+| `Text` | `AppText` (or `AnimatedAppText` when animating) |
+| `TextInput` | `TextInput` from `@/components/TextInput` |
+| `TouchableOpacity` / pressables for actions | `Button` from `@/components/Button` |
+| Layout helpers | `PageContainer`, `Card`, `FormWrapper`, etc. |
+
+If no wrapper exists for a native component, **ask whether one should be created** before using the native component directly.
+
+```tsx
+// ❌ BAD
+import { Text, TextInput, TouchableOpacity } from 'react-native';
+
+<Text style={{ fontSize: 16 }}>Hello</Text>
+<TouchableOpacity onPress={() => router.push('/login')}>
+  <Text>Go</Text>
+</TouchableOpacity>
+
+// ✅ GOOD
+import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
+import { TextInput } from '@/components/TextInput';
+
+<AppText variant="body">Hello</AppText>
+<Button label="Go" onPress={handleGo} />
+```
+
+## Do not restyle buttons or inputs
+
+`Button`, `TextInput`, and related wrappers share a consistent design system. Use their built-in props (`type`, `variant`, `label`, etc.) — do not override with custom `style` for colors, padding, borders, or typography unless explicitly requested.
+
+## Prefer named handlers over inline functions
+
+Extract event handlers as named functions (typically `handle*` / `on*`) instead of inline arrow functions in JSX.
+
+```tsx
+// ❌ BAD
+<Button label="Save" onPress={() => save(data)} />
+<TextInput onChangeText={(v) => setName(v)} />
+
+// ✅ GOOD
+const handleSave = useCallback(() => {
+  save(data);
+}, [data, save]);
+
+const handleNameChange = (value: string) => {
+  setName(value);
+};
+
+<Button label="Save" onPress={handleSave} />
+<TextInput onChangeText={handleNameChange} />
+```
+
+Use `useCallback` when the handler is passed to memoized children or appears in effect dependency arrays.
+
+## Extract smaller components
+
+When a screen or component grows complex (repeated JSX, distinct UI sections, or nested logic), extract focused subcomponents into the same file or a colocated file under `components/`.
