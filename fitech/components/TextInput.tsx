@@ -8,6 +8,10 @@ import {
 
 import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import {
+  shouldUseAndroidTextBuffer,
+  useAndroidControlledTextBuffer,
+} from '@/hooks/use-android-controlled-text-buffer';
 import { FullTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
@@ -22,6 +26,8 @@ type Props = TextInputProps & {
   required?: boolean;
   /** Use on sign-up password fields so iOS offers a strong password once (not on confirm). */
   newPasswordAutofill?: boolean;
+  /** Skip Android focus buffer (rare; default is on for controlled fields). */
+  disableAndroidInputBuffer?: boolean;
 };
 
 function resolveSecureTextProps(
@@ -63,10 +69,35 @@ export function TextInput(props: Props) {
     label = null,
     required = true,
     newPasswordAutofill = false,
+    disableAndroidInputBuffer = false,
     secureTextEntry,
     style: inputStyleProp,
+    value,
+    onChangeText,
+    onFocus,
+    onBlur,
     ...rest
   } = props;
+
+  const useBuffer = shouldUseAndroidTextBuffer(
+    value,
+    onChangeText,
+    disableAndroidInputBuffer,
+  );
+
+  const {
+    displayValue,
+    handleChangeText,
+    handleFocus,
+    handleBlur,
+    bufferActive,
+  } = useAndroidControlledTextBuffer({
+    value,
+    onChangeText,
+    enabled: useBuffer,
+    onFocus,
+    onBlur,
+  });
 
   const secureAutofillProps = resolveSecureTextProps(
     secureTextEntry,
@@ -106,6 +137,13 @@ export function TextInput(props: Props) {
         <NativeTextInput
           {...rest}
           {...secureAutofillProps}
+          value={displayValue}
+          onChangeText={handleChangeText}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          importantForAutofill={
+            bufferActive ? 'no' : rest.importantForAutofill
+          }
           secureTextEntry={secureTextEntry}
           multiline={multiline}
           scrollEnabled={multiline ? false : rest.scrollEnabled}

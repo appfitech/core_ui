@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import moment from 'moment';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Calendar, type DateData, LocaleConfig } from 'react-native-calendars';
+import { Calendar, type DateData } from 'react-native-calendars';
 
 import { AppText } from '@/components/AppText';
 import { ChipsList } from '@/components/molecules/ChipsList';
@@ -14,49 +14,12 @@ import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
 import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+import {
+  ensureSpanishCalendarLocale,
+  getCalendarTheme,
+} from '@/utils/calendar';
 
-LocaleConfig.locales.es = {
-  monthNames: [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
-  ],
-  monthNamesShort: [
-    'Ene',
-    'Feb',
-    'Mar',
-    'Abr',
-    'May',
-    'Jun',
-    'Jul',
-    'Ago',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dic',
-  ],
-  dayNames: [
-    'Domingo',
-    'Lunes',
-    'Martes',
-    'Miércoles',
-    'Jueves',
-    'Viernes',
-    'Sábado',
-  ],
-  dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-  today: 'Hoy',
-};
-LocaleConfig.defaultLocale = 'es';
+ensureSpanishCalendarLocale();
 
 type DayObj = { dateString: string; day: number; month: number; year: number };
 const todayISO = moment().format('YYYY-MM-DD');
@@ -166,7 +129,7 @@ export default function ExercisesScreen() {
           markedDates={markedDates}
           firstDay={1}
           enableSwipeMonths
-          theme={calendarTheme(theme)}
+          theme={getCalendarTheme(theme)}
           maxDate={todayISO}
           dayComponent={({
             date,
@@ -236,24 +199,6 @@ export default function ExercisesScreen() {
     </PageContainer>
   );
 }
-
-const calendarTheme = (theme: FullTheme) => ({
-  backgroundColor: theme.background.card,
-  calendarBackground: theme.background.card,
-  textSectionTitleColor: theme.text.secondary,
-  selectedDayBackgroundColor: theme.brand.primary,
-  selectedDayTextColor: theme.background.app,
-  todayTextColor: theme.brand.primary,
-  dayTextColor: theme.text.primary,
-  textDisabledColor: theme.text.tertiary,
-  dotColor: theme.brand.primary,
-  selectedDotColor: theme.background.app,
-  arrowColor: theme.text.primary,
-  monthTextColor: theme.text.primary,
-  textDayFontSize: 16,
-  textMonthFontSize: 18,
-  textDayHeaderFontSize: 12,
-});
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);

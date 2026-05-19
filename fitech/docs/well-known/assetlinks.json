@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.fitech",
+      "sha256_cert_fingerprints": [
+        "1F:92:52:A8:A2:96:7E:25:7B:9F:BF:E7:D6:33:58:C5:7A:CD:43:BE:F8:18:7E:C3:FD:48:D5:B0:2A:97:31:26"
+      ]
+    }
+  }
+]

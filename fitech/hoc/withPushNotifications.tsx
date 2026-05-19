@@ -2,11 +2,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import React, { createElement, useEffect, useRef } from 'react';
-import { AppState, AppStateStatus, Platform } from 'react-native';
+import { AppState, AppStateStatus } from 'react-native';
 
 import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 import { useUserStore } from '@/stores/user';
 import { getDeviceId } from '@/utils/device';
+import { ensureDefaultAndroidNotificationChannel } from '@/utils/ensure-android-notification-channel';
 import { registerForPushNotificationsAsync } from '@/utils/register-for-push-notification';
 
 export const PUSH_TOKEN_KEY = '@push_token_v1';
@@ -25,15 +26,6 @@ export function withPushNotifications<P extends Record<string, unknown>>(
     const expoPushTokenRef = useRef<string | null>(null);
     const syncInFlightRef = useRef(false);
 
-    const ensureAndroidChannel = async () => {
-      if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-          name: 'default',
-          importance: Notifications.AndroidImportance.MAX,
-        });
-      }
-    };
-
     const cacheExpoToken = async (pushToken: string) => {
       const prev = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
       if (prev !== pushToken) {
@@ -43,7 +35,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
     };
 
     const fetchAndCacheExpoTokenIfAvailable = async () => {
-      await ensureAndroidChannel();
+      await ensureDefaultAndroidNotificationChannel();
       const pushToken = await registerForPushNotificationsAsync();
 
       if (pushToken) {

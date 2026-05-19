@@ -20,6 +20,7 @@ export type CreateUserFormField = {
   zIndex?: number;
   multiline?: boolean;
   numberOfLines?: number;
+  maxLength?: number;
   isOptional?: boolean;
 };
 
@@ -61,7 +62,9 @@ export const REGISTER_DOCUMENT_FIELDS: CreateUserFormField[] = [
   {
     label: 'Número de documento',
     field: 'documentNumber',
-    keyboardType: 'numeric',
+    /** `number-pad` avoids Android `numeric` keyboard lag / dropped digits. */
+    keyboardType: 'number-pad',
+    maxLength: 15,
   },
   { label: 'Nombres', field: 'firstName' },
   { label: 'Apellidos', field: 'lastName' },

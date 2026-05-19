@@ -8,8 +8,14 @@ export const LINKING = {
   },
 } as const;
 
-/** Example email link: https://appfitech.com/verify-email?token=... */
+/** HTTPS link — opens the app on Android only when App Links are verified (see docs/ANDROID_APP_LINKS.md). */
 export function buildVerifyEmailUrl(token: string): string {
   const params = new URLSearchParams({ token });
   return `https://${LINKING.host}${LINKING.paths.verifyEmail}?${params.toString()}`;
+}
+
+/** Custom-scheme link — opens the app without Digital Asset Links (use as fallback in emails). */
+export function buildVerifyEmailAppUrl(token: string): string {
+  const params = new URLSearchParams({ token });
+  return `${LINKING.scheme}://verify-email?${params.toString()}`;
 }

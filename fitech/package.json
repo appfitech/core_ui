@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
     "generate_apk": "eas build --platform android --profile apk",
+    "generate:android-icon": "npx --yes -p sharp node scripts/generate-android-adaptive-icon.mjs",
     "generate_ios": "eas build --platform ios --profile production",
     "generate_ios_autosubmit": "eas build --platform ios --profile production --auto-submit",
     "submit_ios": "eas submit --platform ios --latest",

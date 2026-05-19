@@ -28,8 +28,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/icon_2.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/android-adaptive-foreground.png",
+        "backgroundColor": "#39CC39"
       },
       "package": "com.fitech",
       "softwareKeyboardLayoutMode": "pan",
@@ -42,6 +42,21 @@
               "scheme": "https",
               "host": "appfitech.com",
               "pathPrefix": "/verify-email"
+            },
+            {
+              "scheme": "https",
+              "host": "www.appfitech.com",
+              "pathPrefix": "/verify-email"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        },
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "fitech",
+              "host": "verify-email"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
@@ -54,15 +69,27 @@
       "favicon": "./assets/images/icon_2.png"
     },
     "plugins": [
-      "expo-router",
-      "expo-notifications",
+      [
+        "expo-router",
+        {
+          "origin": "https://appfitech.com"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon_2.png",
+          "color": "#39CC39",
+          "defaultChannel": "default"
+        }
+      ],
       [
         "expo-splash-screen",
         {
           "image": "./assets/images/icon_2.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#39CC39"
         }
       ],
       "expo-font",
@@ -73,7 +100,7 @@
     },
     "extra": {
       "router": {
-        "origin": false
+        "origin": "https://appfitech.com"
       },
       "eas": {
         "projectId": "ec35caa5-1c8e-465f-b389-b3a21c1dd17f"

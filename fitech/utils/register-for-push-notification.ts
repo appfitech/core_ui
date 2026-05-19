@@ -2,19 +2,15 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+
+import { ensureDefaultAndroidNotificationChannel } from '@/utils/ensure-android-notification-channel';
 
 let warnedSimulatorPush = false;
 
 export async function registerForPushNotificationsAsync(): Promise<
   string | undefined
 > {
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-    });
-  }
+  await ensureDefaultAndroidNotificationChannel();
 
   if (!Device.isDevice) {
     if (__DEV__ && !warnedSimulatorPush) {

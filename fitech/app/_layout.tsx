@@ -20,6 +20,7 @@ import { toastConfig } from '@/components/Toast';
 import { STACK_SCREEN_OPTIONS } from '@/constants/navigation';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
+import { DatePickerOverlayProvider } from '@/contexts/DatePickerOverlayContext';
 import { TabBarInsetProvider } from '@/contexts/TabBarInsetContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { withPushNotifications } from '@/hoc/withPushNotifications';
@@ -180,7 +181,9 @@ export default function RootLayout() {
           <TabBarInsetProvider>
             <ReactQueryProvider>
               <AlertProvider>
-                <RoutedAppWithPush />
+                <DatePickerOverlayProvider>
+                  <RoutedAppWithPush />
+                </DatePickerOverlayProvider>
               </AlertProvider>
             </ReactQueryProvider>
           </TabBarInsetProvider>
