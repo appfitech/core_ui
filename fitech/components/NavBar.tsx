@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
 import {
   Image,
+  Platform,
   Pressable,
   StyleSheet,
   TouchableOpacity,
@@ -58,13 +59,19 @@ export function NavBar() {
   const reportTabBarInset = useCallback(
     (navBarHeight: number) => {
       const fabTopFromBottom = fabBottom + FAB_SIZE;
-      setTabBarInset(Math.max(navBarHeight, fabTopFromBottom) + 12);
+      const androidNavEstimate =
+        Platform.OS === 'android' && insets.bottom < 20 ? 24 : 0;
+      setTabBarInset(
+        Math.max(navBarHeight, fabTopFromBottom) + 12 + androidNavEstimate,
+      );
     },
-    [fabBottom, setTabBarInset],
+    [fabBottom, insets.bottom, setTabBarInset],
   );
 
   useEffect(() => {
-    return () => setTabBarInset(0);
+    return () => {
+      setTabBarInset(0);
+    };
   }, [setTabBarInset]);
 
   const handleNavItemClick = useCallback(

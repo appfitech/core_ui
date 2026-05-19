@@ -12,18 +12,30 @@ type TabBarInsetContextValue = {
   setBottomInset: (height: number) => void;
 };
 
-const FALLBACK_INSET = Platform.select({ ios: 100, android: 128, default: 100 });
+const FALLBACK_INSET = Platform.select({
+  ios: 100,
+  android: 128,
+  default: 100,
+});
 
 const TabBarInsetContext = createContext<TabBarInsetContextValue>({
   bottomInset: FALLBACK_INSET,
   setBottomInset: () => {},
 });
 
-export function TabBarInsetProvider({ children }: { children: React.ReactNode }) {
+export function TabBarInsetProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [bottomInset, setBottomInsetState] = useState(FALLBACK_INSET);
 
   const setBottomInset = useCallback((height: number) => {
-    setBottomInsetState(Math.max(0, Math.ceil(height)));
+    if (height <= 0) {
+      setBottomInsetState(FALLBACK_INSET);
+      return;
+    }
+    setBottomInsetState(Math.ceil(height));
   }, []);
 
   const value = useMemo(

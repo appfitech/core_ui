@@ -1,6 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { createContext, useCallback, useContext, useState } from 'react';
-import { Modal, Platform, Pressable, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -72,6 +78,7 @@ function resolveButtonType(
 export function AlertProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const styles = getStyles(theme);
 
   const [state, setState] = useState<AlertState>({
@@ -114,69 +121,81 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
-      {children}
-      <Modal
-        visible={state.visible}
-        transparent
-        animationType="fade"
-        statusBarTranslucent
-        onRequestClose={hide}
-        hardwareAccelerated
-      >
-        <View style={styles.root}>
-          <Pressable
-            style={styles.backdrop}
-            onPress={hide}
-            accessibilityRole="button"
-            accessibilityLabel="Cerrar"
-          />
+      <View style={styles.host}>
+        {children}
+
+        {state.visible ? (
           <View
             style={[
-              styles.center,
+              styles.overlay,
               {
-                paddingTop: insets.top + 24,
-                paddingBottom: insets.bottom + 24,
+                width: windowWidth,
+                height: windowHeight,
               },
             ]}
-            pointerEvents="box-none"
+            accessibilityViewIsModal
+            importantForAccessibility="yes"
           >
-            <View style={styles.card} pointerEvents="auto">
-              <View style={styles.contentRow}>
-                <View
-                  style={[
-                    styles.iconWrap,
-                    isDestructive && styles.iconWrapDestructive,
-                  ]}
-                >
-                  <Ionicons
-                    name={iconName}
-                    size={22}
-                    color={
-                      isDestructive
-                        ? theme.status.error.text
-                        : theme.brand.primaryLight
-                    }
+            <Pressable
+              style={styles.backdrop}
+              onPress={hide}
+              accessibilityRole="button"
+              accessibilityLabel="Cerrar"
+            />
+
+            <View
+              style={[
+                styles.center,
+                {
+                  paddingTop: insets.top + 24,
+                  paddingBottom: insets.bottom + 24,
+                  paddingHorizontal: 20,
+                },
+              ]}
+              pointerEvents="box-none"
+            >
+              <View
+                style={styles.card}
+                onStartShouldSetResponder={() => true}
+                accessibilityRole="alert"
+              >
+                <View style={styles.contentRow}>
+                  <View
+                    style={[
+                      styles.iconWrap,
+                      isDestructive && styles.iconWrapDestructive,
+                    ]}
+                  >
+                    <Ionicons
+                      name={iconName}
+                      size={22}
+                      color={
+                        isDestructive
+                          ? theme.status.error.text
+                          : theme.brand.primaryLight
+                      }
+                    />
+                  </View>
+                  <AppText variant="body" style={styles.body}>
+                    {bodyText}
+                  </AppText>
+                </View>
+
+                <View style={styles.footer}>
+                  <Button
+                    label={actionButton.text}
+                    type={resolveButtonType(actionButton)}
+                    onPress={() => handlePress(actionButton)}
+                    animated={false}
+                    style={styles.actionWrap}
+                    buttonStyle={styles.actionButton}
                   />
                 </View>
-                <AppText variant="body" style={styles.body}>
-                  {bodyText}
-                </AppText>
-              </View>
-
-              <View style={styles.footer}>
-                <Button
-                  label={actionButton.text}
-                  type={resolveButtonType(actionButton)}
-                  onPress={() => handlePress(actionButton)}
-                  animated={false}
-                  style={styles.actionWrap}
-                  buttonStyle={styles.actionButton}
-                />
               </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        ) : null}
+      </View>
     </AlertContext.Provider>
   );
 }
@@ -185,18 +204,24 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({
-    root: {
+    host: {
       flex: 1,
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      zIndex: 10000,
+      elevation: 10000,
     },
     backdrop: {
       ...StyleSheet.absoluteFillObject,
-      backgroundColor: 'rgba(5, 6, 8, 0.85)',
+      backgroundColor: theme.background.overlay,
     },
     center: {
-      flex: 1,
+      ...StyleSheet.absoluteFillObject,
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: 20,
     },
     card: {
       width: '100%',
@@ -204,14 +229,16 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: theme.background.card,
       borderRadius: 16,
       padding: 16,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.border.default,
       ...Platform.select({
         ios: {
           shadowColor: '#000',
-          shadowOpacity: 0.35,
-          shadowRadius: 16,
-          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.45,
+          shadowRadius: 20,
+          shadowOffset: { width: 0, height: 10 },
         },
-        android: { elevation: 24 },
+        android: { elevation: 28 },
       }),
     },
     contentRow: {

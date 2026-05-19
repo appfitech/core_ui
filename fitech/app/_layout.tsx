@@ -133,7 +133,12 @@ function RoutedApp() {
 
   return (
     <View style={styles.flex1}>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { flex: 1 },
+        }}
+      />
       {!shouldHideNav && <NavBar />}
       <View
         pointerEvents="box-none"
@@ -177,11 +182,11 @@ export default function RootLayout() {
         <StatusBar style="light" backgroundColor={THEME.background.app} />
         <ThemeProvider>
           <TabBarInsetProvider>
-            <AlertProvider>
-              <ReactQueryProvider>
+            <ReactQueryProvider>
+              <AlertProvider>
                 <RoutedAppWithPush />
-              </ReactQueryProvider>
-            </AlertProvider>
+              </AlertProvider>
+            </ReactQueryProvider>
           </TabBarInsetProvider>
         </ThemeProvider>
       </SafeAreaProvider>

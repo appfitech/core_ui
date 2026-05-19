@@ -111,15 +111,16 @@ export default function PageContainer({
       ? 0
       : insets.top + PAGE_HEADER_TOP_EXTRA;
 
+  const bottomScrollInset =
+    includeTabBarPadding && hasBottomPadding ? scrollPaddingBottom : 0;
+
   const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
     {
       paddingHorizontal: 24,
       paddingTop: scrollPaddingTop,
-      paddingBottom: 16,
     },
     style,
-    { paddingBottom: scrollPaddingBottom },
   ];
 
   const keyboardVerticalOffset = hasFixedHeader
@@ -146,6 +147,9 @@ export default function PageContainer({
     showsVerticalScrollIndicator: false,
     nestedScrollEnabled: true,
     overScrollMode: 'always' as const,
+    ...(Platform.OS === 'android' && bottomScrollInset > 0
+      ? { scrollIndicatorInsets: { bottom: bottomScrollInset } }
+      : {}),
   };
 
   const scrollHeader =
@@ -178,10 +182,16 @@ export default function PageContainer({
       </View>
     ) : null;
 
+  const scrollBottomSpacer =
+    bottomScrollInset > 0 ? (
+      <View style={{ height: bottomScrollInset }} />
+    ) : null;
+
   const scrollContent = (
     <>
       {scrollHeader}
       {children}
+      {scrollBottomSpacer}
     </>
   );
 
@@ -290,11 +300,9 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 4,
       color: theme.text.secondary,
     },
-    scrollContent: Platform.select({
-      ios: { flexGrow: 1 },
-      android: { flexGrow: 0 },
-      default: { flexGrow: 1 },
-    }),
+    scrollContent: {
+      flexGrow: 1,
+    },
     flex: {
       flex: 1,
     },

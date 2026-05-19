@@ -41,7 +41,6 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.background.card,
     },
     pageContainer: {
-      paddingBottom: 0,
       paddingTop: 12,
     },
     contentWrapper: {

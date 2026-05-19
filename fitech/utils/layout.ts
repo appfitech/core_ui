@@ -16,10 +16,15 @@ export const PAGE_FIXED_HEADER_BOTTOM_PADDING = 10;
 /** Space between fixed header chrome and scroll content. */
 export const CONTENT_GAP_BELOW_HEADER = 16;
 
-const NAV_BAR_CONTENT_HEIGHT = Platform.select({ ios: 64, android: 72, default: 64 });
+const NAV_BAR_CONTENT_HEIGHT = Platform.select({
+  ios: 64,
+  android: 80,
+  default: 64,
+});
 /** Center FAB sits above the tab bar — reserve space so lists scroll clear of it. */
-const FAB_CLEARANCE = Platform.select({ ios: 32, android: 40, default: 32 });
-const ANDROID_SCROLL_EXTRA = 20;
+const FAB_CLEARANCE = Platform.select({ ios: 32, android: 48, default: 32 });
+/** Extra scroll room on Android (3-button nav often reports insets.bottom = 0). */
+const ANDROID_SCROLL_EXTRA = 32;
 
 type ScrollPaddingOptions = {
   /** @default true — tab screens with center FAB */
