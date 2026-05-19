@@ -708,9 +708,9 @@ function ChipsList({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
-    ...textStyles(theme),
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
       rowGap: 20,
@@ -723,18 +723,16 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 10,
     },
     titleLeft: {
-      ...textStyles(theme).title,
+      ...text.title,
       textAlign: 'left',
-      fontWeight: '700',
     },
     subtitleLeft: {
-      ...textStyles(theme).subtitle,
+      ...text.subtitle,
       textAlign: 'left',
     },
     addLocationText: {
-      fontSize: 15,
+      ...text.link,
       color: theme.textSecondary,
-      fontWeight: '500',
     },
     ageSeparator: { marginHorizontal: 8 },
     privacyCard: {
@@ -762,11 +760,10 @@ const getStyles = (theme: FullTheme) =>
     rowBase: { flexDirection: 'row', alignItems: 'center' },
     rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
     locationRowSelected: { backgroundColor: theme.primary },
-    locationRowTextSelected: { color: theme.background, fontWeight: '700' },
+    locationRowTextSelected: { color: theme.background },
     sectionTitle: {
       marginTop: 10,
       marginBottom: 8,
-      fontWeight: '700',
     },
 
     chip: {
@@ -782,16 +779,18 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.primary,
     },
     chipText: {
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.textPrimary,
     },
-    chipTextActive: { color: theme.background, fontWeight: '700' },
+    chipTextActive: {
+      ...text.linkSemibold,
+      color: theme.background,
+    },
 
     smallLabel: {
       marginTop: 12,
       marginBottom: 6,
-      fontSize: 13,
-      fontWeight: '600',
+      ...text.nav,
       color: theme.textSecondary,
     },
 
@@ -804,7 +803,6 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 12,
       backgroundColor: theme.backgroundInput,
       textAlign: 'center',
-      fontWeight: '700',
       color: theme.textPrimary,
     },
 
@@ -823,7 +821,7 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
     },
     tagSelected: { backgroundColor: theme.primary },
-    tagText: { color: theme.background, fontWeight: '700' },
+    tagText: { color: theme.background },
     modalBackdrop: {
       flex: 1,
       backgroundColor: 'rgba(0,0,0,0.25)',
@@ -838,8 +836,7 @@ const getStyles = (theme: FullTheme) =>
       padding: 18,
     },
     modalTitle: {
-      fontSize: 18,
-      fontWeight: '700',
+      ...text.sectionTitle,
       marginBottom: 12,
       color: theme.textPrimary,
     },
@@ -853,7 +850,8 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.border,
     },
     locationRowText: {
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.textPrimary,
     },
   });
+};

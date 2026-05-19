@@ -192,9 +192,9 @@ export default function MacrosCalculatorScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
-    ...textStyles(theme),
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     ...formStyles(theme),
     pageContent: {
       paddingHorizontal: 0,
@@ -209,8 +209,7 @@ const getStyles = (theme: FullTheme) =>
       flexGrow: 1,
     },
     sectionLabel: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       marginBottom: 8,
       color: theme.textPrimary,
     },
@@ -250,13 +249,12 @@ const getStyles = (theme: FullTheme) =>
     },
     calculateButtonText: {
       color: theme.background,
-      fontSize: 17,
-      fontWeight: '600',
+      ...text.leadSemibold,
     },
     emptyText: {
       textAlign: 'center',
       color: theme.textSecondary,
-      fontSize: 15,
+      ...text.link,
       paddingVertical: 32,
       paddingHorizontal: 12,
     },
@@ -265,3 +263,4 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
   });
+};

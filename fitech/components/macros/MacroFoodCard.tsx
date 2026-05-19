@@ -2,6 +2,7 @@ import React, { memo, useCallback } from 'react';
 import { Image, Platform, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto } from '@/types/api/types.gen';
@@ -18,6 +19,7 @@ function MacroFoodCardInner({
   isSelected = false,
 }: Props) {
   const { theme } = useTheme();
+  const text = textStyles(theme);
 
   const handleSelect = useCallback(() => {
     if (!foodItem?.id) {
@@ -54,8 +56,7 @@ function MacroFoodCardInner({
         <View style={{ padding: 16, rowGap: 4 }}>
           <AppText
             style={{
-              fontSize: 17,
-              fontWeight: '500',
+              ...text.lead,
               color: theme.textPrimary,
             }}
             numberOfLines={2}
@@ -63,7 +64,8 @@ function MacroFoodCardInner({
             {foodItem?.name}
           </AppText>
           <AppText
-            style={{ fontSize: 15, color: theme.textSecondary }}
+            variant="subheader"
+            style={{ color: theme.textSecondary }}
             numberOfLines={2}
           >
             {foodItem?.description}
@@ -98,11 +100,7 @@ function MacroFoodCardInner({
               }}
             >
               <AppText
-                style={{
-                  fontSize: 13,
-                  color: theme.textPrimary,
-                  fontWeight: '700',
-                }}
+                style={{ ...text.nav, color: theme.textPrimary }}
               >
                 {`${foodItem?.macros?.calories} kcal`}
               </AppText>
@@ -120,11 +118,7 @@ function MacroFoodCardInner({
               }}
             >
               <AppText
-                style={{
-                  fontSize: 13,
-                  color: theme.textPrimary,
-                  fontWeight: '700',
-                }}
+                style={{ ...text.nav, color: theme.textPrimary }}
               >
                 {`${foodItem?.macros?.proteins} proteína`}
               </AppText>

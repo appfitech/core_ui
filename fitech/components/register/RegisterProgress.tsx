@@ -8,6 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -55,16 +56,16 @@ export function RegisterProgress({ step, total }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     container: {
       marginTop: 16,
       marginBottom: 20,
     },
     stepLabel: {
       color: theme.textSecondary,
-      fontSize: 13,
-      fontWeight: '500',
+      ...text.nav,
       marginBottom: 10,
     },
     track: {
@@ -79,3 +80,4 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.primary,
     },
   });
+};

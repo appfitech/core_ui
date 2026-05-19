@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { Dropdown as DropdownElement } from 'react-native-element-dropdown';
 
-import { formStyles } from '@/constants/styles';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
@@ -182,6 +182,7 @@ export function Dropdown({
 
 const getStyles = (theme: FullTheme) => {
   const base = formStyles(theme);
+  const text = textStyles(theme);
 
   return StyleSheet.create({
     label: base.label,
@@ -197,13 +198,12 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: Platform.OS === 'ios' ? 14 : 12,
     },
     placeholder: {
+      ...text.link,
       color: theme.dark700,
-      fontSize: 15,
     },
     selectedText: {
+      ...text.link,
       color: theme.textPrimary,
-      fontSize: 15,
-      fontWeight: '500',
     },
     listContainer: {
       backgroundColor: theme.backgroundDropdown,
@@ -240,13 +240,13 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: theme.primaryBg,
     },
     itemText: {
+      ...text.link,
       color: theme.textPrimary,
-      fontSize: 15,
       flex: 1,
     },
     itemTextSelected: {
+      ...text.linkSemibold,
       color: theme.primaryText,
-      fontWeight: '600',
     },
     searchWrap: {
       marginHorizontal: 12,
@@ -254,12 +254,12 @@ const getStyles = (theme: FullTheme) => {
       marginBottom: 8,
     },
     searchInput: {
+      ...text.link,
       backgroundColor: theme.backgroundInput,
       borderRadius: 10,
       borderWidth: 1,
       borderColor: theme.border,
       color: theme.textPrimary,
-      fontSize: 15,
       paddingHorizontal: 12,
       height: 44,
     },

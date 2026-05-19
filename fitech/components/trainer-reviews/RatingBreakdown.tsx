@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -41,8 +42,9 @@ export const RatingDistribution = ({ data }: { data: RatingBreakdown }) => {
   );
 };
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     container: {
       backgroundColor: theme.card,
       borderRadius: 14,
@@ -76,8 +78,8 @@ const getStyles = (theme: FullTheme) =>
     count: {
       width: 24,
       textAlign: 'right',
-      fontSize: 13,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textPrimary,
     },
   });
+};

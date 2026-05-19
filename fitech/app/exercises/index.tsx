@@ -6,6 +6,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, type DateData, LocaleConfig } from 'react-native-calendars';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -219,11 +220,8 @@ export default function ExercisesScreen() {
                 >
                   <AppText
                     style={[
-                      styles.dayText,
-                      {
-                        fontWeight: isSelected ? '700' : '500',
-                        color: textColor,
-                      },
+                      isSelected ? styles.dayTextSelected : styles.dayText,
+                      { color: textColor },
                     ]}
                   >
                     {date?.day ?? ''}
@@ -257,8 +255,9 @@ const calendarTheme = (theme: FullTheme) => ({
   textDayHeaderFontSize: 12,
 });
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
       backgroundColor: theme.backgroundInput,
@@ -271,12 +270,11 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 8,
     },
     filterTitle: {
-      fontSize: 16,
-      fontWeight: '800',
+      ...text.bodySemibold,
       color: theme.primaryText,
     },
     filterHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginTop: -2,
     },
@@ -297,7 +295,8 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 8,
       borderRadius: 12,
     },
-    dayText: { textAlign: 'center', fontSize: 15 },
+    dayText: { ...text.link, textAlign: 'center' },
+    dayTextSelected: { ...text.linkSemibold, textAlign: 'center' },
     dotsRow: { flexDirection: 'row', marginTop: 4, columnGap: 2 },
     dayDot: {
       width: 4,
@@ -305,3 +304,4 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 2,
     },
   });
+};

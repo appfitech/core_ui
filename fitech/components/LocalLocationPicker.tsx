@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetLocations } from '@/lib/api/queries/use-get-locations';
 import {
@@ -138,8 +139,9 @@ export function LocalLocationPicker({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     departmentRow: {
       paddingHorizontal: 16,
       paddingTop: 14,
@@ -150,8 +152,7 @@ const getStyles = (theme: FullTheme) =>
     },
     departmentText: {
       color: theme.textSecondary,
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
     },
@@ -166,8 +167,7 @@ const getStyles = (theme: FullTheme) =>
     },
     provinceText: {
       color: theme.textPrimary,
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
     },
     locationRow: {
       flexDirection: 'row',
@@ -184,11 +184,11 @@ const getStyles = (theme: FullTheme) =>
     },
     locationText: {
       color: theme.textPrimary,
-      fontSize: 15,
+      ...text.link,
       flex: 1,
     },
     locationTextSelected: {
       color: theme.primaryText,
-      fontWeight: '600',
     },
   });
+};

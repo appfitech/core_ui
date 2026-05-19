@@ -108,8 +108,9 @@ export function MatchProfileCard({ candidate }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     card: {
       borderRadius: 24,
       overflow: 'hidden',
@@ -158,11 +159,11 @@ const getStyles = (theme: FullTheme) =>
       borderTopRightRadius: 24,
     },
     nameText: {
-      ...textStyles(theme).title,
+      ...text.title,
       textAlign: 'left',
     },
     otherText: {
-      ...textStyles(theme).subtitle,
+      ...text.subtitle,
       textAlign: 'left',
       marginTop: 4,
     },
@@ -174,10 +175,10 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 4,
     },
     bioText: {
-      ...textStyles(theme).content,
+      ...text.body,
       marginTop: 10,
       lineHeight: 22,
       paddingBottom: 16,
-      fontSize: 15,
     },
   });
+};

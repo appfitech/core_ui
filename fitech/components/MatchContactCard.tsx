@@ -170,11 +170,9 @@ const getStyles = (theme: FullTheme) => {
     discardButtonText: {
       ...headings.subtitle,
       color: theme.error,
-      fontWeight: '700',
     },
     nameText: {
       ...headings.title,
-      fontSize: 18,
       textAlign: 'left',
     },
     otherText: {
@@ -188,8 +186,7 @@ const getStyles = (theme: FullTheme) => {
       rowGap: 4,
     },
     bioText: {
-      ...headings.content,
-      fontSize: 14,
+      ...headings.small,
       color: theme.textSecondary,
       marginTop: 4,
     },

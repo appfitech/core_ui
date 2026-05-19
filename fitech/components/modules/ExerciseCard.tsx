@@ -60,9 +60,7 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
           alignItems: 'center',
         }}
       >
-        <AppText
-          style={{ fontSize: 18, fontWeight: '700', color: theme.textPrimary }}
-        >
+        <AppText variant="sectionTitle" style={{ color: theme.textPrimary }}>
           {session.exerciseName}
         </AppText>
         {!!session.muscleGroup && (
@@ -85,7 +83,7 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
               marginVertical: 4,
             }}
           >
-            <AppText style={{ color: theme.dark400, fontWeight: '700' }}>
+            <AppText style={{ color: theme.dark400 }}>
               Serie {s.setNumber ?? idx + 1}:
             </AppText>
             <View
@@ -129,11 +127,8 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
           }}
         >
           <AppText
-            style={{
-              fontWeight: '600',
-              marginBottom: 4,
-              color: theme.textPrimary,
-            }}
+            variant="smallSemibold"
+            style={{ marginBottom: 4, color: theme.textPrimary }}
           >
             Notas del entrenamiento:
           </AppText>

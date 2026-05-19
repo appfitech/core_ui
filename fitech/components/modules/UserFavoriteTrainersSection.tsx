@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Card } from '@/components/Card';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ROUTES } from '@/constants/routes';
@@ -24,6 +25,7 @@ export function UserFavoriteTrainersSection() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const text = textStyles(theme);
   const token = useUserStore((s) => s.getToken());
 
   const [trainers, setTrainers] = useState<PublicTrainerDtoReadable[]>([]);
@@ -75,14 +77,13 @@ export function UserFavoriteTrainersSection() {
                 />
                 <AppText
                   style={{
-                    fontWeight: '600',
-                    fontSize: 15,
+                    ...text.linkSemibold,
                     color: theme.dark900,
                   }}
                 >
                   {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
                 </AppText>
-                <AppText style={{ color: theme.textSecondary, fontSize: 14 }}>
+                <AppText variant="small" style={{ color: theme.textSecondary }}>
                   {truncateWords(trainer?.person?.bio ?? '', 20)}
                 </AppText>
               </View>
@@ -94,8 +95,9 @@ export function UserFavoriteTrainersSection() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     card: {
       backgroundColor: theme.background,
       flex: 1,
@@ -108,3 +110,4 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 50,
     },
   });
+};

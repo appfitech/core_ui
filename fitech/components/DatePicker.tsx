@@ -6,7 +6,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Button } from '@/components/Button';
-import { formStyles } from '@/constants/styles';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useOpenable } from '@/hooks/use-openable';
 import { FullTheme } from '@/types/theme';
@@ -167,6 +167,7 @@ export function DatePicker({
 
 const getStyles = (theme: FullTheme) => {
   const form = formStyles(theme);
+  const text = textStyles(theme);
 
   return StyleSheet.create({
     label: form.label,
@@ -182,7 +183,7 @@ const getStyles = (theme: FullTheme) => {
     },
     valueText: {
       flex: 1,
-      fontSize: 15,
+      ...text.link,
       fontFamily: 'Inter_400Regular',
       color: theme.textPrimary,
       lineHeight: 22,

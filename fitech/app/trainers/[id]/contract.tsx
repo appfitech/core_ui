@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { useAlert } from '@/contexts/AlertContext';
@@ -189,13 +190,14 @@ export default function TrainerContractScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     scroll: { flex: 1 },
     scrollContent: { paddingBottom: 180 },
     errorText: {
-      fontSize: 16,
+      ...text.body,
       color: theme.textSecondary,
       textAlign: 'center',
       marginTop: 24,
@@ -209,8 +211,7 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 16,
     },
     cardTitle: {
-      fontSize: 15,
-      fontWeight: '700',
+      ...text.linkSemibold,
       color: theme.textPrimary,
       marginBottom: 14,
     },
@@ -223,8 +224,7 @@ const getStyles = (theme: FullTheme) =>
       marginRight: 12,
     },
     rowValue: {
-      fontSize: 15,
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.textPrimary,
     },
     termsSection: {
@@ -234,13 +234,12 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 14,
     },
     termsSectionTitle: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.textPrimary,
       marginBottom: 6,
     },
     termsText: {
-      fontSize: 13,
+      ...text.nav,
       color: theme.textSecondary,
       lineHeight: 20,
     },
@@ -266,8 +265,7 @@ const getStyles = (theme: FullTheme) =>
     },
     checkboxLabel: {
       flex: 1,
-      fontSize: 14,
-      fontWeight: '500',
+      ...text.smallMedium,
       color: theme.textPrimary,
     },
     actions: {
@@ -276,3 +274,4 @@ const getStyles = (theme: FullTheme) =>
     },
     actionButton: {},
   });
+};

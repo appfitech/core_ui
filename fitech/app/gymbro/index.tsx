@@ -21,6 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import ConfettiAnimation from '@/assets/lottie/confetti.json';
+import { textStyles } from '@/constants/styles';
 import { AppText } from '@/components/AppText';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import { MatchContactCard } from '@/components/MatchContactCard';
@@ -327,8 +328,9 @@ export default function GymBroScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageContainer: { paddingBottom: 0 },
     safeArea: {
       flex: 1,
@@ -365,8 +367,7 @@ const getStyles = (theme: FullTheme) =>
     },
     emptyText: {
       color: theme.textSecondary,
-      fontSize: 16,
-      fontWeight: 500,
+      ...text.bodyMedium,
       textAlign: 'center',
     },
 
@@ -392,16 +393,15 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: 'rgba(0,0,0,0.7)',
     },
     matchTitle: {
-      fontSize: 20,
-      fontWeight: '700',
+      ...text.sectionTitle,
       color: '#fff',
       textAlign: 'center',
       marginBottom: 4,
     },
     matchSubtitle: {
-      fontSize: 14,
-      fontWeight: '500',
+      ...text.smallMedium,
       color: '#fff',
       textAlign: 'center',
     },
   });
+};

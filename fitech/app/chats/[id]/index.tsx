@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -346,8 +347,9 @@ export default function ChatDetailScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme, safeBottom: number) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme, safeBottom: number) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingBottom: 0,
       paddingHorizontal: 16,
@@ -370,7 +372,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) =>
     },
     contractBannerText: {
       flex: 1,
-      fontSize: 13,
+      ...text.nav,
       color: theme.textSecondary,
     },
     messagesContainer: {
@@ -388,7 +390,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) =>
     },
     systemText: {
       marginTop: 8,
-      fontSize: 13,
+      ...text.nav,
       color: theme.textSecondary,
       textAlign: 'center',
     },
@@ -430,17 +432,17 @@ const getStyles = (theme: FullTheme, safeBottom: number) =>
     },
     bubbleText: {
       color: theme.textPrimary,
-      fontSize: 15,
+      ...text.link,
       lineHeight: 22,
     },
     bubbleMeText: {
       color: theme.background,
-      fontSize: 15,
+      ...text.link,
       lineHeight: 22,
     },
     bubbleTime: {
       marginTop: 6,
-      fontSize: 11,
+      ...text.caption,
       color: theme.textSecondary,
       textAlign: 'right',
     },
@@ -462,7 +464,7 @@ const getStyles = (theme: FullTheme, safeBottom: number) =>
       backgroundColor: theme.background,
       borderWidth: StyleSheet.hairlineWidth,
       borderColor: theme.border,
-      fontSize: 14,
+      ...text.small,
     },
     sendButton: {
       width: 40,
@@ -476,3 +478,4 @@ const getStyles = (theme: FullTheme, safeBottom: number) =>
       opacity: 0.5,
     },
   });
+};

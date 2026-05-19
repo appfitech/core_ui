@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
 import { FullTheme } from '@/types/theme';
@@ -42,8 +43,9 @@ export function NotificationsButton() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     button: {
       width: 40,
       height: 40,
@@ -68,8 +70,9 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 5,
     },
     badgeText: {
-      fontWeight: '700',
-      fontSize: 11,
+      
+      ...text.caption,
       color: theme.background,
     },
   });
+};

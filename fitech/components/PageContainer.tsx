@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -7,14 +7,20 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+import { authFadeInUp } from '@/utils/platform-animations';
 
 import { AnimatedAppText } from './AnimatedAppText';
 import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
 const DEFAULT_CONTENT_PADDING_BOTTOM = 220;
+/** Space between fixed header chrome and scroll content */
+const CONTENT_GAP_BELOW_HEADER = 24;
 /** Space between focused field and keyboard (keep small — KASV already positions the field). */
-const KEYBOARD_EXTRA_SCROLL = { default: 12, withFooter: 40 } as const;
+const KEYBOARD_EXTRA_SCROLL = {
+  default: { ios: 12, android: 8 },
+  withFooter: { ios: 40, android: 24 },
+} as const;
 
 type Props = {
   children: React.ReactNode;
@@ -38,6 +44,8 @@ type Props = {
   /** Rendered below the scroll area, fixed at the bottom of the screen */
   footer?: React.ReactNode;
   onBackPress?: () => void;
+  /** Shorter fades on Android for register / forgot-password style flows. */
+  authOptimized?: boolean;
 };
 
 export default function PageContainer({
@@ -55,6 +63,7 @@ export default function PageContainer({
   disableScroll = false,
   footer,
   onBackPress,
+  authOptimized = false,
 }: Props) {
   const scrollPaddingBottom =
     contentPaddingBottom ??
@@ -67,17 +76,19 @@ export default function PageContainer({
   const hasFixedSubheader = !!(title && subheader);
   const fixedHeaderHeight = hasFixedHeader
     ? hasFixedSubheader
-      ? 80
+      ? 88
       : title && !hasBackButton
-        ? 64
-        : 56
+        ? 68
+        : 60
     : 0;
 
-  const contentPaddingTop = hasNoTopPadding
-    ? 0
-    : hasFixedHeader
-      ? fixedHeaderHeight + insets.top + 8
-      : insets.top;
+  const contentGapBelowHeader = hasNoTopPadding ? 16 : CONTENT_GAP_BELOW_HEADER;
+
+  const headerContentOffset = hasFixedHeader
+    ? fixedHeaderHeight + insets.top + contentGapBelowHeader
+    : insets.top;
+
+  const contentPaddingTop = headerContentOffset;
 
   const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
@@ -94,14 +105,22 @@ export default function PageContainer({
     ? fixedHeaderHeight + insets.top
     : insets.top;
 
+  const keyboardPlatform = Platform.OS === 'android' ? 'android' : 'ios';
+  const headerEnter = (duration: number, delay = 0) =>
+    authOptimized
+      ? authFadeInUp(duration, delay)
+      : FadeInUp.duration(duration).delay(delay);
+
   const keyboardScrollProps = {
     enableOnAndroid: true,
     enableAutomaticScroll: true,
     enableResetScrollToCoords: false,
     keyboardOpeningTime: 0,
     extraScrollHeight: footer
-      ? KEYBOARD_EXTRA_SCROLL.withFooter
-      : KEYBOARD_EXTRA_SCROLL.default,
+      ? KEYBOARD_EXTRA_SCROLL.withFooter[
+          authOptimized ? keyboardPlatform : 'ios'
+        ]
+      : KEYBOARD_EXTRA_SCROLL.default[authOptimized ? keyboardPlatform : 'ios'],
     keyboardVerticalOffset,
     keyboardShouldPersistTaps: 'handled' as const,
     keyboardDismissMode: 'on-drag' as const,
@@ -113,7 +132,7 @@ export default function PageContainer({
       <View style={styles.headerWrapper}>
         {includeLogo && (
           <Animated.Image
-            entering={FadeInUp.duration(600)}
+            entering={headerEnter(600)}
             source={require('@/assets/images/logos/logo.webp')}
             style={styles.logo}
             resizeMode="contain"
@@ -121,7 +140,7 @@ export default function PageContainer({
         )}
         {header && !title && (
           <AnimatedAppText
-            entering={FadeInUp.delay(200)}
+            entering={headerEnter(600, 200)}
             style={styles.headerTitle}
           >
             {header}
@@ -129,7 +148,7 @@ export default function PageContainer({
         )}
         {subheader && (
           <AnimatedAppText
-            entering={FadeInUp.delay(300)}
+            entering={headerEnter(600, 300)}
             style={styles.headerSubtitle}
           >
             {subheader}
@@ -160,6 +179,7 @@ export default function PageContainer({
           <View
             style={[
               styles.fixedHeaderRow,
+              hasFixedSubheader && styles.fixedHeaderRowWithSubheader,
               !hasBackButton && styles.fixedHeaderRowCentered,
             ]}
           >
@@ -215,8 +235,9 @@ export default function PageContainer({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.background,
@@ -227,22 +248,21 @@ const getStyles = (theme: FullTheme) =>
       right: 0,
       left: 0,
       zIndex: 10,
-      paddingHorizontal: 24,
-      paddingVertical: 8,
-      paddingBottom: 12,
-      backgroundColor: theme.backgroundHeader,
-      borderBottomWidth: 1,
+      paddingHorizontal: 20,
+      paddingTop: 8,
+      paddingBottom: 16,
+      backgroundColor: theme.card,
+      borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: theme.fixedHeaderBorder,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.35,
-      shadowRadius: 8,
-      elevation: 8,
     },
     fixedHeaderRow: {
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 12,
+      minHeight: 44,
+    },
+    fixedHeaderRowWithSubheader: {
+      alignItems: 'flex-start',
     },
     fixedHeaderRowCentered: {
       paddingVertical: 12,
@@ -253,11 +273,10 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     fixedSubheader: {
-      marginTop: 2,
+      marginTop: 4,
       color: theme.fixedHeaderSubheaderColor,
     },
     scrollContent: {
-      paddingTop: 110,
       paddingBottom: 80,
       flexGrow: 1,
     },
@@ -272,10 +291,10 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.background,
     },
     headerTitle: {
-      ...textStyles(theme).sectionTitle,
+      ...text.sectionTitle,
     },
     headerSubtitle: {
-      ...textStyles(theme).subtitle,
+      ...text.subtitle,
       marginTop: 8,
     },
     headerWrapper: {
@@ -289,3 +308,4 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 10,
     },
   });
+};

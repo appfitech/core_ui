@@ -16,7 +16,7 @@ import {
   findLocationById,
   formatLocationName,
 } from '@/constants/locations';
-import { formStyles } from '@/constants/styles';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';
@@ -231,13 +231,11 @@ export default function PersonalInfoScreen() {
                     ]}
                   >
                     <AppText
-                      style={[
-                        styles.locationRowText,
-                        selected && {
-                          color: theme.background,
-                          fontWeight: '700',
-                        },
-                      ]}
+                      style={
+                        selected
+                          ? styles.locationRowTextSelected
+                          : styles.locationRowText
+                      }
                     >
                       {formatLocationName(loc)}
                     </AppText>
@@ -261,8 +259,9 @@ export default function PersonalInfoScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
     },
@@ -300,8 +299,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 8,
     },
     verifiedText: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.successText,
     },
     modalBackdrop: {
@@ -318,8 +316,7 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.border,
     },
     modalTitle: {
-      fontSize: 18,
-      fontWeight: '800',
+      ...text.sectionTitle,
       marginBottom: 12,
       color: theme.textPrimary,
     },
@@ -333,9 +330,12 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.border,
     },
     locationRowText: {
-      fontWeight: '600',
-      fontSize: 15,
+      ...text.linkSemibold,
       color: theme.textPrimary,
+    },
+    locationRowTextSelected: {
+      ...text.linkSemibold,
+      color: theme.background,
     },
     modalActions: {
       flexDirection: 'row',
@@ -348,3 +348,4 @@ const getStyles = (theme: FullTheme) =>
     },
     ...formStyles(theme),
   });
+};

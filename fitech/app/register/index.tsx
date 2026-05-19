@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { StyleSheet } from 'react-native';
-import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
@@ -20,6 +20,7 @@ import { useCreateUser } from '@/lib/api/mutations/user/use-create-user';
 import { validateRegisterStep } from '@/lib/register/form';
 import { UserDtoWritable } from '@/types/api/types.gen';
 import { extractErrorMessage } from '@/utils/errors';
+import { authStepEnter, authStepExit } from '@/utils/platform-animations';
 
 const TOTAL_STEPS = REGISTER_STEPS.length;
 
@@ -123,6 +124,7 @@ export default function Register() {
 
   return (
     <PageContainer
+      authOptimized
       hasBackButton={false}
       hasNoTopPadding
       hasBottomPadding={false}
@@ -157,8 +159,8 @@ export default function Register() {
 
       <Animated.View
         key={currentStep.id}
-        entering={FadeInRight.duration(280)}
-        exiting={FadeOutLeft.duration(200)}
+        entering={authStepEnter()}
+        exiting={authStepExit()}
         style={styles.stepContent}
       >
         {renderStep()}

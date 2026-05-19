@@ -54,6 +54,7 @@ export default function ForgotPasswordScreen() {
 
   return (
     <PageContainer
+      authOptimized
       hasBackButton
       hasBottomPadding={false}
       hasNoTopPadding

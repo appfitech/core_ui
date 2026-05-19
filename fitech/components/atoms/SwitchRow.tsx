@@ -1,6 +1,9 @@
 import { StyleSheet, Switch, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
+import { useTheme } from '@/contexts/ThemeContext';
+import { FullTheme } from '@/types/theme';
 
 type Props = {
   label: string;
@@ -10,7 +13,8 @@ type Props = {
 };
 
 export function SwitchRow({ label, labelStyle, value, onChange }: Props) {
-  const styles = getStyles();
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -20,18 +24,19 @@ export function SwitchRow({ label, labelStyle, value, onChange }: Props) {
   );
 }
 
-const getStyles = () =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     container: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
     },
     label: {
-      fontWeight: '400',
-      fontSize: 15,
+      ...text.link,
       paddingRight: 20,
       flexWrap: 'wrap',
       flex: 1,
     },
   });
+};

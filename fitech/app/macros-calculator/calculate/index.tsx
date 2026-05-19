@@ -20,6 +20,7 @@ const MACRO_GRAM_KEYS = [
 
 export default function MacrosCalculatorCalculateScreen() {
   const { theme } = useTheme();
+  const text = textStyles(theme);
   const styles = getStyles(theme);
   const { selectedItems, foodItemRequest, calculation, setCalculation } =
     useMacroFoodItemsContext();
@@ -91,8 +92,7 @@ export default function MacrosCalculatorCalculateScreen() {
             <AppText
               style={{
                 color: theme.background,
-                fontSize: 17,
-                fontWeight: '600',
+                ...text.leadSemibold,
               }}
             >
               {'Mostrar resultados'}
@@ -115,8 +115,7 @@ export default function MacrosCalculatorCalculateScreen() {
           <AppText
             style={{
               color: theme.infoText,
-              fontSize: 20,
-              fontWeight: 900,
+              ...text.sectionTitle,
             }}
           >
             {'Resumen nutricional'}
@@ -132,8 +131,7 @@ export default function MacrosCalculatorCalculateScreen() {
             <AppText
               style={{
                 color: theme.successText,
-                fontSize: 40,
-                fontWeight: 900,
+                ...text.display,
               }}
             >
               {calculation?.totalMacros?.calories}
@@ -141,7 +139,7 @@ export default function MacrosCalculatorCalculateScreen() {
             <AppText
               style={{
                 color: theme.successText,
-                fontSize: 18,
+                ...text.sectionTitle,
               }}
             >
               {'kcal'}
@@ -158,9 +156,8 @@ export default function MacrosCalculatorCalculateScreen() {
               >
                 <AppText
                   style={{
-                    fontSize: 17,
+                    ...text.lead,
                     color: theme.dark500,
-                    fontWeight: 500,
                     paddingLeft: 20,
                   }}
                 >
@@ -168,9 +165,8 @@ export default function MacrosCalculatorCalculateScreen() {
                 </AppText>
                 <AppText
                   style={{
-                    fontSize: 17,
+                    ...text.lead,
                     color: theme.infoText,
-                    fontWeight: 500,
                     paddingLeft: 20,
                   }}
                 >
@@ -185,9 +181,9 @@ export default function MacrosCalculatorCalculateScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
-    ...textStyles(theme),
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     ...formStyles(theme),
     banner: {
       backgroundColor: theme.warningBackground,
@@ -198,7 +194,8 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 100,
     },
     bannerLabel: {
-      fontSize: 18,
+      ...text.sectionTitle,
       color: theme.warningText,
     },
   });
+};

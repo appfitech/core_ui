@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
@@ -288,8 +289,9 @@ export default function TrainerServicesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     topSection: {
       marginBottom: 16,
@@ -321,14 +323,12 @@ const getStyles = (theme: FullTheme) =>
     },
     summaryContent: { flex: 1 },
     summaryValue: {
-      fontSize: 18,
-      fontWeight: '800',
+      ...text.sectionTitle,
       color: theme.textPrimary,
     },
     summaryLabel: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
-      fontWeight: '600',
       marginTop: 2,
     },
     newBtn: {
@@ -343,15 +343,13 @@ const getStyles = (theme: FullTheme) =>
     },
     newBtnText: {
       color: theme.background,
-      fontWeight: '700',
-      fontSize: 14,
+      ...text.smallSemibold,
     },
     sectionHeader: {
       marginBottom: 12,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -366,7 +364,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 16,
     },
     filterHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginBottom: 10,
     },
@@ -389,13 +387,11 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.primary,
     },
     tabText: {
-      fontSize: 15,
+      ...text.link,
       color: theme.textPrimary,
-      fontWeight: '600',
     },
     tabTextActive: {
       color: theme.background,
-      fontWeight: '700',
     },
     emptyWrap: {
       paddingVertical: 32,
@@ -403,13 +399,12 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontSize: 16,
-      fontWeight: '600',
+      ...text.bodySemibold,
       color: theme.textPrimary,
       textAlign: 'center',
     },
     emptyHint: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 8,
       textAlign: 'center',
@@ -445,7 +440,7 @@ const getStyles = (theme: FullTheme) =>
       alignSelf: 'flex-start',
     },
     statusPillIcon: { marginRight: 6 },
-    statusText: { fontSize: 12, fontWeight: '700' },
+    statusText: { ...text.captionSemibold },
     titleRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -461,13 +456,12 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'center',
     },
     cardTitle: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.textPrimary,
       flex: 1,
     },
     cardDesc: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       lineHeight: 20,
       marginBottom: 10,
@@ -489,8 +483,8 @@ const getStyles = (theme: FullTheme) =>
     },
     metaIcon: {},
     metaText: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
-      fontWeight: '600',
     },
   });
+};

@@ -8,6 +8,7 @@ import { SummaryCard } from '@/app/trainer-payments';
 import { AppText } from '@/components/AppText';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetPaymentsSummary } from '@/lib/api/queries/use-trainer-get-payments';
 import { useTrainerGetReviews } from '@/lib/api/queries/use-trainer-get-reviews';
@@ -116,8 +117,9 @@ export function TrainerHomeContent() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     contentWrapper: {
       rowGap: 24,
     },
@@ -142,9 +144,7 @@ const getStyles = (theme: FullTheme) =>
       height: 20,
     },
     trainerBadgeText: {
-      fontSize: 12,
-      fontWeight: '700',
-      color: theme.textSecondary,
+      ...text.captionSemibold,
       letterSpacing: 0.3,
     },
     pagosCard: {
@@ -160,11 +160,7 @@ const getStyles = (theme: FullTheme) =>
       gap: 10,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
-      color: theme.textSecondary,
-      letterSpacing: 0.6,
-      textTransform: 'uppercase',
+      ...text.overline,
       marginBottom: 8,
     },
     reviewsSection: {
@@ -184,9 +180,7 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 6,
     },
     reviewCardName: {
-      fontSize: 17,
-      fontWeight: '600',
-      color: theme.textPrimary,
+      ...text.leadSemibold,
     },
     reviewCardRatingRow: {
       flexDirection: 'row',
@@ -194,20 +188,18 @@ const getStyles = (theme: FullTheme) =>
       gap: 6,
     },
     reviewEmoji: {
-      fontSize: 18,
+      ...text.sectionTitle,
     },
     reviewCardLabel: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
     },
     reviewCardCommentTitle: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.textSecondary,
     },
     reviewCardComment: {
-      fontSize: 15,
-      color: theme.textSecondary,
-      lineHeight: 20,
+      ...text.subheader,
     },
   });
+};

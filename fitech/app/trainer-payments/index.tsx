@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -223,17 +224,17 @@ const PaymentRow = ({
         style={[
           styles.td,
           styles.numCol,
-          { color: theme.primary, fontWeight: '800' },
+          { color: theme.primary },
         ]}
       >
         {formatPEN(item.trainerEarnings)}
       </AppText>
 
-      <View style={[styles.td, { flex: 1.8, justifyContent: 'center' }]}>
+      <View style={[styles.tdCell, { flex: 1.8, justifyContent: 'center' }]}>
         <StatusPill status={item.paymentStatus} />
       </View>
 
-      <View style={[styles.td, { width: 92, alignItems: 'center' }]}>
+      <View style={[styles.tdCell, { width: 92, alignItems: 'center' }]}>
         {isCollectable ? (
           <TouchableOpacity
             style={styles.collectBtn}
@@ -242,7 +243,9 @@ const PaymentRow = ({
             <AppText style={styles.collectBtnText}>Cobrar</AppText>
           </TouchableOpacity>
         ) : (
-          <AppText style={[styles.muted, { fontSize: 12 }]}>—</AppText>
+          <AppText variant="caption" style={styles.muted}>
+            —
+          </AppText>
         )}
       </View>
     </View>
@@ -457,16 +460,16 @@ export default function TrainerPaymentsScreen() {
 }
 
 /* ------------------------------ Styles ---------------------------- */
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     contentWrap: {
       gap: 16,
       paddingVertical: 8,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -495,12 +498,11 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'center',
     },
     summaryLabel: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       letterSpacing: 0.2,
       textTransform: 'uppercase',
     },
-    summaryAmount: { fontSize: 20, fontWeight: '900', marginTop: 2 },
+    summaryAmount: { ...text.sectionTitle, marginTop: 2 },
 
     filterCard: {
       backgroundColor: theme.backgroundInput,
@@ -512,7 +514,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 4,
     },
     filterHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginBottom: 12,
     },
@@ -534,8 +536,7 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.primary,
     },
     tabText: {
-      fontSize: 13,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
     },
     tabTextActive: {
@@ -564,16 +565,14 @@ const getStyles = (theme: FullTheme) =>
     },
     dateChipIcon: { marginRight: 6 },
     dateChipLabel: {
-      fontSize: 11,
-      fontWeight: '600',
+      ...text.label,
       color: theme.textSecondary,
       marginRight: 6,
       textTransform: 'uppercase',
     },
     dateChipValue: {
       flex: 1,
-      fontSize: 13,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textPrimary,
     },
     clearFiltersBtn: {
@@ -584,8 +583,7 @@ const getStyles = (theme: FullTheme) =>
     },
     clearFiltersIcon: { marginRight: 4 },
     clearFiltersText: {
-      fontSize: 13,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
     },
 
@@ -608,15 +606,16 @@ const getStyles = (theme: FullTheme) =>
       paddingHorizontal: 8,
     },
     th: {
-      fontSize: 12,
-      fontWeight: '900',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       paddingHorizontal: 6,
     },
     td: {
-      paddingHorizontal: 6,
-      fontSize: 13,
+      ...text.nav,
       color: theme.textPrimary,
+    },
+    tdCell: {
+      paddingHorizontal: 6,
     },
     numCol: { flex: 1.2, textAlign: 'right' as const },
     bodyRow: { backgroundColor: theme.card },
@@ -630,7 +629,7 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 6,
       alignSelf: 'flex-start',
     },
-    statusText: { fontSize: 12, fontWeight: '800' },
+    statusText: { ...text.captionSemibold },
 
     collectBtn: {
       backgroundColor: theme.primary,
@@ -639,10 +638,10 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 10,
     },
     collectBtnText: {
+      ...text.captionSemibold,
       color: theme.background,
-      fontWeight: '900',
-      fontSize: 12,
     },
 
     muted: { color: theme.textSecondary },
   });
+};

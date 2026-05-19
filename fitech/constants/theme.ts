@@ -1,23 +1,21 @@
 import { FullTheme } from '@/types/theme';
 
 /**
- * Kinetic Obsidian — dark-only. Primary stays #39CC39; surfaces and text tuned
- * for clearer hierarchy and stronger contrast on obsidian backgrounds.
+ * Obsidian — dark, minimal chrome. Primary (#39CC39) reserved for actions and accents.
  */
 const BRAND_PRIMARY = '#39CC39';
 
-const OBSIDIAN = '#050608';
-const SURFACE_CARD = '#18242E';
-const SURFACE_RAISED = '#1A2230';
-const SURFACE_INPUT = '#0C0F14';
-const ON_SURFACE = '#ECEEF2';
-const ON_SURFACE_MUTED = '#9DA8B9';
-const ON_SURFACE_SUBTLE = '#6F7D92';
-const BORDER_DEFAULT = '#2E3D34';
-const BORDER_HEADER = 'rgba(82, 226, 77, 0.28)';
-/** Elevated chrome — must read clearly above OBSIDIAN page background */
-const SURFACE_HEADER = '#1A2230';
-const GREEN_GLOW = '#52E24D';
+const OBSIDIAN = '#07090D';
+const SURFACE_CARD = '#121820';
+const SURFACE_RAISED = '#161D26';
+const SURFACE_INPUT = '#0D1016';
+const ON_SURFACE = '#E8EAED';
+const ON_SURFACE_MUTED = '#9AA3B2';
+const ON_SURFACE_SUBTLE = '#6B7585';
+const BORDER_DEFAULT = 'rgba(255, 255, 255, 0.09)';
+const BORDER_HEADER = 'rgba(255, 255, 255, 0.07)';
+/** Barely lifted from page bg — no blue cast */
+const GREEN_GLOW = '#4CD94A';
 
 /** Single app theme (dark). Scales: 100 = darkest, 900 = lightest. */
 export const THEME: FullTheme = {
@@ -76,7 +74,6 @@ export const THEME: FullTheme = {
   backgroundInverted: ON_SURFACE,
   backgroundInput: SURFACE_INPUT,
   backgroundDropdown: SURFACE_RAISED,
-  backgroundHeader: SURFACE_HEADER,
   card: SURFACE_CARD,
   textPrimary: ON_SURFACE,
   textSecondary: ON_SURFACE_MUTED,
@@ -86,10 +83,10 @@ export const THEME: FullTheme = {
   primaryBg: '#143D18',
 
   fixedHeaderTitleColor: ON_SURFACE,
-  fixedHeaderSubheaderColor: 'rgba(236, 238, 242, 0.85)',
+  fixedHeaderSubheaderColor: 'rgba(232, 234, 237, 0.72)',
   fixedHeaderBorder: BORDER_HEADER,
-  headerBackButtonBg: 'rgba(57, 204, 57, 0.22)',
-  headerBackButtonBorder: 'rgba(82, 226, 77, 0.5)',
+  headerBackButtonBg: 'rgba(255, 255, 255, 0.06)',
+  headerBackButtonBorder: 'rgba(255, 255, 255, 0.1)',
   headerBackButtonBorderWidth: 1,
 };
 

@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { RatingDistribution } from '@/components/trainer-reviews/RatingBreakdown';
@@ -137,16 +138,16 @@ export default function TrainerReviewsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     contentWrap: {
       gap: 16,
       paddingVertical: 8,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -182,19 +183,16 @@ const getStyles = (theme: FullTheme) =>
       borderLeftColor: theme.info,
     },
     statCardLabel: {
-      fontWeight: '600',
-      fontSize: 14,
+      ...text.smallSemibold,
       color: theme.textSecondary,
     },
     statCardValueSuccess: {
       color: theme.successText,
-      fontSize: 28,
-      fontWeight: '900',
+      ...text.statLarge,
     },
     statCardValueInfo: {
       color: theme.infoText,
-      fontSize: 28,
-      fontWeight: '900',
+      ...text.statLarge,
     },
     reviewsList: { gap: 12 },
     card: {
@@ -206,12 +204,11 @@ const getStyles = (theme: FullTheme) =>
       gap: 10,
     },
     cardTitle: {
-      fontSize: 17,
-      fontWeight: '700',
+      ...text.leadSemibold,
       color: theme.textPrimary,
     },
     cardComment: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       lineHeight: 20,
     },
@@ -228,7 +225,7 @@ const getStyles = (theme: FullTheme) =>
     },
     respondButtonText: {
       color: theme.background,
-      fontWeight: '700',
-      fontSize: 15,
+      ...text.linkSemibold,
     },
   });
+};

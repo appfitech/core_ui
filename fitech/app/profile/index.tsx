@@ -111,8 +111,9 @@ export default function ProfileScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     header: {
       alignItems: 'center',
       marginBottom: 24,
@@ -131,12 +132,11 @@ const getStyles = (theme: FullTheme) =>
       overflow: 'hidden',
     },
     name: {
-      ...textStyles(theme).title,
-      fontWeight: '700',
+      ...text.title,
       color: theme.textPrimary,
     },
     email: {
-      ...textStyles(theme).subtitle,
+      ...text.subtitle,
       marginTop: 4,
       color: theme.textSecondary,
     },
@@ -159,3 +159,4 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 24,
     },
   });
+};

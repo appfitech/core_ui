@@ -6,6 +6,7 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { DatePicker } from '@/components/DatePicker';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
@@ -331,8 +332,9 @@ export default function NewTrainerRoutineScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     stepIndicator: {
       flexDirection: 'row',
@@ -353,8 +355,7 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.primary,
     },
     stepNum: {
-      fontSize: 14,
-      fontWeight: '800',
+      ...text.smallSemibold,
       color: theme.textSecondary,
     },
     stepNumActive: {
@@ -373,8 +374,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 24,
     },
     stepLabel: {
-      fontSize: 13,
-      fontWeight: '600',
+      ...text.nav,
       color: theme.textSecondary,
     },
     stepLabelActive: {
@@ -394,13 +394,11 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 8,
     },
     backToStep1Text: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.primary,
     },
     fieldLabel: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.textPrimary,
       marginBottom: 6,
     },
@@ -423,8 +421,7 @@ const getStyles = (theme: FullTheme) =>
       opacity: 0.5,
     },
     nextBtnText: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.background,
     },
     inputRow: {
@@ -443,7 +440,7 @@ const getStyles = (theme: FullTheme) =>
     input: {
       flex: 1,
       paddingVertical: 12,
-      fontSize: 15,
+      ...text.link,
       color: theme.textPrimary,
     },
     plantillaSection: {
@@ -453,19 +450,17 @@ const getStyles = (theme: FullTheme) =>
       borderTopColor: theme.border,
     },
     plantillaTitle: {
-      fontSize: 16,
-      fontWeight: '800',
+      ...text.bodySemibold,
       color: theme.textPrimary,
       marginBottom: 6,
     },
     plantillaHint: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginBottom: 16,
     },
     plantillaStepTitle: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.textPrimary,
       marginBottom: 8,
     },
@@ -480,17 +475,16 @@ const getStyles = (theme: FullTheme) =>
     },
     downloadBtnIcon: { marginRight: 8 },
     downloadBtnText: {
-      fontSize: 15,
-      fontWeight: '700',
+      ...text.linkSemibold,
       color: theme.background,
     },
     downloadHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginTop: 8,
     },
     uploadHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginBottom: 6,
     },
@@ -507,7 +501,7 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 4,
     },
     uploadText: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 8,
       textAlign: 'center',
@@ -530,8 +524,7 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'center',
     },
     cancelBtnText: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.textSecondary,
     },
     createSubmitBtn: {
@@ -545,8 +538,8 @@ const getStyles = (theme: FullTheme) =>
       opacity: 0.5,
     },
     createSubmitBtnText: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.background,
     },
   });
+};

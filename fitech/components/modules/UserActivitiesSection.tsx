@@ -3,6 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import DietSVG from '@/assets/images/vectors/diet.svg';
+import { textStyles } from '@/constants/styles';
 import RoutineSVG from '@/assets/images/vectors/routine.svg';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
@@ -86,8 +87,9 @@ export function UserActivitiesSection() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     card: {
       backgroundColor: theme.background,
       flex: 1,
@@ -96,17 +98,16 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.border,
     },
     cardTitle: {
-      fontWeight: '600',
-      fontSize: 17,
+      ...text.leadSemibold,
       color: theme.textPrimary,
     },
     cardSub: {
-      fontSize: 16,
+      ...text.body,
       color: theme.textSecondary,
     },
     cardSubBold: {
+      ...text.bodySemibold,
       color: theme.textSecondary,
-      fontWeight: '700',
     },
     iconWrapper: {
       justifyContent: 'center',
@@ -114,3 +115,4 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 10,
     },
   });
+};

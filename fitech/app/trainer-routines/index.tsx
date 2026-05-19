@@ -7,6 +7,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
 import { ROUTES } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useClientResourcesGrouped } from '@/lib/api/queries/use-client-resources-grouped';
 import type {
@@ -403,8 +404,9 @@ export default function TrainerRoutinesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     contentWrap: {
       gap: 16,
@@ -418,11 +420,7 @@ const getStyles = (theme: FullTheme) =>
       gap: 12,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
-      color: theme.textSecondary,
-      letterSpacing: 0.6,
-      textTransform: 'uppercase',
+      ...text.overline,
     },
     createBtn: {
       flexDirection: 'row',
@@ -434,9 +432,8 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 14,
     },
     createBtnText: {
+      ...text.smallSemibold,
       color: theme.background,
-      fontWeight: '700',
-      fontSize: 14,
     },
     summaryColumn: {
       flexDirection: 'column',
@@ -474,14 +471,10 @@ const getStyles = (theme: FullTheme) =>
     },
     summaryContent: {},
     summaryValue: {
-      fontSize: 22,
-      fontWeight: '900',
-      color: theme.textPrimary,
+      ...text.stat,
     },
     summaryLabel: {
-      fontSize: 12,
-      color: theme.textSecondary,
-      fontWeight: '600',
+      ...text.captionSemibold,
       marginTop: 2,
     },
     emptyWrap: {
@@ -489,13 +482,11 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: theme.textPrimary,
+      ...text.bodySemibold,
       textAlign: 'center',
     },
     emptyHint: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 8,
       textAlign: 'center',
@@ -534,9 +525,7 @@ const getStyles = (theme: FullTheme) =>
     },
     clientHeaderText: { flex: 1, minWidth: 0 },
     clientName: {
-      fontSize: 17,
-      fontWeight: '700',
-      color: theme.textPrimary,
+      ...text.leadSemibold,
       marginBottom: 4,
     },
     clientBlockBody: {
@@ -551,8 +540,7 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
     },
     chipActiveText: {
-      fontSize: 12,
-      fontWeight: '600',
+      ...text.captionSemibold,
       color: theme.successText,
     },
     chipInactive: {
@@ -562,8 +550,7 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 999,
     },
     chipInactiveText: {
-      fontSize: 12,
-      fontWeight: '600',
+      ...text.captionSemibold,
       color: theme.orangeText,
     },
     tabRow: {
@@ -584,11 +571,10 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.primary,
     },
     tabText: {
-      fontSize: 13,
-      fontWeight: '600',
-      color: theme.textSecondary,
+      ...text.nav,
     },
     tabTextActive: {
+      ...text.nav,
       color: theme.background,
     },
     routineCards: {
@@ -614,7 +600,7 @@ const getStyles = (theme: FullTheme) =>
     },
     statusPillActive: { backgroundColor: theme.successBackground },
     statusPillInactive: { backgroundColor: theme.backgroundInput },
-    statusPillText: { fontSize: 12, fontWeight: '700' },
+    statusPillText: { ...text.captionSemibold },
     routineCardTitleRow: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -630,10 +616,8 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'center',
     },
     routineCardTitle: {
+      ...text.linkSemibold,
       flex: 1,
-      fontSize: 15,
-      fontWeight: '700',
-      color: theme.textPrimary,
     },
     docButton: {
       width: 44,
@@ -660,8 +644,8 @@ const getStyles = (theme: FullTheme) =>
     },
     metaIcon: { marginRight: 6 },
     routineCardMetaText: {
-      fontSize: 12,
-      color: theme.textSecondary,
+      ...text.caption,
       flex: 1,
     },
   });
+};

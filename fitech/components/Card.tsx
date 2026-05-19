@@ -3,19 +3,22 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+import { authCardEnter } from '@/utils/platform-animations';
 
 type Props = {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle> | undefined;
+  /** Lighter entrance on Android (auth screens). */
+  authStyle?: boolean;
 };
 
-export function Card({ children, style }: Props) {
+export function Card({ children, style, authStyle = false }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
     <Animated.View
-      entering={FadeInUp.duration(250)}
+      entering={authStyle ? authCardEnter() : FadeInUp.duration(250)}
       style={[styles.card, style]}
     >
       {children}

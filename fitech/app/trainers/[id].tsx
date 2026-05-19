@@ -4,6 +4,7 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { useAlert } from '@/contexts/AlertContext';
@@ -147,8 +148,9 @@ export default function TrainerProfileScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     profileBlock: {
       alignItems: 'center',
@@ -162,8 +164,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 8,
     },
     role: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.textSecondary,
     },
     premiumTag: {
@@ -177,16 +178,14 @@ const getStyles = (theme: FullTheme) =>
       gap: 6,
     },
     premiumText: {
-      fontSize: 12,
-      fontWeight: '600',
+      ...text.captionSemibold,
       color: theme.warningText,
     },
     section: {
       marginBottom: 24,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       marginBottom: 10,
       letterSpacing: 0.6,
@@ -203,12 +202,11 @@ const getStyles = (theme: FullTheme) =>
       padding: 18,
     },
     serviceName: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.textPrimary,
     },
     serviceDesc: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 6,
       lineHeight: 20,
@@ -220,8 +218,7 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 8,
     },
     servicePrice: {
-      fontSize: 15,
-      fontWeight: '700',
+      ...text.linkSemibold,
       color: theme.primary,
     },
     serviceCta: {
@@ -244,9 +241,9 @@ const getStyles = (theme: FullTheme) =>
       padding: 18,
     },
     aboutText: {
-      fontSize: 15,
-      fontWeight: '500',
+      ...text.link,
       color: theme.textPrimary,
       lineHeight: 22,
     },
   });
+};

@@ -27,7 +27,7 @@ export function GreetingHeader() {
             <Image source={{ uri: userAvatarURL }} style={styles.avatar} />
           )}
           <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
-            <AppText variant="sectionTitle" style={styles.greeting}>
+            <AppText variant="greeting" style={styles.greeting}>
               {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}!`}
             </AppText>
           </TouchableOpacity>
@@ -55,7 +55,7 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 24,
       paddingHorizontal: 16,
       rowGap: 4,
-      backgroundColor: theme.backgroundHeader,
+      backgroundColor: theme.card,
     },
     topRow: {
       flexDirection: 'row',

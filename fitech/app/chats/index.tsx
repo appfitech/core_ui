@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
@@ -220,8 +221,9 @@ export default function ChatsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingBottom: 0,
     },
@@ -232,7 +234,7 @@ const getStyles = (theme: FullTheme) =>
     },
     loadingText: {
       marginTop: 8,
-      fontSize: 13,
+      ...text.nav,
       color: theme.textSecondary,
     },
     emptyCenter: {
@@ -241,7 +243,7 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       textAlign: 'center',
     },
@@ -288,20 +290,18 @@ const getStyles = (theme: FullTheme) =>
     },
     avatarInitials: {
       color: theme.primary,
-      fontWeight: '800',
-      fontSize: 17,
+      ...text.lead,
     },
     chatMain: {
       flex: 1,
       rowGap: 2,
     },
     chatName: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.textPrimary,
     },
     chatPreview: {
-      fontSize: 13,
+      ...text.nav,
       color: theme.textSecondary,
     },
     meta: {
@@ -310,7 +310,7 @@ const getStyles = (theme: FullTheme) =>
       marginLeft: 8,
     },
     chatTime: {
-      fontSize: 11,
+      ...text.caption,
       color: theme.textSecondary,
     },
     unreadBadge: {
@@ -322,8 +322,8 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     unreadText: {
-      fontSize: 11,
-      fontWeight: '700',
+      ...text.label,
       color: theme.background,
     },
   });
+};

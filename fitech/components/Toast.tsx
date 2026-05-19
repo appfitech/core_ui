@@ -27,7 +27,9 @@ export const toastConfig = {
     >
       <AppText style={{ fontSize: 22, lineHeight: 22 }}>❤️</AppText>
       <View style={{ flex: 1 }}>
-        <AppText style={{ color: 'white', fontWeight: '800' }}>{text1}</AppText>
+        <AppText variant="bodySemibold" style={{ color: 'white' }}>
+          {text1}
+        </AppText>
         {!!text2 && (
           <AppText style={{ color: 'rgba(255,255,255,0.8)' }}>{text2}</AppText>
         )}
@@ -43,7 +45,7 @@ export const toastConfig = {
             backgroundColor: '#FFFFFF',
           }}
         >
-          <AppText style={{ fontWeight: '800', color: '#111827' }}>
+          <AppText variant="smallSemibold" style={{ color: '#111827' }}>
             Abrir chat
           </AppText>
         </Pressable>

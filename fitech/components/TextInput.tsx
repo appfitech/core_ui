@@ -74,10 +74,10 @@ export function TextInput(props: Props) {
 
   const minHeight = props.multiline
     ? (props.numberOfLines ?? 1) * 16 + 16 * 2
-    : 52;
+    : undefined;
 
   return (
-    <View key={props.id ?? 'text-input'}>
+    <View key={props.id ?? 'text-input'} style={styles.field}>
       {label && (
         <View style={styles.labelContainer}>
           <AppText style={styles.label}>{label}</AppText>
@@ -102,13 +102,22 @@ export function TextInput(props: Props) {
           placeholderTextColor={theme.dark700}
           style={[
             styles.input,
-            { flex: 1 },
             inputStyleProp ?? {},
-            props.multiline && {
-              height: undefined,
-              minHeight,
-              textAlignVertical: 'top',
-            },
+            props.multiline
+              ? {
+                  height: undefined,
+                  minHeight,
+                  textAlignVertical: 'top',
+                  paddingVertical: 12,
+                }
+              : Platform.OS === 'android'
+                ? {
+                    includeFontPadding: false,
+                    textAlignVertical: 'center',
+                  }
+                : {
+                    paddingVertical: 12,
+                  },
           ]}
           autoCapitalize="none"
           autoCorrect={false}
@@ -122,6 +131,9 @@ export function TextInput(props: Props) {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
+    field: {
+      width: '100%',
+    },
     startElement: {
       marginRight: 12,
     },

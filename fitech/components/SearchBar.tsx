@@ -1,16 +1,23 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, TextInputProps, View } from 'react-native';
+import {
+  Platform,
+  StyleProp,
+  StyleSheet,
+  TextInput,
+  TextInputProps,
+  View,
+  ViewStyle,
+} from 'react-native';
 
-import { formStyles } from '@/constants/styles';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-import { TextInput } from './TextInput';
+const INPUT_HEIGHT = 44;
 
 type Props = {
   shouldHideEndIcon?: boolean;
-  containerStyle: any;
+  containerStyle?: StyleProp<ViewStyle>;
 } & TextInputProps;
 
 export function SearchBar({
@@ -20,6 +27,7 @@ export function SearchBar({
   placeholder,
   containerStyle,
   value,
+  style,
   ...rest
 }: Props) {
   const { theme } = useTheme();
@@ -27,12 +35,12 @@ export function SearchBar({
 
   return (
     <View style={[styles.searchBar, containerStyle]}>
-      <Ionicons name="search-outline" size={20} color={theme.dark700} />
+      <Ionicons name="search-outline" size={18} color={theme.dark600} />
       <TextInput
         placeholder={placeholder}
         readOnly={readOnly}
-        placeholderTextColor={theme.dark700}
-        style={[styles.input, { flex: 1 }]}
+        placeholderTextColor={theme.dark600}
+        style={[styles.input, style]}
         onPress={onPress}
         onChangeText={onChangeText}
         value={value}
@@ -42,15 +50,29 @@ export function SearchBar({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+
+  return StyleSheet.create({
     searchBar: {
-      backgroundColor: theme.backgroundInput,
-      borderRadius: 20,
-      paddingHorizontal: 14,
       flexDirection: 'row',
       alignItems: 'center',
+      columnGap: 10,
       width: '100%',
+      height: INPUT_HEIGHT,
+      paddingHorizontal: 14,
+      backgroundColor: theme.backgroundInput,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
-    ...formStyles(theme),
+    input: {
+      ...text.link,
+      flex: 1,
+      height: INPUT_HEIGHT,
+      paddingVertical: 0,
+      color: theme.textPrimary,
+      ...(Platform.OS === 'android' ? { includeFontPadding: false } : {}),
+    },
   });
+};

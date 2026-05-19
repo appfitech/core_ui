@@ -33,12 +33,8 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
       }}
     >
       <AppText
-        style={{
-          color: theme.dark700,
-          fontSize: 18,
-          fontWeight: '400',
-          flex: 1,
-        }}
+        variant="sectionTitle"
+        style={{ color: theme.dark700, flex: 1 }}
       >
         {foodItem.name}
       </AppText>
@@ -73,6 +69,5 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
 
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
-    ...textStyles(theme),
     ...formStyles(theme),
   });

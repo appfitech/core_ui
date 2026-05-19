@@ -11,7 +11,7 @@ import {
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
-import { formStyles } from '@/constants/styles';
+import { formStyles, textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { FullTheme } from '@/types/theme';
@@ -117,12 +117,7 @@ export const ReviewModal: React.FC<Props> = ({
 
           {rating && (
             <AppText
-              style={{
-                textAlign: 'center',
-                fontWeight: 600,
-                fontSize: 16,
-                color: theme.warningText,
-              }}
+              style={[styles.ratingLabel, { color: theme.warningText }]}
             >
               {EMOJIS_LABEL[rating - 1]}
             </AppText>
@@ -147,12 +142,7 @@ export const ReviewModal: React.FC<Props> = ({
               size={20}
               color={theme.primary}
             />
-            <AppText
-              style={[
-                styles.checkboxText,
-                { color: theme.dark700, fontSize: 16 },
-              ]}
-            >
+            <AppText style={[styles.checkboxText, { color: theme.dark700 }]}>
               Publicar de forma anónima (tu nombre no será visible)
             </AppText>
           </TouchableOpacity>
@@ -169,13 +159,7 @@ export const ReviewModal: React.FC<Props> = ({
             onPress={handleClose}
             disabled={!rating}
           >
-            <AppText
-              style={{
-                fontSize: 16,
-                color: theme.dark800,
-                textAlign: 'center',
-              }}
-            >
+            <AppText style={[styles.modalActionText, { color: theme.dark800 }]}>
               Cancelar
             </AppText>
           </TouchableOpacity>
@@ -191,11 +175,7 @@ export const ReviewModal: React.FC<Props> = ({
             disabled={!rating}
           >
             <AppText
-              style={{
-                fontSize: 16,
-                color: theme.infoBackground,
-                textAlign: 'center',
-              }}
+              style={[styles.modalActionText, { color: theme.infoBackground }]}
             >
               Enviar Reseña
             </AppText>
@@ -206,11 +186,11 @@ export const ReviewModal: React.FC<Props> = ({
   );
 };
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     title: {
-      fontSize: 20,
-      fontWeight: '700',
+      ...text.sectionTitle,
       marginBottom: 8,
       color: theme.dark900,
       borderBottomColor: theme.infoText,
@@ -225,7 +205,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 0,
     },
     emoji: {
-      fontSize: 32,
+      ...text.statLarge,
       opacity: 0.5,
     },
     emojiSelected: {
@@ -238,8 +218,17 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 8,
     },
     checkboxText: {
-      fontSize: 14,
+      ...text.body,
       flex: 1,
+    },
+    ratingLabel: {
+      ...text.body,
+      textAlign: 'center',
+    },
+    modalActionText: {
+      ...text.body,
+      textAlign: 'center',
     },
     ...formStyles(theme),
   });
+};

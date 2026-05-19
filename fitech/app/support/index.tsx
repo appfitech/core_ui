@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
@@ -138,8 +139,9 @@ export default function SupportScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
       paddingBottom: 160,
@@ -149,8 +151,7 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 12,
     },
     contactTitle: {
-      fontSize: 18,
-      fontWeight: '700',
+      ...text.sectionTitle,
       color: theme.textPrimary,
     },
     contactRow: {
@@ -159,9 +160,9 @@ const getStyles = (theme: FullTheme) =>
       columnGap: 12,
     },
     contactText: {
-      fontSize: 15,
+      ...text.link,
       color: theme.textSecondary,
-      fontWeight: '400',
+      
     },
     formCard: {
       borderRadius: 14,
@@ -169,8 +170,7 @@ const getStyles = (theme: FullTheme) =>
       rowGap: 14,
     },
     formCardTitle: {
-      fontSize: 17,
-      fontWeight: '700',
+      ...text.leadSemibold,
       color: theme.textPrimary,
       marginBottom: 4,
     },
@@ -188,3 +188,4 @@ const getStyles = (theme: FullTheme) =>
       width: '100%',
     },
   });
+};

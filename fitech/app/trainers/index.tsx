@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -107,8 +108,9 @@ export default function TrainersSearchScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
       backgroundColor: theme.backgroundInput,
@@ -120,7 +122,7 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 16,
     },
     filterHint: {
-      fontSize: 12,
+      ...text.caption,
       color: theme.textSecondary,
       marginBottom: 10,
     },
@@ -128,8 +130,7 @@ const getStyles = (theme: FullTheme) =>
       width: '100%',
     },
     resultCount: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.textSecondary,
       marginTop: 16,
       marginBottom: 4,
@@ -158,12 +159,11 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     name: {
-      fontSize: 17,
-      fontWeight: '700',
+      ...text.leadSemibold,
       color: theme.textPrimary,
     },
     bio: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 4,
       lineHeight: 20,
@@ -176,8 +176,8 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 10,
     },
     ctaText: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.primaryText,
     },
   });
+};

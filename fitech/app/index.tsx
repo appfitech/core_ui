@@ -1,11 +1,15 @@
 import { useRouter } from 'expo-router';
 import { Image, ImageBackground, StyleSheet, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
+import {
+  authFadeInUp,
+  shouldAnimateAuthButtons,
+} from '@/utils/platform-animations';
 
 export default function WelcomeScreen() {
   const styles = getStyles();
@@ -34,7 +38,7 @@ export default function WelcomeScreen() {
       <View style={styles.overlay} pointerEvents="none" />
       <View style={styles.content}>
         <Animated.View
-          entering={FadeInUp.duration(800)}
+          entering={authFadeInUp(800)}
           style={styles.logoContainer}
         >
           <Image
@@ -45,7 +49,7 @@ export default function WelcomeScreen() {
         </Animated.View>
 
         <Animated.View
-          entering={FadeInUp.delay(200).duration(800)}
+          entering={authFadeInUp(800, 200)}
           style={styles.textContainer}
         >
           <AppText variant="header">{welcomeScreen.header}</AppText>
@@ -53,17 +57,19 @@ export default function WelcomeScreen() {
         </Animated.View>
 
         <Animated.View
-          entering={FadeInUp.delay(400).duration(800)}
+          entering={authFadeInUp(800, 400)}
           style={styles.buttonContainer}
         >
           <Button
             label={welcomeScreen.createAccountButton}
             onPress={handleRegisterClick}
+            animated={shouldAnimateAuthButtons()}
           />
           <Button
             label={welcomeScreen.logInButton}
             onPress={handleLoginClick}
             type={'secondary'}
+            animated={shouldAnimateAuthButtons()}
           />
         </Animated.View>
       </View>

@@ -32,7 +32,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.fitech",
-      "softwareKeyboardLayoutMode": "resize",
+      "softwareKeyboardLayoutMode": "pan",
       "intentFilters": [
         {
           "action": "VIEW",

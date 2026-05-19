@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated from 'react-native-reanimated';
 
 import { AnimatedAppText } from '@/components/AnimatedAppText';
 import { AppText } from '@/components/AppText';
@@ -17,8 +17,13 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useLogin } from '@/lib/api/mutations/use-account-mutations';
 import { useUserStore } from '@/stores/user';
+import { textStyles } from '@/constants/styles';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
+import {
+  AUTH_UI_REVEAL_DELAY_MS,
+  authFadeInUp,
+} from '@/utils/platform-animations';
 
 export default function LoginScreen() {
   const { theme } = useTheme();
@@ -39,7 +44,7 @@ export default function LoginScreen() {
   const { mutate: submitLogin, isPending } = useLogin();
 
   useEffect(() => {
-    const t = setTimeout(() => setShowUI(true), 600);
+    const t = setTimeout(() => setShowUI(true), AUTH_UI_REVEAL_DELAY_MS);
     return () => clearTimeout(t);
   }, []);
 
@@ -90,26 +95,27 @@ export default function LoginScreen() {
 
   return (
     <PageContainer
+      authOptimized
       hasBackButton={false}
       hasBottomPadding={false}
       style={styles.page}
     >
       <View style={styles.headerWrapper}>
         <Animated.Image
-          entering={FadeInUp.duration(600)}
+          entering={authFadeInUp(600)}
           source={require('@/assets/images/logos/rounded_logo.webp')}
           style={styles.logo}
           resizeMode="contain"
         />
         <AnimatedAppText
-          entering={FadeInUp.delay(200)}
+          entering={authFadeInUp(600, 200)}
           variant="header"
           style={styles.headerTitle}
         >
           {loginScreen.header}
         </AnimatedAppText>
         <AnimatedAppText
-          entering={FadeInUp.delay(300)}
+          entering={authFadeInUp(600, 300)}
           variant="subheader"
           style={styles.headerSubtitle}
         >
@@ -118,7 +124,7 @@ export default function LoginScreen() {
       </View>
 
       {showUI && (
-        <Card style={styles.card}>
+        <Card authStyle style={styles.card}>
           <ErrorBanner
             errorMessage={errorMsg}
             onClear={() => setErrorMsg(null)}
@@ -192,6 +198,7 @@ export default function LoginScreen() {
 
 const getStyles = (theme: FullTheme) => {
   const iconColor = theme.dark800;
+  const text = textStyles(theme);
 
   return {
     ...StyleSheet.create({
@@ -228,7 +235,7 @@ const getStyles = (theme: FullTheme) => {
         marginBottom: 16,
       },
       forgotText: {
-        fontSize: 15,
+        ...text.link,
         textDecorationLine: 'underline',
       },
       loginButton: {
@@ -240,15 +247,13 @@ const getStyles = (theme: FullTheme) => {
         justifyContent: 'flex-start',
       },
       footerPrompt: {
+        ...text.link,
         color: theme.textSecondary,
-        fontSize: 15,
-        fontWeight: '500',
       },
       signUp: {
+        ...text.linkSemibold,
         color: theme.green700,
-        fontWeight: '600',
         marginLeft: 10,
-        fontSize: 15,
       },
     }),
     iconColor,

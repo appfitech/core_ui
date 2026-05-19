@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { textStyles } from '@/constants/styles';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
@@ -87,8 +88,9 @@ export function ResourceCard({ onClick, resource }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     touchable: {
       marginBottom: 4,
     },
@@ -101,8 +103,7 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 14,
     },
     title: {
-      fontSize: 17,
-      fontWeight: '700',
+      ...text.leadSemibold,
       color: theme.textPrimary,
       lineHeight: 22,
       marginBottom: 12,
@@ -120,16 +121,14 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     trainerLabel: {
-      fontSize: 11,
-      fontWeight: '600',
+      ...text.label,
       color: theme.textSecondary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: 1,
     },
     trainerName: {
-      fontSize: 15,
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.textPrimary,
     },
     datesRow: {
@@ -142,8 +141,7 @@ const getStyles = (theme: FullTheme) =>
     },
     datesText: {
       flex: 1,
-      fontSize: 13,
-      fontWeight: '500',
+      ...text.nav,
       color: theme.textSecondary,
       minWidth: 0,
     },
@@ -154,8 +152,8 @@ const getStyles = (theme: FullTheme) =>
       gap: 4,
     },
     ctaText: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.primaryText,
     },
   });
+};

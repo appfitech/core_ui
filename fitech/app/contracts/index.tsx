@@ -16,6 +16,7 @@ import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contract
 import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { ReviewableContractDto } from '@/types/api/types.gen';
+import { textStyles } from '@/constants/styles';
 import { FullTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
 
@@ -280,8 +281,9 @@ export default function ContractsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     filterCard: {
       backgroundColor: theme.backgroundInput,
@@ -293,8 +295,7 @@ const getStyles = (theme: FullTheme) =>
       marginTop: 16,
     },
     filterHint: {
-      fontSize: 12,
-      color: theme.textSecondary,
+      ...text.caption,
       marginBottom: 10,
     },
     tabRow: {
@@ -316,13 +317,11 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.primary,
     },
     tabText: {
-      fontSize: 15,
-      color: theme.textPrimary,
-      fontWeight: '600',
+      ...text.linkSemibold,
     },
     tabTextActive: {
+      ...text.linkSemibold,
       color: theme.background,
-      fontWeight: '700',
     },
     list: {
       marginTop: 20,
@@ -335,13 +334,11 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
     },
     emptyText: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: theme.textPrimary,
+      ...text.bodySemibold,
       textAlign: 'center',
     },
     emptyHint: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 8,
       textAlign: 'center',
@@ -355,9 +352,7 @@ const getStyles = (theme: FullTheme) =>
       paddingBottom: 14,
     },
     cardTitle: {
-      fontSize: 17,
-      fontWeight: '700',
-      color: theme.textPrimary,
+      ...text.leadSemibold,
       marginBottom: 10,
     },
     cardRow: {
@@ -369,9 +364,8 @@ const getStyles = (theme: FullTheme) =>
       marginRight: 10,
     },
     cardInfo: {
+      ...text.smallMedium,
       flex: 1,
-      fontSize: 14,
-      fontWeight: '500',
       color: theme.textSecondary,
       minWidth: 0,
     },
@@ -392,8 +386,7 @@ const getStyles = (theme: FullTheme) =>
       gap: 4,
     },
     ctaText: {
-      fontSize: 14,
-      fontWeight: '700',
+      ...text.smallSemibold,
       color: theme.primaryText,
     },
     reviewButton: {
@@ -408,8 +401,8 @@ const getStyles = (theme: FullTheme) =>
       backgroundColor: theme.infoBackground,
     },
     reviewButtonText: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.infoText,
     },
   });
+};

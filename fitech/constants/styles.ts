@@ -5,31 +5,139 @@ import { FullTheme } from '@/types/theme';
 /**
  * Design system — shared text & form styles.
  *
- * Prefer `<AppText variant="sectionTitle">` for UI copy.
- * Use `textStyles(theme).header` when building StyleSheet objects.
- * Use `formStyles(theme)` for inputs, labels, and submit rows.
+ * Prefer `<AppText variant="…">` in JSX.
+ * In StyleSheet: `...textStyles(theme).body` (only override color when needed).
  */
 
 /** Raw Inter scale (no theme colors). */
 export const TYPOGRAPHY = {
-  title: {
-    fontFamily: 'Inter_700Bold',
+  display: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 40,
+    lineHeight: 44,
+  },
+  statLarge: {
+    fontFamily: 'Inter_600SemiBold',
     fontSize: 28,
-    lineHeight: 34,
+    lineHeight: 32,
+  },
+  stat: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 22,
+    lineHeight: 28,
+  },
+  title: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 26,
+    lineHeight: 32,
   },
   sectionTitle: {
     fontFamily: 'Inter_600SemiBold',
-    fontSize: 20,
-    lineHeight: 26,
+    fontSize: 18,
+    lineHeight: 24,
+  },
+  screenTitle: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  greeting: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  lead: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 17,
+    lineHeight: 22,
+  },
+  leadSemibold: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 17,
+    lineHeight: 22,
   },
   body: {
     fontFamily: 'Inter_400Regular',
     fontSize: 16,
     lineHeight: 22,
   },
+  bodyMedium: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  bodySemibold: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  subheader: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  link: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  linkSemibold: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  subtitle: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  small: {
+    fontFamily: 'Inter_400Regular',
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  smallMedium: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 14,
+    lineHeight: 18,
+  },
+  smallSemibold: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+    lineHeight: 18,
+  },
   caption: {
     fontFamily: 'Inter_400Regular',
     fontSize: 12,
+    lineHeight: 16,
+  },
+  captionMedium: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  captionSemibold: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  overline: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+  label: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 11,
+    lineHeight: 14,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  nav: {
+    fontFamily: 'Inter_500Medium',
+    fontSize: 13,
     lineHeight: 16,
   },
   button: {
@@ -39,18 +147,14 @@ export const TYPOGRAPHY = {
   },
 } as const satisfies Record<string, TextStyle>;
 
-/** Base scale keys (maps 1:1 to TYPOGRAPHY). */
 export type TypographyScale = keyof typeof TYPOGRAPHY;
 
-/** Semantic text presets (includes theme colors). */
+/** Semantic aliases + scale keys — all resolve in `textStyles()`. */
 export type TextVariant =
   | TypographyScale
   | 'header'
-  | 'subheader'
-  | 'subtitle'
-  | 'screenTitle'
   | 'content'
-  | 'label';
+  | 'screenTitle';
 
 const TAP_TARGET_MIN = 44;
 
@@ -82,7 +186,6 @@ export function getInterFontFamily(weight?: TextStyle['fontWeight']): string {
   return 'Inter_400Regular';
 }
 
-/** Themed text preset — use with AppText or StyleSheet. */
 export function getTextStyle(
   theme: FullTheme,
   variant: TextVariant,
@@ -94,60 +197,51 @@ export type TextStyles = Record<TextVariant, TextStyle>;
 
 /** All semantic text styles for the active theme. */
 export function textStyles(theme: FullTheme): TextStyles {
-  return {
-    title: {
-      ...TYPOGRAPHY.title,
-      color: theme.textPrimary,
-    },
-    sectionTitle: {
-      ...TYPOGRAPHY.sectionTitle,
-      color: theme.textPrimary,
-    },
-    body: {
-      ...TYPOGRAPHY.body,
-      color: theme.textPrimary,
-    },
-    caption: {
-      ...TYPOGRAPHY.caption,
+  const base: Record<TypographyScale, TextStyle> = {
+    display: { ...TYPOGRAPHY.display, color: theme.textPrimary },
+    statLarge: { ...TYPOGRAPHY.statLarge, color: theme.textPrimary },
+    stat: { ...TYPOGRAPHY.stat, color: theme.textPrimary },
+    title: { ...TYPOGRAPHY.title, color: theme.textPrimary },
+    sectionTitle: { ...TYPOGRAPHY.sectionTitle, color: theme.textPrimary },
+    screenTitle: { ...TYPOGRAPHY.screenTitle, color: theme.textPrimary },
+    greeting: { ...TYPOGRAPHY.greeting, color: theme.textPrimary },
+    lead: { ...TYPOGRAPHY.lead, color: theme.textPrimary },
+    leadSemibold: { ...TYPOGRAPHY.leadSemibold, color: theme.textPrimary },
+    body: { ...TYPOGRAPHY.body, color: theme.textPrimary },
+    bodyMedium: { ...TYPOGRAPHY.bodyMedium, color: theme.textPrimary },
+    bodySemibold: { ...TYPOGRAPHY.bodySemibold, color: theme.textPrimary },
+    subheader: { ...TYPOGRAPHY.subheader, color: theme.textSecondary },
+    link: { ...TYPOGRAPHY.link, color: theme.textPrimary },
+    linkSemibold: { ...TYPOGRAPHY.linkSemibold, color: theme.textPrimary },
+    subtitle: { ...TYPOGRAPHY.subtitle, color: theme.textSecondary },
+    small: { ...TYPOGRAPHY.small, color: theme.textPrimary },
+    smallMedium: { ...TYPOGRAPHY.smallMedium, color: theme.textPrimary },
+    smallSemibold: { ...TYPOGRAPHY.smallSemibold, color: theme.textPrimary },
+    caption: { ...TYPOGRAPHY.caption, color: theme.textSecondary },
+    captionMedium: { ...TYPOGRAPHY.captionMedium, color: theme.textSecondary },
+    captionSemibold: {
+      ...TYPOGRAPHY.captionSemibold,
       color: theme.textSecondary,
     },
-    button: {
-      ...TYPOGRAPHY.button,
-      color: theme.textPrimary,
-    },
-    header: {
-      ...TYPOGRAPHY.title,
-      color: theme.textPrimary,
-      textAlign: 'center',
-    },
-    subheader: {
-      ...TYPOGRAPHY.body,
-      fontFamily: 'Inter_500Medium',
-      color: theme.textSecondary,
-      textAlign: 'center',
-    },
-    subtitle: {
-      ...TYPOGRAPHY.body,
-      fontFamily: 'Inter_600SemiBold',
-      color: theme.textSecondary,
-    },
-    screenTitle: {
-      ...TYPOGRAPHY.body,
-      fontFamily: 'Inter_600SemiBold',
-      color: theme.textPrimary,
-    },
-    content: {
-      ...TYPOGRAPHY.body,
-      color: theme.textPrimary,
-    },
+    overline: { ...TYPOGRAPHY.overline, color: theme.textSecondary },
     label: {
-      ...TYPOGRAPHY.caption,
-      fontFamily: 'Inter_600SemiBold',
+      ...TYPOGRAPHY.label,
       color: theme.dark800,
-      textTransform: 'uppercase',
       marginBottom: 8,
       marginTop: 12,
     },
+    nav: { ...TYPOGRAPHY.nav, color: theme.textSecondary },
+    button: { ...TYPOGRAPHY.button, color: theme.textPrimary },
+  };
+
+  return {
+    ...base,
+    header: {
+      ...base.title,
+      textAlign: 'center',
+    },
+    content: base.body,
+    screenTitle: base.screenTitle,
   };
 }
 
@@ -162,7 +256,6 @@ export type FormStyles = {
   optionalTag: ViewStyle;
 };
 
-/** Form fields & actions — pairs with `textStyles` for screens. */
 export function formStyles(theme: FullTheme): FormStyles {
   const text = textStyles(theme);
 
@@ -177,16 +270,19 @@ export function formStyles(theme: FullTheme): FormStyles {
       borderWidth: 1,
       borderColor: theme.border,
       overflow: 'hidden',
+      minHeight: TAP_TARGET_MIN,
+      maxHeight: TAP_TARGET_MIN + 4,
     },
     input: {
       ...text.body,
       backgroundColor: 'transparent',
-      paddingVertical: 12,
+      flex: 1,
+      paddingVertical: 0,
       minHeight: TAP_TARGET_MIN,
-      lineHeight: 22,
+      lineHeight: 20,
     },
     dropdown: {
-      ...text.body,
+      ...text.link,
       backgroundColor: theme.backgroundInput,
       borderRadius: 12,
       minHeight: TAP_TARGET_MIN,

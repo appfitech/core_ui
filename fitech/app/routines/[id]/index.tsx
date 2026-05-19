@@ -5,6 +5,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
@@ -115,8 +116,9 @@ export default function RoutineDetailScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
     card: {
       backgroundColor: theme.card,
@@ -145,19 +147,18 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     rowLabel: {
-      fontSize: 11,
-      fontWeight: '600',
+      ...text.label,
       color: theme.textSecondary,
       textTransform: 'uppercase',
       letterSpacing: 0.5,
       marginBottom: 4,
     },
     rowValue: {
-      fontSize: 15,
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.textPrimary,
     },
     buttonWrap: {
       marginTop: 24,
     },
   });
+};

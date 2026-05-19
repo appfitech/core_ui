@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -33,8 +34,10 @@ export function Tag({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+
+  return StyleSheet.create({
     tagContainer: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -46,8 +49,8 @@ const getStyles = (theme: FullTheme) =>
       alignSelf: 'flex-start',
     },
     text: {
+      ...text.smallSemibold,
       color: theme.warningText,
-      fontWeight: '600',
-      fontSize: 14,
     },
   });
+};

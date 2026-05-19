@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
 import { ROUTES } from '@/constants/routes';
@@ -346,8 +347,9 @@ export default function TrainerClientsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {},
     contentWrap: {
       rowGap: 12,
@@ -368,8 +370,7 @@ const getStyles = (theme: FullTheme) =>
       width: 48,
     },
     resultCount: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.textSecondary,
       marginBottom: 4,
     },
@@ -409,12 +410,11 @@ const getStyles = (theme: FullTheme) =>
       gap: 6,
     },
     clientName: {
-      fontSize: 17,
-      fontWeight: '700',
+      ...text.leadSemibold,
       color: theme.textPrimary,
     },
     bio: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 0,
       marginBottom: 10,
@@ -425,8 +425,7 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 10,
     },
     sectionTitle: {
-      fontSize: 12,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.textSecondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
@@ -450,8 +449,7 @@ const getStyles = (theme: FullTheme) =>
       gap: 8,
     },
     contactarButtonText: {
-      fontSize: 15,
-      fontWeight: '600',
+      ...text.linkSemibold,
       color: theme.background,
     },
     chip: {
@@ -461,7 +459,7 @@ const getStyles = (theme: FullTheme) =>
     },
     chipNeutral: { backgroundColor: theme.backgroundInput },
     chipSuccess: { backgroundColor: theme.successBackground },
-    chipText: { fontSize: 12, fontWeight: '600' },
+    chipText: { ...text.captionSemibold },
     chipTextNeutral: { color: theme.textSecondary },
     chipTextSuccess: { color: theme.successText },
     servicesList: { gap: 12 },
@@ -493,14 +491,13 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 6,
     },
     cardTitle: {
-      fontSize: 16,
-      fontWeight: '700',
+      ...text.bodySemibold,
       color: theme.textPrimary,
       flex: 1,
       marginRight: 8,
     },
     cardDesc: {
-      fontSize: 14,
+      ...text.small,
       lineHeight: 20,
       color: theme.textSecondary,
       marginBottom: 12,
@@ -519,12 +516,11 @@ const getStyles = (theme: FullTheme) =>
       marginRight: 2,
     },
     priceText: {
-      fontSize: 15,
-      fontWeight: '700',
+      ...text.linkSemibold,
       color: theme.successText,
     },
     priceSuffix: {
-      fontWeight: '500',
+      ...text.link,
       color: theme.successText,
       opacity: 0.9,
     },
@@ -539,8 +535,7 @@ const getStyles = (theme: FullTheme) =>
     },
     modalityIcon: { marginRight: 0 },
     modalityText: {
-      fontSize: 12,
-      fontWeight: '600',
+      ...text.captionSemibold,
       color: theme.textPrimary,
     },
     statusPill: {
@@ -548,7 +543,7 @@ const getStyles = (theme: FullTheme) =>
       paddingVertical: 6,
       borderRadius: 999,
     },
-    statusPillText: { fontSize: 12, fontWeight: '700' },
+    statusPillText: { ...text.captionSemibold },
     metaRow: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -557,6 +552,7 @@ const getStyles = (theme: FullTheme) =>
     },
     metaLeft: { flexDirection: 'row', alignItems: 'center' },
     metaIcon: { marginRight: 8 },
-    metaLabel: { fontSize: 12, color: theme.textSecondary },
-    metaValue: { fontSize: 13, fontWeight: '700', color: theme.primary },
+    metaLabel: { ...text.caption, color: theme.textSecondary },
+    metaValue: { ...text.nav, color: theme.primary },
   });
+};

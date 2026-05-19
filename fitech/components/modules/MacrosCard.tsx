@@ -3,6 +3,7 @@ import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Card } from '@/components/Card';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -37,8 +38,9 @@ export function MacrosCard() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     card: {
       flexDirection: 'row',
       columnGap: 16,
@@ -60,13 +62,13 @@ const getStyles = (theme: FullTheme) =>
     },
     title: {
       color: theme.textPrimary,
-      fontSize: 19,
-      fontWeight: '800',
+      ...text.sectionTitle,
     },
     subtitle: {
       color: theme.textSecondary,
-      fontSize: 15,
+      ...text.link,
       lineHeight: 22,
     },
     textContainer: { flex: 1, rowGap: 6 },
   });
+};

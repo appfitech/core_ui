@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { textStyles } from '@/constants/styles';
 import { Button } from '@/components/Button';
 import { Dropdown } from '@/components/Dropdown';
 import { TextInput } from '@/components/TextInput';
@@ -275,8 +276,9 @@ export function AddEditExerciseModal({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     modalRoot: {
       flex: 1,
       backgroundColor: theme.background,
@@ -304,14 +306,12 @@ const getStyles = (theme: FullTheme) =>
     },
     modalHeader: { marginBottom: 4, marginTop: 4 },
     modalTitle: {
-      fontSize: 22,
-      fontWeight: '800',
+      ...text.stat,
       color: theme.textPrimary,
       lineHeight: 28,
     },
     modalSubtitle: {
-      fontSize: 14,
-      fontWeight: '600',
+      ...text.smallSemibold,
       color: theme.textSecondary,
       marginTop: 2,
     },
@@ -321,7 +321,7 @@ const getStyles = (theme: FullTheme) =>
       borderRadius: 10,
       paddingHorizontal: 12,
       paddingVertical: 12,
-      fontSize: 16,
+      ...text.body,
       backgroundColor: theme.backgroundInput,
       color: theme.textPrimary,
     },
@@ -338,8 +338,8 @@ const getStyles = (theme: FullTheme) =>
       justifyContent: 'space-between',
       alignItems: 'center',
     },
-    seriesLabel: { fontWeight: '700', fontSize: 16, color: theme.textPrimary },
-    addSeriesText: { color: theme.primary, fontWeight: '700' },
+    seriesLabel: { ...text.bodySemibold, color: theme.textPrimary },
+    addSeriesText: { ...text.bodySemibold, color: theme.primary },
     setCard: {
       borderWidth: 1,
       borderColor: theme.border,
@@ -357,9 +357,9 @@ const getStyles = (theme: FullTheme) =>
       flexDirection: 'row',
       gap: 8,
     },
-    setLabel: { fontWeight: '700', color: theme.textPrimary },
+    setLabel: { ...text.bodySemibold, color: theme.textPrimary },
     removeButton: { paddingHorizontal: 8, paddingVertical: 4 },
-    removeButtonText: { color: theme.error, fontWeight: '700' },
+    removeButtonText: { ...text.bodySemibold, color: theme.error },
     notesInput: { flex: 0, minHeight: 88, maxHeight: 110, marginTop: 4 },
     modalFooter: {
       flexDirection: 'row',
@@ -374,3 +374,4 @@ const getStyles = (theme: FullTheme) =>
     footerButtonPadding: { paddingVertical: 10 },
     confirmButtonDisabled: { opacity: 0.5 },
   });
+};

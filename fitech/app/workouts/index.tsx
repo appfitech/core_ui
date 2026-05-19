@@ -6,6 +6,7 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
@@ -136,8 +137,9 @@ export default function WorkoutsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     list: {
       paddingTop: 16,
     },
@@ -167,13 +169,12 @@ const getStyles = (theme: FullTheme) =>
       minWidth: 0,
     },
     rowTitle: {
-      fontSize: 17,
-      fontWeight: '600',
-      color: theme.textPrimary,
+      ...text.leadSemibold,
     },
     rowDescription: {
-      fontSize: 14,
+      ...text.small,
       color: theme.textSecondary,
       marginTop: 4,
     },
   });
+};

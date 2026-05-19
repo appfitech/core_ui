@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { AllowedPath } from '@/constants/routes';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
@@ -80,8 +81,9 @@ export function ListItem({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     listItem: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -97,8 +99,8 @@ const getStyles = (theme: FullTheme) =>
     },
     label: {
       flex: 1,
-      fontSize: 16,
-      fontWeight: '500',
+      ...text.body,
       color: theme.textPrimary,
     },
   });
+};

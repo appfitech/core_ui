@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { textStyles } from '@/constants/styles';
 import { Option } from '@/types/forms';
 import { FullTheme } from '@/types/theme';
 import { rippleFromHex } from '@/utils/theme';
@@ -95,8 +96,9 @@ export function Tabs({ options, value, onSelect }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     tabsWrapper: {
       position: 'relative',
       flexDirection: 'row',
@@ -124,11 +126,11 @@ const getStyles = (theme: FullTheme) =>
       opacity: 0.88,
     },
     tabText: {
-      fontSize: 16,
+      ...text.body,
       color: theme.textPrimary,
     },
     textSelected: {
       color: theme.dark100,
-      fontWeight: 800,
     },
   });
+};

@@ -79,9 +79,9 @@ export function NavBar() {
                   color={isCurrentRoute ? theme.primary : theme.green900}
                 />
                 <AppText
+                  variant="nav"
                   style={{
                     color: isCurrentRoute ? theme.primary : theme.green900,
-                    fontSize: 13,
                   }}
                 >
                   {label}

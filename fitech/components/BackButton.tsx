@@ -5,8 +5,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-const BUTTON_SIZE = 40;
-const ICON_SIZE = 22;
+const BUTTON_SIZE = 36;
+const ICON_SIZE = 20;
 
 type Props = {
   /** Use "light" when the button sits on a dark background (e.g. PageContainer fixed header) */
@@ -29,7 +29,7 @@ export function BackButton({ variant = 'default', onPress }: Props) {
       accessibilityLabel="Volver"
     >
       <Ionicons
-        name="arrow-back"
+        name="chevron-back"
         size={ICON_SIZE}
         color={isLight ? theme.textPrimary : theme.background}
         style={styles.icon}
@@ -45,18 +45,12 @@ const getStyles = (theme: FullTheme, isLight: boolean) =>
       height: BUTTON_SIZE,
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: BUTTON_SIZE / 2,
+      borderRadius: 10,
       backgroundColor: isLight ? theme.headerBackButtonBg : theme.dark900,
       borderWidth: isLight ? theme.headerBackButtonBorderWidth : 0,
       borderColor: isLight ? theme.headerBackButtonBorder : 'transparent',
-      shadowColor: '#000',
-      shadowOpacity: isLight ? 0.2 : 0.05,
-      shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 6,
-      elevation: 3,
     },
     icon: {
-      // arrow-back glyph is optically left-heavy
-      marginLeft: 1,
+      marginLeft: -1,
     },
   });

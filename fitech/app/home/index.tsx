@@ -38,7 +38,7 @@ const getStyles = (theme: FullTheme) =>
     wrapper: {
       flex: 1,
       position: 'relative',
-      backgroundColor: theme.backgroundHeader,
+      backgroundColor: theme.card,
     },
     pageContainer: {
       padding: 0,
