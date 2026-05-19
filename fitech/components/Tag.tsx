@@ -12,7 +12,7 @@ type Props = {
   backgroundColor: string;
   textColor: string;
   label: string;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function Tag({

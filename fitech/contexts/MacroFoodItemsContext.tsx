@@ -72,7 +72,7 @@ export const MacroFoodItemsProvider: React.FC<{
     setFoodItemRequest((prev) =>
       prev?.map((item) =>
         item.foodId === foodId
-          ? { ...item, quantity: !!text ? Number(text) : text }
+          ? { ...item, quantity: text === '' ? 0 : Number(text) }
           : item,
       ),
     );

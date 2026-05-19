@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -108,7 +108,7 @@ export default function WorkoutsScreen() {
             <TouchableOpacity
               style={styles.row}
               activeOpacity={0.7}
-              onPress={() => router.push(`/${item.key}`)}
+              onPress={() => router.push(`/${item.key}` as Href)}
             >
               <View style={styles.iconWrap}>
                 <Image

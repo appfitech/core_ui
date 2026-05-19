@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  ActivityIndicator,
   StyleProp,
   TextStyle,
   TouchableOpacity,
@@ -22,8 +23,10 @@ type ButtonStyles = {
   base: ViewStyle;
   container: Record<ButtonType, ViewStyle>;
   text: Record<ButtonType, TextStyle>;
+  spinnerColor: Record<ButtonType, string>;
   disabledContainer: ViewStyle;
   disabledText: TextStyle;
+  loadingRow: ViewStyle;
 };
 
 type Props = {
@@ -37,6 +40,8 @@ type Props = {
   /** When false, skips the entrance animation (e.g. alerts). Default true. */
   animated?: boolean;
   loading?: boolean;
+  /** Shown instead of `label` while `loading` is true. */
+  loadingLabel?: string;
 };
 
 export function Button({
@@ -48,11 +53,19 @@ export function Button({
   buttonStyle = {},
   disabled = false,
   animated = true,
+  loading = false,
+  loadingLabel,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const containerStyle = styles.container[type];
   const textStyle = styles.text[type];
+  const isDisabled = disabled || loading;
+  const displayLabel =
+    loading && loadingLabel != null && loadingLabel !== ''
+      ? loadingLabel
+      : label;
+  const spinnerColor = styles.spinnerColor[type];
 
   const Wrapper = animated ? Animated.View : View;
   const wrapperProps = animated
@@ -65,19 +78,32 @@ export function Button({
         style={[
           styles.base,
           containerStyle,
-          disabled && styles.disabledContainer,
+          isDisabled && styles.disabledContainer,
           buttonStyle,
         ]}
-        disabled={disabled}
+        disabled={isDisabled}
         onPress={onPress}
         activeOpacity={0.78}
       >
-        {label ? (
-          <AppText style={[textStyle, disabled && styles.disabledText]}>
-            {label}
-          </AppText>
-        ) : null}
-        {children}
+        {loading ? (
+          <View style={styles.loadingRow}>
+            <ActivityIndicator color={spinnerColor} size="small" />
+            {displayLabel ? (
+              <AppText style={[textStyle, isDisabled && styles.disabledText]}>
+                {displayLabel}
+              </AppText>
+            ) : null}
+          </View>
+        ) : (
+          <>
+            {label ? (
+              <AppText style={[textStyle, isDisabled && styles.disabledText]}>
+                {label}
+              </AppText>
+            ) : null}
+            {children}
+          </>
+        )}
       </TouchableOpacity>
     </Wrapper>
   );
@@ -137,11 +163,26 @@ function getStyles(theme: FullTheme): ButtonStyles {
       textDecorationLine: 'underline',
     },
   };
+  const spinnerColor: Record<ButtonType, string> = {
+    primary: theme.background,
+    secondary: theme.primary,
+    destructive: theme.background,
+    tertiary: theme.textPrimary,
+    link: theme.primary,
+  };
+
   return {
     base,
     container,
     text: buttonText,
+    spinnerColor,
     disabledContainer: { opacity: 0.55 },
     disabledText: {},
+    loadingRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      columnGap: 10,
+    },
   };
 }

@@ -5,7 +5,9 @@ import { Trainer } from '@/types/trainer';
 
 import { api } from '../api';
 
-export const useTrainerGetClients = ({ search }) => {
+type Params = { search?: string };
+
+export const useTrainerGetClients = ({ search }: Params) => {
   const userId = useUserStore((s) => s?.user?.user?.id);
 
   return useQuery<Trainer>({

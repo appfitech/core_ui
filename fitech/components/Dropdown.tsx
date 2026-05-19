@@ -77,6 +77,7 @@ export function Dropdown({
       : String(value);
 
   const enableSearch = search ?? data.length > 6;
+  const dropdownMode = enableSearch ? 'modal' : 'default';
 
   return (
     <View key={id || 'dropdown'} style={{ zIndex }}>
@@ -99,6 +100,12 @@ export function Dropdown({
         labelField="label"
         valueField="value"
         value={selectedValue}
+        mode={dropdownMode}
+        keyboardAvoiding
+        backgroundColor={
+          dropdownMode === 'modal' ? 'rgba(0, 0, 0, 0.55)' : undefined
+        }
+        maxHeight={dropdownMode === 'modal' ? 420 : 280}
         search={enableSearch}
         searchPlaceholder={searchPlaceholder}
         confirmSelectItem={hasDisabledItems}
@@ -204,6 +211,7 @@ const getStyles = (theme: FullTheme) => {
       borderWidth: 1,
       borderColor: theme.border,
       marginTop: 6,
+      maxHeight: 280,
       overflow: 'hidden',
       ...Platform.select({
         ios: {

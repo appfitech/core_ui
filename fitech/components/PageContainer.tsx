@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,8 +13,8 @@ import { AppText } from './AppText';
 import { BackButton } from './BackButton';
 
 const DEFAULT_CONTENT_PADDING_BOTTOM = 220;
-/** Extra scroll past focused field — larger when a fixed footer sits below the scroll area */
-const KEYBOARD_EXTRA_SCROLL = { default: 24, withFooter: 100 } as const;
+/** Space between focused field and keyboard (keep small — KASV already positions the field). */
+const KEYBOARD_EXTRA_SCROLL = { default: 12, withFooter: 40 } as const;
 
 type Props = {
   children: React.ReactNode;
@@ -85,7 +79,7 @@ export default function PageContainer({
       ? fixedHeaderHeight + insets.top + 8
       : insets.top;
 
-  const sharedInnerStyle = [
+  const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
     {
       paddingHorizontal: 24,
@@ -94,14 +88,21 @@ export default function PageContainer({
     },
     style,
     { paddingBottom: scrollPaddingBottom },
-  ] as const;
+  ];
+
+  const keyboardVerticalOffset = hasFixedHeader
+    ? fixedHeaderHeight + insets.top
+    : insets.top;
 
   const keyboardScrollProps = {
     enableOnAndroid: true,
     enableAutomaticScroll: true,
+    enableResetScrollToCoords: false,
+    keyboardOpeningTime: 0,
     extraScrollHeight: footer
       ? KEYBOARD_EXTRA_SCROLL.withFooter
       : KEYBOARD_EXTRA_SCROLL.default,
+    keyboardVerticalOffset,
     keyboardShouldPersistTaps: 'handled' as const,
     keyboardDismissMode: 'on-drag' as const,
     showsVerticalScrollIndicator: false,
@@ -181,45 +182,35 @@ export default function PageContainer({
         </View>
       )}
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={styles.flex}
-      >
-        {disableScroll ? (
-          <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
-        ) : footer ? (
-          <View style={styles.flex}>
-            <KeyboardAwareScrollView
-              style={styles.flex}
-              contentContainerStyle={[
-                ...sharedInnerStyle,
-                { flexGrow: 1, flexShrink: 0 },
-              ]}
-              {...keyboardScrollProps}
-            >
-              {scrollContent}
-            </KeyboardAwareScrollView>
-            <View
-              style={[
-                styles.footer,
-                { paddingBottom: Math.max(insets.bottom, 16) },
-              ]}
-            >
-              {footer}
-            </View>
-          </View>
-        ) : (
+      {disableScroll ? (
+        <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
+      ) : footer ? (
+        <View style={styles.flex}>
           <KeyboardAwareScrollView
-            contentContainerStyle={[
-              ...sharedInnerStyle,
-              { flexGrow: 1, flexShrink: 0 },
-            ]}
+            style={styles.flex}
+            contentContainerStyle={sharedInnerStyle}
             {...keyboardScrollProps}
           >
             {scrollContent}
           </KeyboardAwareScrollView>
-        )}
-      </KeyboardAvoidingView>
+          <View
+            style={[
+              styles.footer,
+              { paddingBottom: Math.max(insets.bottom, 16) },
+            ]}
+          >
+            {footer}
+          </View>
+        </View>
+      ) : (
+        <KeyboardAwareScrollView
+          style={styles.flex}
+          contentContainerStyle={sharedInnerStyle}
+          {...keyboardScrollProps}
+        >
+          {scrollContent}
+        </KeyboardAwareScrollView>
+      )}
     </View>
   );
 }

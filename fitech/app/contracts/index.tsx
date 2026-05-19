@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -52,8 +52,11 @@ export default function ContractsScreen() {
   const handleDetails = (contract: ReviewableContractDto) => {
     if (!contract?.serviceId) return;
     router.push({
-      pathname: `${ROUTES.contracts}/${contract.serviceId}`,
-      params: { contract: JSON.stringify(contract) },
+      pathname: '/contracts/[id]',
+      params: {
+        id: String(contract.serviceId),
+        contract: JSON.stringify(contract),
+      },
     });
   };
 
@@ -64,22 +67,34 @@ export default function ContractsScreen() {
     contractId: number,
     existingReviewId: number | null = null,
   ) => {
-    const mutateAction = existingReviewId ? updateReview : submitReview;
-    mutateAction(
+    const onSuccess = () => {
+      refetchActiveContracts();
+      refetchInactiveContracts();
+      refetchReviews();
+    };
+
+    if (existingReviewId) {
+      updateReview(
+        {
+          serviceContractId: contractId,
+          rating,
+          comment,
+          isAnonymous: anonymous,
+          reviewId: existingReviewId,
+        },
+        { onSuccess },
+      );
+      return;
+    }
+
+    submitReview(
       {
         serviceContractId: contractId,
         rating,
         comment,
         isAnonymous: anonymous,
-        ...(!!existingReviewId ? { reviewId: existingReviewId } : {}),
       },
-      {
-        onSuccess: () => {
-          refetchActiveContracts();
-          refetchInactiveContracts();
-          refetchReviews();
-        },
-      },
+      { onSuccess },
     );
   };
 

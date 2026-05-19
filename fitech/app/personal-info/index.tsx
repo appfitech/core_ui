@@ -20,7 +20,10 @@ import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { useUserStore } from '@/stores/user';
-import { LocationDto } from '@/types/api/types.gen';
+import {
+  LocationDto,
+  UserResponseDtoReadable,
+} from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 export default function PersonalInfoScreen() {
@@ -50,9 +53,13 @@ export default function PersonalInfoScreen() {
   }, [user]);
 
   const handleUpdate = useCallback(() => {
+    if (!form) return;
+
     updateUser(form, {
       onSuccess: async (response) => {
-        await updateUserInfo(response);
+        if (response.user) {
+          await updateUserInfo(response.user as UserResponseDtoReadable);
+        }
         router.back();
       },
     });
@@ -63,7 +70,7 @@ export default function PersonalInfoScreen() {
   }, [router]);
 
   const handleChange = useCallback(
-    (key: string) => (text) => {
+    (key: string) => (text: string) => {
       setForm((prev) => ({
         ...prev,
         person: { ...prev?.person, [key]: text },

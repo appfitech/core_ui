@@ -1,11 +1,11 @@
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import { useEffect } from 'react';
 
 import { ROUTES } from '@/constants/routes';
 import { bootstrapAuthSession } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
 
-export const useAuthRedirect = (redirectPath: string = ROUTES.home) => {
+export const useAuthRedirect = (redirectPath: Href = ROUTES.home) => {
   const router = useRouter();
   const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
 

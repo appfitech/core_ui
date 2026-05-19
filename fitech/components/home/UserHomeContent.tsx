@@ -24,4 +24,7 @@ const getStyles = () =>
     contentWrapper: {
       rowGap: 24,
     },
+    macrosCardWrap: {
+      width: '100%',
+    },
   });

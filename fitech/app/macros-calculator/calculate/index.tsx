@@ -9,7 +9,14 @@ import { formStyles, textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';
+import { MacroNutrientsDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+
+const MACRO_GRAM_KEYS = [
+  'proteins',
+  'carbohydrates',
+  'fats',
+] as const satisfies readonly (keyof MacroNutrientsDto)[];
 
 export default function MacrosCalculatorCalculateScreen() {
   const { theme } = useTheme();
@@ -141,7 +148,7 @@ export default function MacrosCalculatorCalculateScreen() {
             </AppText>
           </View>
           <View style={{ width: '100%', rowGap: 4 }}>
-            {Object.keys(calculation?.totalMacros ?? []).map((macroKey) => (
+            {MACRO_GRAM_KEYS.map((macroKey) => (
               <View
                 key={macroKey}
                 style={{

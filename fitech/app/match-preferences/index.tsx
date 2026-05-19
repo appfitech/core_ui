@@ -232,15 +232,17 @@ export default function MatchPreferencesScreen() {
                     false
                   }
                   onPress={() => {
+                    const timePref = value as TimePref;
+
                     setMatchPreferences((prev) => {
                       const set = new Set(
                         (prev?.gymBroWorkoutTimes || []) as TimePref[],
                       );
 
-                      if (set.has(value)) {
-                        set.delete(value);
+                      if (set.has(timePref)) {
+                        set.delete(timePref);
                       } else {
-                        set.add(value);
+                        set.add(timePref);
                       }
 
                       return {

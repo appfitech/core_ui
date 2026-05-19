@@ -5,8 +5,12 @@ import Toast, { BaseToastProps } from 'react-native-toast-message';
 
 import { AppText } from '@/components/AppText';
 
+type MatchToastProps = BaseToastProps & {
+  props?: { onPress?: () => void };
+};
+
 export const toastConfig = {
-  match: ({ text1, text2, props }: BaseToastProps) => (
+  match: ({ text1, text2, props }: MatchToastProps) => (
     <Animated.View
       entering={FadeInDown.duration(220)}
       style={{

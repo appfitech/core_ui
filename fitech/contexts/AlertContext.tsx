@@ -38,8 +38,15 @@ export function useAlert() {
 type AlertState = AlertOptions & { visible: boolean };
 
 function resolveBodyText(title: string, message?: string) {
-  if (message?.trim()) return message.trim();
-  return title.trim();
+  const titleText = title.trim();
+  const messageText = message?.trim() ?? '';
+
+  if (messageText && titleText && messageText !== titleText) {
+    return `${titleText}\n\n${messageText}`;
+  }
+
+  if (messageText) return messageText;
+  return titleText;
 }
 
 function resolveActionButton(buttons: AlertButton[]) {

@@ -54,9 +54,9 @@ export const ReviewModal: React.FC<Props> = ({
       );
 
       if (existing) {
-        setRating(existing.rating);
-        setComment(existing.comment);
-        setAnonymous(existing.isAnonymous);
+        setRating(existing.rating ?? null);
+        setComment(existing.comment ?? '');
+        setAnonymous(existing.isAnonymous ?? false);
       }
     }
   }, [reviews, existingReviewId]);

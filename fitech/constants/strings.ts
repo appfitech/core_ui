@@ -9,9 +9,23 @@ export const TRANSLATIONS = {
     header: 'Inicia sesión en tu \ncuenta',
     subheader: 'Entrena. Mejora. Repite.',
     loginGoogleButton: 'Continuar con Google',
-    loginButton: '',
+    loginButton: 'Iniciar sesión',
+    loginLoadingButton: 'Iniciando sesión…',
     forgotPasswordLink: '¿Olvidaste tu contraseña?',
     alternativeLoginCaption: 'O inicia sesión con',
+    loginErrorFallback:
+      'Ocurrió un error al iniciar sesión. Inténtalo nuevamente.',
+  },
+  registerScreen: {
+    nextButton: 'Siguiente',
+    createAccountButton: 'Crear cuenta',
+    creatingAccountButton: 'Creando tu cuenta…',
+    registerErrorFallback:
+      'No pudimos crear tu cuenta. Revisa los datos e inténtalo de nuevo.',
+    successTitle: '¡Cuenta creada!',
+    successMessage:
+      'Tu cuenta fue creada correctamente. Revisa tu correo electrónico y confirma tu cuenta antes de iniciar sesión.',
+    successButton: 'Ir a iniciar sesión',
   },
   verifyEmailScreen: {
     title: 'Verifica tu correo',

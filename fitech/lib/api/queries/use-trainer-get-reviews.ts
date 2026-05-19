@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { PageReviewResponseDtoReadable } from '@/types/api/types.gen';
 import { Trainer } from '@/types/trainer';
 
 import { api } from '../api';
@@ -23,7 +24,7 @@ export const useTrainerGetReviewsBreakdown = () => {
 };
 
 export const useTrainerGetReviews = (enabled = true) => {
-  return useQuery<Trainer>({
+  return useQuery<PageReviewResponseDtoReadable>({
     queryKey: ['get-trainer-reviews'],
     queryFn: async () => {
       return api.get(`/trainer/my-reviews`);

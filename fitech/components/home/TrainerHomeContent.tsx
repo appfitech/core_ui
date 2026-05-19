@@ -104,7 +104,7 @@ export function TrainerHomeContent() {
                     Comentario:
                   </AppText>
                   <AppText style={styles.reviewCardComment} numberOfLines={3}>
-                    {truncateWords(review?.comment, 20)}
+                    {truncateWords(review?.comment ?? '', 20)}
                   </AppText>
                 </Animated.View>
               );

@@ -61,11 +61,20 @@ export default function LoginScreen() {
           router.replace(ROUTES.home);
         },
         onError: (error) => {
-          setErrorMsg(extractErrorMessage(error));
+          setErrorMsg(
+            extractErrorMessage(error) || loginScreen.loginErrorFallback,
+          );
         },
       },
     );
-  }, [username, password, router, setUser, submitLogin]);
+  }, [
+    loginScreen.loginErrorFallback,
+    password,
+    router,
+    setUser,
+    submitLogin,
+    username,
+  ]);
 
   const handleSignUp = () => {
     router.replace(ROUTES.register);
@@ -158,11 +167,13 @@ export default function LoginScreen() {
           </View>
 
           <Button
-            label={'Iniciar sesión'}
+            label={loginScreen.loginButton}
+            loadingLabel={loginScreen.loginLoadingButton}
             onPress={handleLogin}
             style={styles.loginButton}
             disabled={!username || !password}
             loading={isPending}
+            animated={false}
           />
 
           <View style={styles.footerText}>

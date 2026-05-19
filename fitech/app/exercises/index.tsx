@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import moment from 'moment';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar, type DateData, LocaleConfig } from 'react-native-calendars';
 
 import { AppText } from '@/components/AppText';
 import { ChipsList } from '@/components/molecules/ChipsList';
@@ -167,7 +167,13 @@ export default function ExercisesScreen() {
           enableSwipeMonths
           theme={calendarTheme(theme)}
           maxDate={todayISO}
-          dayComponent={({ date, state }) => {
+          dayComponent={({
+            date,
+            state,
+          }: {
+            date?: DateData;
+            state?: string;
+          }) => {
             const ds = date?.dateString as string;
             const count = monthData[ds]?.length || 0;
             const isSelected = ds === selectedDate;

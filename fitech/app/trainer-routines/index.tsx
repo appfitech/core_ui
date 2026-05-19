@@ -1,5 +1,5 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { type Href, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -80,7 +80,9 @@ export default function TrainerRoutinesScreen() {
           <AppText style={styles.sectionTitle}>RESUMEN</AppText>
           <TouchableOpacity
             style={styles.createBtn}
-            onPress={() => router.push(ROUTES.trainerRoutines + '/new')}
+            onPress={() =>
+              router.push(`${ROUTES.trainerRoutines}/new` as Href)
+            }
             activeOpacity={0.8}
           >
             <Ionicons name="add" size={18} color={theme.background} />

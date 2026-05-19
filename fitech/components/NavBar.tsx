@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter, useSegments } from 'expo-router';
+import { type Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useCallback } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -44,7 +44,7 @@ export function NavBar() {
   const isTrainer = useUserStore((s) => s.getIsTrainer());
 
   const handleNavItemClick = useCallback(
-    (route) => () => {
+    (route: Href) => () => {
       router.push(route);
     },
     [router],
