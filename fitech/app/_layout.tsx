@@ -40,6 +40,13 @@ const HIDE_NAV_ROUTES = [
   'forgot-password',
   'reset-password',
   'verify-email',
+  'match-preferences',
+  'personal-info',
+  'image-gallery',
+  'change-password',
+  'goals',
+  'subscription',
+  'notifications',
 ];
 
 const PUBLIC_ROUTES = [

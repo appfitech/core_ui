@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
@@ -18,11 +18,13 @@ import {
   filterClientResourcesByActive,
 } from '@/lib/list/filter-client-resources';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
+import { FullTheme } from '@/types/theme';
 
 export default function RoutinesScreen() {
   const [filter, setFilter] = useState<ActiveInactiveFilter>('ACTIVE');
   const { theme } = useTheme();
   const router = useRouter();
+  const styles = getStyles(theme);
   const { routinesScreen: copy, common, listFilters } = TRANSLATIONS;
 
   const { data: routines, isLoading } = useGetRoutines();
@@ -44,9 +46,10 @@ export default function RoutinesScreen() {
         chips={ACTIVE_INACTIVE_CHIPS}
         selectedValue={filter}
         onChipPress={(value) => setFilter(value as ActiveInactiveFilter)}
+        style={styles.listHeader}
       />
     ),
-    [filter, listFilters.routinesActiveHint],
+    [filter, listFilters.routinesActiveHint, styles.listHeader],
   );
 
   const renderItem = useCallback(
@@ -57,12 +60,7 @@ export default function RoutinesScreen() {
   );
 
   return (
-    <PageContainer
-      title={copy.title}
-      subheader={copy.subheader}
-      disableScroll
-      style={{ paddingBottom: 0 }}
-    >
+    <PageContainer title={copy.title} subheader={copy.subheader} disableScroll>
       <FlatList
         data={filteredRoutines}
         keyExtractor={(item) => String(item.id)}
@@ -80,13 +78,8 @@ export default function RoutinesScreen() {
             />
           )
         }
-        contentContainerStyle={{
-          paddingBottom: 180,
-          flexGrow: 1,
-        }}
-        ItemSeparatorComponent={() => (
-          <View style={{ height: LIST_SCREEN_FLATLIST.itemGap }} />
-        )}
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         showsVerticalScrollIndicator={false}
         initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
         maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
@@ -96,3 +89,15 @@ export default function RoutinesScreen() {
     </PageContainer>
   );
 }
+
+const getStyles = (_theme: FullTheme) =>
+  StyleSheet.create({
+    listHeader: {
+      marginBottom: 16,
+    },
+    listContent: {
+      paddingBottom: 180,
+      flexGrow: 1,
+    },
+    separator: { height: 8 },
+  });

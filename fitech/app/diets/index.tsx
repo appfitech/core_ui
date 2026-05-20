@@ -46,9 +46,10 @@ export default function DietsScreen() {
         chips={ACTIVE_INACTIVE_CHIPS}
         selectedValue={filter}
         onChipPress={(value) => setFilter(value as ActiveInactiveFilter)}
+        style={styles.listHeader}
       />
     ),
-    [filter, listFilters.dietsActiveHint],
+    [filter, listFilters.dietsActiveHint, styles.listHeader],
   );
 
   const renderItem = useCallback(
@@ -59,12 +60,7 @@ export default function DietsScreen() {
   );
 
   return (
-    <PageContainer
-      title={copy.title}
-      subheader={copy.subheader}
-      disableScroll
-      style={styles.pageStyle}
-    >
+    <PageContainer title={copy.title} subheader={copy.subheader} disableScroll>
       <FlatList
         data={filteredDiets}
         keyExtractor={(item) => String(item.id)}
@@ -96,11 +92,13 @@ export default function DietsScreen() {
 
 const getStyles = (_theme: FullTheme) =>
   StyleSheet.create({
-    pageStyle: { paddingBottom: 0 },
+    listHeader: {
+      marginBottom: 16,
+    },
     listContent: {
       paddingBottom: 180,
       flexGrow: 1,
     },
-    separator: { height: LIST_SCREEN_FLATLIST.itemGap },
+    separator: { height: 8 },
     loadingWrap: { paddingVertical: 48, alignItems: 'center' },
   });

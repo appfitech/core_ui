@@ -76,6 +76,7 @@ export default function ExercisesScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      setSelectedDate(moment().format('YYYY-MM-DD'));
       refetch();
     }, [refetch]),
   );

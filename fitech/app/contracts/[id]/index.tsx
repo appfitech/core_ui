@@ -1,21 +1,23 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import CancelModal from '@/components/contracts/CancelModal';
 import CompleteModal from '@/components/contracts/CompleteModal';
+import { ContractDetailRow } from '@/components/contracts/ContractDetailRow';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
 import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
 import { FullTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
+import { getFileUploadViewUrl } from '@/utils/files';
 
 const formatDate = (iso?: string) =>
   iso ? moment(iso).format('D MMM YYYY') : '—';
@@ -36,6 +38,7 @@ export default function ContractDetailScreen() {
   );
 
   const styles = getStyles(theme);
+  const { contractDetailScreen: copy, common } = TRANSLATIONS;
 
   const handleComplete = useCallback(() => {
     completeContract(parsedContract?.id ?? parsedContract?.contractId, {
@@ -58,10 +61,24 @@ export default function ContractDetailScreen() {
     });
   }, [parsedContract?.id, parsedContract?.contractId, cancelContract, router]);
 
-  const hasDates = parsedContract?.startDate || parsedContract?.endDate;
   const createdAtFormatted = parsedContract?.createdAt
     ? moment(parsedContract.createdAt).format('D MMM YYYY')
-    : '—';
+    : common.dash;
+
+  const validityValue =
+    parsedContract?.startDate && parsedContract?.endDate
+      ? copy.dateRange
+          .replace('{start}', formatDate(parsedContract.startDate))
+          .replace('{end}', formatDate(parsedContract.endDate))
+      : parsedContract?.startDate
+        ? copy.dateFrom.replace('{date}', formatDate(parsedContract.startDate))
+        : parsedContract?.endDate
+          ? copy.dateUntil.replace('{date}', formatDate(parsedContract.endDate))
+          : common.dash;
+
+  const trainerAvatarUri = parsedContract?.trainerProfilePhotoId
+    ? getFileUploadViewUrl(parsedContract.trainerProfilePhotoId)
+    : null;
 
   const statusTag = (() => {
     const status = parsedContract?.contractStatus;
@@ -71,121 +88,72 @@ export default function ContractDetailScreen() {
         <Tag
           backgroundColor={theme.status.error.bg}
           textColor={theme.status.error.text}
-          label="Cancelado"
+          label={copy.statusCancelled}
         />
       );
     return (
       <Tag
         backgroundColor={theme.background.input}
         textColor={theme.text.secondary}
-        label="Completado"
+        label={copy.statusCompleted}
       />
     );
   })();
 
   return (
     <PageContainer
-      title={parsedContract?.serviceName ?? 'Detalles del Contrato'}
+      title={parsedContract?.serviceName ?? copy.defaultTitle}
       style={styles.pageStyle}
     >
       <View style={styles.card}>
-        {statusTag ? <View style={styles.chipsRow}>{statusTag}</View> : null}
+        {statusTag ? <View style={styles.statusRow}>{statusTag}</View> : null}
 
         {parsedContract?.trainerName ? (
-          <View style={styles.row}>
-            {parsedContract?.trainerProfilePhotoId ? (
-              <Image
-                source={{
-                  uri: `https://appfitech.com/v1/app/file-upload/view/${parsedContract.trainerProfilePhotoId}`,
-                }}
-                style={styles.avatar}
-              />
-            ) : (
-              <Ionicons
-                name="person-outline"
-                size={18}
-                color={theme.text.secondary}
-                style={styles.rowIcon}
-              />
-            )}
-            <View style={styles.rowContent}>
-              <AppText style={styles.rowLabel}>Entrenador</AppText>
-              <AppText style={styles.rowValue}>
-                {parsedContract.trainerName}
-              </AppText>
-            </View>
-          </View>
+          <ContractDetailRow
+            avatarUri={trainerAvatarUri}
+            icon="person-outline"
+            label={copy.trainerLabel}
+            value={parsedContract.trainerName}
+          />
         ) : null}
 
-        {hasDates && (
-          <View style={styles.row}>
-            <Ionicons
-              name="calendar-outline"
-              size={18}
-              color={theme.text.secondary}
-              style={styles.rowIcon}
-            />
-            <View style={styles.rowContent}>
-              <AppText style={styles.rowLabel}>Vigencia del plan</AppText>
-              <AppText style={styles.rowValue}>
-                {parsedContract?.startDate && parsedContract?.endDate
-                  ? `${formatDate(parsedContract.startDate)} – ${formatDate(parsedContract.endDate)}`
-                  : parsedContract?.startDate
-                    ? `Desde ${formatDate(parsedContract.startDate)}`
-                    : `Hasta ${formatDate(parsedContract.endDate)}`}
-              </AppText>
-            </View>
-          </View>
+        {(parsedContract?.startDate || parsedContract?.endDate) && (
+          <ContractDetailRow
+            icon="calendar-outline"
+            label={copy.validityLabel}
+            value={validityValue}
+          />
         )}
 
-        <View style={styles.row}>
-          <Ionicons
-            name="create-outline"
-            size={18}
-            color={theme.text.secondary}
-            style={styles.rowIcon}
-          />
-          <View style={styles.rowContent}>
-            <AppText style={styles.rowLabel}>Fecha de creación</AppText>
-            <AppText style={styles.rowValue}>{createdAtFormatted}</AppText>
-          </View>
-        </View>
+        <ContractDetailRow
+          icon="document-text-outline"
+          label={copy.createdAtLabel}
+          value={createdAtFormatted}
+        />
 
         {parsedContract?.totalAmount != null && (
-          <View style={styles.row}>
-            <Ionicons
-              name="cash-outline"
-              size={18}
-              color={theme.text.secondary}
-              style={styles.rowIcon}
-            />
-            <View style={styles.rowContent}>
-              <AppText style={styles.rowLabel}>Monto total</AppText>
-              <AppText style={styles.rowValue}>
-                S/ {parsedContract.totalAmount.toFixed(2)}
-              </AppText>
-            </View>
-          </View>
+          <ContractDetailRow
+            icon="cash-outline"
+            label={copy.amountLabel}
+            value={copy.amountValue.replace(
+              '{amount}',
+              parsedContract.totalAmount.toFixed(2),
+            )}
+          />
         )}
 
-        <View style={styles.row}>
-          <Ionicons
-            name="card-outline"
-            size={18}
-            color={theme.text.secondary}
-            style={styles.rowIcon}
-          />
-          <View style={styles.rowContent}>
-            <AppText style={styles.rowLabel}>Estado de pago</AppText>
-            <AppText style={styles.rowValue}>
-              {parsedContract?.paymentStatus ?? '—'}
-            </AppText>
-          </View>
-        </View>
+        <ContractDetailRow
+          icon="card-outline"
+          label={copy.paymentStatusLabel}
+          value={parsedContract?.paymentStatus ?? common.dash}
+        />
 
         {parsedContract?.serviceDescription ? (
           <View style={styles.descriptionBlock}>
-            <AppText style={styles.rowLabel}>Descripción</AppText>
+            <View style={styles.divider} />
+            <AppText style={styles.descriptionLabel}>
+              {copy.descriptionLabel}
+            </AppText>
             <AppText style={styles.descriptionText}>
               {parsedContract.serviceDescription}
             </AppText>
@@ -196,15 +164,15 @@ export default function ContractDetailScreen() {
       {parsedContract?.contractStatus === 'ACTIVE' && (
         <View style={styles.actions}>
           <Button
-            label="Completar"
+            label={copy.completeButton}
             onPress={() => setDisplayComplete(true)}
             type="primary"
             style={styles.actionButton}
           />
           <Button
-            label="Cancelar contrato"
+            label={copy.cancelButton}
             onPress={() => setDisplayCancel(true)}
-            type="destructive"
+            type="secondary"
             style={styles.actionButton}
           />
         </View>
@@ -230,58 +198,38 @@ const getStyles = (theme: FullTheme) => {
     pageStyle: { paddingBottom: 180 },
     card: {
       backgroundColor: theme.background.card,
-      borderRadius: 16,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: theme.border.default,
-      padding: 20,
-      marginTop: 16,
-      rowGap: 20,
+      padding: 16,
+      marginTop: 12,
+      rowGap: 12,
     },
-    chipsRow: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: 10,
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'flex-start',
-    },
-    rowIcon: {
-      marginRight: 12,
-      marginTop: 2,
-    },
-    avatar: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      marginRight: 12,
-    },
-    rowContent: {
-      flex: 1,
-      minWidth: 0,
-    },
-    rowLabel: {
-      ...text.label,
-      color: theme.text.secondary,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginBottom: 4,
-    },
-    rowValue: {
-      ...text.linkSemibold,
-      color: theme.text.primary,
+    statusRow: {
+      alignSelf: 'flex-start',
+      marginBottom: 2,
     },
     descriptionBlock: {
-      marginTop: 4,
+      rowGap: 8,
+      paddingTop: 4,
+    },
+    divider: {
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: theme.border.default,
+      marginBottom: 4,
+    },
+    descriptionLabel: {
+      ...text.caption,
+      color: theme.text.tertiary,
     },
     descriptionText: {
-      ...text.link,
+      ...text.small,
       color: theme.text.secondary,
-      lineHeight: 22,
+      lineHeight: 20,
     },
     actions: {
-      marginTop: 24,
-      rowGap: 12,
+      marginTop: 20,
+      rowGap: 10,
     },
     actionButton: {
       width: '100%',

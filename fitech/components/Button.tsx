@@ -125,7 +125,7 @@ function getStyles(theme: FullTheme): ButtonStyles {
       borderWidth: 1,
       borderColor: theme.button.secondaryBorder,
     },
-    destructive: { backgroundColor: theme.button.dangerBg },
+    destructive: { backgroundColor: theme.status.error.bg },
     tertiary: {
       backgroundColor: theme.background.input,
       borderWidth: 1,
@@ -150,7 +150,7 @@ function getStyles(theme: FullTheme): ButtonStyles {
     },
     destructive: {
       ...text.button,
-      color: theme.button.dangerText,
+      color: theme.status.error.text,
     },
     tertiary: {
       ...text.button,

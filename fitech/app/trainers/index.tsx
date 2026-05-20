@@ -17,6 +17,8 @@ import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
+const LIST_GAP = 8;
+
 export default function TrainersSearchScreen() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicTrainerDtoReadable[]>([]);
@@ -57,8 +59,8 @@ export default function TrainersSearchScreen() {
 
   const listHeader = useMemo(
     () => (
-      <>
-        <ListFilterSection hint={copy.searchHint}>
+      <View style={styles.listHeaderWrap}>
+        <ListFilterSection hint={copy.searchHint} style={styles.filterSection}>
           <SearchBar
             placeholder={copy.searchPlaceholder}
             value={query}
@@ -72,9 +74,17 @@ export default function TrainersSearchScreen() {
             ? copy.resultCountOne
             : copy.resultCountMany.replace('{count}', String(results.length))}
         </AppText>
-      </>
+      </View>
     ),
-    [copy, query, results.length, styles.resultCount, styles.searchBar],
+    [
+      copy,
+      query,
+      results.length,
+      styles.filterSection,
+      styles.listHeaderWrap,
+      styles.resultCount,
+      styles.searchBar,
+    ],
   );
 
   return (
@@ -126,7 +136,14 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 0 },
+    listHeaderWrap: {
+      marginBottom: 16,
+    },
+    filterSection: {
+      marginBottom: 0,
+    },
     listContent: {
+      paddingTop: 12,
       paddingBottom: 180,
       flexGrow: 1,
     },
@@ -134,10 +151,9 @@ const getStyles = (theme: FullTheme) => {
     resultCount: {
       ...text.smallSemibold,
       color: theme.text.secondary,
-      marginTop: 16,
-      marginBottom: 4,
+      marginTop: 12,
     },
-    separator: { height: LIST_SCREEN_FLATLIST.itemGap },
+    separator: { height: LIST_GAP },
     loadingWrap: { paddingVertical: 48, alignItems: 'center' },
   });
 };

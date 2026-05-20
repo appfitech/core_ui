@@ -76,6 +76,23 @@ export default function FitnessGoalsScreen() {
       title="Objetivos Fitness"
       subheader="Selecciona tus metas para recomendaciones personalizadas"
       style={styles.pageStyle}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            onPress={handleUpdate}
+            label="Actualizar"
+            style={styles.footerButton}
+          />
+          <Button
+            type="tertiary"
+            onPress={handleCancel}
+            label="Cancelar"
+            style={styles.footerButton}
+          />
+        </View>
+      }
     >
       <View style={styles.cardList}>
         {goals.map((goal) => (
@@ -89,11 +106,6 @@ export default function FitnessGoalsScreen() {
           />
         ))}
       </View>
-
-      <View style={styles.buttonRow}>
-        <Button onPress={handleUpdate} label="Actualizar" />
-        <Button type="secondary" onPress={handleCancel} label="Cancelar" />
-      </View>
     </PageContainer>
   );
 }
@@ -102,6 +114,7 @@ const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: {
       rowGap: 20,
+      paddingBottom: 0,
     },
     subheader: {
       fontSize: 15,
@@ -111,9 +124,12 @@ const getStyles = (theme: FullTheme) =>
     },
     cardList: {
       rowGap: 12,
-      marginBottom: 8,
     },
-    buttonRow: {
-      gap: 12,
+    footer: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    footerButton: {
+      flex: 1,
     },
   });

@@ -186,6 +186,7 @@ const getStyles = (theme: FullTheme) => {
       justifyContent: 'space-between',
       marginTop: 4,
       paddingTop: 10,
+      paddingBottom: 4,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: theme.border.default,
     },

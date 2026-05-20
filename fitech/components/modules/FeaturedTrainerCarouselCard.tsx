@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { memo } from 'react';
+import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
@@ -13,17 +13,15 @@ import { getUserAvatarURL } from '@/utils/user';
 
 type Props = {
   trainer: PublicTrainerDtoReadable;
+  width: number;
   onPress: () => void;
 };
 
-const PHOTO_SIZE = 112;
+const { featuredTrainersSection: copy } = TRANSLATIONS;
 
-const { trainersScreen: copy } = TRANSLATIONS;
-
-function TrainerListCardComponent({ trainer, onPress }: Props) {
+export function FeaturedTrainerCarouselCard({ trainer, width, onPress }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const avatarUri = getUserAvatarURL(trainer.person);
   const name =
     [trainer.person?.firstName, trainer.person?.lastName]
       .filter(Boolean)
@@ -33,92 +31,69 @@ function TrainerListCardComponent({ trainer, onPress }: Props) {
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+      style={({ pressed }) => [
+        styles.card,
+        { width },
+        pressed && styles.cardPressed,
+      ]}
     >
       <AvatarPhoto
-        url={avatarUri}
+        url={getUserAvatarURL(trainer.person)}
         gender={trainer.person?.gender}
-        size={PHOTO_SIZE}
-        containerStyle={styles.photo}
-        style={styles.photoImage}
+        size={72}
       />
 
-      <View style={styles.body}>
-        <AppText style={styles.name} numberOfLines={2}>
-          {name}
-        </AppText>
+      <AppText style={styles.name} numberOfLines={2}>
+        {name}
+      </AppText>
 
-        <AppText style={styles.bio} numberOfLines={2}>
-          {bio}
-        </AppText>
+      <AppText style={styles.bio} numberOfLines={4}>
+        {bio}
+      </AppText>
 
-        <View style={styles.detailLink}>
-          <AppText style={styles.detailText}>{copy.viewProfile}</AppText>
-          <Ionicons
-            name="chevron-forward"
-            size={16}
-            color={theme.brand.primary}
-          />
-        </View>
+      <View style={styles.detailLink}>
+        <AppText style={styles.detailText}>{copy.viewProfile}</AppText>
+        <Ionicons name="chevron-forward" size={16} color={theme.brand.primary} />
       </View>
     </Pressable>
   );
 }
-
-export const TrainerListCard = memo(TrainerListCardComponent);
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({
     card: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      minHeight: PHOTO_SIZE,
       backgroundColor: theme.background.card,
       borderRadius: 12,
       borderWidth: 1,
       borderColor: theme.border.default,
-      overflow: 'hidden',
+      padding: 16,
+      alignItems: 'center',
+      rowGap: 10,
+      minHeight: 220,
     },
     cardPressed: {
       opacity: 0.9,
       backgroundColor: theme.background.input,
     },
-    photo: {
-      width: PHOTO_SIZE,
-      height: PHOTO_SIZE,
-      borderRadius: 0,
-      flexShrink: 0,
-    },
-    photoImage: {
-      width: PHOTO_SIZE,
-      height: PHOTO_SIZE,
-    },
-    body: {
-      flex: 1,
-      minWidth: 0,
-      paddingVertical: 12,
-      paddingLeft: 12,
-      paddingRight: 14,
-      rowGap: 6,
-      justifyContent: 'center',
-    },
     name: {
       ...text.linkSemibold,
       color: theme.text.primary,
+      textAlign: 'center',
     },
     bio: {
       ...text.small,
       color: theme.text.secondary,
       lineHeight: 20,
+      textAlign: 'center',
+      alignSelf: 'stretch',
     },
     detailLink: {
       flexDirection: 'row',
       alignItems: 'center',
-      alignSelf: 'flex-end',
       columnGap: 2,
-      marginTop: 2,
+      marginTop: 4,
     },
     detailText: {
       ...text.smallSemibold,

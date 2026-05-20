@@ -467,7 +467,13 @@ export default function ImageGalleryScreen() {
   );
 
   return (
-    <PageContainer title={copy.title} disableScroll style={styles.page}>
+    <PageContainer
+      title={copy.title}
+      disableScroll
+      style={styles.page}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+    >
       {isLoading ? (
         <View style={styles.loadingWrap}>
           <ActivityIndicator color={theme.brand.primary} />

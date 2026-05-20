@@ -1,159 +1,165 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
+import { getClientResourceValidityValue } from '@/components/list/client-resource-dates';
+import { RESOURCE_LIST_BACKGROUNDS } from '@/constants/activity-backgrounds';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-import { moment } from '@/utils/dates';
+import { isDietResourceType } from '@/utils/resources';
 
-import { AppText } from './AppText';
-
-const formatDate = (iso?: string) =>
-  iso ? moment(iso).format('D MMM YYYY') : '—';
+const CARD_MIN_HEIGHT = 108;
 
 type Props = {
   resource: ClientResourceResponseDtoReadable;
   onClick: (resourceId: number) => void;
 };
 
+const { clientResourceScreen: copy } = TRANSLATIONS;
+
 export function ResourceCard({ onClick, resource }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const isDiet = isDietResourceType(resource.resourceType);
+  const background = isDiet
+    ? RESOURCE_LIST_BACKGROUNDS.diet
+    : RESOURCE_LIST_BACKGROUNDS.routine;
 
-  const handleClick = useCallback(() => {
+  const handlePress = useCallback(() => {
     if (!resource?.id) return;
     onClick(resource.id);
-  }, [resource, onClick]);
+  }, [resource?.id, onClick]);
 
   const hasDates = !!(resource?.startDate || resource?.endDate);
+  const validityValue = hasDates
+    ? getClientResourceValidityValue(resource)
+    : null;
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.72}
-      onPress={handleClick}
-      style={styles.touchable}
+    <Pressable
+      onPress={handlePress}
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
     >
-      <View style={styles.card}>
-        <AppText style={styles.title} numberOfLines={2}>
-          {resource.resourceName}
-        </AppText>
+      <ImageBackground
+        source={background}
+        style={styles.imageBackground}
+        imageStyle={styles.image}
+        resizeMode="cover"
+      >
+        <View style={styles.content}>
+          <AppText style={styles.title} numberOfLines={2}>
+            {resource.resourceName}
+          </AppText>
 
-        {resource?.trainerName ? (
-          <View style={styles.trainerRow}>
-            <Ionicons
-              name="person-outline"
-              size={16}
-              color={theme.text.secondary}
-              style={styles.trainerIcon}
+          {resource.trainerName ? (
+            <InfoRow
+              icon="person-outline"
+              text={resource.trainerName}
+              styles={styles}
+              theme={theme}
             />
-            <View style={styles.trainerTextWrap}>
-              <AppText style={styles.trainerLabel}>Entrenador</AppText>
-              <AppText style={styles.trainerName} numberOfLines={1}>
-                {resource.trainerName}
-              </AppText>
-            </View>
-          </View>
-        ) : null}
+          ) : null}
 
-        {hasDates ? (
-          <View style={styles.datesRow}>
-            <Ionicons
-              name="calendar-outline"
-              size={16}
-              color={theme.text.secondary}
-              style={styles.dateIcon}
+          {validityValue ? (
+            <InfoRow
+              icon="calendar-outline"
+              text={validityValue}
+              styles={styles}
+              theme={theme}
             />
-            <AppText style={styles.datesText} numberOfLines={1}>
-              {resource.startDate && resource.endDate
-                ? `${formatDate(resource.startDate)} – ${formatDate(resource.endDate)}`
-                : resource.startDate
-                  ? `Desde ${formatDate(resource.startDate)}`
-                  : `Hasta ${formatDate(resource.endDate)}`}
-            </AppText>
-          </View>
-        ) : null}
+          ) : null}
 
-        <View style={styles.ctaRow}>
-          <AppText style={styles.ctaText}>Ver detalle</AppText>
-          <Ionicons
-            name="chevron-forward"
-            size={18}
-            color={theme.brand.primaryLight}
-          />
+          <View style={styles.detailLink}>
+            <AppText style={styles.detailText}>{copy.viewDetail}</AppText>
+            <Ionicons
+              name="chevron-forward"
+              size={16}
+              color={theme.brand.primary}
+            />
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </ImageBackground>
+    </Pressable>
+  );
+}
+
+function InfoRow({
+  icon,
+  text,
+  styles,
+  theme,
+}: {
+  icon: keyof typeof Ionicons.glyphMap;
+  text: string;
+  styles: ReturnType<typeof getStyles>;
+  theme: FullTheme;
+}) {
+  return (
+    <View style={styles.row}>
+      <Ionicons name={icon} size={15} color={theme.text.tertiary} />
+      <AppText style={styles.rowText} numberOfLines={1}>
+        {text}
+      </AppText>
+    </View>
   );
 }
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
+
   return StyleSheet.create({
-    touchable: {
-      marginBottom: 4,
-    },
     card: {
-      backgroundColor: theme.background.card,
-      borderRadius: 14,
+      minHeight: CARD_MIN_HEIGHT,
+      borderRadius: 12,
+      overflow: 'hidden',
       borderWidth: 1,
       borderColor: theme.border.default,
-      padding: 18,
-      paddingBottom: 14,
+    },
+    cardPressed: {
+      opacity: 0.92,
+    },
+    imageBackground: {
+      minHeight: CARD_MIN_HEIGHT,
+      justifyContent: 'center',
+    },
+    image: {
+      borderRadius: 12,
+    },
+    content: {
+      maxWidth: '58%',
+      paddingVertical: 14,
+      paddingLeft: 14,
+      paddingRight: 8,
+      rowGap: 6,
     },
     title: {
-      ...text.leadSemibold,
-      color: theme.text.primary,
-      lineHeight: 22,
-      marginBottom: 12,
-    },
-    trainerRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 10,
-    },
-    trainerIcon: {
-      marginRight: 8,
-    },
-    trainerTextWrap: {
-      flex: 1,
-      minWidth: 0,
-    },
-    trainerLabel: {
-      ...text.label,
-      color: theme.text.secondary,
-      textTransform: 'uppercase',
-      letterSpacing: 0.5,
-      marginBottom: 1,
-    },
-    trainerName: {
       ...text.linkSemibold,
       color: theme.text.primary,
     },
-    datesRow: {
+    row: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 14,
+      columnGap: 8,
     },
-    dateIcon: {
-      marginRight: 8,
-    },
-    datesText: {
+    rowText: {
+      ...text.small,
       flex: 1,
-      ...text.nav,
       color: theme.text.secondary,
-      minWidth: 0,
     },
-    ctaRow: {
+    detailLink: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-end',
-      gap: 4,
+      alignSelf: 'flex-start',
+      columnGap: 2,
+      marginTop: 4,
     },
-    ctaText: {
+    detailText: {
       ...text.smallSemibold,
-      color: theme.brand.primaryLight,
+      color: theme.brand.primary,
     },
   });
 };

@@ -63,6 +63,7 @@ export default function SubscriptionScreen() {
       title={copy.title}
       subheader={copy.subheader}
       style={styles.pageStyle}
+      includeTabBarPadding={false}
     >
       <View style={styles.content}>
         <Animated.View

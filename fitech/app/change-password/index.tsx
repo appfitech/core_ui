@@ -129,7 +129,32 @@ export default function ChangePasswordScreen() {
     confirmPassword.trim().length > 0;
 
   return (
-    <PageContainer title={changePasswordScreen.title} style={styles.page}>
+    <PageContainer
+      title={changePasswordScreen.title}
+      style={styles.page}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            label={changePasswordScreen.submitButton}
+            onPress={handleSubmitPress}
+            disabled={!canSubmit || isPending}
+            loading={isPending}
+            animated={false}
+            style={styles.footerButton}
+          />
+          <Button
+            type="tertiary"
+            label={changePasswordScreen.cancelButton}
+            onPress={() => router.back()}
+            disabled={isPending}
+            animated={false}
+            style={styles.footerButton}
+          />
+        </View>
+      }
+    >
       <View style={styles.introCard}>
         <AppText variant="bodySemibold" style={styles.introTitle}>
           {changePasswordScreen.introTitle}
@@ -222,25 +247,6 @@ export default function ChangePasswordScreen() {
         autoCapitalize="none"
         autoCorrect={false}
       />
-
-      <View style={styles.actions}>
-        <Button
-          label={changePasswordScreen.submitButton}
-          onPress={handleSubmitPress}
-          disabled={!canSubmit || isPending}
-          loading={isPending}
-          animated={false}
-          style={styles.actionButton}
-        />
-        <Button
-          type="secondary"
-          label={changePasswordScreen.cancelButton}
-          onPress={() => router.back()}
-          disabled={isPending}
-          animated={false}
-          style={styles.actionButton}
-        />
-      </View>
     </PageContainer>
   );
 }
@@ -251,7 +257,14 @@ const getStyles = (theme: FullTheme) => {
       page: {
         paddingHorizontal: 16,
         rowGap: 16,
-        paddingBottom: 32,
+        paddingBottom: 0,
+      },
+      footer: {
+        flexDirection: 'row',
+        gap: 10,
+      },
+      footerButton: {
+        flex: 1,
       },
       introCard: {
         backgroundColor: theme.status.warning.bg,
@@ -267,13 +280,6 @@ const getStyles = (theme: FullTheme) => {
       introBody: {
         color: theme.status.warning.text,
         lineHeight: 20,
-      },
-      actions: {
-        marginTop: 8,
-        rowGap: 12,
-      },
-      actionButton: {
-        width: '100%',
       },
     }),
     iconColor: { color: theme.icon.secondary },

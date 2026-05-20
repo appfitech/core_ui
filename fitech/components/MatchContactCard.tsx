@@ -71,7 +71,10 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.dataContainer}>
-        <AvatarPhoto url={profileImageUrl ?? undefined} />
+        <AvatarPhoto
+          url={profileImageUrl ?? undefined}
+          gender={candidate.gender}
+        />
 
         <View style={styles.nameBlock}>
           <AppText style={styles.nameText}>

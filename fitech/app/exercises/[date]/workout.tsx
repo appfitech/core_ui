@@ -15,11 +15,13 @@ import { useGetWorkoutSeries } from '@/lib/api/queries/workouts/use-get-user-wor
 import {
   createEmptySet,
   isExerciseFormValid,
+  normalizeWeightInputText,
   parseRepsInput,
   parseWeightInput,
   roundReps,
   roundWeightKg,
   sanitizeExerciseSet,
+  type WorkoutSetFormRow,
 } from '@/lib/workouts/exercise-form';
 import {
   CreateExerciseWithSetsRequest,
@@ -69,7 +71,7 @@ export default function WorkoutExerciseScreen() {
   const [notes, setNotes] = useState(() =>
     isEdit ? String(exerciseNotesParam ?? '') : '',
   );
-  const [sets, setSets] = useState<ExerciseSetDto[]>([createEmptySet()]);
+  const [sets, setSets] = useState<WorkoutSetFormRow[]>([createEmptySet()]);
   const [seriesHydrated, setSeriesHydrated] = useState(!isEdit);
 
   const prevIsSeriesLoading = usePreviousValue(isSeriesLoading);
@@ -122,13 +124,16 @@ export default function WorkoutExerciseScreen() {
   ) => {
     setSets((prev) => {
       const next = [...prev];
-      next[idx] = {
-        ...next[idx],
-        [field]:
-          field === 'repetitions'
-            ? parseRepsInput(value)
-            : parseWeightInput(value),
-      };
+      if (field === 'repetitions') {
+        next[idx] = { ...next[idx], repetitions: parseRepsInput(value) };
+      } else {
+        const weightInput = normalizeWeightInputText(value);
+        next[idx] = {
+          ...next[idx],
+          weightInput,
+          weightKg: parseWeightInput(weightInput),
+        };
+      }
       return next;
     });
   };

@@ -1,52 +1,61 @@
 import { useRouter } from 'expo-router';
-import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  Dimensions,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  StyleSheet,
+  View,
+} from 'react-native';
 
-import DietSVG from '@/assets/images/vectors/diet.svg';
-import RoutineSVG from '@/assets/images/vectors/routine.svg';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
-import { Tag } from '@/components/Tag';
+import { UserActivityPromoCard } from '@/components/modules/UserActivityPromoCard';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
+import { pickFeaturedActivities } from '@/lib/list/pick-featured-activities';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 import { isDietResourceType } from '@/utils/resources';
 
-function isValidActivity(
-  item: ClientResourceResponseDtoReadable | undefined,
-): item is ClientResourceResponseDtoReadable {
-  return item?.id != null;
-}
+const FEATURED_ACTIVITY_LIMIT = 3;
+const CARD_GAP = 12;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CARD_WIDTH = Math.min(300, SCREEN_WIDTH * 0.6);
 
 export function UserActivitiesSection() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const { userActivitiesSection: t } = TRANSLATIONS;
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { data: routines, isLoading: routinesLoading } = useGetRoutines();
   const { data: diets, isLoading: dietsLoading } = useGetDiets();
   const isLoading = routinesLoading || dietsLoading;
 
-  const activities = useMemo(() => {
-    const items: ClientResourceResponseDtoReadable[] = [];
-    const firstRoutine = routines?.[0];
-    const firstDiet = diets?.[0];
-    if (isValidActivity(firstRoutine)) {
-      items.push(firstRoutine);
-    }
-    if (isValidActivity(firstDiet)) {
-      items.push(firstDiet);
-    }
-    return items;
-  }, [routines, diets]);
+  const activities = useMemo(
+    () => pickFeaturedActivities(routines, diets, FEATURED_ACTIVITY_LIMIT),
+    [routines, diets],
+  );
+
+  const snapInterval = CARD_WIDTH + CARD_GAP;
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(offsetX / snapInterval);
+      setActiveIndex(Math.min(index, Math.max(activities.length - 1, 0)));
+    },
+    [activities.length, snapInterval],
+  );
 
   const handleActivityClick = useCallback(
     (item: ClientResourceResponseDtoReadable) => {
@@ -88,47 +97,37 @@ export function UserActivitiesSection() {
       title={t.sectionTitle}
       onClick={() => router.push(ROUTES.workouts)}
     >
-      <View style={styles.row}>
-        {activities.map((item, index) => {
-          const isDiet = isDietResourceType(item.resourceType);
-          const SVGIcon = isDiet ? DietSVG : RoutineSVG;
+      <FlatList
+        data={activities}
+        keyExtractor={(item, index) => `activity-${item.id}-${index}`}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        decelerationRate="fast"
+        snapToInterval={snapInterval}
+        snapToAlignment="start"
+        disableIntervalMomentum
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={styles.listContent}
+        renderItem={({ item }) => (
+          <UserActivityPromoCard
+            item={item}
+            width={CARD_WIDTH}
+            onPress={() => handleActivityClick(item)}
+          />
+        )}
+      />
 
-          return (
-            <TouchableOpacity
-              key={`activity-${item.id}-${index}`}
-              onPress={() => handleActivityClick(item)}
-              style={styles.activityItem}
-            >
-              <Card style={styles.card}>
-                <View style={styles.iconWrapper}>
-                  <SVGIcon width={75} height={75} />
-                </View>
-                <View style={styles.cardText}>
-                  <AppText style={styles.cardTitle}>
-                    {item.resourceName?.split('-')?.[0]}
-                  </AppText>
-                  {item.trainerName && (
-                    <AppText style={styles.cardSubBold}>
-                      {`${t.trainerLabel} ${item.trainerName}`}
-                    </AppText>
-                  )}
-                </View>
-                <View style={styles.tagWrap}>
-                  <Tag
-                    label={item.resourceType ?? ''}
-                    textColor={theme.background.app}
-                    backgroundColor={
-                      isDiet
-                        ? theme.brand.primaryLight
-                        : theme.brand.primaryDark
-                    }
-                  />
-                </View>
-              </Card>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      {activities.length > 1 ? (
+        <View style={styles.dots}>
+          {activities.map((item, index) => (
+            <View
+              key={`activity-dot-${item.id}-${index}`}
+              style={[styles.dot, index === activeIndex && styles.dotActive]}
+            />
+          ))}
+        </View>
+      ) : null}
     </HomeSectionContainer>
   );
 }
@@ -136,54 +135,42 @@ export function UserActivitiesSection() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    row: {
+    listContent: {
+      columnGap: CARD_GAP,
+      paddingRight: 4,
+    },
+    dots: {
       flexDirection: 'row',
-      columnGap: 16,
-    },
-    activityItem: {
-      flex: 1,
-    },
-    card: {
-      backgroundColor: theme.background.elevated,
-      flex: 1,
-      rowGap: 8,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-    },
-    cardTitle: {
-      ...text.leadSemibold,
-      color: theme.text.primary,
-    },
-    cardSubBold: {
-      ...text.bodySemibold,
-      color: theme.text.secondary,
-    },
-    cardText: {
-      rowGap: 6,
-      flex: 1,
-    },
-    tagWrap: {
-      alignSelf: 'flex-end',
-    },
-    iconWrapper: {
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: 10,
+      columnGap: 6,
+      marginTop: 12,
+    },
+    dot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.border.default,
+    },
+    dotActive: {
+      width: 18,
+      backgroundColor: theme.brand.primary,
     },
     emptyCard: {
-      backgroundColor: theme.background.elevated,
+      backgroundColor: theme.background.card,
       borderWidth: 1,
       borderColor: theme.border.default,
+      borderRadius: 12,
       rowGap: 12,
     },
     emptyTitle: {
-      ...text.leadSemibold,
+      ...text.linkSemibold,
       color: theme.text.primary,
     },
     emptyBody: {
-      ...text.body,
+      ...text.small,
       color: theme.text.secondary,
-      lineHeight: 22,
+      lineHeight: 20,
     },
   });
 };

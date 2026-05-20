@@ -11,11 +11,11 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   formatRepsValue,
-  formatWeightValue,
+  getWeightInputDisplay,
   normalizeRepsInputText,
   normalizeWeightInputText,
+  type WorkoutSetFormRow,
 } from '@/lib/workouts/exercise-form';
-import { ExerciseSetDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
   onMuscleGroupChange: (value: string) => void;
   notes: string;
   onNotesChange: (value: string) => void;
-  sets: ExerciseSetDto[];
+  sets: WorkoutSetFormRow[];
   onAddSet: () => void;
   onRemoveSet: (index: number) => void;
   onUpdateSet: (
@@ -137,7 +137,7 @@ export function WorkoutExerciseForm({
                 label="Peso (kg)"
                 keyboardType="decimal-pad"
                 placeholder="0"
-                value={formatWeightValue(set.weightKg)}
+                value={getWeightInputDisplay(set)}
                 onChangeText={(text) =>
                   onUpdateSet(idx, 'weightKg', normalizeWeightInputText(text))
                 }

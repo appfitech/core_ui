@@ -6,15 +6,16 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-  TextInput,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { StarRating } from '@/components/StarRating';
+import { TextInput } from '@/components/TextInput';
 import { TRANSLATIONS } from '@/constants/strings';
-import { formStyles, textStyles } from '@/constants/styles';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { FullTheme } from '@/types/theme';
@@ -46,6 +47,7 @@ export function ReviewModal({
   const [comment, setComment] = useState('');
   const [anonymous, setAnonymous] = useState(false);
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const { data: reviews } = useGetReviews();
 
   useEffect(() => {
@@ -59,7 +61,7 @@ export function ReviewModal({
     }
   }, [reviews, existingReviewId]);
 
-  const styles = getStyles(theme);
+  const styles = getStyles(theme, insets.bottom);
   const ratingLabel =
     copy.ratingLabels[rating as keyof typeof copy.ratingLabels] ??
     copy.ratingLabels[5];
@@ -103,14 +105,12 @@ export function ReviewModal({
             <AppText style={styles.ratingLabel}>{ratingLabel}</AppText>
 
             <TextInput
-              style={styles.input}
+              required={false}
               placeholder={copy.commentPlaceholder}
-              placeholderTextColor={theme.text.tertiary}
               value={comment}
               onChangeText={setComment}
               multiline
               numberOfLines={4}
-              textAlignVertical="top"
             />
 
             <Pressable
@@ -155,9 +155,9 @@ export function ReviewModal({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: FullTheme, safeBottom: number) => {
   const text = textStyles(theme);
-  const form = formStyles(theme);
+  const sheetBottom = Math.max(safeBottom, 16) + 20;
 
   return StyleSheet.create({
     backdrop: {
@@ -174,8 +174,8 @@ const getStyles = (theme: FullTheme) => {
       borderTopRightRadius: 20,
       paddingHorizontal: 20,
       paddingTop: 10,
-      paddingBottom: 28,
-      rowGap: 14,
+      paddingBottom: sheetBottom,
+      rowGap: 12,
       borderWidth: 1,
       borderBottomWidth: 0,
       borderColor: theme.border.default,
@@ -200,13 +200,6 @@ const getStyles = (theme: FullTheme) => {
       lineHeight: 20,
       paddingHorizontal: 8,
     },
-    input: {
-      ...form.input,
-      minHeight: 96,
-      paddingTop: 12,
-      fontSize: 14,
-      lineHeight: 20,
-    },
     anonymousRow: {
       flexDirection: 'row',
       alignItems: 'flex-start',
@@ -227,7 +220,7 @@ const getStyles = (theme: FullTheme) => {
     actions: {
       flexDirection: 'row',
       columnGap: 10,
-      marginTop: 4,
+      marginTop: 8,
     },
     actionButton: {
       flex: 1,

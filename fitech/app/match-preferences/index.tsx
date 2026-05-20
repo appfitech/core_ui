@@ -1,13 +1,16 @@
+import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { SwitchRow } from '@/components/atoms/SwitchRow';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
+import { ChipsList } from '@/components/molecules/ChipsList';
+import { MultiLocationPicker } from '@/components/MultiLocationPicker';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
-import { ALL_LOCATIONS, formatLocationName } from '@/constants/locations';
 import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
@@ -21,9 +24,6 @@ import {
 } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 
-/** =========================
- *  ENUMS / CONSTANTS (BE)
- *  ========================= */
 type Gender = 'MALE' | 'FEMALE' | 'BOTH';
 type TimePref = 'MORNING' | 'AFTERNOON' | 'NIGHT' | 'WEEKEND';
 type Intensity = 'ANY' | 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
@@ -31,10 +31,6 @@ type CrushLookingFor = 'CASUAL' | 'SERIOUS' | 'BOTH';
 
 const MIN_AGE = 18;
 const MAX_AGE = 65;
-
-/** =========================
- *  HELPERS
- *  ========================= */
 
 const DEFAULT_GYM_BRO = {
   gymBroLookingForGender: 'BOTH' as Gender,
@@ -50,7 +46,27 @@ const DEFAULT_GYM_CRUSH = {
   gymCrushLookingFor: 'BOTH' as CrushLookingFor,
 };
 
+const GENDER_OPTIONS = [
+  { label: 'Hombres', value: 'MALE' },
+  { label: 'Mujeres', value: 'FEMALE' },
+  { label: 'Ambos', value: 'BOTH' },
+] as const;
+
+const INTENSITY_OPTIONS = [
+  { label: 'Cualquiera', value: 'ANY' },
+  { label: 'Principiante', value: 'BEGINNER' },
+  { label: 'Intermedio', value: 'INTERMEDIATE' },
+  { label: 'Avanzado', value: 'ADVANCED' },
+] as const;
+
+const CONNECTION_OPTIONS = [
+  { label: 'Casual', value: 'CASUAL' },
+  { label: 'Serio', value: 'SERIOUS' },
+  { label: 'Ambos', value: 'BOTH' },
+] as const;
+
 export default function MatchPreferencesScreen() {
+  const router = useRouter();
   const { theme } = useTheme();
   const { showAlert } = useAlert();
   const styles = getStyles(theme);
@@ -67,7 +83,6 @@ export default function MatchPreferencesScreen() {
 
   useEffect(() => {
     if (!isLoading && matchPreferencesData) {
-      // Ensure arrays exist to avoid undefined access
       setMatchPreferences({
         ...matchPreferencesData,
         gymBroWorkoutTimes: matchPreferencesData.gymBroWorkoutTimes || [],
@@ -76,10 +91,6 @@ export default function MatchPreferencesScreen() {
       });
     }
   }, [matchPreferencesData, isLoading]);
-
-  const [locModalOpen, setLocModalOpen] = useState<
-    null | 'GYMBRO' | 'GYMCRUSH'
-  >(null);
 
   const anyEnabled =
     !!matchPreferences?.showInGymBro || !!matchPreferences?.showInGymCrush;
@@ -102,7 +113,6 @@ export default function MatchPreferencesScreen() {
     }));
   };
 
-  /** actions */
   const handleSave = async () => {
     try {
       if (
@@ -162,10 +172,10 @@ export default function MatchPreferencesScreen() {
           });
         },
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       showAlert({
         title: 'No se pudo guardar',
-        message: err?.message ?? 'Error desconocido',
+        message: err instanceof Error ? err.message : 'Error desconocido',
       });
     }
   };
@@ -188,151 +198,121 @@ export default function MatchPreferencesScreen() {
     onChange: (n: number) => void,
     placeholder: string,
   ) => (
-    <TextInput
-      keyboardType="number-pad"
-      value={value != null ? String(value) : ''}
-      onChangeText={(t) => {
-        const n = parseInt(t, 10);
-        if (!Number.isNaN(n)) onChange(n);
-      }}
-      placeholder={placeholder}
-      style={styles.ageInput}
-    />
+    <View style={styles.ageField}>
+      <TextInput
+        keyboardType="number-pad"
+        value={value != null ? String(value) : ''}
+        onChangeText={(t) => {
+          const n = parseInt(t, 10);
+          if (!Number.isNaN(n)) onChange(n);
+        }}
+        placeholder={placeholder}
+      />
+    </View>
   );
 
   return (
     <PageContainer
       title="Preferencias de Match"
       subheader="Configura cómo quieres aparecer en nuestros sistemas de conexión"
-      style={styles.pageStyle}
+      style={styles.page}
+      includeTabBarPadding={false}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            label="Guardar"
+            onPress={handleSave}
+            style={styles.footerButton}
+          />
+          <Button
+            label="Cancelar"
+            type="tertiary"
+            onPress={() => router.back()}
+            style={styles.footerButton}
+          />
+        </View>
+      }
     >
-      {/* GymBro card */}
-      <Card style={styles.cardDark}>
+      <Card style={styles.card}>
         <SwitchRow
-          label="GYMBRO"
+          label="GymBro"
           value={!!matchPreferences?.showInGymBro}
           onChange={onToggleGymBro}
-          labelStyle={styles.titleLeft}
+          labelStyle={styles.cardTitle}
         />
-        <AppText style={styles.subtitleLeft}>
+        <AppText style={styles.cardHint}>
           Encuentra compañeros de entrenamiento que compartan tus objetivos y
-          horarios
+          horarios.
         </AppText>
 
         {!!matchPreferences?.showInGymBro && (
-          <>
-            <SectionTitle theme={theme} label="Horarios de entrenamiento" />
-            <RowWrap>
-              {MATCH_WORKOUT_SCHEDULES.map(({ label, value }, index) => (
+          <View style={styles.section}>
+            <SectionLabel label="Horarios de entrenamiento" styles={styles} />
+            <ChipsList
+              options={[...MATCH_WORKOUT_SCHEDULES]}
+              selectedValues={matchPreferences?.gymBroWorkoutTimes || []}
+              onChange={(times) =>
+                setMatchPreferences((prev) => ({
+                  ...(prev || {}),
+                  gymBroWorkoutTimes: times as TimePref[],
+                }))
+              }
+            />
+
+            <SectionLabel label="Nivel de intensidad" styles={styles} />
+            <ChipRow>
+              {INTENSITY_OPTIONS.map((opt) => (
                 <ChipToggle
-                  key={`${value}-${index}`}
-                  label={label}
-                  active={
-                    matchPreferences?.gymBroWorkoutTimes?.includes(value) ||
-                    false
-                  }
-                  onPress={() => {
-                    const timePref = value as TimePref;
-
-                    setMatchPreferences((prev) => {
-                      const set = new Set(
-                        (prev?.gymBroWorkoutTimes || []) as TimePref[],
-                      );
-
-                      if (set.has(timePref)) {
-                        set.delete(timePref);
-                      } else {
-                        set.add(timePref);
-                      }
-
-                      return {
-                        ...(prev || {}),
-                        gymBroWorkoutTimes: Array.from(set),
-                      };
-                    });
-                  }}
-                  theme={theme}
-                />
-              ))}
-            </RowWrap>
-
-            <SectionTitle theme={theme} label="Nivel de intensidad" />
-
-            <RowWrap>
-              {(
-                [
-                  ['Cualquiera', 'ANY'],
-                  ['Principiante', 'BEGINNER'],
-                  ['Intermedio', 'INTERMEDIATE'],
-                  ['Avanzado', 'ADVANCED'],
-                ] as const
-              ).map(([label, val]) => (
-                <RadioChip
-                  key={val}
-                  label={label}
-                  selected={matchPreferences?.gymBroIntensity === val}
-                  onPress={() =>
+                  key={opt.value}
+                  label={opt.label}
+                  value={opt.value}
+                  selected={matchPreferences?.gymBroIntensity === opt.value}
+                  onPress={(val) =>
                     setMatchPreferences((prev) => ({
                       ...(prev || {}),
                       gymBroIntensity: val as Intensity,
                     }))
                   }
-                  theme={theme}
                 />
               ))}
-            </RowWrap>
+            </ChipRow>
 
-            <SectionTitle theme={theme} label="Ubicaciones de interés" />
-            <Pressable
-              onPress={() => setLocModalOpen('GYMBRO')}
-              style={styles.locationPicker}
-            >
-              <AppText style={styles.addLocationText}>
-                Agregar ubicación
-              </AppText>
-            </Pressable>
-            <ChipsList
-              items={(matchPreferences?.gymBroLocations || []) as LocationDto[]}
-              onRemove={(id) =>
+            <SectionLabel label="Ubicaciones de interés" styles={styles} />
+            <MultiLocationPicker
+              selected={
+                (matchPreferences?.gymBroLocations || []) as LocationDto[]
+              }
+              onChange={(locations) =>
                 setMatchPreferences((prev) => ({
                   ...(prev || {}),
-                  gymBroLocations: (prev?.gymBroLocations || []).filter(
-                    (x) => x?.id !== id,
-                  ),
+                  gymBroLocations: locations,
                 }))
               }
-              theme={theme}
             />
 
-            <SectionTitle theme={theme} label="Preferencias Generales" />
-            <AppText style={styles.smallLabel}>Buscando</AppText>
-            <RowWrap>
-              {(
-                [
-                  ['Hombres', 'MALE'],
-                  ['Mujeres', 'FEMALE'],
-                  ['Ambos', 'BOTH'],
-                ] as const
-              ).map(([label, val]) => (
-                <RadioChip
-                  key={val}
-                  label={label}
+            <SectionLabel label="Preferencias generales" styles={styles} />
+            <FieldLabel label="Buscando" styles={styles} />
+            <ChipRow>
+              {GENDER_OPTIONS.map((opt) => (
+                <ChipToggle
+                  key={opt.value}
+                  label={opt.label}
+                  value={opt.value}
                   selected={
-                    matchPreferences?.gymBroLookingForGender === (val as Gender)
+                    matchPreferences?.gymBroLookingForGender === opt.value
                   }
-                  onPress={() =>
+                  onPress={(val) =>
                     setMatchPreferences((prev) => ({
                       ...(prev || {}),
                       gymBroLookingForGender: val as Gender,
                     }))
                   }
-                  theme={theme}
                 />
               ))}
-            </RowWrap>
+            </ChipRow>
 
-            <AppText style={styles.smallLabel}>Rango de edad</AppText>
-            <Row>
+            <FieldLabel label="Rango de edad" styles={styles} />
+            <View style={styles.ageRow}>
               {ageInput(
                 matchPreferences?.gymBroAgeRangeMin,
                 (n) =>
@@ -342,7 +322,7 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Desde',
               )}
-              <AppText style={styles.ageSeparator}>—</AppText>
+              <AppText style={styles.ageDash}>—</AppText>
               {ageInput(
                 matchPreferences?.gymBroAgeRangeMax,
                 (n) =>
@@ -352,7 +332,8 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Hasta',
               )}
-            </Row>
+            </View>
+
             <SwitchRow
               label="Mostrar bio"
               value={!!matchPreferences?.gymBroShowBioInProfile}
@@ -363,105 +344,77 @@ export default function MatchPreferencesScreen() {
                 }))
               }
             />
-          </>
+          </View>
         )}
       </Card>
 
-      {/* GymCrush card */}
-      <Card style={styles.cardDark}>
+      <Card style={styles.card}>
         <SwitchRow
-          label="GYMCRUSH"
+          label="GymCrush"
           value={!!matchPreferences?.showInGymCrush}
           onChange={onToggleGymCrush}
-          labelStyle={styles.titleLeft}
+          labelStyle={styles.cardTitle}
         />
-        <AppText style={styles.subtitleLeft}>
-          Conecta con personas que te interesen para algo más que entrenar
+        <AppText style={styles.cardHint}>
+          Conecta con personas que te interesen para algo más que entrenar.
         </AppText>
 
         {!!matchPreferences?.showInGymCrush && (
-          <>
-            <SectionTitle theme={theme} label="Tipo de conexión" />
-            <RowWrap>
-              {(
-                [
-                  ['Casual', 'CASUAL'],
-                  ['Serio', 'SERIOUS'],
-                  ['Ambos', 'BOTH'],
-                ] as const
-              ).map(([label, val]) => (
-                <RadioChip
-                  key={val}
-                  label={label}
-                  selected={
-                    matchPreferences?.gymCrushLookingFor ===
-                    (val as CrushLookingFor)
-                  }
-                  onPress={() =>
+          <View style={styles.section}>
+            <SectionLabel label="Tipo de conexión" styles={styles} />
+            <ChipRow>
+              {CONNECTION_OPTIONS.map((opt) => (
+                <ChipToggle
+                  key={opt.value}
+                  label={opt.label}
+                  value={opt.value}
+                  selected={matchPreferences?.gymCrushLookingFor === opt.value}
+                  onPress={(val) =>
                     setMatchPreferences((g) => ({
                       ...(g || {}),
                       gymCrushLookingFor: val as CrushLookingFor,
                     }))
                   }
-                  theme={theme}
                 />
               ))}
-            </RowWrap>
+            </ChipRow>
 
-            <SectionTitle theme={theme} label="Ubicaciones de interés" />
-            <Pressable
-              onPress={() => setLocModalOpen('GYMCRUSH')}
-              style={styles.locationPicker}
-            >
-              <AppText style={styles.addLocationText}>
-                Agregar ubicación
-              </AppText>
-            </Pressable>
-            <ChipsList
-              items={
+            <SectionLabel label="Ubicaciones de interés" styles={styles} />
+            <MultiLocationPicker
+              selected={
                 (matchPreferences?.gymCrushLocations || []) as LocationDto[]
               }
-              onRemove={(id) =>
+              onChange={(locations) =>
                 setMatchPreferences((g) => ({
                   ...(g || {}),
-                  gymCrushLocations: (g?.gymCrushLocations || []).filter(
-                    (x) => x?.id !== id,
-                  ),
+                  gymCrushLocations: locations,
                 }))
               }
-              theme={theme}
             />
 
-            <SectionTitle theme={theme} label="Preferencias Generales" />
-            <AppText style={styles.smallLabel}>Buscando</AppText>
-            <RowWrap>
-              {(
-                [
-                  ['Hombres', 'MALE'],
-                  ['Mujeres', 'FEMALE'],
-                  ['Ambos', 'BOTH'],
-                ] as const
-              ).map(([label, val]) => (
-                <RadioChip
-                  key={val}
-                  label={label}
+            <SectionLabel label="Preferencias generales" styles={styles} />
+            <FieldLabel label="Buscando" styles={styles} />
+            <ChipRow>
+              {GENDER_OPTIONS.map((opt) => (
+                <ChipToggle
+                  key={opt.value}
+                  label={opt.label}
+                  value={opt.value}
                   selected={
-                    matchPreferences?.gymCrushLookingForGender ===
-                    (val as Gender)
+                    matchPreferences?.gymCrushLookingForGender === opt.value
                   }
-                  onPress={() =>
+                  onPress={(val) =>
                     setMatchPreferences((g) => ({
                       ...(g || {}),
                       gymCrushLookingForGender: val as Gender,
                     }))
                   }
-                  theme={theme}
                 />
               ))}
-            </RowWrap>
+            </ChipRow>
 
-            <AppText style={styles.smallLabel}>Rango de edad</AppText>
-            <Row>
+            <FieldLabel label="Rango de edad" styles={styles} />
+            <View style={styles.ageRow}>
               {ageInput(
                 matchPreferences?.gymCrushAgeRangeMin,
                 (n) =>
@@ -471,7 +424,7 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Desde',
               )}
-              <AppText style={styles.ageSeparator}>—</AppText>
+              <AppText style={styles.ageDash}>—</AppText>
               {ageInput(
                 matchPreferences?.gymCrushAgeRangeMax,
                 (n) =>
@@ -481,7 +434,8 @@ export default function MatchPreferencesScreen() {
                   })),
                 'Hasta',
               )}
-            </Row>
+            </View>
+
             <SwitchRow
               label="Mostrar bio"
               value={!!matchPreferences?.gymCrushShowBioInProfile}
@@ -492,21 +446,16 @@ export default function MatchPreferencesScreen() {
                 }))
               }
             />
-          </>
+          </View>
         )}
       </Card>
 
-      {/* Privacy – only if any is enabled */}
       {anyEnabled && (
-        <Card style={styles.privacyCard}>
-          <View style={styles.privacyInner}>
-            <AppText style={styles.titleLeft}>
-              {'Configuración de Privacidad'}
-            </AppText>
-            <AppText style={styles.subtitleLeft}>
-              Controla qué información pueden ver otros usuarios
-            </AppText>
-          </View>
+        <Card style={styles.card}>
+          <AppText style={styles.cardTitle}>Privacidad</AppText>
+          <AppText style={styles.cardHint}>
+            Controla qué información pueden ver otros usuarios.
+          </AppText>
           <SwitchRow
             label="Mostrar edad (otros verán tu edad exacta)"
             value={!!matchPreferences?.showAge}
@@ -517,341 +466,112 @@ export default function MatchPreferencesScreen() {
         </Card>
       )}
 
-      {/* Actions */}
-      <View style={styles.actionsRow}>
-        <Button
-          label="Guardar Preferencias"
-          onPress={handleSave}
-          style={styles.buttonFull}
-        />
-        <Button
-          label="Restablecer"
-          onPress={handleReset}
-          type="tertiary"
-          style={styles.buttonFull}
-        />
-      </View>
-
-      {/* Location picker modal (simple multi-select) */}
-      <Modal transparent visible={!!locModalOpen} animationType="fade">
-        <View style={styles.modalBackdrop}>
-          <View style={styles.modalCard}>
-            <AppText style={styles.modalTitle}>Selecciona ubicaciones</AppText>
-            <ScrollView style={styles.modalScroll}>
-              {ALL_LOCATIONS.map((loc) => {
-                const selected = (
-                  locModalOpen === 'GYMBRO'
-                    ? matchPreferences?.gymBroLocations || []
-                    : matchPreferences?.gymCrushLocations || []
-                ).some((x) => x?.id === loc.id);
-
-                return (
-                  <Pressable
-                    key={loc.id}
-                    onPress={() => {
-                      if (locModalOpen === 'GYMBRO') {
-                        setMatchPreferences((g) => {
-                          const exists = (g?.gymBroLocations || []).some(
-                            (x) => x?.id === loc.id,
-                          );
-                          return {
-                            ...(g || {}),
-                            gymBroLocations: exists
-                              ? (g?.gymBroLocations || []).filter(
-                                  (x) => x?.id !== loc.id,
-                                )
-                              : [...(g?.gymBroLocations || []), loc],
-                          };
-                        });
-                      } else {
-                        setMatchPreferences((g) => {
-                          const exists = (g?.gymCrushLocations || []).some(
-                            (x) => x?.id === loc.id,
-                          );
-                          return {
-                            ...(g || {}),
-                            gymCrushLocations: exists
-                              ? (g?.gymCrushLocations || []).filter(
-                                  (x) => x?.id !== loc.id,
-                                )
-                              : [...(g?.gymCrushLocations || []), loc],
-                          };
-                        });
-                      }
-                    }}
-                    style={[
-                      styles.locationRow,
-                      selected && styles.locationRowSelected,
-                    ]}
-                  >
-                    <AppText
-                      style={[
-                        styles.locationRowText,
-                        selected && styles.locationRowTextSelected,
-                      ]}
-                    >
-                      {formatLocationName(loc)}
-                    </AppText>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
-
-            <Row style={styles.modalFooterRow}>
-              <Button
-                label="Cerrar"
-                onPress={() => setLocModalOpen(null)}
-                type={'tertiary'}
-                buttonStyle={styles.modalCloseButton}
-              />
-            </Row>
-          </View>
-        </View>
-      </Modal>
+      <Pressable onPress={handleReset}>
+        <AppText style={styles.resetLink}>Restablecer valores</AppText>
+      </Pressable>
     </PageContainer>
   );
 }
 
-// /** =========================
-//  *  UI SUBCOMPONENTS
-//  *  ========================= */
-
-function SectionTitle({ label, theme }: { label: string; theme: FullTheme }) {
-  const styles = getStyles(theme);
-  return <AppText style={styles.sectionTitle}>{label}</AppText>;
-}
-
-function Row({ children, style }: { children: React.ReactNode; style?: any }) {
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-  return <View style={[styles.rowBase, style]}>{children}</View>;
-}
-
-function RowWrap({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-  return <View style={styles.rowWrap}>{children}</View>;
-}
-
-function ChipToggle({
+function SectionLabel({
   label,
-  active,
-  onPress,
-  theme,
+  styles,
 }: {
   label: string;
-  active: boolean;
-  onPress: () => void;
-  theme: FullTheme;
+  styles: ReturnType<typeof getStyles>;
 }) {
-  const styles = getStyles(theme);
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[styles.chip, active && styles.chipActive]}
-    >
-      <AppText style={[styles.chipText, active && styles.chipTextActive]}>
-        {label}
-      </AppText>
-    </Pressable>
-  );
+  return <AppText style={styles.sectionLabel}>{label}</AppText>;
 }
 
-function RadioChip({
+function FieldLabel({
   label,
-  selected,
-  onPress,
-  theme,
+  styles,
 }: {
   label: string;
-  selected: boolean;
-  onPress: () => void;
-  theme: FullTheme;
+  styles: ReturnType<typeof getStyles>;
 }) {
-  return (
-    <ChipToggle
-      label={label}
-      active={selected}
-      onPress={onPress}
-      theme={theme}
-    />
-  );
+  return <AppText style={styles.fieldLabel}>{label}</AppText>;
 }
 
-function ChipsList({
-  items,
-  onRemove,
-  theme,
-}: {
-  items: LocationDto[];
-  onRemove: (id: number) => void;
-  theme: FullTheme;
-}) {
+function ChipRow({ children }: { children: React.ReactNode }) {
+  const { theme } = useTheme();
   const styles = getStyles(theme);
-  return (
-    <RowWrap>
-      {items.map((loc) => {
-        if (!loc?.id) return null;
-        return (
-          <Pressable
-            key={loc.id}
-            onPress={() => onRemove(loc.id!)}
-            style={[styles.tag, styles.tagSelected]}
-          >
-            <AppText style={styles.tagText}>
-              {formatLocationName(loc)} ×
-            </AppText>
-          </Pressable>
-        );
-      })}
-    </RowWrap>
-  );
+  return <View style={styles.chipRow}>{children}</View>;
 }
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
+
   return StyleSheet.create({
-    pageStyle: {
-      paddingHorizontal: 16,
-      rowGap: 20,
+    page: {
+      rowGap: 12,
+      paddingBottom: 16,
     },
-    cardDark: {
+    card: {
       backgroundColor: theme.background.card,
       borderWidth: 1,
       borderColor: theme.border.default,
-      borderRadius: 14,
+      borderRadius: 12,
+      padding: 14,
       rowGap: 10,
     },
-    titleLeft: {
-      ...text.title,
-      textAlign: 'left',
+    cardTitle: {
+      ...text.smallSemibold,
+      color: theme.text.primary,
     },
-    subtitleLeft: {
-      ...text.subtitle,
-      textAlign: 'left',
-    },
-    addLocationText: {
-      ...text.link,
+    cardHint: {
+      ...text.small,
       color: theme.text.secondary,
+      lineHeight: 18,
     },
-    ageSeparator: { marginHorizontal: 8 },
-    privacyCard: {
-      backgroundColor: theme.background.card,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      borderRadius: 14,
-      rowGap: 20,
+    section: {
+      rowGap: 10,
+      marginTop: 4,
     },
-    privacyInner: { rowGap: 6 },
-    actionsRow: {
-      marginTop: 12,
-      rowGap: 12,
+    sectionLabel: {
+      ...text.label,
+      color: theme.text.tertiary,
+      marginTop: 4,
+      marginBottom: 4,
     },
-    buttonFull: { width: '100%' },
-    modalScroll: { maxHeight: 320 },
-    modalFooterRow: {
-      justifyContent: 'flex-end',
-      marginTop: 12,
-      gap: 10,
+    fieldLabel: {
+      ...text.label,
+      marginTop: 2,
+      marginBottom: 0,
+      color: theme.text.tertiary,
+    },
+    chipRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: 8,
+    },
+    ageRow: {
       flexDirection: 'row',
       alignItems: 'center',
+      columnGap: 8,
+      width: '100%',
     },
-    modalCloseButton: { paddingHorizontal: 20 },
-    rowBase: { flexDirection: 'row', alignItems: 'center' },
-    rowWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-    locationRowSelected: { backgroundColor: theme.brand.primary },
-    locationRowTextSelected: { color: theme.background.app },
-    sectionTitle: {
-      marginTop: 10,
-      marginBottom: 8,
-    },
-
-    chip: {
-      paddingVertical: 10,
-      paddingHorizontal: 14,
-      borderRadius: 999,
-      backgroundColor: theme.background.input,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-    },
-    chipActive: {
-      backgroundColor: theme.brand.primary,
-      borderColor: theme.brand.primary,
-    },
-    chipText: {
-      ...text.linkSemibold,
-      color: theme.text.primary,
-    },
-    chipTextActive: {
-      ...text.linkSemibold,
-      color: theme.background.app,
-    },
-
-    smallLabel: {
-      marginTop: 12,
-      marginBottom: 6,
-      ...text.nav,
-      color: theme.text.secondary,
-    },
-
-    ageInput: {
-      minWidth: 90,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-      backgroundColor: theme.background.input,
-      textAlign: 'center',
-      color: theme.text.primary,
-    },
-
-    locationPicker: {
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      paddingVertical: 12,
-      paddingHorizontal: 14,
-      backgroundColor: theme.background.input,
-      marginBottom: 8,
-    },
-    tag: {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      borderRadius: 999,
-    },
-    tagSelected: { backgroundColor: theme.brand.primary },
-    tagText: { color: theme.background.app },
-    modalBackdrop: {
+    ageField: {
       flex: 1,
-      backgroundColor: 'rgba(0,0,0,0.25)',
-      justifyContent: 'center',
-      padding: 16,
+      minWidth: 0,
     },
-    modalCard: {
-      borderRadius: 16,
-      backgroundColor: theme.background.card,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      padding: 18,
+    ageDash: {
+      ...text.small,
+      color: theme.text.tertiary,
+      flexShrink: 0,
     },
-    modalTitle: {
-      ...text.sectionTitle,
-      marginBottom: 12,
-      color: theme.text.primary,
+    resetLink: {
+      ...text.smallSemibold,
+      color: theme.text.tertiary,
+      textAlign: 'center',
+      paddingVertical: 8,
     },
-    locationRow: {
-      paddingVertical: 14,
-      paddingHorizontal: 14,
-      borderRadius: 12,
-      marginBottom: 8,
-      backgroundColor: theme.background.input,
-      borderWidth: 1,
-      borderColor: theme.border.default,
+    footer: {
+      flexDirection: 'row',
+      gap: 10,
     },
-    locationRowText: {
-      ...text.linkSemibold,
-      color: theme.text.primary,
+    footerButton: {
+      flex: 1,
     },
   });
 };

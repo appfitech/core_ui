@@ -1,11 +1,13 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
+import { AvatarPhoto } from '@/components/AvatarPhoto';
 import PageContainer from '@/components/PageContainer';
+import { Tag } from '@/components/Tag';
+import { TrainerServiceCard } from '@/components/trainers/TrainerServiceCard';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -16,6 +18,8 @@ import { useGetTrainerServices } from '@/lib/api/queries/use-get-trainer-service
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
+import { getFileUploadViewUrl } from '@/utils/files';
+import { getUserAvatarURL } from '@/utils/user';
 
 export default function TrainerProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -23,13 +27,17 @@ export default function TrainerProfileScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { showAlert } = useAlert();
+  const styles = getStyles(theme);
+  const { trainerProfileScreen: copy } = TRANSLATIONS;
 
   const { data: trainer } = useGetTrainer(Number(id));
   const { data: photos } = useGetTrainerPhotos(Number(id));
   const { data: services } = useGetTrainerServices(Number(id));
   const { mutateAsync: checkContract } = useCheckContractAvailability();
 
-  const styles = getStyles(theme);
+  const trainerName = trainer
+    ? `${trainer.person.firstName} ${trainer.person.lastName}`.trim()
+    : copy.defaultTitle;
 
   const handleContract = async (service: TrainerService) => {
     if (clientId == null) {
@@ -44,83 +52,50 @@ export default function TrainerProfileScreen() {
       });
     } else {
       showAlert({
-        title: 'Aviso',
-        message:
-          res?.message ||
-          'Ya tienes un servicio contratado y no puedes volver a contratarlo',
+        title: copy.contractBlockedTitle,
+        message: res?.message || copy.contractBlockedDefault,
       });
     }
   };
 
   return (
-    <PageContainer
-      title={
-        trainer
-          ? `${trainer.person.firstName} ${trainer.person.lastName}`
-          : 'Entrenador'
-      }
-      contentPaddingBottom={100}
-    >
-      {trainer && (
-        <View style={styles.profileBlock}>
-          <Image
-            source={{
-              uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person.profilePhotoId}`,
-            }}
-            style={styles.avatar}
+    <PageContainer title={trainerName} style={styles.page}>
+      {trainer ? (
+        <View style={styles.profileCard}>
+          <AvatarPhoto
+            url={getUserAvatarURL(trainer.person)}
+            gender={trainer.person?.gender}
+            size={88}
           />
-          <AppText style={styles.role}>Entrenador personal</AppText>
-          {trainer.premium && (
-            <View style={styles.premiumTag}>
-              <Ionicons
-                name="star"
-                size={14}
-                color={theme.status.warning.icon}
-              />
-              <AppText style={styles.premiumText}>
-                Entrenador certificado
-              </AppText>
-            </View>
-          )}
+          <AppText style={styles.role}>{copy.role}</AppText>
+          {trainer.premium ? (
+            <Tag
+              backgroundColor={theme.status.warning.bg}
+              textColor={theme.status.warning.text}
+              label={copy.certified}
+            />
+          ) : null}
         </View>
-      )}
+      ) : null}
 
-      {services && services.length > 0 && (
+      {services && services.length > 0 ? (
         <View style={styles.section}>
-          <AppText style={styles.sectionTitle}>SERVICIOS DISPONIBLES</AppText>
+          <AppText style={styles.sectionLabel}>{copy.servicesTitle}</AppText>
           <View style={styles.serviceList}>
             {services.map((service) => (
-              <View key={service.id} style={styles.serviceCard}>
-                <AppText style={styles.serviceName}>{service.name}</AppText>
-                <AppText style={styles.serviceDesc} numberOfLines={2}>
-                  {service.description}
-                </AppText>
-                <View style={styles.servicePriceRow}>
-                  <Ionicons
-                    name="cash-outline"
-                    size={20}
-                    color={theme.brand.primary}
-                  />
-                  <AppText style={styles.servicePrice}>
-                    S/ {service.totalPrice.toFixed(2)}
-                  </AppText>
-                </View>
-                <View style={styles.serviceCta}>
-                  <Button
-                    label="Contratar servicio"
-                    onPress={() => handleContract(service)}
-                    type="primary"
-                  />
-                </View>
-              </View>
+              <TrainerServiceCard
+                key={service.id}
+                service={service}
+                onHire={() => handleContract(service)}
+              />
             ))}
           </View>
         </View>
-      )}
+      ) : null}
 
-      {photos && photos.length > 0 && (
+      {photos && photos.length > 0 ? (
         <View style={styles.section}>
-          <AppText style={styles.sectionTitle}>GALERÍA</AppText>
+          <AppText style={styles.sectionLabel}>{copy.galleryTitle}</AppText>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -129,24 +104,22 @@ export default function TrainerProfileScreen() {
             {photos.map((photo) => (
               <Image
                 key={photo.id}
-                source={{
-                  uri: `https://appfitech.com/v1/app/file-upload/view/${photo.id}`,
-                }}
+                source={{ uri: getFileUploadViewUrl(photo.id) }}
                 style={styles.galleryImage}
               />
             ))}
           </ScrollView>
         </View>
-      )}
+      ) : null}
 
-      {trainer?.person?.bio && (
+      {trainer?.person?.bio ? (
         <View style={styles.section}>
           <View style={styles.aboutCard}>
-            <AppText style={styles.sectionTitle}>ACERCA DE</AppText>
+            <AppText style={styles.sectionLabel}>{copy.aboutTitle}</AppText>
             <AppText style={styles.aboutText}>{trainer.person.bio}</AppText>
           </View>
         </View>
-      )}
+      ) : null}
     </PageContainer>
   );
 }
@@ -154,98 +127,55 @@ export default function TrainerProfileScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    profileBlock: {
+    page: { paddingBottom: 180 },
+    profileCard: {
       alignItems: 'center',
-      marginTop: 8,
-      marginBottom: 20,
-    },
-    avatar: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
-      marginBottom: 8,
-    },
-    role: {
-      ...text.smallSemibold,
-      color: theme.text.secondary,
-    },
-    premiumTag: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.status.warning.bg,
-      paddingHorizontal: 10,
-      paddingVertical: 6,
-      borderRadius: 999,
-      marginTop: 10,
-      gap: 6,
-    },
-    premiumText: {
-      ...text.captionSemibold,
-      color: theme.status.warning.text,
-    },
-    section: {
-      marginBottom: 24,
-    },
-    sectionTitle: {
-      ...text.captionSemibold,
-      color: theme.text.secondary,
-      marginBottom: 10,
-      letterSpacing: 0.6,
-      textTransform: 'uppercase',
-    },
-    serviceList: {
-      rowGap: 12,
-    },
-    serviceCard: {
       backgroundColor: theme.background.card,
-      borderRadius: 14,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: theme.border.default,
-      padding: 18,
+      padding: 20,
+      marginTop: 12,
+      rowGap: 10,
     },
-    serviceName: {
-      ...text.bodySemibold,
-      color: theme.text.primary,
-    },
-    serviceDesc: {
+    role: {
       ...text.small,
       color: theme.text.secondary,
-      marginTop: 6,
-      lineHeight: 20,
+      textAlign: 'center',
     },
-    servicePriceRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: 8,
-      marginTop: 8,
+    section: {
+      marginTop: 20,
+      rowGap: 10,
     },
-    servicePrice: {
-      ...text.linkSemibold,
-      color: theme.brand.primary,
+    sectionLabel: {
+      ...text.caption,
+      color: theme.text.tertiary,
     },
-    serviceCta: {
-      marginTop: 14,
+    serviceList: {
+      rowGap: 8,
     },
     galleryScroll: {
-      gap: 10,
+      gap: 8,
       paddingRight: 16,
     },
     galleryImage: {
-      width: 120,
-      height: 120,
+      width: 112,
+      height: 112,
       borderRadius: 12,
+      backgroundColor: theme.background.input,
     },
     aboutCard: {
       backgroundColor: theme.background.card,
-      borderRadius: 14,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: theme.border.default,
-      padding: 18,
+      padding: 16,
+      rowGap: 8,
     },
     aboutText: {
-      ...text.link,
-      color: theme.text.primary,
-      lineHeight: 22,
+      ...text.small,
+      color: theme.text.secondary,
+      lineHeight: 20,
     },
   });
 };

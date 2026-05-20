@@ -53,24 +53,34 @@ export function parseRepsInput(value: string): number | undefined {
 
 export function parseWeightInput(value: string): number | undefined {
   const normalized = normalizeWeightInputText(value);
-  if (!normalized || normalized === '.') return undefined;
+  if (!normalized || normalized === '.' || normalized.endsWith('.')) {
+    return undefined;
+  }
   const n = Number(normalized);
   if (!Number.isFinite(n) || n <= 0) return undefined;
   return roundWeightKg(n);
 }
 
+/** Form row: keeps raw weight text while the user types decimals. */
+export type WorkoutSetFormRow = ExerciseSetDto & {
+  weightInput?: string;
+};
+
 /** Normalize API / stored values when loading a set into the form. */
-export function sanitizeExerciseSet(set: ExerciseSetDto): ExerciseSetDto {
+export function sanitizeExerciseSet(set: ExerciseSetDto): WorkoutSetFormRow {
+  const weightKg =
+    typeof set.weightKg === 'number' && set.weightKg > 0
+      ? roundWeightKg(set.weightKg)
+      : undefined;
+
   return {
     ...set,
     repetitions:
       typeof set.repetitions === 'number' && set.repetitions > 0
         ? roundReps(set.repetitions)
         : undefined,
-    weightKg:
-      typeof set.weightKg === 'number' && set.weightKg > 0
-        ? roundWeightKg(set.weightKg)
-        : undefined,
+    weightKg,
+    weightInput: formatWeightValue(weightKg),
   };
 }
 
@@ -112,10 +122,17 @@ function isValidWeight(weight: number | undefined): weight is number {
   );
 }
 
+export function getWeightInputDisplay(set: WorkoutSetFormRow): string {
+  if (set.weightInput != null && set.weightInput !== '') {
+    return set.weightInput;
+  }
+  return formatWeightValue(set.weightKg);
+}
+
 export function isExerciseFormValid(
   name: string,
   muscleGroup: string | undefined,
-  sets: ExerciseSetDto[],
+  sets: WorkoutSetFormRow[],
 ): boolean {
   return (
     name.trim().length > 0 &&
@@ -125,6 +142,6 @@ export function isExerciseFormValid(
   );
 }
 
-export function createEmptySet(): ExerciseSetDto {
-  return { repetitions: undefined, weightKg: undefined };
+export function createEmptySet(): WorkoutSetFormRow {
+  return { repetitions: undefined, weightKg: undefined, weightInput: '' };
 }

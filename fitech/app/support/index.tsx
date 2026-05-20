@@ -92,7 +92,23 @@ export default function SupportScreen() {
       title="Centro de Soporte"
       subheader="¿Necesitas ayuda? Estamos aquí para asistirte"
       includeTabBarPadding={false}
+      hasBottomPadding={false}
       style={styles.pageStyle}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            type="tertiary"
+            onPress={handleClear}
+            label="Limpiar"
+            style={styles.footerButton}
+          />
+          <Button
+            onPress={handleSubmit}
+            label="Enviar Consulta"
+            style={styles.footerButton}
+          />
+        </View>
+      }
     >
       <Card style={styles.contactCard}>
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
@@ -152,20 +168,6 @@ export default function SupportScreen() {
           style={styles.descriptionInput}
         />
       </View>
-
-      <View style={styles.buttonRow}>
-        <Button
-          type="secondary"
-          onPress={handleClear}
-          label="Limpiar"
-          style={styles.buttonFull}
-        />
-        <Button
-          onPress={handleSubmit}
-          label="Enviar Consulta"
-          style={styles.buttonFull}
-        />
-      </View>
     </PageContainer>
   );
 }
@@ -175,6 +177,14 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     pageStyle: {
       rowGap: 24,
+      paddingBottom: 0,
+    },
+    footer: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    footerButton: {
+      flex: 1,
     },
     contactCard: {
       backgroundColor: theme.status.info.bg,
@@ -207,14 +217,6 @@ const getStyles = (theme: FullTheme) => {
       minHeight: 100,
       maxHeight: 140,
       flex: undefined,
-    },
-    buttonRow: {
-      rowGap: 12,
-      marginTop: 8,
-      width: '100%',
-    },
-    buttonFull: {
-      width: '100%',
     },
   });
 };

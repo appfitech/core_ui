@@ -66,7 +66,11 @@ export default function NotificationsScreen() {
   );
 
   return (
-    <PageContainer title="Notificaciones" style={styles.pageStyle}>
+    <PageContainer
+      title="Notificaciones"
+      style={styles.pageStyle}
+      includeTabBarPadding={false}
+    >
       <View style={styles.listWrapper}>
         {!!notifications?.length && (
           <View style={styles.markAllWrapper}>

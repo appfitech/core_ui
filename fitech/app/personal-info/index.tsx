@@ -50,7 +50,31 @@ export default function PersonalInfoScreen() {
   }, [router]);
 
   return (
-    <PageContainer title="Editar Información Personal" style={styles.pageStyle}>
+    <PageContainer
+      title="Editar Información Personal"
+      style={styles.pageStyle}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={
+        <View style={styles.footer}>
+          <Button
+            label="Actualizar"
+            type="primary"
+            onPress={handleUpdate}
+            disabled={!canSubmit || isPending}
+            loading={isPending}
+            style={styles.footerButton}
+          />
+          <Button
+            label="Cancelar"
+            type="tertiary"
+            onPress={handleCancel}
+            disabled={isPending}
+            style={styles.footerButton}
+          />
+        </View>
+      }
+    >
       <Animated.View entering={FadeInUp.delay(100).duration(500)}>
         <PersonalInfoFormFields
           fields={PERSONAL_INFO_FORM_FIELDS}
@@ -59,25 +83,6 @@ export default function PersonalInfoScreen() {
           isEmailVerified={user?.isEmailVerified}
         />
       </Animated.View>
-
-      <View style={styles.buttonRow}>
-        <Button
-          label="Actualizar"
-          type="primary"
-          onPress={handleUpdate}
-          disabled={!canSubmit || isPending}
-          loading={isPending}
-          style={styles.buttonFull}
-          buttonStyle={styles.primaryButton}
-        />
-        <Button
-          label="Cancelar"
-          type="secondary"
-          onPress={handleCancel}
-          disabled={isPending}
-          style={styles.buttonFull}
-        />
-      </View>
     </PageContainer>
   );
 }
@@ -86,16 +91,13 @@ const getStyles = () =>
   StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
+      paddingBottom: 32,
     },
-    buttonRow: {
-      flexDirection: 'column',
-      marginTop: 24,
-      rowGap: 12,
+    footer: {
+      flexDirection: 'row',
+      gap: 10,
     },
-    buttonFull: {
-      width: '100%',
-    },
-    primaryButton: {
-      paddingVertical: 14,
+    footerButton: {
+      flex: 1,
     },
   });

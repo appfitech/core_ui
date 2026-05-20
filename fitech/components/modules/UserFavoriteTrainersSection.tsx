@@ -1,115 +1,154 @@
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Image,
-  ScrollView,
+  Dimensions,
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
-import { AppText } from '@/components/AppText';
-import { Card } from '@/components/Card';
+import { FeaturedTrainerCarouselCard } from '@/components/modules/FeaturedTrainerCarouselCard';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ROUTES } from '@/constants/routes';
-import { textStyles } from '@/constants/styles';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { useUserStore } from '@/stores/user';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-import { truncateWords } from '@/utils/strings';
-import { getUserAvatarURL } from '@/utils/user';
+
+const FEATURED_TRAINER_LIMIT = 3;
+const CARD_GAP = 12;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CARD_WIDTH = Math.min(280, SCREEN_WIDTH * 0.78);
 
 export function UserFavoriteTrainersSection() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const text = textStyles(theme);
+  const { featuredTrainersSection: copy } = TRANSLATIONS;
   const token = useUserStore((s) => s.getToken());
 
   const [trainers, setTrainers] = useState<PublicTrainerDtoReadable[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const { mutate: searchTrainers } = useSearchTrainers();
 
   useEffect(() => {
     if (!token) {
+      setIsLoading(false);
       return;
     }
 
     searchTrainers(
       { query: '' },
       {
-        onSuccess: (data) => setTrainers(data),
+        onSuccess: (data) => {
+          setTrainers(data ?? []);
+          setIsLoading(false);
+        },
+        onError: () => setIsLoading(false),
       },
     );
   }, [token, searchTrainers]);
 
+  const featuredTrainers = useMemo(
+    () => trainers.slice(0, FEATURED_TRAINER_LIMIT),
+    [trainers],
+  );
+
+  const snapInterval = CARD_WIDTH + CARD_GAP;
+
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(offsetX / snapInterval);
+      setActiveIndex(Math.min(index, featuredTrainers.length - 1));
+    },
+    [featuredTrainers.length, snapInterval],
+  );
+
+  const handleTrainerPress = useCallback(
+    (trainerId?: number) => {
+      if (trainerId == null) return;
+      router.push(`${ROUTES.trainers}/${trainerId}`);
+    },
+    [router],
+  );
+
+  if (isLoading || featuredTrainers.length === 0) {
+    return null;
+  }
+
   return (
     <HomeSectionContainer
-      title="Entrenadores destacados"
+      title={copy.title}
       onClick={() => router.push(ROUTES.trainers)}
     >
-      <ScrollView
+      <FlatList
+        data={featuredTrainers}
+        keyExtractor={(item, index) =>
+          `featured-trainer-${item.id ?? index}`
+        }
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ columnGap: 16 }}
-      >
-        {trainers?.slice(0, 5)?.map((trainer, index) => (
-          <TouchableOpacity
-            key={`trainer-card-${trainer.id}-${index}`}
-            onPress={() => router.push(`${ROUTES.trainers}/${trainer.id}`)}
-          >
-            <Card
-              key={trainer?.id}
+        decelerationRate="fast"
+        snapToInterval={snapInterval}
+        snapToAlignment="start"
+        disableIntervalMomentum
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={styles.listContent}
+        renderItem={({ item }) => (
+          <FeaturedTrainerCarouselCard
+            trainer={item}
+            width={CARD_WIDTH}
+            onPress={() => handleTrainerPress(item.id)}
+          />
+        )}
+      />
+
+      {featuredTrainers.length > 1 ? (
+        <View style={styles.dots}>
+          {featuredTrainers.map((trainer, index) => (
+            <View
+              key={`dot-${trainer.id ?? index}`}
               style={[
-                styles.card,
-                {
-                  maxWidth: 200,
-                  alignSelf: 'flex-start',
-                },
+                styles.dot,
+                index === activeIndex && styles.dotActive,
               ]}
-            >
-              <View style={{ rowGap: 8 }}>
-                <Image
-                  source={{ uri: getUserAvatarURL(trainer?.person) }}
-                  style={[styles.avatar]}
-                />
-                <AppText
-                  style={{
-                    ...text.linkSemibold,
-                    color: theme.text.primary,
-                  }}
-                >
-                  {`${trainer?.person?.firstName} ${trainer?.person?.lastName}`}
-                </AppText>
-                <AppText
-                  variant="small"
-                  style={{ color: theme.text.secondary }}
-                >
-                  {truncateWords(trainer?.person?.bio ?? '', 20)}
-                </AppText>
-              </View>
-            </Card>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+            />
+          ))}
+        </View>
+      ) : null}
     </HomeSectionContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) => {
-  return StyleSheet.create({
-    card: {
-      backgroundColor: theme.background.app,
-      flex: 1,
-      borderWidth: 1,
-      borderColor: theme.border.default,
+const getStyles = (theme: FullTheme) =>
+  StyleSheet.create({
+    listContent: {
+      columnGap: CARD_GAP,
+      paddingRight: 4,
     },
-    avatar: {
-      width: 50,
-      height: 50,
-      borderRadius: 50,
+    dots: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      columnGap: 6,
+      marginTop: 12,
+    },
+    dot: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: theme.border.default,
+    },
+    dotActive: {
+      width: 18,
+      backgroundColor: theme.brand.primary,
     },
   });
-};

@@ -106,6 +106,7 @@ export default function ContractsScreen() {
       chips={CONTRACT_STATUS_CHIPS}
       selectedValue={filter}
       onChipPress={(value) => setFilter(value as 'ACTIVE' | 'INACTIVE')}
+      style={styles.listHeader}
     />
   );
 
@@ -159,11 +160,16 @@ export default function ContractsScreen() {
   );
 }
 
+const CONTRACT_LIST_GAP = 8;
+
 const styles = StyleSheet.create({
   page: { paddingBottom: 0 },
+  listHeader: {
+    marginBottom: 16,
+  },
   listContent: {
     flexGrow: 1,
-    rowGap: 16,
+    paddingBottom: 180,
   },
-  separator: { height: LIST_SCREEN_FLATLIST.itemGap },
+  separator: { height: CONTRACT_LIST_GAP },
 });
