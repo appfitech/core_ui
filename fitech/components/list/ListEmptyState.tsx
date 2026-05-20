@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   title: string;
@@ -23,7 +23,7 @@ export function ListEmptyState({ title, hint }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     wrap: {

@@ -8,7 +8,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 type Props = {
@@ -67,7 +67,7 @@ function TrainerListCardComponent({ trainer, onPress }: Props) {
 
 export const TrainerListCard = memo(TrainerListCardComponent);
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

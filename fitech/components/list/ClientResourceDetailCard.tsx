@@ -2,11 +2,11 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ContractDetailRow } from '@/components/contracts/ContractDetailRow';
-import { Tag } from '@/components/Tag';
 import { getClientResourceValidityValue } from '@/components/list/client-resource-dates';
+import { Tag } from '@/components/Tag';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
 
 type ResourceInfo = {
@@ -73,7 +73,7 @@ export function ClientResourceDetailCard({ resource }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     card: {
       backgroundColor: theme.background.card,

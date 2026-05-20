@@ -7,7 +7,7 @@ import { Tag } from '@/components/Tag';
 import { formStyles, textStyles } from '@/constants/styles';
 import { useDatePickerOverlay } from '@/contexts/DatePickerOverlayContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { formatToDDMMYYYY } from '@/utils/dates';
 import { openAndroidDatePicker } from '@/utils/open-android-date-picker';
 
@@ -98,7 +98,7 @@ export function DatePicker({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const form = formStyles(theme);
   const text = textStyles(theme);
 

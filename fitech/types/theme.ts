@@ -8,6 +8,3 @@ export type AppTheme = AppColors & {
     backButtonBorderWidth: number;
   };
 };
-
-/** @deprecated Use `AppTheme`. */
-export type FullTheme = AppTheme;

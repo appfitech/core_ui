@@ -11,7 +11,7 @@ import { Dropdown as DropdownElement } from 'react-native-element-dropdown';
 import { formStyles, textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 import { Tag } from './Tag';
@@ -184,7 +184,7 @@ export function Dropdown({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const base = formStyles(theme);
   const text = textStyles(theme);
 

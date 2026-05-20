@@ -16,7 +16,7 @@ import { useGetTrainer } from '@/lib/api/queries/use-get-trainer';
 import { useGetTrainerPhotos } from '@/lib/api/queries/use-get-trainer-photos';
 import { useGetTrainerServices } from '@/lib/api/queries/use-get-trainer-services';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 import { getFileUploadViewUrl } from '@/utils/files';
 import { getUserAvatarURL } from '@/utils/user';
@@ -124,7 +124,7 @@ export default function TrainerProfileScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     page: { paddingBottom: 180 },

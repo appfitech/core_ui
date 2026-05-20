@@ -15,7 +15,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 export default function ProfileScreen() {
@@ -60,9 +60,7 @@ export default function ProfileScreen() {
         <View style={styles.tagsRow}>
           <Tag
             icon="person-outline"
-            label={
-              userType === 1 ? copy.userTypeTrainer : copy.userTypeUser
-            }
+            label={userType === 1 ? copy.userTypeTrainer : copy.userTypeUser}
             textColor={theme.status.success.text}
             backgroundColor={theme.status.success.bg}
           />
@@ -122,7 +120,7 @@ export default function ProfileScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     ...text,

@@ -9,7 +9,7 @@ import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export default function WorkoutDayScreen() {
   const { date } = useLocalSearchParams<{ date: string }>();
@@ -108,7 +108,7 @@ export default function WorkoutDayScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     pageStyle: { padding: 16, rowGap: 10 },
     summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },

@@ -13,7 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getFileUploadViewUrl } from '@/utils/files';
 
 type Photo = { id: number };
@@ -109,7 +109,7 @@ export function ChangeAvatarModal({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     overlay: {
       flex: 1,

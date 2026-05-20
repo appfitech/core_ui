@@ -2,7 +2,7 @@ import { StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { authCardEnter } from '@/utils/platform-animations';
 
 type Props = {
@@ -26,7 +26,7 @@ export function Card({ children, style, authStyle = false }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     card: {
       backgroundColor: theme.background.card,

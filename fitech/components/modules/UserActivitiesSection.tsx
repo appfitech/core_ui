@@ -22,7 +22,7 @@ import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
 import { pickFeaturedActivities } from '@/lib/list/pick-featured-activities';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { isDietResourceType } from '@/utils/resources';
 
 const FEATURED_ACTIVITY_LIMIT = 3;
@@ -132,7 +132,7 @@ export function UserActivitiesSection() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     listContent: {

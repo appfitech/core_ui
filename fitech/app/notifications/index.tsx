@@ -1,11 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { NotificationListRow } from '@/components/list/NotificationListRow';
 import PageContainer from '@/components/PageContainer';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   useMarkAllNotificationsRead,
@@ -13,32 +17,29 @@ import {
 } from '@/lib/api/mutations/use-actions-notifications';
 import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
 import { NotificationDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
-
-function getNotificationIcon(type?: string): keyof typeof Ionicons.glyphMap {
-  const t = (type ?? '').toUpperCase();
-  if (t.includes('DIET') || t.includes('DIETA')) return 'nutrition-outline';
-  if (t.includes('ROUTINE') || t.includes('RUTINA')) return 'barbell-outline';
-  if (t.includes('CONTRACT') || t.includes('CONTRATO'))
-    return 'document-text-outline';
-  if (t.includes('CHAT')) return 'chatbubble-outline';
-  if (t.includes('TRAINER') || t.includes('ENTRENADOR'))
-    return 'person-outline';
-  return 'notifications-outline';
-}
+import { AppTheme } from '@/types/theme';
 
 export default function NotificationsScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { notificationsScreen: copy } = TRANSLATIONS;
 
-  const { data, refetch } = useGetUserNotifications();
+  const { data, refetch, isLoading } = useGetUserNotifications();
   const notifications: NotificationDto[] = useMemo(
-    () => data?.recent || [],
+    () => data?.recent ?? [],
     [data],
   );
 
-  const { mutate: markAllRead } = useMarkAllNotificationsRead();
+  const hasUnread = useMemo(
+    () =>
+      (data?.unreadCount ?? 0) > 0 ||
+      notifications.some((item) => !item.isRead),
+    [data?.unreadCount, notifications],
+  );
+
+  const { mutate: markAllRead, isPending: isMarkingAll } =
+    useMarkAllNotificationsRead();
   const { mutate: markNotifRead } = useMarkNotificationRead();
 
   const handleMarkAllRead = useCallback(() => {
@@ -65,142 +66,87 @@ export default function NotificationsScreen() {
     [markNotifRead, refetch, router],
   );
 
+  const renderItem = useCallback(
+    ({ item }: { item: NotificationDto }) => (
+      <NotificationListRow item={item} onPress={() => handleItemPress(item)} />
+    ),
+    [handleItemPress],
+  );
+
+  const keyExtractor = useCallback(
+    (item: NotificationDto, index: number) =>
+      item.id != null ? String(item.id) : `notification-${index}`,
+    [],
+  );
+
   return (
     <PageContainer
-      title="Notificaciones"
+      title={copy.title}
+      subheader={copy.subheader}
+      disableScroll
       style={styles.pageStyle}
       includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={
+        hasUnread ? (
+          <Button
+            type="tertiary"
+            onPress={handleMarkAllRead}
+            label={copy.markAllRead}
+            disabled={isMarkingAll}
+            loading={isMarkingAll}
+            animated={false}
+            style={styles.footerButton}
+          />
+        ) : undefined
+      }
     >
-      <View style={styles.listWrapper}>
-        {!!notifications?.length && (
-          <View style={styles.markAllWrapper}>
-            <Button
-              onPress={handleMarkAllRead}
-              type="link"
-              label="Marcar todo como leído"
-            />
-          </View>
-        )}
-
-        {!notifications?.length && (
-          <View style={styles.emptyWrapper}>
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={56}
-              color={theme.text.secondary}
-            />
-            <AppText style={styles.emptyMessage}>
-              Estás al día, no hay más notificaciones 🎉
-            </AppText>
-          </View>
-        )}
-
-        {notifications?.map((item, index) => {
-          const iconName = getNotificationIcon(item.type);
-          return (
-            <TouchableOpacity
-              key={`notification-${item.id}-${index}`}
-              style={[styles.card, !item.isRead && styles.cardUnread]}
-              onPress={() => handleItemPress(item)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.iconBox}>
-                <Ionicons
-                  name={iconName}
-                  size={24}
-                  color={theme.brand.primary}
-                />
-              </View>
-              <View style={styles.cardContent}>
-                <AppText style={styles.cardTitle} numberOfLines={1}>
-                  {item.title}
-                </AppText>
-                <AppText style={styles.cardMessage} numberOfLines={2}>
-                  {item.message}
-                </AppText>
-                {item.timeAgo ? (
-                  <AppText style={styles.cardTime}>{item.timeAgo}</AppText>
-                ) : null}
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={theme.text.secondary}
-              />
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <FlatList
+        data={notifications}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.loadingWrap}>
+              <ActivityIndicator color={theme.brand.primary} />
+              <AppText style={styles.loadingText}>{copy.loading}</AppText>
+            </View>
+          ) : (
+            <ListEmptyState title={copy.emptyTitle} hint={copy.emptyHint} />
+          )
+        }
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+        windowSize={LIST_SCREEN_FLATLIST.windowSize}
+        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+      />
     </PageContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: AppTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
-      paddingHorizontal: 16,
-      paddingBottom: 160,
+      paddingBottom: 0,
     },
-    listWrapper: {
-      paddingTop: 8,
-      rowGap: 10,
+    listContent: {
+      flexGrow: 1,
+      paddingBottom: 24,
     },
-    markAllWrapper: {
-      alignItems: 'flex-end',
-      marginBottom: 4,
-    },
-    emptyWrapper: {
-      alignItems: 'center',
-      justifyContent: 'center',
+    loadingWrap: {
       paddingVertical: 48,
-      gap: 16,
-    },
-    emptyMessage: {
-      color: theme.text.secondary,
-      fontSize: 16,
-      textAlign: 'center',
-    },
-    card: {
-      flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.background.card,
-      borderRadius: 14,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      paddingVertical: 14,
-      paddingHorizontal: 14,
-      columnGap: 12,
+      rowGap: 8,
     },
-    cardUnread: {
-      backgroundColor: theme.brand.primarySoft ?? theme.status.success.bgStrong,
-      borderColor: theme.status.success.border ?? theme.border.default,
-    },
-    iconBox: {
-      width: 44,
-      height: 44,
-      borderRadius: 12,
-      backgroundColor: theme.background.input,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    cardContent: {
-      flex: 1,
-      minWidth: 0,
-    },
-    cardTitle: {
-      fontSize: 16,
-      fontWeight: '700',
-      color: theme.text.primary,
-      marginBottom: 2,
-    },
-    cardMessage: {
-      fontSize: 14,
+    loadingText: {
+      ...text.nav,
       color: theme.text.secondary,
-      lineHeight: 20,
     },
-    cardTime: {
-      fontSize: 12,
-      color: theme.text.secondary,
-      marginTop: 4,
+    footerButton: {
+      width: '100%',
     },
   });
+};

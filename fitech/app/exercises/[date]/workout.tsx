@@ -23,10 +23,7 @@ import {
   sanitizeExerciseSet,
   type WorkoutSetFormRow,
 } from '@/lib/workouts/exercise-form';
-import {
-  CreateExerciseWithSetsRequest,
-  ExerciseSetDto,
-} from '@/types/api/types.gen';
+import { CreateExerciseWithSetsRequest } from '@/types/api/types.gen';
 
 type WorkoutFormParams = {
   date: string;

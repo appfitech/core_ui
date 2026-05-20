@@ -9,7 +9,7 @@ import {
   GymBroCandidateResponseDto,
   GymCrushCandidateResponseDto,
 } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getCandidateProfileImageUrl } from '@/utils/user';
 
 import { AppText } from './AppText';
@@ -130,7 +130,7 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const headings = textStyles(theme);
   return StyleSheet.create({
     card: {

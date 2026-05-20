@@ -16,7 +16,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Service = {
   id: number;
@@ -258,7 +258,9 @@ export default function TrainerServicesScreen() {
           <AppText style={styles.emptyText}>
             No hay servicios con el filtro aplicado
           </AppText>
-          <AppText style={styles.emptyHint}>{common.tryOtherFilterHint}</AppText>
+          <AppText style={styles.emptyHint}>
+            {common.tryOtherFilterHint}
+          </AppText>
         </View>
       ) : (
         <FlatList
@@ -275,7 +277,7 @@ export default function TrainerServicesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     topSection: {

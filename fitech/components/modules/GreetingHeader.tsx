@@ -10,7 +10,7 @@ import { getRandomMotivationalQuote } from '@/constants/quotes';
 import { ROUTES } from '@/constants/routes';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 export function GreetingHeader() {
@@ -51,7 +51,7 @@ export function GreetingHeader() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     headerWrapper: {
       paddingTop: 12,

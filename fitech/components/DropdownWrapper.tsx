@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 import { Dropdown, type Props as DropdownProps } from './Dropdown';
@@ -24,7 +24,7 @@ export function DropdownWrapper({ label, id, ...props }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
   });

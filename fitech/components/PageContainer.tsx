@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { textStyles } from '@/constants/styles';
 import { useTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import {
   CONTENT_GAP_BELOW_HEADER,
   getFixedHeaderScrollOffset,
@@ -317,7 +317,7 @@ export default function PageContainer({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     container: {

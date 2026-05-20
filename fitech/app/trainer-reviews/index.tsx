@@ -14,7 +14,7 @@ import {
   useTrainerGetReviewsBreakdown,
   useTrainerGetReviewsStats,
 } from '@/lib/api/queries/use-trainer-get-reviews';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 /** Review item as returned by trainer my-reviews API (content array). */
 type TrainerReviewItem = {
@@ -136,7 +136,7 @@ export default function TrainerReviewsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     contentWrap: {

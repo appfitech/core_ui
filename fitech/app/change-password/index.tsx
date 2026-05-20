@@ -16,7 +16,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
 import { useChangePassword } from '@/lib/api/mutations/use-account-mutations';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 
 const MIN_PASSWORD_LENGTH = 6;
@@ -251,7 +251,7 @@ export default function ChangePasswordScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return {
     ...StyleSheet.create({
       page: {

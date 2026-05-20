@@ -16,7 +16,7 @@ import {
   normalizeWeightInputText,
   type WorkoutSetFormRow,
 } from '@/lib/workouts/exercise-form';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   name: string;
@@ -150,7 +150,7 @@ export function WorkoutExerciseForm({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     form: {

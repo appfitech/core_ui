@@ -21,7 +21,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useSearchMacros } from '@/lib/api/queries/use-search-macros';
 import { FoodItemDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const LIST_ITEM_GAP = 10;
 
@@ -195,7 +195,7 @@ export default function MacrosCalculatorScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     ...formStyles(theme),

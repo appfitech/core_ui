@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 /** Map API icon names (e.g. fitness_center, directions_run) to Ionicons. */
 function mapGoalIconToIonicon(icon: string): keyof typeof Ionicons.glyphMap {
@@ -72,7 +72,7 @@ export function SelectableCard({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     card: {

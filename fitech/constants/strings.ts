@@ -396,6 +396,14 @@ export const TRANSLATIONS = {
     loading: 'Cargando chats…',
     emptyTitle: 'Aún no tienes conversaciones activas',
   },
+  notificationsScreen: {
+    title: 'Notificaciones',
+    subheader: 'Novedades de tus dietas, rutinas y contratos',
+    markAllRead: 'Marcar todo como leído',
+    loading: 'Cargando notificaciones…',
+    emptyTitle: 'Estás al día',
+    emptyHint: 'No tienes notificaciones pendientes',
+  },
   subscriptionScreen: {
     title: 'Mi Suscripción',
     subheader: 'Gestiona tu membresía premium',

@@ -12,7 +12,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetPaymentsSummary } from '@/lib/api/queries/use-trainer-get-payments';
 import { useTrainerGetReviews } from '@/lib/api/queries/use-trainer-get-reviews';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { truncateWords } from '@/utils/strings';
 
 const EMOJIS = ['😠', '😕', '😐', '🙂', '😄'];
@@ -117,7 +117,7 @@ export function TrainerHomeContent() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     contentWrapper: {

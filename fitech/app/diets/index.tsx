@@ -18,7 +18,7 @@ import {
   filterClientResourcesByActive,
 } from '@/lib/list/filter-client-resources';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export default function DietsScreen() {
   const [filter, setFilter] = useState<ActiveInactiveFilter>('ACTIVE');
@@ -90,7 +90,7 @@ export default function DietsScreen() {
   );
 }
 
-const getStyles = (_theme: FullTheme) =>
+const getStyles = (_theme: AppTheme) =>
   StyleSheet.create({
     listHeader: {
       marginBottom: 16,

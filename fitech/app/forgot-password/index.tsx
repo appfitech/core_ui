@@ -12,7 +12,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useForgotPassword } from '@/lib/api/mutations/use-account-mutations';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -128,7 +128,7 @@ export default function ForgotPasswordScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return {
     ...StyleSheet.create({
       container: {

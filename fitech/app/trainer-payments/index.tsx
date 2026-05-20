@@ -18,7 +18,7 @@ import {
   useTrainerGetPayments,
   useTrainerGetPaymentsSummary,
 } from '@/lib/api/queries/use-trainer-get-payments';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Payment = {
   id: number;
@@ -454,7 +454,7 @@ export default function TrainerPaymentsScreen() {
 }
 
 /* ------------------------------ Styles ---------------------------- */
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     contentWrap: {

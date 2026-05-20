@@ -16,7 +16,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getFileUploadViewUrl } from '@/utils/files';
 
 function formatConversationTime(iso: string | undefined) {
@@ -135,7 +135,7 @@ export default function ChatsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 0 },

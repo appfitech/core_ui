@@ -2,7 +2,7 @@ import { StyleSheet, TextInputProps, View } from 'react-native';
 
 import { formStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 import { TextInput } from './TextInput';
@@ -29,7 +29,7 @@ export function InputWrapper({ label, id, disabled, ...props }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
     inputDisabled: {

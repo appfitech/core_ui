@@ -1,6 +1,6 @@
 import { LocaleConfig } from 'react-native-calendars';
 
-import type { FullTheme } from '@/types/theme';
+import type { AppTheme } from '@/types/theme';
 
 let localeConfigured = false;
 
@@ -53,7 +53,7 @@ export function ensureSpanishCalendarLocale() {
   localeConfigured = true;
 }
 
-export function getCalendarTheme(theme: FullTheme) {
+export function getCalendarTheme(theme: AppTheme) {
   return {
     backgroundColor: theme.background.card,
     calendarBackground: theme.background.card,

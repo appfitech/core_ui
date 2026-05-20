@@ -7,7 +7,7 @@ import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 
@@ -43,7 +43,7 @@ export function NotificationsButton() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     button: {

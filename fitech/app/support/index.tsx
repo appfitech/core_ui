@@ -13,7 +13,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const SUPPORT_TYPES = [
   { label: 'Problema Técnico', value: 'TECHNICAL' },
@@ -172,7 +172,7 @@ export default function SupportScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: {

@@ -20,7 +20,7 @@ import {
   getLocationDistrictLabel,
 } from '@/lib/locations/grouped-location-options';
 import { LocationDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   label?: string;
@@ -118,11 +118,7 @@ export function MultiLocationPicker({
                 <AppText style={styles.chipText}>
                   {getLocationDistrictLabel(loc)}
                 </AppText>
-                <Ionicons
-                  name="close"
-                  size={14}
-                  color={theme.brand.primary}
-                />
+                <Ionicons name="close" size={14} color={theme.brand.primary} />
               </Pressable>
             );
           })}
@@ -135,11 +131,7 @@ export function MultiLocationPicker({
             <AppText style={styles.modalTitle}>Selecciona distritos</AppText>
 
             <View style={styles.searchWrap}>
-              <Ionicons
-                name="search"
-                size={18}
-                color={theme.text.tertiary}
-              />
+              <Ionicons name="search" size={18} color={theme.text.tertiary} />
               <RNTextInput
                 value={searchText}
                 onChangeText={setSearchText}
@@ -214,7 +206,7 @@ export function MultiLocationPicker({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

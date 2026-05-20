@@ -12,7 +12,7 @@ import {
   getLocationDistrictLabel,
 } from '@/lib/locations/grouped-location-options';
 import { LocationDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { Dropdown } from './Dropdown';
 
@@ -143,7 +143,7 @@ export function LocalLocationPicker({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     departmentRow: {

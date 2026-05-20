@@ -10,7 +10,7 @@ import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';
 import { MacroNutrientsDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const MACRO_GRAM_KEYS = [
   'proteins',
@@ -181,7 +181,7 @@ export default function MacrosCalculatorCalculateScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     ...formStyles(theme),

@@ -11,7 +11,7 @@ import {
 
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const INPUT_HEIGHT = 44;
 
@@ -50,7 +50,7 @@ export function SearchBar({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

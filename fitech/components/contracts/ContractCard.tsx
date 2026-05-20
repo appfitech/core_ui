@@ -8,7 +8,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ReviewableContractDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   contract: ReviewableContractDto;
@@ -126,7 +126,7 @@ function InfoRow({
   icon: keyof typeof Ionicons.glyphMap;
   text: string;
   styles: ReturnType<typeof getStyles>;
-  theme: FullTheme;
+  theme: AppTheme;
 }) {
   return (
     <View style={styles.row}>
@@ -147,7 +147,7 @@ function formatDate(iso: string) {
   });
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

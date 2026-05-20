@@ -17,7 +17,7 @@ import {
   MAX_EXERCISE_CARD_SETS_VISIBLE,
 } from '@/lib/workouts/exercise-form';
 import { ExerciseSetDto, WorkoutSessionDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   session: WorkoutSessionDto;
@@ -206,7 +206,7 @@ function SetRow({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     card: {

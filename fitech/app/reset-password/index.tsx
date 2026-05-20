@@ -18,7 +18,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSmartBack } from '@/hooks/use-smart-back';
 import { useResetPassword } from '@/lib/api/mutations/use-account-mutations';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { resolveTokenFromParams } from '@/utils/deep-link';
 import { resolveResetPasswordError } from '@/utils/errors';
 
@@ -265,7 +265,7 @@ export default function ResetPasswordScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return {
     ...StyleSheet.create({
       container: {

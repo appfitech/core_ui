@@ -16,7 +16,7 @@ import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useVerifyEmail } from '@/lib/api/mutations/use-account-mutations';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { resolveTokenFromParams } from '@/utils/deep-link';
 import { resolveVerifyEmailError } from '@/utils/errors';
 
@@ -154,7 +154,7 @@ export default function VerifyEmailScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return {
     ...StyleSheet.create({
       container: {

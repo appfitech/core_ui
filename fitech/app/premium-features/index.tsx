@@ -12,7 +12,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export default function PremiumFeaturesScreen() {
   const { theme } = useTheme();
@@ -63,7 +63,7 @@ export default function PremiumFeaturesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

@@ -25,7 +25,7 @@ import {
 } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 
@@ -401,7 +401,7 @@ export default function ChatDetailScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     screenRoot: {

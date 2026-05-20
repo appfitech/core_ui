@@ -22,7 +22,7 @@ import {
   LocationDto,
   MatchPreferencesDto,
 } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Gender = 'MALE' | 'FEMALE' | 'BOTH';
 type TimePref = 'MORNING' | 'AFTERNOON' | 'NIGHT' | 'WEEKEND';
@@ -499,7 +499,7 @@ function ChipRow({ children }: { children: React.ReactNode }) {
   return <View style={styles.chipRow}>{children}</View>;
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

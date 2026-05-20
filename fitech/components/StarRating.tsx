@@ -3,7 +3,7 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   value: number;
@@ -41,7 +41,7 @@ export function StarRating({ value, onChange, max = 5, size = 36 }: Props) {
   );
 }
 
-const getStyles = (_theme: FullTheme) =>
+const getStyles = (_theme: AppTheme) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',

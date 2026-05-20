@@ -11,7 +11,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserPayments } from '@/lib/api/queries/use-get-user-payments';
 import { useGetUserSubscription } from '@/lib/api/queries/use-get-user-subscription';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const { subscriptionScreen: copy } = TRANSLATIONS;
 
@@ -161,7 +161,7 @@ export default function SubscriptionScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,

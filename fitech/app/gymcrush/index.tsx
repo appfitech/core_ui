@@ -41,7 +41,7 @@ import {
 } from '@/lib/api/queries/matches/use-get-gymcrush-list';
 import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
 import { MatchScreenTab } from '@/types/forms';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getCandidateProfileImageUrl } from '@/utils/user';
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
@@ -309,7 +309,7 @@ export default function GymCrushScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageContainer: { paddingBottom: 0 },

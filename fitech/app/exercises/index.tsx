@@ -15,7 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
 import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import {
   ensureSpanishCalendarLocale,
   getCalendarTheme,
@@ -201,7 +201,7 @@ export default function ExercisesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },

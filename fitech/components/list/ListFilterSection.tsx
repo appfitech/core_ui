@@ -5,7 +5,7 @@ import { AppText } from '@/components/AppText';
 import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Chip = { label: string; value: string };
 
@@ -51,7 +51,7 @@ export function ListFilterSection({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     card: {

@@ -18,7 +18,7 @@ import {
   type TrainerClientItem,
   useTrainerGetClientsList,
 } from '@/lib/api/queries/use-trainer-get-clients-list';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { fromISODate, today } from '@/utils/dates';
 
 type Step = 1 | 2;
@@ -331,7 +331,7 @@ export default function NewTrainerRoutineScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     stepIndicator: {

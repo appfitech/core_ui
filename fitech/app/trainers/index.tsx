@@ -15,7 +15,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const LIST_GAP = 8;
 
@@ -113,10 +113,7 @@ export default function TrainersSearchScreen() {
               <ActivityIndicator color={theme.brand.primary} />
             </View>
           ) : (
-            <ListEmptyState
-              title={copy.emptyTitle}
-              hint={copy.emptyHint}
-            />
+            <ListEmptyState title={copy.emptyTitle} hint={copy.emptyHint} />
           )
         }
         contentContainerStyle={styles.listContent}
@@ -132,7 +129,7 @@ export default function TrainersSearchScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 0 },

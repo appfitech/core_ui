@@ -18,7 +18,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   isOpen: boolean;
@@ -155,7 +155,7 @@ export function ReviewModal({
   );
 }
 
-const getStyles = (theme: FullTheme, safeBottom: number) => {
+const getStyles = (theme: AppTheme, safeBottom: number) => {
   const text = textStyles(theme);
   const sheetBottom = Math.max(safeBottom, 16) + 20;
 

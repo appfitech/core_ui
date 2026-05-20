@@ -11,7 +11,7 @@ import Animated, { ZoomIn } from 'react-native-reanimated';
 
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 
@@ -109,7 +109,7 @@ export function Button({
   );
 }
 
-function getStyles(theme: FullTheme): ButtonStyles {
+function getStyles(theme: AppTheme): ButtonStyles {
   const base: ViewStyle = {
     minHeight: MIN_HEIGHT,
     paddingVertical: 14,

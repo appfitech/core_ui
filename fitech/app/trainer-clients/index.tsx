@@ -11,7 +11,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type ServiceItem = {
   serviceId: number;
@@ -345,7 +345,7 @@ export default function TrainerClientsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     contentWrap: {

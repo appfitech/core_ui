@@ -11,7 +11,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCreateContract } from '@/lib/api/mutations/use-create-contract';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
 
 const TERMS_SECTIONS: { title: string; body: string }[] = [
@@ -188,7 +188,7 @@ export default function TrainerContractScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     scroll: { flex: 1 },

@@ -20,7 +20,7 @@ import { useLogin } from '@/lib/api/mutations/use-account-mutations';
 import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 import { syncPushAfterAuth } from '@/lib/push/sync-push-after-auth';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 import {
   AUTH_UI_REVEAL_DELAY_MS,
@@ -201,7 +201,7 @@ export default function LoginScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const iconColor = theme.icon.secondary;
   const text = textStyles(theme);
 

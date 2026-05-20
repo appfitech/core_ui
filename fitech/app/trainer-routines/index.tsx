@@ -14,7 +14,7 @@ import type {
   ClientResourceGroupDtoReadable,
   ClientResourceResponseDtoReadable,
 } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const RESOURCE_TYPE = 'RUTINA' as const;
 const FILE_DOWNLOAD_BASE = 'https://appfitech.com/v1/app/file-upload/download';
@@ -405,7 +405,7 @@ export default function TrainerRoutinesScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     contentWrap: {

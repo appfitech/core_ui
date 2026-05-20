@@ -13,7 +13,7 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export type AlertButton = {
   text: string;
@@ -210,7 +210,7 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

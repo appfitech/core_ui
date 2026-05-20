@@ -7,7 +7,7 @@ import { Card } from '@/components/Card';
 import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export function MacrosCard() {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function MacrosCard() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     ...textStyles(theme),
     card: {

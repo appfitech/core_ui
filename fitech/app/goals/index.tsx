@@ -11,7 +11,7 @@ import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness
 import { useUserStore } from '@/stores/user';
 import { UserResponseDtoReadable } from '@/types/api/types.gen';
 import { FitnessGoal } from '@/types/fitness-goals';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export default function FitnessGoalsScreen() {
   const { theme } = useTheme();
@@ -110,7 +110,7 @@ export default function FitnessGoalsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     pageStyle: {
       rowGap: 20,

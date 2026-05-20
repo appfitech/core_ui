@@ -16,7 +16,7 @@ import Animated, {
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { rippleFromHex } from '@/utils/theme';
 
 import { AppText } from './AppText';
@@ -96,7 +96,7 @@ export function Tabs({ options, value, onSelect }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     tabsWrapper: {

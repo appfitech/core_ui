@@ -8,7 +8,7 @@ import { formStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FoodItemDto, SelectedFoodDto } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   foodItem: FoodItemDto;
@@ -71,7 +71,7 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
   });

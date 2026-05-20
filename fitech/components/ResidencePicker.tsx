@@ -10,7 +10,7 @@ import {
 import { AppText } from '@/components/AppText';
 import { Dropdown } from '@/components/Dropdown';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Option = {
   label: string;
@@ -148,7 +148,7 @@ export function ResidencePicker({ id, value, onChange }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       gap: 10,

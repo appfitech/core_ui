@@ -11,7 +11,7 @@ import { PersonalInfoFormField } from '@/constants/forms';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getPersonalInfoFieldValue } from '@/lib/personal-info/form';
 import { UserResponseDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getDOBMaxDate } from '@/utils/dates';
 
 type Props = {
@@ -175,7 +175,7 @@ export function PersonalInfoFormFields({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     verifiedTag: {
       flexDirection: 'row',

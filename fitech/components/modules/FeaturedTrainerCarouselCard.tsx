@@ -8,7 +8,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { getUserAvatarURL } from '@/utils/user';
 
 type Props = {
@@ -19,7 +19,11 @@ type Props = {
 
 const { featuredTrainersSection: copy } = TRANSLATIONS;
 
-export function FeaturedTrainerCarouselCard({ trainer, width, onPress }: Props) {
+export function FeaturedTrainerCarouselCard({
+  trainer,
+  width,
+  onPress,
+}: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const name =
@@ -53,13 +57,17 @@ export function FeaturedTrainerCarouselCard({ trainer, width, onPress }: Props) 
 
       <View style={styles.detailLink}>
         <AppText style={styles.detailText}>{copy.viewProfile}</AppText>
-        <Ionicons name="chevron-forward" size={16} color={theme.brand.primary} />
+        <Ionicons
+          name="chevron-forward"
+          size={16}
+          color={theme.brand.primary}
+        />
       </View>
     </Pressable>
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

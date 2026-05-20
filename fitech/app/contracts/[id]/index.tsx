@@ -15,7 +15,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
 import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
 import { getFileUploadViewUrl } from '@/utils/files';
 
@@ -192,7 +192,7 @@ export default function ContractDetailScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },

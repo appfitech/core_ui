@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Option } from '@/types/forms';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   options: Option[];
@@ -44,7 +44,7 @@ export function ChipsList({ options, selectedValues, onChange }: Props) {
   );
 }
 
-const getStyles = (_theme: FullTheme) =>
+const getStyles = (_theme: AppTheme) =>
   StyleSheet.create({
     row: {
       flexDirection: 'row',

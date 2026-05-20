@@ -7,8 +7,8 @@ import { Button } from '@/components/Button';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { AppTheme } from '@/types/theme';
 import { TrainerService } from '@/types/trainer';
-import { FullTheme } from '@/types/theme';
 
 type Props = {
   service: TrainerService;
@@ -52,7 +52,7 @@ export function TrainerServiceCard({ service, onHire }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

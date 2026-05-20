@@ -22,7 +22,7 @@ import { useSetProfilePhoto } from '@/lib/api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '@/lib/api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '@/lib/api/queries/useGetUserPhotos';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 import { getFileUploadViewUrl } from '@/utils/files';
 import {
@@ -111,7 +111,13 @@ export default function ImageGalleryScreen() {
         },
       );
     },
-    [common.errorTitle, copy.profilePhotoError, setProfilePhoto, showAlert, updateProfilePhotoId],
+    [
+      common.errorTitle,
+      copy.profilePhotoError,
+      setProfilePhoto,
+      showAlert,
+      updateProfilePhotoId,
+    ],
   );
 
   const confirmSetAsProfile = useCallback(
@@ -269,9 +275,7 @@ export default function ImageGalleryScreen() {
       const isProfile = profilePhotoId === photoId;
 
       showAlert({
-        title: isProfile
-          ? copy.deleteProfilePhotoTitle
-          : copy.deletePhotoTitle,
+        title: isProfile ? copy.deleteProfilePhotoTitle : copy.deletePhotoTitle,
         message: isProfile
           ? copy.deleteProfilePhotoMessage
           : copy.deletePhotoMessage,
@@ -421,7 +425,9 @@ export default function ImageGalleryScreen() {
                 <View style={styles.uploadIconBox}>
                   <Ionicons name="add" size={22} color={theme.text.inverse} />
                 </View>
-                <AppText style={styles.uploadLabel}>{copy.addPhotoLabel}</AppText>
+                <AppText style={styles.uploadLabel}>
+                  {copy.addPhotoLabel}
+                </AppText>
               </>
             )}
           </Pressable>
@@ -516,7 +522,7 @@ export default function ImageGalleryScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     page: { paddingBottom: 0 },
     headerBlock: { rowGap: 16, marginBottom: 16 },

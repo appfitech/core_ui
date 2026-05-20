@@ -9,7 +9,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { isDietResourceType } from '@/utils/resources';
 
 const CARD_MIN_HEIGHT = 108;
@@ -96,7 +96,7 @@ function InfoRow({
   icon: keyof typeof Ionicons.glyphMap;
   text: string;
   styles: ReturnType<typeof getStyles>;
-  theme: FullTheme;
+  theme: AppTheme;
 }) {
   return (
     <View style={styles.row}>
@@ -108,7 +108,7 @@ function InfoRow({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({

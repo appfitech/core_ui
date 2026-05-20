@@ -3,7 +3,7 @@ import { StyleSheet, Switch, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   label: string;
@@ -24,7 +24,7 @@ export function SwitchRow({ label, labelStyle, value, onChange }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     container: {

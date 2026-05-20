@@ -1,6 +1,6 @@
 import { TextStyle, ViewStyle } from 'react-native';
 
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 /**
  * Design system — shared text & form styles.
@@ -186,17 +186,14 @@ export function getInterFontFamily(weight?: TextStyle['fontWeight']): string {
   return 'Inter_400Regular';
 }
 
-export function getTextStyle(
-  theme: FullTheme,
-  variant: TextVariant,
-): TextStyle {
+export function getTextStyle(theme: AppTheme, variant: TextVariant): TextStyle {
   return textStyles(theme)[variant];
 }
 
 export type TextStyles = Record<TextVariant, TextStyle>;
 
 /** All semantic text styles for the active theme. */
-export function textStyles(theme: FullTheme): TextStyles {
+export function textStyles(theme: AppTheme): TextStyles {
   const base: Record<TypographyScale, TextStyle> = {
     display: { ...TYPOGRAPHY.display, color: theme.text.primary },
     statLarge: { ...TYPOGRAPHY.statLarge, color: theme.text.primary },
@@ -256,7 +253,7 @@ export type FormStyles = {
   optionalTag: ViewStyle;
 };
 
-export function formStyles(theme: FullTheme): FormStyles {
+export function formStyles(theme: AppTheme): FormStyles {
   const text = textStyles(theme);
 
   return {

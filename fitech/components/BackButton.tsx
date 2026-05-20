@@ -3,7 +3,7 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const BUTTON_SIZE = 36;
 const ICON_SIZE = 20;
@@ -38,7 +38,7 @@ export function BackButton({ variant = 'default', onPress }: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme, isLight: boolean) =>
+const getStyles = (theme: AppTheme, isLight: boolean) =>
   StyleSheet.create({
     button: {
       width: BUTTON_SIZE,

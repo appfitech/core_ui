@@ -1,17 +1,12 @@
 import React from 'react';
-import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type ConfirmVariant = 'destructive' | 'primary';
 
@@ -91,7 +86,9 @@ export function ContractConfirmSheet({
               style={styles.actionButton}
             />
             <Button
-              type={confirmVariant === 'destructive' ? 'destructive' : 'primary'}
+              type={
+                confirmVariant === 'destructive' ? 'destructive' : 'primary'
+              }
               label={confirmLabel}
               onPress={handleConfirm}
               animated={false}
@@ -104,7 +101,7 @@ export function ContractConfirmSheet({
   );
 }
 
-const getStyles = (theme: FullTheme, safeBottom: number) => {
+const getStyles = (theme: AppTheme, safeBottom: number) => {
   const text = textStyles(theme);
   const sheetBottom = Math.max(safeBottom, 16) + 20;
 

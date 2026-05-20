@@ -13,7 +13,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDeleteAccount } from '@/lib/api/mutations/use-account-mutations';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
 
 export default function DeleteAccountScreen() {
@@ -53,12 +53,7 @@ export default function DeleteAccountScreen() {
         );
       },
     });
-  }, [
-    deleteAccount,
-    deleteAccountScreen,
-    router,
-    showAlert,
-  ]);
+  }, [deleteAccount, deleteAccountScreen, router, showAlert]);
 
   const handleConfirmDelete = useCallback(() => {
     showAlert({
@@ -104,10 +99,7 @@ export default function DeleteAccountScreen() {
         {deleteAccountScreen.note}
       </AppText>
 
-      <ErrorBanner
-        errorMessage={errorMsg}
-        onClear={() => setErrorMsg(null)}
-      />
+      <ErrorBanner errorMessage={errorMsg} onClear={() => setErrorMsg(null)} />
 
       <View style={styles.actions}>
         <Button
@@ -132,7 +124,7 @@ export default function DeleteAccountScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     page: {
       paddingHorizontal: 16,

@@ -5,7 +5,7 @@ import { AppText } from '@/components/AppText';
 import { BackButton } from '@/components/BackButton';
 import { RegisterProgress } from '@/components/register/RegisterProgress';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 type Props = {
   step: number;
@@ -56,7 +56,7 @@ export function RegisterWizardHeader({
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     container: {
       marginBottom: 8,

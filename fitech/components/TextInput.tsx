@@ -12,7 +12,7 @@ import {
   shouldUseAndroidTextBuffer,
   useAndroidControlledTextBuffer,
 } from '@/hooks/use-android-controlled-text-buffer';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 import { Tag } from './Tag';
@@ -183,7 +183,7 @@ export function TextInput(props: Props) {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     ...formStyles(theme),
     field: {

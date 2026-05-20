@@ -9,15 +9,15 @@ import {
   View,
 } from 'react-native';
 
-import { FeaturedTrainerCarouselCard } from '@/components/modules/FeaturedTrainerCarouselCard';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
+import { FeaturedTrainerCarouselCard } from '@/components/modules/FeaturedTrainerCarouselCard';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
 import { useUserStore } from '@/stores/user';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const FEATURED_TRAINER_LIMIT = 3;
 const CARD_GAP = 12;
@@ -90,9 +90,7 @@ export function UserFavoriteTrainersSection() {
     >
       <FlatList
         data={featuredTrainers}
-        keyExtractor={(item, index) =>
-          `featured-trainer-${item.id ?? index}`
-        }
+        keyExtractor={(item, index) => `featured-trainer-${item.id ?? index}`}
         horizontal
         showsHorizontalScrollIndicator={false}
         decelerationRate="fast"
@@ -116,10 +114,7 @@ export function UserFavoriteTrainersSection() {
           {featuredTrainers.map((trainer, index) => (
             <View
               key={`dot-${trainer.id ?? index}`}
-              style={[
-                styles.dot,
-                index === activeIndex && styles.dotActive,
-              ]}
+              style={[styles.dot, index === activeIndex && styles.dotActive]}
             />
           ))}
         </View>
@@ -128,7 +123,7 @@ export function UserFavoriteTrainersSection() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     listContent: {
       columnGap: CARD_GAP,

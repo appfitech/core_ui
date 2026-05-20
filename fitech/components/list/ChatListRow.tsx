@@ -5,7 +5,7 @@ import { AppText } from '@/components/AppText';
 import { AvatarPhoto } from '@/components/AvatarPhoto';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 const FITECH_LOGO = require('@/assets/images/logos/rounded_logo.webp');
 
@@ -84,7 +84,7 @@ function ChatListRowComponent({ chat, isTrainer, onPress }: Props) {
 
 export const ChatListRow = memo(ChatListRowComponent);
 
-const getStyles = (theme: FullTheme) => {
+const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     row: {

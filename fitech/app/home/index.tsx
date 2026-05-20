@@ -8,7 +8,7 @@ import { GreetingHeader } from '@/components/modules/GreetingHeader';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 export default function HomeScreen() {
   const { theme } = useTheme();
@@ -33,7 +33,7 @@ export default function HomeScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) =>
+const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
     wrapper: {
       flex: 1,
