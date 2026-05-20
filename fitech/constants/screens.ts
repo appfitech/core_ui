@@ -87,6 +87,7 @@ export const PROFILE_MENU_SECTIONS: {
         label: 'Eliminar cuenta',
         icon: 'trash',
         route: ROUTES.deleteAccount,
+        destructive: true,
       },
       {
         label: 'Logout',

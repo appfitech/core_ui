@@ -26,6 +26,12 @@ export const TRANSLATIONS = {
     successMessage:
       'Tu cuenta fue creada correctamente. Revisa tu correo electrónico y confirma tu cuenta antes de iniciar sesión.',
     successButton: 'Ir a iniciar sesión',
+    cancelRegisterButton: 'Cancelar registro',
+    cancelRegisterTitle: '¿Abandonar registro?',
+    cancelRegisterMessage:
+      'Saldrás del proceso de registro. Los datos que ingresaste no se guardarán.',
+    cancelRegisterStay: 'Seguir registrándome',
+    cancelRegisterLeave: 'Salir',
   },
   verifyEmailScreen: {
     title: 'Verifica tu correo',
@@ -56,6 +62,51 @@ export const TRANSLATIONS = {
       'Si existe una cuenta con ese correo, recibirás instrucciones para restablecer tu contraseña.',
     errorFallback:
       'No pudimos enviar el correo. Inténtalo de nuevo en unos minutos.',
+  },
+  changePasswordScreen: {
+    title: 'Cambiar contraseña',
+    introTitle: 'Antes de continuar',
+    introBody:
+      'Por seguridad, al cambiar tu contraseña cerraremos tu sesión en este dispositivo. Deberás iniciar sesión de nuevo con tu nueva contraseña.',
+    currentPasswordLabel: 'Contraseña actual',
+    currentPasswordPlaceholder: 'Tu contraseña actual',
+    newPasswordLabel: 'Nueva contraseña',
+    newPasswordPlaceholder: 'Mínimo 6 caracteres',
+    confirmPasswordLabel: 'Confirmar nueva contraseña',
+    confirmPasswordPlaceholder: 'Repite la nueva contraseña',
+    submitButton: 'Cambiar contraseña',
+    cancelButton: 'Cancelar',
+    currentRequired: 'Ingresa tu contraseña actual.',
+    passwordRequired: 'Ingresa tu nueva contraseña.',
+    passwordTooShort: 'La contraseña debe tener al menos 6 caracteres.',
+    confirmRequired: 'Confirma tu nueva contraseña.',
+    passwordsMismatch: 'Las contraseñas no coinciden.',
+    sameAsCurrent: 'La nueva contraseña debe ser distinta a la actual.',
+    confirmTitle: '¿Cambiar contraseña?',
+    confirmMessage:
+      'Se cerrará tu sesión y tendrás que iniciar sesión con la nueva contraseña.',
+    confirmAction: 'Sí, cambiar',
+    confirmCancel: 'No, volver',
+    successTitle: 'Contraseña actualizada',
+    successMessage: 'Inicia sesión con tu nueva contraseña.',
+    errorFallback:
+      'No pudimos cambiar tu contraseña. Verifica la contraseña actual e inténtalo de nuevo.',
+  },
+  deleteAccountScreen: {
+    title: 'Eliminar cuenta',
+    introTitle: 'Esta acción es permanente',
+    bullets: [
+      'Se eliminará tu perfil, fotos y datos personales.',
+      'Perderás acceso a rutinas, dietas, contratos y chats asociados a tu cuenta.',
+      'Las suscripciones o contratos activos pueden cancelarse según las políticas de la plataforma.',
+      'No podrás recuperar la cuenta después de confirmar.',
+    ],
+    note: 'La eliminación definitiva estará disponible cuando el servidor habilite este proceso.',
+    cancelButton: 'Cancelar',
+    confirmButton: 'Eliminar mi cuenta',
+    unavailableTitle: 'Próximamente',
+    unavailableMessage:
+      'La eliminación de cuenta aún no está disponible. Contacta a soporte si necesitas cerrar tu cuenta.',
   },
   resetPasswordScreen: {
     title: 'Nueva contraseña',

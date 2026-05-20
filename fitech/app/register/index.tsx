@@ -50,6 +50,22 @@ export default function Register() {
     router.back();
   }, [isPending, router, step]);
 
+  const handleAbandonRegister = useCallback(() => {
+    if (isPending) return;
+
+    showAlert({
+      title: registerScreen.cancelRegisterTitle,
+      message: registerScreen.cancelRegisterMessage,
+      buttons: [
+        { text: registerScreen.cancelRegisterStay, style: 'cancel' },
+        {
+          text: registerScreen.cancelRegisterLeave,
+          onPress: () => router.replace('/'),
+        },
+      ],
+    });
+  }, [isPending, registerScreen, router, showAlert]);
+
   const handleNext = useCallback(() => {
     const error = validateRegisterStep(step, form, { confirmPassword });
     if (error) {
@@ -152,6 +168,8 @@ export default function Register() {
         title={currentStep.title}
         subtitle={currentStep.subtitle}
         onBack={handleBack}
+        onCancelRegister={handleAbandonRegister}
+        cancelLabel={registerScreen.cancelRegisterButton}
       />
 
       <ErrorBanner errorMessage={errorMsg} onClear={() => setErrorMsg(null)} />
