@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AnimatedAppText } from '@/components/AnimatedAppText';
 import { Button } from '@/components/Button';
@@ -11,13 +11,11 @@ import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSmartBack } from '@/hooks/use-smart-back';
 import { useResetPassword } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
 import { resolveTokenFromParams } from '@/utils/deep-link';
-import {
-  extractErrorMessage,
-  resolveResetPasswordError,
-} from '@/utils/errors';
+import { resolveResetPasswordError } from '@/utils/errors';
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -25,6 +23,7 @@ export default function ResetPasswordScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
+  const handleBack = useSmartBack();
   const { resetPasswordScreen } = TRANSLATIONS;
 
   const params = useLocalSearchParams<{
@@ -86,27 +85,17 @@ export default function ResetPasswordScreen() {
         },
       },
     );
-  }, [
-    confirmPassword,
-    password,
-    resetPassword,
-    resetPasswordScreen,
-    token,
-  ]);
+  }, [confirmPassword, password, resetPassword, resetPasswordScreen, token]);
 
   const handleGoToLogin = useCallback(() => {
     router.replace(ROUTES.login);
   }, [router]);
 
-  if (!token) {
-    return (
-      <PageContainer
-        hasBackButton={false}
-        hasBottomPadding={false}
-        hasNoTopPadding
-        contentPaddingBottom={32}
-        style={styles.page}
-      >
+  const hasBackButton = !isSuccess;
+
+  const renderContent = () => {
+    if (!token) {
+      return (
         <View style={styles.content}>
           <View style={styles.iconCircle}>
             <Ionicons
@@ -127,19 +116,11 @@ export default function ResetPasswordScreen() {
             animated={false}
           />
         </View>
-      </PageContainer>
-    );
-  }
+      );
+    }
 
-  if (isSuccess) {
-    return (
-      <PageContainer
-        hasBackButton={false}
-        hasBottomPadding={false}
-        hasNoTopPadding
-        contentPaddingBottom={32}
-        style={styles.page}
-      >
+    if (isSuccess) {
+      return (
         <View style={styles.content}>
           <View style={styles.iconCircle}>
             <Ionicons
@@ -160,19 +141,10 @@ export default function ResetPasswordScreen() {
             animated={false}
           />
         </View>
-      </PageContainer>
-    );
-  }
+      );
+    }
 
-  return (
-    <PageContainer
-      authOptimized
-      hasBackButton
-      hasBottomPadding={false}
-      hasNoTopPadding
-      contentPaddingBottom={32}
-      style={styles.page}
-    >
+    return (
       <View style={styles.content}>
         <View style={styles.iconCircle}>
           <Ionicons
@@ -191,7 +163,10 @@ export default function ResetPasswordScreen() {
           </AnimatedAppText>
         </View>
 
-        <ErrorBanner errorMessage={errorMsg} onClear={() => setErrorMsg(null)} />
+        <ErrorBanner
+          errorMessage={errorMsg}
+          onClear={() => setErrorMsg(null)}
+        />
 
         <TextInput
           startElement={
@@ -258,13 +233,48 @@ export default function ResetPasswordScreen() {
           animated={false}
         />
       </View>
-    </PageContainer>
+    );
+  };
+
+  return (
+    <ImageBackground
+      source={require('@/assets/images/backgrounds/reset_password_bg.jpg')}
+      style={styles.container}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay} pointerEvents="none" />
+      <PageContainer
+        authOptimized
+        transparentBackground
+        hasBackButton={hasBackButton}
+        onBackPress={handleBack}
+        hasBottomPadding={false}
+        hasNoTopPadding
+        contentPaddingBottom={32}
+        style={styles.page}
+      >
+        {renderContent()}
+      </PageContainer>
+    </ImageBackground>
   );
 }
 
 const getStyles = (theme: FullTheme) => {
   return {
     ...StyleSheet.create({
+      container: {
+        flex: 1,
+      },
+      backgroundImage: {
+        width: '100%',
+        height: '100%',
+        opacity: 0.85,
+      },
+      overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(5, 6, 8, 0.85)',
+      },
       page: {
         paddingHorizontal: 24,
       },

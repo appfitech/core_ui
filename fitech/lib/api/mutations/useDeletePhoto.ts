@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
   invalidateProfileQueries,
+  refreshCurrentUserSession,
   syncUserFromMutation,
 } from '@/lib/api/mutation-cache';
 import { useUserStore } from '@/stores/user';
@@ -16,9 +17,17 @@ export const useDeletePhoto = () => {
   return useMutation<LoginResponse, Error, number>({
     mutationFn: async (photoId: number): Promise<LoginResponse> =>
       api.delete(`/profile/${userId}/photos/${photoId}`),
-    onSuccess: async (data) => {
+    onSuccess: async (data, deletedPhotoId) => {
+      const profilePhotoId =
+        useUserStore.getState().user?.user?.person?.profilePhotoId;
+
+      if (profilePhotoId != null && profilePhotoId === deletedPhotoId) {
+        await useUserStore.getState().clearProfilePhotoId();
+      }
+
       await syncUserFromMutation(data);
       await invalidateProfileQueries(queryClient);
+      await refreshCurrentUserSession();
     },
   });
 };

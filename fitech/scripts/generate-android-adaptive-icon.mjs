@@ -8,8 +8,11 @@ import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const input = join(root, 'assets/images/icon_2.png');
-const output = join(root, 'assets/images/android-adaptive-foreground.png');
+const input = join(root, 'assets/images/logos/app-icon.png');
+const output = join(
+  root,
+  'assets/images/logos/android-adaptive-foreground.png',
+);
 
 const SIZE = 1024;
 /** Logo fits inside the circular mask without clipping corners of the F. */

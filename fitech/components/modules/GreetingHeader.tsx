@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { AvatarPhoto } from '@/components/AvatarPhoto';
 import { ChatButton } from '@/components/ChatButton';
 import { NotificationsButton } from '@/components/NotificationsButton';
 import { SupportButton } from '@/components/SupportButton';
@@ -23,9 +24,11 @@ export function GreetingHeader() {
     <View style={styles.headerWrapper}>
       <View style={styles.topRow}>
         <View style={styles.avatarRow}>
-          {userAvatarURL && (
-            <Image source={{ uri: userAvatarURL }} style={styles.avatar} />
-          )}
+          <AvatarPhoto
+            url={userAvatarURL}
+            gender={user?.user?.person?.gender}
+            size={30}
+          />
           <TouchableOpacity onPress={() => router.push(ROUTES.profile)}>
             <AppText variant="greeting" style={styles.greeting}>
               {`Hola ${user?.user?.person?.firstName ?? 'Usuario'}`}
@@ -81,10 +84,5 @@ const getStyles = (theme: FullTheme) =>
       textAlign: 'left',
       flexShrink: 1,
       paddingRight: 100,
-    },
-    avatar: {
-      width: 30,
-      height: 30,
-      borderRadius: 70,
     },
   });

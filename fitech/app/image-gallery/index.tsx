@@ -512,7 +512,7 @@ const getStyles = (theme: FullTheme) =>
       borderWidth: 1,
       borderColor: theme.border.default,
       borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
+      borderLeftColor: theme.status.info.icon,
       padding: 16,
       rowGap: 8,
     },

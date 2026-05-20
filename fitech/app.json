@@ -4,7 +4,7 @@
     "slug": "fitech",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon_2.png",
+    "icon": "./assets/images/logos/app-icon.png",
     "scheme": "fitech",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -34,7 +34,7 @@
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/android-adaptive-foreground.png",
+        "foregroundImage": "./assets/images/logos/android-adaptive-foreground.png",
         "backgroundColor": "#39CC39"
       },
       "package": "com.fitech",
@@ -86,7 +86,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/icon_2.png"
+      "favicon": "./assets/images/logos/app-icon.png"
     },
     "plugins": [
       [
@@ -98,7 +98,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/android-notification-icon.png",
+          "icon": "./assets/images/logos/android-notification-icon.png",
           "color": "#39CC39",
           "defaultChannel": "default"
         }
@@ -106,7 +106,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon_2.png",
+          "image": "./assets/images/logos/app-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#39CC39"

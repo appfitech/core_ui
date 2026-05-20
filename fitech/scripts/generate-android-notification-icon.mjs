@@ -14,10 +14,10 @@ const root = join(__dirname, '..');
 
 const INPUT_CANDIDATES = [
   join(root, 'assets/images/logos/rounded_logo.webp'),
-  join(root, 'assets/images/icon_2.png'),
+  join(root, 'assets/images/logos/app-icon.png'),
 ];
 
-const output = join(root, 'assets/images/android-notification-icon.png');
+const output = join(root, 'assets/images/logos/android-notification-icon.png');
 const SIZE = 96;
 
 const resolvedInput = INPUT_CANDIDATES.find((p) => existsSync(p));

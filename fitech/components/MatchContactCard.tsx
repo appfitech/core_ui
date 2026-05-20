@@ -71,7 +71,7 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.dataContainer}>
-        <AvatarPhoto url={profileImageUrl ?? ''} />
+        <AvatarPhoto url={profileImageUrl ?? undefined} />
 
         <View style={styles.nameBlock}>
           <AppText style={styles.nameText}>

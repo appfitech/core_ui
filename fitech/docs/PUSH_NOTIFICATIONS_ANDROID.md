@@ -11,7 +11,7 @@ iOS can work with only APNs credentials in EAS. **Android also needs FCM (Fireba
 5. **`google-services.json` committed** — `fitech/google-services.json` + `android.googleServicesFile` in `app.json`. **OTA cannot add this**; you need a new EAS build after committing the file.
 6. **FCM V1 in EAS** — `eas credentials` → Android → FCM V1 assigned (not “None”).
 7. **Firebase** — In [Google Cloud Console](https://console.cloud.google.com/), enable **Firebase Cloud Messaging API** for project `fitech-344b4`.
-8. **Notification icon** — Android uses `assets/images/android-notification-icon.png` (white F on transparent). Do **not** use the full-color app icon (`icon_2.png`); Android will show a green/white blob. Regenerate with `npm run generate:android-notification-icon` after logo changes, then a new EAS build.
+8. **Notification icon** — Android uses `assets/images/logos/android-notification-icon.png` (white F on transparent). Do **not** use the full-color app icon (`logos/app-icon.png`); Android will show a green/white blob. Regenerate with `npm run generate:android-notification-icon` after logo changes, then a new EAS build.
 9. **`channelId: "default"`** — every push payload to Android must include the channel id that matches the app channel (`default`). The test mutation and server sends must set this.
 10. **Token on server** — After login, `withPushNotifications` calls `POST /user/register-push-token` automatically. Confirm your user appears at `GET /user/push-tokens`. Test tools only shows the cached token and sends a test push.
 

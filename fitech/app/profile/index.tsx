@@ -1,10 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import AvatarSvg from '@/assets/images/avatar.svg';
 import { AppText } from '@/components/AppText';
+import { AvatarPhoto } from '@/components/AvatarPhoto';
 import { ListItem } from '@/components/ListItem';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
@@ -45,23 +45,12 @@ export default function ProfileScreen() {
   return (
     <PageContainer hasBackButton={false}>
       <View style={styles.header}>
-        {userAvatarURL ? (
-          <Image
-            source={{
-              uri: userAvatarURL,
-            }}
-            style={styles.avatar}
-          />
-        ) : (
-          <View
-            style={[
-              styles.avatarWrapper,
-              { backgroundColor: theme.background.input },
-            ]}
-          >
-            <AvatarSvg width="100%" height="100%" />
-          </View>
-        )}
+        <AvatarPhoto
+          url={userAvatarURL}
+          gender={person?.gender}
+          size={88}
+          containerStyle={styles.avatar}
+        />
         <AppText style={styles.name}>
           {`${person?.firstName ?? ''} ${person?.lastName ?? ''}`}
         </AppText>
@@ -135,16 +124,7 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 8,
     },
     avatar: {
-      width: 88,
-      height: 88,
-      borderRadius: 44,
       marginBottom: 12,
-    },
-    avatarWrapper: {
-      width: 88,
-      height: 88,
-      borderRadius: 44,
-      overflow: 'hidden',
     },
     name: {
       ...text.title,
