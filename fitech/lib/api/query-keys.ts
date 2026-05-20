@@ -84,6 +84,8 @@ export const queryKeys = {
     payments: ['/memberships/payment-history'] as const,
   },
   macros: {
-    search: (q: string) => ['search-macros', q] as const,
+    categories: ['food-categories'] as const,
+    search: (categoryId: number | 'all', q: string) =>
+      ['search-foods', categoryId, q] as const,
   },
 } as const;

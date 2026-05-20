@@ -174,14 +174,8 @@ export default function ChatDetailScreen() {
       };
 
       ws.onmessage = (event) => {
-        if (__DEV__) {
-          console.log('[K] event', event);
-        }
         try {
           const msgFromApi: MessageDto = JSON.parse(event.data);
-          if (__DEV__) {
-            console.log('[K] msgFromApi', msgFromApi);
-          }
 
           if (msgFromApi.conversationId !== conversationIdNumber) return;
 
@@ -197,13 +191,7 @@ export default function ChatDetailScreen() {
       };
 
       ws.onclose = (event) => {
-        if (__DEV__) {
-          console.log('[K] event.code', event.code);
-        }
         wsRef.current = null;
-        if (__DEV__) {
-          console.log('Chat WebSocket closed', event.code, event.reason);
-        }
 
         if (isUnmounted) return;
 
@@ -216,9 +204,6 @@ export default function ChatDetailScreen() {
       };
 
       ws.onerror = (event) => {
-        if (__DEV__) {
-          console.log('[K] error', JSON.stringify(event));
-        }
         console.error('Chat WebSocket error', event);
       };
     };

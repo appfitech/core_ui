@@ -14,7 +14,19 @@ export const useCalculateMacros = () => {
     MacroCalculationRequestDto
   >({
     mutationFn: async (request) => {
-      return api.post('/nutrition/foods/calculate-macros', request);
+      const result = await api.post(
+        '/nutrition/foods/calculate-macros',
+        request,
+      );
+      if (
+        result &&
+        typeof result === 'object' &&
+        'data' in result &&
+        (result as { data: unknown }).data
+      ) {
+        return (result as { data: MacroCalculationResponseDto }).data;
+      }
+      return result as MacroCalculationResponseDto;
     },
   });
 };

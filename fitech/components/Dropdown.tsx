@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { ReactElement, useMemo } from 'react';
 import {
   Platform,
+  Pressable,
   StyleSheet,
   TextInput as NativeTextInput,
   View,
@@ -36,6 +37,8 @@ export type Props = {
   required?: boolean;
   renderItem?: (item: DropdownItem, selected?: boolean) => ReactElement | null;
   onSearchChange?: (text: string) => void;
+  /** Shows a clear control when a value is selected. @default false */
+  clearable?: boolean;
 };
 
 export function Dropdown({
@@ -52,6 +55,7 @@ export function Dropdown({
   required = true,
   renderItem: renderItemProp,
   onSearchChange,
+  clearable = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -154,11 +158,27 @@ export function Dropdown({
             : undefined
         }
         renderRightIcon={() => (
-          <Ionicons
-            name="chevron-down"
-            size={20}
-            color={theme.icon.secondary}
-          />
+          <View style={styles.rightIcons}>
+            {clearable && selectedValue ? (
+              <Pressable
+                onPress={() => onChange('')}
+                hitSlop={8}
+                accessibilityRole="button"
+                accessibilityLabel="Limpiar selección"
+              >
+                <Ionicons
+                  name="close-circle"
+                  size={20}
+                  color={theme.icon.muted}
+                />
+              </Pressable>
+            ) : null}
+            <Ionicons
+              name="chevron-down"
+              size={20}
+              color={theme.icon.secondary}
+            />
+          </View>
         )}
         renderItem={
           renderItemProp ??
@@ -266,6 +286,11 @@ const getStyles = (theme: AppTheme) => {
       color: theme.text.primary,
       paddingHorizontal: 12,
       height: 44,
+    },
+    rightIcons: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 8,
     },
   });
 };

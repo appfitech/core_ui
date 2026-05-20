@@ -1,99 +1,73 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Dimensions,
   FlatList,
-  ListRenderItem,
-  Platform,
+  ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { MacroFoodCard } from '@/components/macros/MacroFoodCard';
+import { Button } from '@/components/Button';
+import { Dropdown } from '@/components/Dropdown';
+import { MacroFoodCarouselCard } from '@/components/macros/MacroFoodCarouselCard';
+import { MacroSelectedFoodPills } from '@/components/macros/MacroSelectedFoodPills';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
-import { useSearchMacros } from '@/lib/api/queries/use-search-macros';
+import { useGetFoodCategories } from '@/lib/api/queries/use-get-food-categories';
+import { useSearchFoods } from '@/lib/api/queries/use-search-foods';
 import { FoodItemDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 
-const LIST_ITEM_GAP = 10;
-
-type SearchHeaderProps = {
-  query: string;
-  onQueryChange: (q: string) => void;
-  onCalculate: () => void;
-  styles: ReturnType<typeof getStyles>;
-  theme: AppTheme;
-};
-
-function MacrosSearchHeader({
-  query,
-  onQueryChange,
-  onCalculate,
-  styles,
-  theme,
-}: SearchHeaderProps) {
-  return (
-    <View style={styles.searchHeader}>
-      <AppText style={styles.sectionLabel}>
-        {'Selecciona tus alimentos'}
-      </AppText>
-      <View style={styles.searchRow}>
-        <SearchBar
-          placeholder="Buscar comida"
-          value={query}
-          onChangeText={onQueryChange}
-          shouldHideEndIcon={true}
-          containerStyle={styles.searchBarContainer}
-        />
-        <TouchableOpacity
-          style={styles.searchButton}
-          accessibilityRole="button"
-        >
-          <Ionicons
-            name="chevron-forward"
-            size={22}
-            color={theme.background.app}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.calculateRow}>
-        <TouchableOpacity style={styles.calculateButton} onPress={onCalculate}>
-          <AppText style={styles.calculateButtonText}>{'Calcular'}</AppText>
-          <Ionicons name="play" size={20} color={theme.background.app} />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+const CARD_GAP = 12;
+const SCREEN_WIDTH = Dimensions.get('window').width;
+const CARD_WIDTH = Math.min(260, SCREEN_WIDTH * 0.72);
+const ALL_CATEGORIES_VALUE = '';
 
 export default function MacrosCalculatorScreen() {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
+  const { macrosCalculatorScreen: copy } = TRANSLATIONS;
 
   const [query, setQuery] = useState('');
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   const { selectedItems, onFoodSelection } = useMacroFoodItemsContext();
 
   const debouncedQuery = useDebounce(query, 400);
-  const trimmedDebounced = debouncedQuery.trim();
+  const { data: categories = [], isLoading: categoriesLoading } =
+    useGetFoodCategories();
   const {
-    data: macrosResults = [],
+    data: foods = [],
     isFetching,
-    isLoading,
-  } = useSearchMacros(trimmedDebounced);
-  const router = useRouter();
+    isLoading: foodsLoading,
+  } = useSearchFoods({
+    query: debouncedQuery,
+    categoryId,
+  });
 
-  const handleOpenCalculateMacros = useCallback(() => {
-    router.push('/macros-calculator/calculate');
-  }, [router]);
+  const router = useRouter();
+  const snapInterval = CARD_WIDTH + CARD_GAP;
+  const isFoodsLoading = foodsLoading || isFetching;
+
+  const categoryOptions = useMemo(
+    () => [
+      { label: copy.categoryPlaceholder, value: ALL_CATEGORIES_VALUE },
+      ...categories
+        .filter((cat) => cat.id != null && cat.name)
+        .map((cat) => ({
+          label: cat.name!,
+          value: String(cat.id),
+        })),
+    ],
+    [categories, copy.categoryPlaceholder],
+  );
 
   const selectedIds = useMemo(() => {
     const ids = new Set<number>();
@@ -103,176 +77,177 @@ export default function MacrosCalculatorScreen() {
     return ids;
   }, [selectedItems]);
 
-  const selectedIdsKey = useMemo(
-    () => [...selectedIds].sort((a, b) => a - b).join(','),
-    [selectedIds],
+  const handleOpenCalculate = useCallback(() => {
+    router.push('/macros-calculator/calculate');
+  }, [router]);
+
+  const handleCategoryChange = useCallback((value: string) => {
+    if (value === '' || value === ALL_CATEGORIES_VALUE) {
+      setCategoryId(null);
+    } else {
+      setCategoryId(Number(value));
+    }
+  }, []);
+
+  const handleAddFood = useCallback(
+    (item: FoodItemDto) => {
+      onFoodSelection(item);
+    },
+    [onFoodSelection],
   );
 
-  const listData = trimmedDebounced.length > 0 ? macrosResults : [];
-
-  const renderItem: ListRenderItem<FoodItemDto> = useCallback(
-    ({ item }) => (
-      <View style={styles.cardGap}>
-        <MacroFoodCard
-          foodItem={item}
-          onSelectFood={onFoodSelection}
-          isSelected={item.id != null && selectedIds.has(item.id)}
-        />
-      </View>
+  const renderCarouselCard = useCallback(
+    (item: FoodItemDto) => (
+      <MacroFoodCarouselCard
+        foodItem={item}
+        width={CARD_WIDTH}
+        isSelected={item.id != null && selectedIds.has(item.id)}
+        onAdd={handleAddFood}
+      />
     ),
-    [onFoodSelection, selectedIds, styles.cardGap],
+    [handleAddFood, selectedIds],
   );
 
-  const keyExtractor = useCallback(
-    (item: FoodItemDto, index: number) =>
-      item.id != null ? String(item.id) : `food-${index}`,
-    [],
+  const footer = (
+    <Button
+      label={copy.viewMacrosButton}
+      onPress={handleOpenCalculate}
+      disabled={selectedItems.length === 0}
+      animated={false}
+      style={styles.footerButton}
+    />
   );
-
-  const listEmpty = useCallback(() => {
-    if (trimmedDebounced.length === 0) {
-      return (
-        <AppText style={styles.emptyText}>
-          Escribe al menos una letra para buscar alimentos.
-        </AppText>
-      );
-    }
-    if (isLoading || isFetching) {
-      return (
-        <View style={styles.emptyWrap}>
-          <ActivityIndicator size="large" color={theme.brand.primary} />
-        </View>
-      );
-    }
-    return (
-      <AppText style={styles.emptyText}>
-        No encontramos alimentos para esa búsqueda.
-      </AppText>
-    );
-  }, [
-    isFetching,
-    isLoading,
-    styles.emptyText,
-    styles.emptyWrap,
-    theme.brand.primary,
-    trimmedDebounced.length,
-  ]);
-
-  const listFooter = useCallback(() => <View style={styles.listFooter} />, [styles.listFooter]);
 
   return (
     <PageContainer
-      title="¿Cuántos gramos tiene tu antojo?"
-      subheader="Descubre si estás alimentando músculo, energía... o puro gustito."
+      title={copy.title}
+      subheader={copy.subheader}
       style={styles.pageContent}
       disableScroll
       includeTabBarPadding={false}
       hasBottomPadding={false}
+      footer={footer}
     >
-      <MacrosSearchHeader
-        query={query}
-        onQueryChange={setQuery}
-        onCalculate={handleOpenCalculateMacros}
-        styles={styles}
-        theme={theme}
-      />
-      <FlatList
-        data={listData}
-        keyExtractor={keyExtractor}
-        renderItem={renderItem}
-        ListEmptyComponent={listEmpty}
-        ListFooterComponent={listFooter}
-        extraData={selectedIdsKey}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
+      <View style={styles.filtersBlock}>
+        <Dropdown
+          label={copy.categoryLabel}
+          placeholder={copy.categoryPlaceholder}
+          options={categoryOptions}
+          value={categoryId != null ? String(categoryId) : ALL_CATEGORIES_VALUE}
+          onChange={handleCategoryChange}
+          required={false}
+          clearable
+          disabled={categoriesLoading}
+        />
+        <SearchBar
+          placeholder={copy.searchPlaceholder}
+          value={query}
+          onChangeText={setQuery}
+          shouldHideEndIcon
+          containerStyle={styles.searchBar}
+        />
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        initialNumToRender={6}
-        maxToRenderPerBatch={8}
-        windowSize={7}
-        removeClippedSubviews={Platform.OS === 'android'}
-      />
+      >
+        <View style={styles.section}>
+          <AppText style={styles.sectionLabel}>{copy.searchResults}</AppText>
+          {isFoodsLoading ? (
+            <View style={styles.loadingWrap}>
+              <ActivityIndicator size="large" color={theme.brand.primary} />
+            </View>
+          ) : foods.length === 0 ? (
+            <AppText style={styles.hintText}>{copy.searchEmpty}</AppText>
+          ) : (
+            <>
+              <FlatList
+                data={foods}
+                keyExtractor={(item, index) =>
+                  item.id != null ? String(item.id) : `food-${index}`
+                }
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                decelerationRate="fast"
+                snapToInterval={snapInterval}
+                snapToAlignment="start"
+                disableIntervalMomentum
+                contentContainerStyle={styles.carouselContent}
+                renderItem={({ item }) => renderCarouselCard(item)}
+              />
+            </>
+          )}
+        </View>
+
+        {selectedItems.length > 0 ? (
+          <View style={styles.section}>
+            <AppText style={styles.sectionLabel}>
+              {`${copy.selectedTitle} (${selectedItems.length})`}
+            </AppText>
+            <MacroSelectedFoodPills
+              items={selectedItems}
+              onRemove={handleAddFood}
+            />
+          </View>
+        ) : null}
+      </ScrollView>
     </PageContainer>
   );
 }
 
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
+
   return StyleSheet.create({
     pageContent: {
       paddingHorizontal: 0,
       paddingBottom: 0,
     },
-    searchHeader: {
+    filtersBlock: {
       paddingHorizontal: 16,
-      paddingBottom: 8,
+      paddingBottom: 12,
+      rowGap: 10,
     },
-    list: { flex: 1 },
-    listContent: {
+    searchBar: {
+      width: '100%',
+    },
+    scroll: {
+      flex: 1,
+    },
+    scrollContent: {
       paddingHorizontal: 16,
+      paddingBottom: 16,
       flexGrow: 1,
-      paddingBottom: 24,
     },
-    cardGap: {
-      marginBottom: LIST_ITEM_GAP,
-    },
-    listFooter: {
-      height: 24,
+    section: {
+      marginBottom: 20,
+      rowGap: 10,
     },
     sectionLabel: {
-      ...text.bodySemibold,
-      marginBottom: 8,
-      color: theme.text.primary,
-    },
-    searchRow: {
-      flexDirection: 'row',
-      marginBottom: 20,
-      columnGap: 8,
-      alignItems: 'center',
-    },
-    searchBarContainer: {
-      flex: 1,
-      width: 'auto',
-      minWidth: 0,
-    },
-    searchButton: {
-      backgroundColor: theme.brand.primary,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 10,
-      height: 46,
-      width: 46,
-      flexShrink: 0,
-    },
-    calculateRow: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginBottom: 4,
-    },
-    calculateButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 12,
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.brand.primary,
-      borderRadius: 12,
-      columnGap: 4,
-    },
-    calculateButtonText: {
-      color: theme.background.app,
-      ...text.leadSemibold,
-    },
-    emptyText: {
-      textAlign: 'center',
+      ...text.smallSemibold,
       color: theme.text.secondary,
-      ...text.link,
-      paddingVertical: 32,
-      paddingHorizontal: 12,
     },
-    emptyWrap: {
+    carouselContent: {
+      columnGap: CARD_GAP,
+      paddingRight: 4,
+    },
+    hintText: {
+      ...text.small,
+      color: theme.text.secondary,
+      textAlign: 'center',
+      paddingVertical: 16,
+      paddingHorizontal: 8,
+    },
+    loadingWrap: {
       paddingVertical: 40,
       alignItems: 'center',
+    },
+    footerButton: {
+      width: '100%',
     },
   });
 };

@@ -1,177 +1,113 @@
-import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import MacroInput from '@/components/macros/MacroInput';
+import { Button } from '@/components/Button';
+import { MacroPortionListItem } from '@/components/macros/MacroPortionListItem';
+import { MacroResultsSummary } from '@/components/macros/MacroResultsSummary';
 import PageContainer from '@/components/PageContainer';
-import { formStyles, textStyles } from '@/constants/styles';
+import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';
-import { MacroNutrientsDto } from '@/types/api/types.gen';
+import { MacroCalculationResponseDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 
-const MACRO_GRAM_KEYS = [
-  'proteins',
-  'carbohydrates',
-  'fats',
-] as const satisfies readonly (keyof MacroNutrientsDto)[];
+function normalizeCalculationResult(
+  result: unknown,
+): MacroCalculationResponseDto {
+  if (
+    result &&
+    typeof result === 'object' &&
+    'data' in result &&
+    (result as { data: unknown }).data
+  ) {
+    return (result as { data: MacroCalculationResponseDto }).data;
+  }
+  return result as MacroCalculationResponseDto;
+}
 
 export default function MacrosCalculatorCalculateScreen() {
   const { theme } = useTheme();
-  const text = textStyles(theme);
-  const styles = getStyles(theme);
-  const { selectedItems, foodItemRequest, calculation, setCalculation } =
-    useMacroFoodItemsContext();
+  const styles = useMemo(() => getStyles(theme), [theme]);
+  const { macrosCalculatorScreen: copy } = TRANSLATIONS;
 
-  const { mutate: calculateMacros } = useCalculateMacros();
+  const {
+    selectedItems,
+    foodItemRequest,
+    calculation,
+    setCalculation,
+    onFoodSelection,
+    onRequestChange,
+    getPortionInput,
+  } = useMacroFoodItemsContext();
+
+  const { mutate: calculateMacros, isPending } = useCalculateMacros();
 
   const handleCalculateMacros = useCallback(() => {
     calculateMacros(
       { selectedFoods: foodItemRequest },
       {
         onSuccess: (response) => {
-          setCalculation(response);
+          setCalculation(normalizeCalculationResult(response));
         },
       },
     );
-  }, [foodItemRequest, calculateMacros, setCalculation]);
+  }, [calculateMacros, foodItemRequest, setCalculation]);
+
+  const footer = (
+    <Button
+      label={copy.showResultsButton}
+      onPress={handleCalculateMacros}
+      disabled={!selectedItems.length || isPending}
+      loading={isPending}
+      animated={false}
+      style={styles.footerButton}
+    />
+  );
 
   return (
     <PageContainer
-      title="¿Cuánto comiste?"
-      subheader="Ajusta las porciones para obtener tu desglose de macros."
+      title={copy.calculateTitle}
+      subheader={copy.calculateSubheader}
       style={styles.page}
       includeTabBarPadding={false}
       hasBottomPadding={false}
+      footer={selectedItems.length > 0 ? footer : undefined}
     >
-      <View style={styles.content}>
-        {!selectedItems.length && (
-          <View style={styles.banner}>
-            <AppText style={styles.bannerLabel}>
-              <Ionicons name="alert-circle-outline" size={20} />
-              &nbsp;
-              {
-                'Todavía no elegiste ningún alimento. Agrega uno para calcular tus macros.'
-              }
-            </AppText>
-          </View>
-        )}
-        {selectedItems.map((selectedItem) => {
-          const requestItem = foodItemRequest?.find(
-            (item) => item.foodId === selectedItem?.id,
-          );
-
-          return (
-            <MacroInput
-              key={selectedItem?.id}
-              foodItem={selectedItem}
-              requestItem={requestItem}
-            />
-          );
-        })}
-      </View>
-      {!!selectedItems.length && (
-        <View style={{ alignItems: 'flex-end', marginTop: 10 }}>
-          <TouchableOpacity
-            style={{
-              padding: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              backgroundColor: theme.brand.primary,
-              borderRadius: 12,
-              columnGap: 10,
-              marginTop: 30,
-            }}
-            onPress={handleCalculateMacros}
-          >
-            <AppText
-              style={{
-                color: theme.background.app,
-                ...text.leadSemibold,
-              }}
-            >
-              {'Mostrar resultados'}
-            </AppText>
-            <Ionicons name="play" size={20} color={theme.background.app} />
-          </TouchableOpacity>
+      {!selectedItems.length ? (
+        <View style={styles.banner}>
+          <AppText style={styles.bannerLabel}>{copy.noSelectionBanner}</AppText>
         </View>
-      )}
-      {!!selectedItems.length && !!calculation && (
-        <View
-          style={{
-            backgroundColor: theme.background.app,
-            padding: 14,
-            borderRadius: 12,
-            marginTop: 20,
-            alignItems: 'center',
-            rowGap: 10,
-          }}
-        >
-          <AppText
-            style={{
-              color: theme.status.info.text,
-              ...text.sectionTitle,
-            }}
-          >
-            {'Resumen nutricional'}
-          </AppText>
-          <View
-            style={{
-              backgroundColor: theme.status.success.bg,
-              borderRadius: '50%',
-              padding: 30,
-              alignItems: 'center',
-            }}
-          >
-            <AppText
-              style={{
-                color: theme.status.success.text,
-                ...text.display,
-              }}
-            >
-              {calculation?.totalMacros?.calories}
-            </AppText>
-            <AppText
-              style={{
-                color: theme.status.success.text,
-                ...text.sectionTitle,
-              }}
-            >
-              {'kcal'}
-            </AppText>
+      ) : (
+        <View style={styles.content}>
+          <AppText style={styles.sectionLabel}>{copy.portionsSection}</AppText>
+
+          <View style={styles.portionsList}>
+            {selectedItems.map((selectedItem, index) =>
+              selectedItem.id != null ? (
+                <MacroPortionListItem
+                  key={selectedItem.id}
+                  foodItem={selectedItem}
+                  portionValue={getPortionInput(selectedItem.id)}
+                  onRemove={onFoodSelection}
+                  onQuantityChange={onRequestChange}
+                  isLast={index === selectedItems.length - 1}
+                />
+              ) : null,
+            )}
           </View>
-          <View style={{ width: '100%', rowGap: 4 }}>
-            {MACRO_GRAM_KEYS.map((macroKey) => (
-              <View
-                key={macroKey}
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <AppText
-                  style={{
-                    ...text.lead,
-                    color: theme.text.disabled,
-                    paddingLeft: 20,
-                  }}
-                >
-                  {macroKey}
-                </AppText>
-                <AppText
-                  style={{
-                    ...text.lead,
-                    color: theme.status.info.text,
-                    paddingLeft: 20,
-                  }}
-                >
-                  {`${calculation?.totalMacros?.[macroKey] ?? 0} g`}
-                </AppText>
-              </View>
-            ))}
-          </View>
+
+          {isPending ? (
+            <View style={styles.loadingWrap}>
+              <ActivityIndicator size="large" color={theme.brand.primary} />
+            </View>
+          ) : null}
+
+          {calculation && !isPending ? (
+            <MacroResultsSummary calculation={calculation} />
+          ) : null}
         </View>
       )}
     </PageContainer>
@@ -180,25 +116,41 @@ export default function MacrosCalculatorCalculateScreen() {
 
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
+
   return StyleSheet.create({
-    ...formStyles(theme),
     page: {
       paddingHorizontal: 16,
-      paddingBottom: 32,
+      paddingBottom: 0,
     },
     content: {
-      gap: 10,
+      rowGap: 10,
+    },
+    sectionLabel: {
+      ...text.smallSemibold,
+      color: theme.text.secondary,
+      marginBottom: 2,
+    },
+    portionsList: {
+      rowGap: 0,
     },
     banner: {
       backgroundColor: theme.status.warning.bg,
       borderColor: theme.status.warning.border,
-      borderWidth: 2,
-      borderRadius: 20,
+      borderWidth: 1,
+      borderRadius: 14,
       padding: 16,
     },
     bannerLabel: {
-      ...text.sectionTitle,
+      ...text.small,
       color: theme.status.warning.text,
+      lineHeight: 20,
+    },
+    loadingWrap: {
+      paddingVertical: 24,
+      alignItems: 'center',
+    },
+    footerButton: {
+      width: '100%',
     },
   });
 };
