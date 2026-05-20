@@ -57,6 +57,8 @@ type Props = {
    * @default true
    */
   includeTabBarPadding?: boolean;
+  /** Use with a parent `ImageBackground` so the app background does not cover it. */
+  transparentBackground?: boolean;
 };
 
 export default function PageContainer({
@@ -76,6 +78,7 @@ export default function PageContainer({
   onBackPress,
   authOptimized = false,
   includeTabBarPadding = true,
+  transparentBackground = false,
 }: Props) {
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
@@ -195,10 +198,26 @@ export default function PageContainer({
     </>
   );
 
+  const surfaceStyles = transparentBackground
+    ? styles.transparentSurface
+    : null;
+
   return (
-    <View style={[styles.container, styleContainer]}>
+    <View
+      style={[
+        styles.container,
+        transparentBackground && styles.containerTransparent,
+        styleContainer,
+      ]}
+    >
       {hasFixedHeader && (
-        <View style={[styles.fixedHeader, { paddingTop: headerTopInset }]}>
+        <View
+          style={[
+            styles.fixedHeader,
+            transparentBackground && styles.fixedHeaderTransparent,
+            { paddingTop: headerTopInset },
+          ]}
+        >
           <View
             style={[
               styles.fixedHeaderRow,
@@ -226,11 +245,13 @@ export default function PageContainer({
       )}
 
       {disableScroll ? (
-        <View style={[...sharedInnerStyle, styles.flex]}>{children}</View>
+        <View style={[...sharedInnerStyle, styles.flex, surfaceStyles]}>
+          {children}
+        </View>
       ) : footer ? (
-        <View style={styles.flex}>
+        <View style={[styles.flex, surfaceStyles]}>
           <KeyboardAwareScrollView
-            style={styles.flex}
+            style={[styles.flex, surfaceStyles]}
             contentContainerStyle={sharedInnerStyle}
             {...keyboardScrollProps}
           >
@@ -239,6 +260,7 @@ export default function PageContainer({
           <View
             style={[
               styles.footer,
+              transparentBackground && styles.footerTransparent,
               { paddingBottom: Math.max(insets.bottom, 16) },
             ]}
           >
@@ -247,7 +269,7 @@ export default function PageContainer({
         </View>
       ) : (
         <KeyboardAwareScrollView
-          style={styles.flex}
+          style={[styles.flex, surfaceStyles]}
           contentContainerStyle={sharedInnerStyle}
           {...keyboardScrollProps}
         >
@@ -265,6 +287,12 @@ const getStyles = (theme: FullTheme) => {
       flex: 1,
       backgroundColor: theme.background.app,
     },
+    containerTransparent: {
+      backgroundColor: 'transparent',
+    },
+    transparentSurface: {
+      backgroundColor: 'transparent',
+    },
     fixedHeader: {
       position: 'absolute',
       top: 0,
@@ -276,6 +304,10 @@ const getStyles = (theme: FullTheme) => {
       backgroundColor: theme.background.elevated,
       borderBottomWidth: StyleSheet.hairlineWidth,
       borderBottomColor: theme.border.subtle,
+    },
+    fixedHeaderTransparent: {
+      backgroundColor: 'transparent',
+      borderBottomWidth: 0,
     },
     fixedHeaderRow: {
       flexDirection: 'row',
@@ -310,6 +342,10 @@ const getStyles = (theme: FullTheme) => {
       borderTopWidth: 1,
       borderTopColor: theme.border.default,
       backgroundColor: theme.background.app,
+    },
+    footerTransparent: {
+      backgroundColor: 'transparent',
+      borderTopWidth: 0,
     },
     headerTitle: {
       ...text.sectionTitle,

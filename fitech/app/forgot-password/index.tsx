@@ -66,8 +66,10 @@ export default function ForgotPasswordScreen() {
       imageStyle={styles.backgroundImage}
       resizeMode="cover"
     >
+      <View style={styles.overlay} pointerEvents="none" />
       <PageContainer
         authOptimized
+        transparentBackground
         hasBackButton
         hasBottomPadding={false}
         hasNoTopPadding
@@ -135,6 +137,10 @@ const getStyles = (theme: FullTheme) => {
         width: '100%',
         height: '100%',
         opacity: 0.85,
+      },
+      overlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(5, 6, 8, 0.85)',
       },
       page: {
         paddingHorizontal: 24,
