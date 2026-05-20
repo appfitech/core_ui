@@ -2,7 +2,10 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { showInfoToast } from '@/components/Toast';
 import { AppText } from '@/components/AppText';
+import { useAlert } from '@/contexts/AlertContext';
+import { useUserStore } from '@/stores/user';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
@@ -14,11 +17,10 @@ import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
 import { FullTheme } from '@/types/theme';
 
 const SUPPORT_TYPES = [
-  { label: 'Problema Técnicos', value: 'technical' },
-  { label: 'Facturación y Pagos', value: 'billing' },
-  { label: 'Mi Cuenta', value: 'account' },
-  { label: 'Servicios', value: 'service' },
-  { label: 'Otros', value: 'other' },
+  { label: 'Problema Técnico', value: 'TECHNICAL' },
+  { label: 'Facturación y Pagos', value: 'BILLING' },
+  { label: 'Mi Cuenta', value: 'ACCOUNT' },
+  { label: 'General', value: 'GENERAL' },
 ];
 
 const initialState = {
@@ -30,6 +32,8 @@ const initialState = {
 export default function SupportScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { showAlert } = useAlert();
+  const email = useUserStore((s) => s?.user?.user?.person?.email);
 
   const [form, setForm] = useState(initialState);
 
@@ -44,10 +48,30 @@ export default function SupportScreen() {
   };
 
   const handleSubmit = () => {
+    if (!form.type) {
+      showAlert({ title: 'Completa los campos', message: 'Selecciona un tipo de consulta.' });
+      return;
+    }
+    if (!form.subject.trim()) {
+      showAlert({ title: 'Completa los campos', message: 'El asunto es requerido.' });
+      return;
+    }
+    if (form.description.trim().length < 20) {
+      showAlert({ title: 'Completa los campos', message: 'La descripción debe tener al menos 20 caracteres.' });
+      return;
+    }
+
     submitInquiry(form, {
       onSuccess: () => {
-        alert('success');
         handleClear();
+        showAlert({
+          title: '¡Consulta Enviada!',
+          message: `Te responderemos a ${email} en un plazo de 24 horas.`,
+          buttons: [{ text: 'Entendido' }],
+        });
+      },
+      onError: () => {
+        showInfoToast('Error', 'No se pudo enviar la consulta. Intenta nuevamente.');
       },
     });
   };
@@ -72,11 +96,11 @@ export default function SupportScreen() {
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
           <Ionicons name="call-outline" size={20} color={theme.brand.primary} />
-          <AppText style={styles.contactText}>+51 (01) 615-8900</AppText>
+          <AppText style={styles.contactText}>+51 961 529 776</AppText>
         </View>
         <View style={styles.contactRow}>
           <Ionicons name="mail-outline" size={20} color={theme.brand.primary} />
-          <AppText style={styles.contactText}>soporte@fitech.pe</AppText>
+          <AppText style={styles.contactText}>soporte@appfitech.com</AppText>
         </View>
         <View style={styles.contactRow}>
           <Ionicons
@@ -85,7 +109,7 @@ export default function SupportScreen() {
             color={theme.brand.primary}
           />
           <AppText style={styles.contactText}>
-            Av. El Derby 254, Surco, Lima
+            Joaquín Capelo 320, Miraflores, Lima, Perú
           </AppText>
         </View>
       </Card>

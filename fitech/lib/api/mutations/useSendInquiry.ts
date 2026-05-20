@@ -18,7 +18,7 @@ export const useSendInquiry = () => {
         subject: request.subject,
         type: request.type,
         userId: user?.id,
-        userType: 2,
+        userType: 'CLIENT',
       }),
   });
 };
