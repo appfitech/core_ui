@@ -2,7 +2,6 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
 import { SelectableCard } from '@/components/SelectableCard';
@@ -63,11 +62,10 @@ export default function FitnessGoalsScreen() {
         onSuccess: async (response) => {
           if (response?.user)
             await updateUserInfo(response.user as UserResponseDtoReadable);
-          router.back();
         },
       },
     );
-  }, [selectedGoals, updateFitnessGoals, updateUserInfo, router]);
+  }, [selectedGoals, updateFitnessGoals, updateUserInfo]);
 
   const handleCancel = useCallback(() => {
     router.back();
@@ -78,12 +76,7 @@ export default function FitnessGoalsScreen() {
       title="Objetivos Fitness"
       subheader="Selecciona tus metas para recomendaciones personalizadas"
       style={styles.pageStyle}
-      contentPaddingBottom={220}
     >
-      <AppText style={styles.subheader}>
-        Puedes elegir varios objetivos.
-      </AppText>
-
       <View style={styles.cardList}>
         {goals.map((goal) => (
           <SelectableCard
@@ -98,17 +91,8 @@ export default function FitnessGoalsScreen() {
       </View>
 
       <View style={styles.buttonRow}>
-        <Button
-          type="secondary"
-          onPress={handleCancel}
-          label="Cancelar"
-          style={styles.buttonFlex}
-        />
-        <Button
-          onPress={handleUpdate}
-          label="Actualizar"
-          style={styles.buttonFlex}
-        />
+        <Button onPress={handleUpdate} label="Actualizar" />
+        <Button type="secondary" onPress={handleCancel} label="Cancelar" />
       </View>
     </PageContainer>
   );
@@ -117,7 +101,7 @@ export default function FitnessGoalsScreen() {
 const getStyles = (theme: FullTheme) =>
   StyleSheet.create({
     pageStyle: {
-      rowGap: 16,
+      rowGap: 20,
     },
     subheader: {
       fontSize: 15,
@@ -130,11 +114,6 @@ const getStyles = (theme: FullTheme) =>
       marginBottom: 8,
     },
     buttonRow: {
-      flexDirection: 'row',
       gap: 12,
-      marginTop: 16,
-    },
-    buttonFlex: {
-      flex: 1,
     },
   });

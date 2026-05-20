@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp } from 'react-native-reanimated';
@@ -9,6 +9,7 @@ import { useTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import {
+  CONTENT_GAP_BELOW_HEADER,
   getFixedHeaderScrollOffset,
   getFooterScrollPaddingBottom,
   getScreenScrollPaddingBottom,
@@ -84,6 +85,7 @@ export default function PageContainer({
   const tabBarInset = useTabBarInset();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const [measuredFixedHeaderHeight, setMeasuredFixedHeaderHeight] = useState(0);
 
   const defaultBottomPadding =
     includeTabBarPadding && hasBottomPadding
@@ -109,7 +111,9 @@ export default function PageContainer({
     : 0;
 
   const scrollPaddingTop = hasFixedHeader
-    ? fixedHeaderScrollOffset
+    ? measuredFixedHeaderHeight > 0
+      ? measuredFixedHeaderHeight + CONTENT_GAP_BELOW_HEADER
+      : fixedHeaderScrollOffset
     : hasNoTopPadding
       ? 0
       : insets.top + PAGE_HEADER_TOP_EXTRA;
@@ -127,7 +131,7 @@ export default function PageContainer({
   ];
 
   const keyboardVerticalOffset = hasFixedHeader
-    ? fixedHeaderScrollOffset
+    ? scrollPaddingTop
     : headerTopInset;
 
   const keyboardPlatform = Platform.OS === 'android' ? 'android' : 'ios';
@@ -212,6 +216,12 @@ export default function PageContainer({
     >
       {hasFixedHeader && (
         <View
+          onLayout={(event) => {
+            const { height } = event.nativeEvent.layout;
+            if (height > 0 && height !== measuredFixedHeaderHeight) {
+              setMeasuredFixedHeaderHeight(height);
+            }
+          }}
           style={[
             styles.fixedHeader,
             transparentBackground && styles.fixedHeaderTransparent,
