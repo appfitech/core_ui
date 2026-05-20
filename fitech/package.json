@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "generate_apk": "npx eas-cli build --platform android --profile apk",
     "generate:android-icon": "npx --yes -p sharp node scripts/generate-android-adaptive-icon.mjs",
+    "generate:android-notification-icon": "npx --yes -p sharp node scripts/generate-android-notification-icon.mjs",
     "generate_ios": "npx eas-cli build --platform ios --profile production",
     "generate_ios_autosubmit": "npx eas-cli build --platform ios --profile production --auto-submit",
     "submit_ios": "npx eas-cli submit --platform ios --latest",
@@ -106,6 +107,7 @@
     "prettier": "^3.5.3",
     "react-native-svg-transformer": "^1.5.1",
     "react-test-renderer": "19.1.0",
+    "sharp": "^0.34.5",
     "typescript": "~5.9.2"
   },
   "private": true,

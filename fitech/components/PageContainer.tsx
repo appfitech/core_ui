@@ -50,6 +50,11 @@ type Props = {
   disableScroll?: boolean;
   /** Rendered below the scroll area, fixed at the bottom of the screen */
   footer?: React.ReactNode;
+  /**
+   * Extra padding under `footer` so it sits above the tab bar.
+   * @default false — opt in on tab screens (e.g. workout form).
+   */
+  footerAboveTabBar?: boolean;
   onBackPress?: () => void;
   /** Shorter fades on Android for register / forgot-password style flows. */
   authOptimized?: boolean;
@@ -76,6 +81,7 @@ export default function PageContainer({
   styleContainer = {},
   disableScroll = false,
   footer,
+  footerAboveTabBar = false,
   onBackPress,
   authOptimized = false,
   includeTabBarPadding = true,
@@ -120,6 +126,10 @@ export default function PageContainer({
 
   const bottomScrollInset =
     includeTabBarPadding && hasBottomPadding ? scrollPaddingBottom : 0;
+
+  const footerPaddingBottom =
+    Math.max(insets.bottom, 16) +
+    (footer && footerAboveTabBar ? tabBarInset : 0);
 
   const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
@@ -255,9 +265,26 @@ export default function PageContainer({
       )}
 
       {disableScroll ? (
-        <View style={[...sharedInnerStyle, styles.flex, surfaceStyles]}>
-          {children}
-        </View>
+        footer ? (
+          <View style={[styles.flex, surfaceStyles]}>
+            <View style={[...sharedInnerStyle, styles.flex, surfaceStyles]}>
+              {children}
+            </View>
+            <View
+              style={[
+                styles.footer,
+                transparentBackground && styles.footerTransparent,
+                { paddingBottom: footerPaddingBottom },
+              ]}
+            >
+              {footer}
+            </View>
+          </View>
+        ) : (
+          <View style={[...sharedInnerStyle, styles.flex, surfaceStyles]}>
+            {children}
+          </View>
+        )
       ) : footer ? (
         <View style={[styles.flex, surfaceStyles]}>
           <KeyboardAwareScrollView
@@ -271,7 +298,7 @@ export default function PageContainer({
             style={[
               styles.footer,
               transparentBackground && styles.footerTransparent,
-              { paddingBottom: Math.max(insets.bottom, 16) },
+              { paddingBottom: footerPaddingBottom },
             ]}
           >
             {footer}

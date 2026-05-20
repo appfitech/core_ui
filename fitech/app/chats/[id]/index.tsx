@@ -4,6 +4,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -23,6 +26,7 @@ import {
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
+import { getFixedHeaderScrollOffset } from '@/utils/layout';
 
 const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 
@@ -71,7 +75,8 @@ export default function ChatDetailScreen() {
   const { id, title } = useLocalSearchParams<{ id: string; title?: string }>();
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const styles = getStyles(theme, insets.bottom);
+  const styles = getStyles(theme);
+  const keyboardVerticalOffset = getFixedHeaderScrollOffset(insets);
 
   const token = useUserStore((s) => s.getToken());
   const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
@@ -96,6 +101,29 @@ export default function ChatDetailScreen() {
   );
 
   const messagesScrollRef = useRef<ScrollView | null>(null);
+  const [keyboardInset, setKeyboardInset] = useState(0);
+
+  const scrollMessagesToEnd = (animated = true) => {
+    messagesScrollRef.current?.scrollToEnd({ animated });
+  };
+
+  useEffect(() => {
+    const showEvent =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSub = Keyboard.addListener(showEvent, (event) => {
+      setKeyboardInset(event.endCoordinates.height);
+      scrollMessagesToEnd(true);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardInset(0));
+
+    return () => {
+      showSub.remove();
+      hideSub.remove();
+    };
+  }, []);
 
   const restMessages: Message[] = useMemo(() => {
     const backendMessages: MessageDto[] = messagesData?.data ?? [];
@@ -242,117 +270,143 @@ export default function ChatDetailScreen() {
 
   const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
 
-  return (
-    <PageContainer
-      title={headerTitle}
-      style={styles.pageStyle}
-      hasBottomPadding={false}
-    >
-      {isContractConversation && (
-        <View style={styles.contractBanner}>
-          <Image
-            source={CONTRACT_LOGO}
-            style={styles.contractBannerLogo}
-            resizeMode="contain"
-          />
-          <AppText style={styles.contractBannerText}>
-            {isTrainer
-              ? 'Conversación por contrato — Estás chateando con tu cliente'
-              : 'Conversación por contrato — Estás chateando con tu entrenador'}
-          </AppText>
-        </View>
-      )}
+  const androidKeyboardLift =
+    Platform.OS === 'android' && keyboardInset > 0
+      ? Math.max(0, keyboardInset - insets.bottom)
+      : 0;
 
-      <View style={styles.messagesContainer}>
-        {isMessagesLoading ? (
-          <View style={styles.centered}>
-            <ActivityIndicator color={theme.text.primary} />
-            <AppText style={styles.systemText}>Cargando mensajes...</AppText>
-          </View>
-        ) : hasError ? (
-          <View style={styles.centered}>
-            <AppText style={styles.systemText}>
-              No se pudieron cargar los mensajes.
+  const messageComposer = (
+    <View
+      style={[
+        styles.inputRow,
+        androidKeyboardLift > 0 && { marginBottom: androidKeyboardLift },
+      ]}
+    >
+      <TextInput
+        style={styles.textInput}
+        placeholder="Escribe un mensaje..."
+        placeholderTextColor={theme.text.secondary}
+        value={input}
+        onChangeText={setInput}
+        multiline
+        onFocus={() => scrollMessagesToEnd(true)}
+      />
+      <TouchableOpacity
+        onPress={handleSend}
+        style={[styles.sendButton, !input.trim() && styles.sendButtonDisabled]}
+        disabled={!input.trim()}
+      >
+        <Ionicons name="send" size={20} color={theme.background.app} />
+      </TouchableOpacity>
+    </View>
+  );
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.keyboardRoot}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      enabled={Platform.OS === 'ios'}
+      keyboardVerticalOffset={keyboardVerticalOffset}
+    >
+      <PageContainer
+        title={headerTitle}
+        style={styles.pageStyle}
+        styleContainer={styles.pageContainer}
+        disableScroll
+        includeTabBarPadding={false}
+        hasBottomPadding={false}
+        footer={messageComposer}
+      >
+        {isContractConversation && (
+          <View style={styles.contractBanner}>
+            <Image
+              source={CONTRACT_LOGO}
+              style={styles.contractBannerLogo}
+              resizeMode="contain"
+            />
+            <AppText style={styles.contractBannerText}>
+              {isTrainer
+                ? 'Conversación por contrato — Estás chateando con tu cliente'
+                : 'Conversación por contrato — Estás chateando con tu entrenador'}
             </AppText>
           </View>
-        ) : mergedMessages.length === 0 ? (
-          <View style={styles.centered}>
-            <AppText style={styles.systemText}>
-              Aún no hay mensajes. ¡Envía el primero!
-            </AppText>
-          </View>
-        ) : (
-          <ScrollView
-            ref={messagesScrollRef}
-            contentContainerStyle={styles.messagesContent}
-            onContentSizeChange={() =>
-              messagesScrollRef.current?.scrollToEnd({ animated: true })
-            }
-            keyboardShouldPersistTaps="handled"
-          >
-            {mergedMessages.map((msg) => (
-              <View
-                key={msg.id}
-                style={[
-                  styles.messageRow,
-                  msg.from === 'me'
-                    ? styles.messageRowMe
-                    : styles.messageRowThem,
-                ]}
-              >
+        )}
+
+        <View style={styles.messagesContainer}>
+          {isMessagesLoading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator color={theme.text.primary} />
+              <AppText style={styles.systemText}>Cargando mensajes...</AppText>
+            </View>
+          ) : hasError ? (
+            <View style={styles.centered}>
+              <AppText style={styles.systemText}>
+                No se pudieron cargar los mensajes.
+              </AppText>
+            </View>
+          ) : mergedMessages.length === 0 ? (
+            <View style={styles.centered}>
+              <AppText style={styles.systemText}>
+                Aún no hay mensajes. ¡Envía el primero!
+              </AppText>
+            </View>
+          ) : (
+            <ScrollView
+              ref={messagesScrollRef}
+              contentContainerStyle={styles.messagesContent}
+              onContentSizeChange={() => scrollMessagesToEnd(false)}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+            >
+              {mergedMessages.map((msg) => (
                 <View
+                  key={msg.id}
                   style={[
-                    styles.bubble,
-                    msg.from === 'me' ? styles.bubbleMe : styles.bubbleThem,
+                    styles.messageRow,
+                    msg.from === 'me'
+                      ? styles.messageRowMe
+                      : styles.messageRowThem,
                   ]}
                 >
-                  <AppText
-                    style={
-                      msg.from === 'me'
-                        ? styles.bubbleMeText
-                        : styles.bubbleText
-                    }
+                  <View
+                    style={[
+                      styles.bubble,
+                      msg.from === 'me' ? styles.bubbleMe : styles.bubbleThem,
+                    ]}
                   >
-                    {msg.text}
-                  </AppText>
-                  <AppText style={styles.bubbleTime}>{msg.time}</AppText>
+                    <AppText
+                      style={
+                        msg.from === 'me'
+                          ? styles.bubbleMeText
+                          : styles.bubbleText
+                      }
+                    >
+                      {msg.text}
+                    </AppText>
+                    <AppText style={styles.bubbleTime}>{msg.time}</AppText>
+                  </View>
                 </View>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-      </View>
-
-      <View style={styles.inputRow}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Escribe un mensaje..."
-          placeholderTextColor={theme.text.secondary}
-          value={input}
-          onChangeText={setInput}
-          multiline
-        />
-        <TouchableOpacity
-          onPress={handleSend}
-          style={[
-            styles.sendButton,
-            !input.trim() && styles.sendButtonDisabled,
-          ]}
-          disabled={!input.trim()}
-        >
-          <Ionicons name="send" size={20} color={theme.background.app} />
-        </TouchableOpacity>
-      </View>
-    </PageContainer>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+      </PageContainer>
+    </KeyboardAvoidingView>
   );
 }
 
-const getStyles = (theme: FullTheme, safeBottom: number) => {
+const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
+    keyboardRoot: {
+      flex: 1,
+    },
+    pageContainer: {
+      flex: 1,
+    },
     pageStyle: {
+      flex: 1,
       paddingBottom: 0,
-      paddingHorizontal: 16,
       rowGap: 16,
     },
     contractBanner: {
@@ -450,9 +504,6 @@ const getStyles = (theme: FullTheme, safeBottom: number) => {
       flexDirection: 'row',
       alignItems: 'flex-end',
       columnGap: 10,
-      paddingTop: 12,
-      paddingBottom: Math.max(safeBottom, 20),
-      paddingHorizontal: 0,
     },
     textInput: {
       flex: 1,

@@ -1,12 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import debounce from 'lodash.debounce';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { TrainerListCard } from '@/components/list/TrainerListCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { ListFilterSection } from '@/components/list/ListFilterSection';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
@@ -16,19 +19,22 @@ import { FullTheme } from '@/types/theme';
 export default function TrainersSearchScreen() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<PublicTrainerDtoReadable[]>([]);
+  const [isSearching, setIsSearching] = useState(true);
   const { mutate } = useSearchTrainers();
   const router = useRouter();
   const { theme } = useTheme();
-
   const styles = getStyles(theme);
 
   const performSearch = useCallback(
     (q: string) => {
       const payload = q.trim().length === 0 ? {} : { query: q };
+      setIsSearching(true);
       mutate(payload, {
-        onSuccess: (data: PublicTrainerDtoReadable[] | undefined) => {
+        onSuccess: (data) => {
           setResults(data ?? []);
+          setIsSearching(false);
         },
+        onError: () => setIsSearching(false),
       });
     },
     [mutate],
@@ -47,63 +53,66 @@ export default function TrainersSearchScreen() {
     debouncedSearch(query);
   }, [query, debouncedSearch]);
 
+  const listHeader = useMemo(
+    () => (
+      <>
+        <ListFilterSection hint="Busca por nombre del entrenador">
+          <SearchBar
+            placeholder="Buscar por nombre"
+            value={query}
+            onChangeText={setQuery}
+            shouldHideEndIcon
+            containerStyle={styles.searchBar}
+          />
+        </ListFilterSection>
+        <AppText style={styles.resultCount}>
+          {results.length} entrenador{results.length === 1 ? '' : 'es'}{' '}
+          encontrado{results.length === 1 ? '' : 's'}
+        </AppText>
+      </>
+    ),
+    [query, results.length, styles.resultCount, styles.searchBar],
+  );
+
   return (
     <PageContainer
       title="Encuentra tu entrenador ideal"
       subheader="Descubre entrenadores especializados en tus objetivos fitness"
       hasBackButton={false}
+      disableScroll
       style={styles.pageStyle}
     >
-      <View style={styles.filterCard}>
-        <AppText style={styles.filterHint}>
-          Busca por nombre del entrenador
-        </AppText>
-        <SearchBar
-          placeholder="Buscar por nombre"
-          value={query}
-          onChangeText={setQuery}
-          shouldHideEndIcon={true}
-          containerStyle={styles.searchBarContainer}
-        />
-      </View>
-
-      <AppText style={styles.resultCount}>
-        {results?.length ?? 0} entrenadores encontrados
-      </AppText>
-
-      <View style={styles.list}>
-        {results?.map((trainer) => (
-          <TouchableOpacity
-            key={trainer.id ?? 0}
-            style={styles.card}
-            onPress={() => router.push(`/trainers/${trainer.id}`)}
-            activeOpacity={0.78}
-          >
-            <Image
-              source={{
-                uri: `https://appfitech.com/v1/app/file-upload/view/${trainer.person?.profilePhotoId}`,
-              }}
-              style={styles.avatar}
-            />
-            <View style={styles.cardContent}>
-              <AppText style={styles.name}>
-                {trainer.person?.firstName} {trainer.person?.lastName}
-              </AppText>
-              <AppText style={styles.bio} numberOfLines={3}>
-                {trainer.person?.bio || 'Sin descripción'}
-              </AppText>
-              <View style={styles.ctaRow}>
-                <AppText style={styles.ctaText}>Ver perfil</AppText>
-                <Ionicons
-                  name="chevron-forward"
-                  size={18}
-                  color={theme.brand.primaryLight}
-                />
-              </View>
+      <FlatList
+        data={results}
+        keyExtractor={(item) => String(item.id ?? item.person?.id ?? Math.random())}
+        renderItem={({ item }) => (
+          <TrainerListCard
+            trainer={item}
+            onPress={() => router.push(`/trainers/${item.id}`)}
+          />
+        )}
+        ListHeaderComponent={listHeader}
+        ListEmptyComponent={
+          isSearching ? (
+            <View style={styles.loadingWrap}>
+              <ActivityIndicator color={theme.brand.primary} />
             </View>
-          </TouchableOpacity>
-        ))}
-      </View>
+          ) : (
+            <ListEmptyState
+              title="No encontramos entrenadores"
+              hint="Prueba con otro nombre o deja el buscador vacío para ver todos"
+            />
+          )
+        }
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+        windowSize={LIST_SCREEN_FLATLIST.windowSize}
+        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+      />
     </PageContainer>
   );
 }
@@ -111,73 +120,19 @@ export default function TrainersSearchScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: { paddingBottom: 180 },
-    filterCard: {
-      backgroundColor: theme.background.input,
-      borderRadius: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      marginTop: 16,
+    pageStyle: { paddingBottom: 0 },
+    listContent: {
+      paddingBottom: 180,
+      flexGrow: 1,
     },
-    filterHint: {
-      ...text.caption,
-      color: theme.text.secondary,
-      marginBottom: 10,
-    },
-    searchBarContainer: {
-      width: '100%',
-    },
+    searchBar: { width: '100%' },
     resultCount: {
       ...text.smallSemibold,
       color: theme.text.secondary,
       marginTop: 16,
       marginBottom: 4,
     },
-    list: {
-      marginTop: 8,
-      rowGap: 14,
-    },
-    card: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: theme.background.card,
-      borderRadius: 14,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      padding: 16,
-      columnGap: 14,
-    },
-    avatar: {
-      width: 72,
-      height: 72,
-      borderRadius: 36,
-    },
-    cardContent: {
-      flex: 1,
-      minWidth: 0,
-    },
-    name: {
-      ...text.leadSemibold,
-      color: theme.text.primary,
-    },
-    bio: {
-      ...text.small,
-      color: theme.text.secondary,
-      marginTop: 4,
-      lineHeight: 20,
-    },
-    ctaRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      gap: 4,
-      marginTop: 10,
-    },
-    ctaText: {
-      ...text.smallSemibold,
-      color: theme.brand.primaryLight,
-    },
+    separator: { height: LIST_SCREEN_FLATLIST.itemGap },
+    loadingWrap: { paddingVertical: 48, alignItems: 'center' },
   });
 };

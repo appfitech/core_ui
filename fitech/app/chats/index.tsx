@@ -1,94 +1,22 @@
 import { useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useCallback, useMemo } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import {
+  ChatListRow,
+  type ChatListRowItem,
+} from '@/components/list/ChatListRow';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
 import PageContainer from '@/components/PageContainer';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-
-const CONTRACT_LOGO = require('../../assets/images/logos/rounded_logo.webp');
-
-/** Avatar: CONTRACT logo (only for non-trainer), or profile image with fallback to first letter. Trainers see initial instead of logo. */
-function ChatListAvatar({
-  matchType,
-  avatarUri,
-  name,
-  isTrainer,
-  styles,
-}: {
-  matchType?: string;
-  avatarUri: string | null;
-  name: string;
-  isTrainer: boolean;
-  theme: FullTheme;
-  styles: ReturnType<typeof getStyles>;
-}) {
-  const [imageError, setImageError] = useState(false);
-
-  if (matchType === 'CONTRACT' && !isTrainer) {
-    return (
-      <View style={styles.avatar}>
-        <Image
-          source={CONTRACT_LOGO}
-          style={styles.avatarImage}
-          resizeMode="cover"
-        />
-      </View>
-    );
-  }
-  if (avatarUri && !imageError) {
-    return (
-      <View style={styles.avatar}>
-        <Image
-          source={{ uri: avatarUri }}
-          style={styles.avatarImage}
-          resizeMode="cover"
-          onError={() => setImageError(true)}
-        />
-      </View>
-    );
-  }
-  return (
-    <View style={styles.avatarInitialsWrap}>
-      <AppText style={styles.avatarInitials}>
-        {name[0]?.toUpperCase() ?? '?'}
-      </AppText>
-    </View>
-  );
-}
-
-/** Returns avatar image URL when available; otherwise UI shows first letter of name. */
-function getAvatarUri(c: ConversationDto): string | null {
-  const urlOrId = c.otherUserProfileImageUrl ?? c.otherUserId;
-  if (urlOrId == null) return null;
-  if (typeof urlOrId === 'string') {
-    const s = urlOrId.trim();
-    if (s === '') return null;
-    if (s.startsWith('http')) return s;
-  }
-  return `https://appfitech.com/v1/app/file-upload/view/${urlOrId}`;
-}
-
-type ChatListItem = {
-  id: string;
-  name: string;
-  lastMessage: string;
-  time: string;
-  unread: number;
-  matchType?: string;
-  avatarUri: string | null;
-};
+import { getFileUploadViewUrl } from '@/utils/files';
 
 function formatConversationTime(iso: string | undefined) {
   if (!iso) return '';
@@ -115,7 +43,7 @@ function formatConversationTime(iso: string | undefined) {
   if (isSameDay) return `Hoy · ${time}`;
   if (isYesterday) return `Ayer · ${time}`;
 
-  const weekday = date.toLocaleDateString('es-PE', { weekday: 'short' }); // lun, mar, etc.
+  const weekday = date.toLocaleDateString('es-PE', { weekday: 'short' });
   const capitalized =
     weekday.length > 0
       ? weekday.charAt(0).toUpperCase() + weekday.slice(1)
@@ -124,13 +52,21 @@ function formatConversationTime(iso: string | undefined) {
   return `${capitalized} · ${time}`;
 }
 
-function mapConversationToChatItem(c: ConversationDto): ChatListItem {
-  const nameFromApi =
-    c.otherUserName || c.otherUserUsername || 'Usuario Fitech';
+function getAvatarUri(c: ConversationDto): string | null {
+  const urlOrId = c.otherUserProfileImageUrl ?? c.otherUserId;
+  if (urlOrId == null) return null;
+  if (typeof urlOrId === 'string') {
+    const s = urlOrId.trim();
+    if (s === '') return null;
+    if (s.startsWith('http')) return s;
+  }
+  return getFileUploadViewUrl(urlOrId);
+}
 
+function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
   return {
     id: String(c.id ?? ''),
-    name: nameFromApi,
+    name: c.otherUserName || c.otherUserUsername || 'Usuario Fitech',
     lastMessage: c.lastMessageContent ?? 'Aún no hay mensajes.',
     time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
     unread: c.unreadCount ?? 0,
@@ -147,76 +83,56 @@ export default function ChatsScreen() {
 
   const { data, isLoading } = useGetChats();
 
-  const chats: ChatListItem[] = useMemo(() => {
-    const conversations = data?.data ?? [];
-    return conversations.map(mapConversationToChatItem);
-  }, [data]);
+  const chats = useMemo(
+    () => (data?.data ?? []).map(mapConversationToChatItem),
+    [data],
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: ChatListRowItem }) => (
+      <ChatListRow
+        chat={item}
+        isTrainer={isTrainer}
+        onPress={() =>
+          router.push({
+            pathname: '/chats/[id]',
+            params: { id: item.id, title: item.name },
+          })
+        }
+      />
+    ),
+    [isTrainer, router],
+  );
 
   return (
     <PageContainer
       title="Chats"
-      subheader="Mantén el contacto con tus gymcrush y gymbros cuando lo necesites."
+      subheader="Mantén el contacto con tus gymcrush y gymbros cuando lo necesites"
+      disableScroll
       style={styles.pageStyle}
     >
-      {isLoading ? (
-        <View style={styles.loadingCenter}>
-          <ActivityIndicator color={theme.text.primary} />
-          <AppText style={styles.loadingText}>Cargando chats...</AppText>
-        </View>
-      ) : !isLoading && !chats.length ? (
-        <View style={styles.emptyCenter}>
-          <AppText style={styles.emptyText}>
-            Aún no tienes conversaciones activas.
-          </AppText>
-        </View>
-      ) : (
-        <View style={styles.list}>
-          {chats.map((chat) => (
-            <TouchableOpacity
-              key={chat.id}
-              style={styles.chatRow}
-              onPress={() =>
-                router.push({
-                  pathname: '/chats/[id]',
-                  params: {
-                    id: chat.id,
-                    title: chat.name, // lo usamos en el header del detalle
-                  },
-                })
-              }
-            >
-              <ChatListAvatar
-                matchType={chat.matchType}
-                avatarUri={chat.avatarUri}
-                name={chat.name}
-                isTrainer={isTrainer}
-                theme={theme}
-                styles={styles}
-              />
-
-              <View style={styles.chatMain}>
-                <AppText style={styles.chatName} numberOfLines={1}>
-                  {chat.name}
-                </AppText>
-                <AppText style={styles.chatPreview} numberOfLines={1}>
-                  {chat.lastMessage}
-                </AppText>
-              </View>
-
-              <View style={styles.meta}>
-                <AppText style={styles.chatTime}>{chat.time}</AppText>
-                {chat.unread > 0 ? (
-                  <View style={styles.unreadBadge}>
-                    <AppText style={styles.unreadText}>
-                      {chat.unread > 99 ? '99+' : chat.unread}
-                    </AppText>
-                  </View>
-                ) : null}
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
+      <FlatList
+        data={chats}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        ListEmptyComponent={
+          isLoading ? (
+            <View style={styles.loadingWrap}>
+              <ActivityIndicator color={theme.brand.primary} />
+              <AppText style={styles.loadingText}>Cargando chats…</AppText>
+            </View>
+          ) : (
+            <ListEmptyState title="Aún no tienes conversaciones activas" />
+          )
+        }
+        contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+        windowSize={LIST_SCREEN_FLATLIST.windowSize}
+        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+      />
     </PageContainer>
   );
 }
@@ -224,106 +140,21 @@ export default function ChatsScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: {
-      paddingBottom: 0,
+    pageStyle: { paddingBottom: 0 },
+    listContent: {
+      paddingBottom: 180,
+      flexGrow: 1,
+      paddingTop: 8,
     },
-    loadingCenter: {
-      flex: 1,
-      justifyContent: 'center',
+    separator: { height: LIST_SCREEN_FLATLIST.itemGap },
+    loadingWrap: {
+      paddingVertical: 48,
       alignItems: 'center',
-    },
-    loadingText: {
-      marginTop: 8,
-      ...text.nav,
-      color: theme.text.secondary,
-    },
-    emptyCenter: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    emptyText: {
-      ...text.small,
-      color: theme.text.secondary,
-      textAlign: 'center',
-    },
-    list: {
-      width: '100%',
-      marginTop: 8,
       rowGap: 8,
     },
-    chatRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: 14,
-      paddingHorizontal: 14,
-      borderRadius: 14,
-      backgroundColor: theme.background.card,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      columnGap: 12,
-    },
-    avatar: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: theme.background.input,
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: theme.border.default,
-    },
-    avatarImage: {
-      width: 44,
-      height: 44,
-    },
-    avatarInitialsWrap: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: theme.brand.primarySoft,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: theme.brand.primary,
-    },
-    avatarInitials: {
-      color: theme.brand.primary,
-      ...text.lead,
-    },
-    chatMain: {
-      flex: 1,
-      rowGap: 2,
-    },
-    chatName: {
-      ...text.bodySemibold,
-      color: theme.text.primary,
-    },
-    chatPreview: {
+    loadingText: {
       ...text.nav,
       color: theme.text.secondary,
-    },
-    meta: {
-      alignItems: 'flex-end',
-      rowGap: 6,
-      marginLeft: 8,
-    },
-    chatTime: {
-      ...text.caption,
-      color: theme.text.secondary,
-    },
-    unreadBadge: {
-      minWidth: 20,
-      paddingHorizontal: 6,
-      paddingVertical: 2,
-      borderRadius: 999,
-      backgroundColor: theme.brand.primary,
-      alignItems: 'center',
-    },
-    unreadText: {
-      ...text.label,
-      color: theme.background.app,
     },
   });
 };

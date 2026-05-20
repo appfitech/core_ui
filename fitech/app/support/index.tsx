@@ -8,7 +8,6 @@ import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
-import { showInfoToast } from '@/components/Toast';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -80,10 +79,10 @@ export default function SupportScreen() {
         });
       },
       onError: () => {
-        showInfoToast(
-          'Error',
-          'No se pudo enviar la consulta. Intenta nuevamente.',
-        );
+        showAlert({
+          title: 'Error',
+          message: 'No se pudo enviar la consulta. Intenta nuevamente.',
+        });
       },
     });
   };

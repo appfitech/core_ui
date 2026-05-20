@@ -8,8 +8,8 @@ import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
-import { showInfoToast } from '@/components/Toast';
 import { TRANSLATIONS } from '@/constants/strings';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useForgotPassword } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
@@ -21,6 +21,7 @@ export default function ForgotPasswordScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
+  const { showAlert } = useAlert();
   const { forgotPasswordScreen } = TRANSLATIONS;
 
   const [email, setEmail] = useState('');
@@ -45,11 +46,11 @@ export default function ForgotPasswordScreen() {
 
     forgotPassword(trimmed, {
       onSuccess: () => {
-        showInfoToast(
-          forgotPasswordScreen.successTitle,
-          forgotPasswordScreen.successMessage,
-        );
-        router.back();
+        showAlert({
+          title: forgotPasswordScreen.successTitle,
+          message: forgotPasswordScreen.successMessage,
+          buttons: [{ text: 'Entendido', onPress: () => router.back() }],
+        });
       },
       onError: (error) => {
         setErrorMsg(
@@ -57,7 +58,7 @@ export default function ForgotPasswordScreen() {
         );
       },
     });
-  }, [email, forgotPassword, forgotPasswordScreen, router]);
+  }, [email, forgotPassword, forgotPasswordScreen, router, showAlert]);
 
   return (
     <ImageBackground

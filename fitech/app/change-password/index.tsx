@@ -9,7 +9,6 @@ import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
-import { showInfoToast } from '@/components/Toast';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useAlert } from '@/contexts/AlertContext';
@@ -80,11 +79,16 @@ export default function ChangePasswordScreen() {
         onSuccess: async () => {
           clearAppQueryCache(queryClient);
           await useUserStore.getState().logout();
-          showInfoToast(
-            changePasswordScreen.successTitle,
-            changePasswordScreen.successMessage,
-          );
-          router.replace(ROUTES.login);
+          showAlert({
+            title: changePasswordScreen.successTitle,
+            message: changePasswordScreen.successMessage,
+            buttons: [
+              {
+                text: changePasswordScreen.successButton,
+                onPress: () => router.replace(ROUTES.login),
+              },
+            ],
+          });
         },
         onError: (error) => {
           setErrorMsg(
@@ -100,6 +104,7 @@ export default function ChangePasswordScreen() {
     newPassword,
     queryClient,
     router,
+    showAlert,
     validate,
   ]);
 

@@ -1,15 +1,13 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
 import React, { useCallback } from 'react';
 import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { AddEditExerciseModal } from '@/components/modules/AddEditWorkoutModal';
 import { ExerciseCard } from '@/components/modules/ExerciseCard';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useOpenable } from '@/hooks/use-openable';
 import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { FullTheme } from '@/types/theme';
 
@@ -19,8 +17,6 @@ export default function WorkoutDayScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const { isOpen, open, close } = useOpenable();
-
   const {
     data: sessions,
     isLoading,
@@ -29,10 +25,18 @@ export default function WorkoutDayScreen() {
 
   const exerciseCount = sessions?.length ?? 0;
 
-  const handleCallback = useCallback(() => {
-    close();
-    refetchDailyWorkouts();
-  }, [close, refetchDailyWorkouts]);
+  useFocusEffect(
+    useCallback(() => {
+      void refetchDailyWorkouts();
+    }, [refetchDailyWorkouts]),
+  );
+
+  const openAddExercise = useCallback(() => {
+    router.push({
+      pathname: '/exercises/[date]/workout',
+      params: { date: String(date), mode: 'add' },
+    });
+  }, [date, router]);
 
   const listHeader = useCallback(() => {
     if (exerciseCount <= 0) return null;
@@ -91,21 +95,15 @@ export default function WorkoutDayScreen() {
             Cerrar
           </AppText>
         </Pressable>
-        <Pressable style={[styles.button, styles.btnPrimary]} onPress={open}>
+        <Pressable
+          style={[styles.button, styles.btnPrimary]}
+          onPress={openAddExercise}
+        >
           <AppText style={[styles.buttonText, styles.buttonTextPrimary]}>
             + Agregar Ejercicio
           </AppText>
         </Pressable>
       </View>
-      {isOpen && (
-        <AddEditExerciseModal
-          mode={'add'}
-          initial={undefined}
-          onClose={handleCallback}
-          refetchCallback={handleCallback}
-          dateISO={String(date)}
-        />
-      )}
     </>
   );
 }

@@ -133,7 +133,10 @@ function RoutedApp() {
   }, [isSessionHydrated, isAuthenticated, currentRoute, router]);
 
   const shouldHideNav =
-    HIDE_NAV_ROUTES.includes(currentRoute) || currentRoute === undefined;
+    HIDE_NAV_ROUTES.includes(currentRoute) ||
+    currentRoute === undefined ||
+    (currentRoute === 'exercises' &&
+      segments.some((segment) => segment === 'workout'));
 
   return (
     <View style={styles.flex1}>

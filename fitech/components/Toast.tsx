@@ -1,15 +1,85 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Pressable, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Toast, { BaseToastProps } from 'react-native-toast-message';
 
 import { AppText } from '@/components/AppText';
+import { THEME } from '@/constants/theme';
 
 type MatchToastProps = BaseToastProps & {
   props?: { onPress?: () => void };
 };
 
+function InfoSuccessToast({ text1, text2 }: BaseToastProps) {
+  return (
+    <Animated.View
+      entering={FadeInDown.duration(220)}
+      style={toastStyles.card}
+    >
+      <View style={toastStyles.iconWrap}>
+        <Ionicons
+          name="checkmark-circle-outline"
+          size={22}
+          color={THEME.brand.primaryLight}
+        />
+      </View>
+      <View style={toastStyles.textWrap}>
+        {!!text1 && (
+          <AppText variant="bodySemibold" style={toastStyles.title}>
+            {text1}
+          </AppText>
+        )}
+        {!!text2 && (
+          <AppText variant="caption" style={toastStyles.subtitle}>
+            {text2}
+          </AppText>
+        )}
+      </View>
+    </Animated.View>
+  );
+}
+
+const toastStyles = StyleSheet.create({
+  card: {
+    width: '92%',
+    maxWidth: 360,
+    alignSelf: 'center',
+    marginTop: 56,
+    backgroundColor: THEME.background.card,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: THEME.border.default,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    columnGap: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.35,
+        shadowRadius: 16,
+        shadowOffset: { width: 0, height: 8 },
+      },
+      android: { elevation: 12 },
+    }),
+  },
+  iconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: THEME.brand.primarySoft,
+  },
+  textWrap: { flex: 1, rowGap: 4, paddingTop: 4 },
+  title: { color: THEME.text.primary },
+  subtitle: { color: THEME.text.secondary, lineHeight: 18 },
+});
+
 export const toastConfig = {
+  success: InfoSuccessToast,
+  info: InfoSuccessToast,
   match: ({ text1, text2, props }: MatchToastProps) => (
     <Animated.View
       entering={FadeInDown.duration(220)}
@@ -84,6 +154,7 @@ export function showInfoToast(text1: string, text2?: string) {
     text1,
     text2,
     position: 'top',
-    topOffset: 60,
+    topOffset: 56,
+    visibilityTime: 4000,
   });
 }

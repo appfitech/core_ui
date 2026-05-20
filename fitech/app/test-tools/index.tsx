@@ -139,10 +139,19 @@ export default function Register() {
       <Button label={'Clear matches'} onPress={resetMatchList} />
 
       <ScrollView style={{ maxHeight: 220 }} nestedScrollEnabled>
-        <Text selectable style={{ fontSize: 12, opacity: 0.85, lineHeight: 18 }}>
+        <Text
+          selectable
+          style={{ fontSize: 12, opacity: 0.85, lineHeight: 18 }}
+        >
           {diagnostics
             ? [
                 `Plataforma: ${diagnostics.platform}`,
+                diagnostics.androidApiLevel != null
+                  ? `Android API: ${diagnostics.androidApiLevel}`
+                  : null,
+                diagnostics.nativeAppVersion
+                  ? `App: ${diagnostics.nativeAppVersion} (${diagnostics.nativeBuildVersion ?? 'build ?'})`
+                  : null,
                 `Dispositivo físico: ${diagnostics.isPhysicalDevice ? 'sí' : 'no'}`,
                 `Permiso: ${diagnostics.permissionStatus}`,
                 `POST_NOTIFICATIONS en app.json: ${diagnostics.manifestListsPostNotifications ? 'sí' : 'no'}`,
@@ -150,7 +159,9 @@ export default function Register() {
                 diagnostics.issues.length
                   ? `\nProblemas:\n• ${diagnostics.issues.join('\n• ')}`
                   : '\nSin problemas detectados en diagnóstico.',
-              ].join('\n')
+              ]
+                .filter(Boolean)
+                .join('\n')
             : 'Cargando diagnóstico…'}
         </Text>
       </ScrollView>
@@ -160,9 +171,7 @@ export default function Register() {
       </Text>
 
       <Button
-        label={
-          isRegisteringPush ? 'Registrando…' : 'Registrar notificaciones'
-        }
+        label={isRegisteringPush ? 'Registrando…' : 'Registrar notificaciones'}
         onPress={() => void registerPush()}
         disabled={isRegisteringPush}
       />

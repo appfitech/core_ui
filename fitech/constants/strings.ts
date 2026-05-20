@@ -89,6 +89,7 @@ export const TRANSLATIONS = {
     confirmCancel: 'No, volver',
     successTitle: 'Contraseña actualizada',
     successMessage: 'Inicia sesión con tu nueva contraseña.',
+    successButton: 'Ir a iniciar sesión',
     errorFallback:
       'No pudimos cambiar tu contraseña. Verifica la contraseña actual e inténtalo de nuevo.',
   },

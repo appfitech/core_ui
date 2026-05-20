@@ -4,6 +4,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 
+import { explainAndroidPushError } from '@/lib/push/push-android-errors';
 import { ensureDefaultAndroidNotificationChannel } from '@/utils/ensure-android-notification-channel';
 
 let warnedSimulatorPush = false;
@@ -42,7 +43,11 @@ export async function registerForPushNotificationsAsync(): Promise<PushRegistrat
         allowBadge: true,
         allowSound: true,
       },
-      android: {},
+      android: {
+        allowAlert: true,
+        allowBadge: true,
+        allowSound: true,
+      },
     });
     finalStatus = status;
   }
@@ -95,10 +100,12 @@ export async function registerForPushNotificationsAsync(): Promise<PushRegistrat
       permissionGranted: true,
     };
   } catch (e) {
-    const message =
+    const raw =
       e instanceof Error
         ? e.message
         : 'Failed to obtain Expo push token (check FCM credentials in EAS for Android).';
+    const message =
+      Platform.OS === 'android' ? explainAndroidPushError(raw) : raw;
 
     console.warn('[Push] getExpoPushTokenAsync failed', e);
 
