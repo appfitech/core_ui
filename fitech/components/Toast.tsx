@@ -13,10 +13,7 @@ type MatchToastProps = BaseToastProps & {
 
 function InfoSuccessToast({ text1, text2 }: BaseToastProps) {
   return (
-    <Animated.View
-      entering={FadeInDown.duration(220)}
-      style={toastStyles.card}
-    >
+    <Animated.View entering={FadeInDown.duration(220)} style={toastStyles.card}>
       <View style={toastStyles.iconWrap}>
         <Ionicons
           name="checkmark-circle-outline"

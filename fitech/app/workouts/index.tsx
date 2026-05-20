@@ -1,135 +1,40 @@
-import { Ionicons } from '@expo/vector-icons';
-import { type Href, useRouter } from 'expo-router';
+import { type Href, router } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
-import { textStyles } from '@/constants/styles';
-import { useTheme } from '@/contexts/ThemeContext';
+import { ProductFeatureCard } from '@/components/ProductFeatureCard';
+import { TRANSLATIONS } from '@/constants/strings';
+import { getWorkoutsPanelRows } from '@/constants/workouts-panel';
 import { useUserStore } from '@/stores/user';
-import { FullTheme } from '@/types/theme';
-
-/**
- * SVG/illustration search suggestions (unDraw, Storyset, Blush, etc.):
- * - Diet / nutrition: "healthy eating", "nutrition", "meal plan", "diet"
- * - Workout / routine: "fitness", "workout", "gym", "exercise", "dumbbell"
- * - Contract / services: "agreement", "document", "handshake"
- * - Exercise log: "fitness tracker", "checklist", "exercise log"
- * - Payments: "payment", "wallet", "income"
- * - Reviews: "review", "rating", "feedback"
- */
 
 export default function WorkoutsScreen() {
-  const router = useRouter();
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-
   const isTrainer = useUserStore((s) => s.getIsTrainer());
-
-  const title = isTrainer ? 'Panel de Gestión' : 'Panel de Entrenamiento';
-  const subheader = isTrainer
-    ? 'Controla y supervisa toda tu actividad desde un solo lugar.'
-    : 'Gestiona tus recursos para mantenerte en forma y organizado.';
-
-  const items = isTrainer
-    ? [
-        {
-          key: 'trainer-diets',
-          title: 'Dietas de Clientes',
-          description: 'Gestiona las dietas asignadas a tus clientes',
-          image: require('../../assets/images/vectors/diet_icon.png'),
-        },
-        {
-          key: 'trainer-routines',
-          title: 'Rutinas de clientes',
-          description: 'Diseña rutinas y haz seguimiento',
-          image: require('../../assets/images/vectors/workout_icon.png'),
-        },
-        {
-          key: 'trainer-services',
-          title: 'Mis Servicios',
-          description: 'Administra lo que ofreces',
-          image: require('../../assets/images/vectors/contract_icon.png'),
-        },
-        {
-          key: 'trainer-payments',
-          title: 'Mis Pagos',
-          description: 'Ingresos y transacciones',
-          image: require('../../assets/images/vectors/contract_icon.png'),
-        },
-        {
-          key: 'trainer-reviews',
-          title: 'Mis Calificaciones',
-          description: 'Valoraciones de tus clientes',
-          image: require('../../assets/images/vectors/contract_icon.png'),
-        },
-      ]
-    : [
-        {
-          key: 'exercises',
-          title: 'Mi Registro de Entrenamientos',
-          description: 'Control de workouts y metas',
-          image: require('../../assets/images/vectors/exercises_icon.png'),
-        },
-        {
-          key: 'diets',
-          title: 'Mis Planes de Alimentación',
-          description: 'Dietas personalizadas',
-          image: require('../../assets/images/vectors/diet_icon.png'),
-        },
-        {
-          key: 'routines',
-          title: 'Mis Rutinas de Entrenamiento',
-          description: 'Programas por objetivos y niveles',
-          image: require('../../assets/images/vectors/workout_icon.png'),
-        },
-        {
-          key: 'contracts',
-          title: 'Mis Contratos',
-          description: 'Contratos con entrenadores',
-          image: require('../../assets/images/vectors/contract_icon.png'),
-        },
-      ];
+  const panelRows = getWorkoutsPanelRows(isTrainer);
+  const copy = isTrainer
+    ? TRANSLATIONS.workoutsScreen.trainer
+    : TRANSLATIONS.workoutsScreen.client;
 
   return (
     <PageContainer
       hasBackButton={false}
-      title={title}
-      subheader={subheader}
+      title={copy.title}
+      subheader={copy.subheader}
       style={{ paddingBottom: 150 }}
     >
-      <View style={styles.list}>
-        {items.map((item, i) => (
+      <View style={styles.cardList}>
+        {panelRows.map((item, index) => (
           <Animated.View
-            key={item.key}
-            entering={FadeInUp.delay(60 * i).duration(280)}
+            key={item.id}
+            entering={FadeInUp.delay(50 * index).duration(260)}
           >
-            <TouchableOpacity
-              style={styles.row}
-              activeOpacity={0.7}
-              onPress={() => router.push(`/${item.key}` as Href)}
-            >
-              <View style={styles.iconWrap}>
-                <Image
-                  source={item.image}
-                  style={styles.icon}
-                  resizeMode="contain"
-                />
-              </View>
-              <View style={styles.textWrap}>
-                <AppText style={styles.rowTitle}>{item.title}</AppText>
-                <AppText style={styles.rowDescription} numberOfLines={1}>
-                  {item.description}
-                </AppText>
-              </View>
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={theme.text.secondary}
-              />
-            </TouchableOpacity>
+            <ProductFeatureCard
+              title={item.title}
+              description={item.description}
+              image={item.image}
+              onPress={() => router.push(item.route as Href)}
+            />
           </Animated.View>
         ))}
       </View>
@@ -137,44 +42,9 @@ export default function WorkoutsScreen() {
   );
 }
 
-const getStyles = (theme: FullTheme) => {
-  const text = textStyles(theme);
-  return StyleSheet.create({
-    list: {
-      paddingTop: 16,
-    },
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      paddingVertical: 20,
-      paddingHorizontal: 8,
-      borderBottomWidth: StyleSheet.hairlineWidth,
-      borderBottomColor: theme.border.default,
-      columnGap: 18,
-    },
-    iconWrap: {
-      width: 52,
-      height: 52,
-      borderRadius: 14,
-      backgroundColor: theme.brand.primarySoft,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    icon: {
-      width: 28,
-      height: 28,
-    },
-    textWrap: {
-      flex: 1,
-      minWidth: 0,
-    },
-    rowTitle: {
-      ...text.leadSemibold,
-    },
-    rowDescription: {
-      ...text.small,
-      color: theme.text.secondary,
-      marginTop: 4,
-    },
-  });
-};
+const styles = StyleSheet.create({
+  cardList: {
+    rowGap: 12,
+    paddingTop: 4,
+  },
+});

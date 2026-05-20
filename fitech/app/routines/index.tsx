@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
@@ -11,11 +11,11 @@ import {
   LIST_SCREEN_FLATLIST,
 } from '@/constants/list-screens';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
 import {
   ActiveInactiveFilter,
   filterClientResourcesByActive,
 } from '@/lib/list/filter-client-resources';
-import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 
 export default function RoutinesScreen() {

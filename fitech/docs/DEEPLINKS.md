@@ -4,9 +4,9 @@
 
 Use **one HTTPS link** per flow. Same pattern for both:
 
-| Flow | URL |
-|------|-----|
-| Verify email | `https://appfitech.com/verify-email?token={token}` |
+| Flow           | URL                                                  |
+| -------------- | ---------------------------------------------------- |
+| Verify email   | `https://appfitech.com/verify-email?token={token}`   |
 | Reset password | `https://appfitech.com/reset-password?token={token}` |
 
 Query param must be **`token`** (URL-encoded if needed). Do not use `resetToken` in emails — the app normalizes it if present, but BE should standardize on `token`.
@@ -55,9 +55,9 @@ npx uri-scheme open "https://appfitech.com/reset-password?token=TEST" --ios
 
 ## App routes
 
-| URL path | Screen |
-|----------|--------|
-| `/verify-email` | `app/verify-email/index.tsx` |
+| URL path          | Screen                         |
+| ----------------- | ------------------------------ |
+| `/verify-email`   | `app/verify-email/index.tsx`   |
 | `/reset-password` | `app/reset-password/index.tsx` |
 
 Both are public routes in `app/_layout.tsx` (no login required).

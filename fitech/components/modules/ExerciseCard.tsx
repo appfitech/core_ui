@@ -88,7 +88,11 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
     <Card style={styles.card}>
       <View style={styles.headerRow}>
         <View style={styles.titleBlock}>
-          <AppText variant="sectionTitle" style={styles.title} numberOfLines={2}>
+          <AppText
+            variant="sectionTitle"
+            style={styles.title}
+            numberOfLines={2}
+          >
             {session.exerciseName}
           </AppText>
           {!!session.muscleGroup && (
@@ -141,7 +145,12 @@ export function ExerciseCard({ session, refetchCallback }: Props) {
       {visibleSets.length > 0 ? (
         <View style={styles.seriesBlock}>
           {visibleSets.map((s, idx) => (
-            <SetRow key={s.id ?? `set-${idx}`} set={s} index={idx} styles={styles} />
+            <SetRow
+              key={s.id ?? `set-${idx}`}
+              set={s}
+              index={idx}
+              styles={styles}
+            />
           ))}
           {hiddenSetCount > 0 ? (
             <AppText style={styles.seriesOverflow}>

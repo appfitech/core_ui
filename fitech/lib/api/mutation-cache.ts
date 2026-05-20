@@ -66,7 +66,9 @@ export async function invalidateContractQueries(
       queryKey: queryKeys.trainers.clients.list,
     }),
     queryClient.invalidateQueries({ queryKey: queryKeys.subscription.user }),
-    queryClient.invalidateQueries({ queryKey: queryKeys.subscription.payments }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.subscription.payments,
+    }),
     queryClient.invalidateQueries({
       queryKey: queryKeys.clientResources.grouped,
     }),

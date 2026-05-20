@@ -59,10 +59,10 @@ SHA-256 fingerprints in `assetlinks.json` **must use colon-separated hex pairs**
 
 ## Server files to deploy
 
-| Platform | File in repo | Live URL |
-|----------|--------------|----------|
-| iOS | `docs/well-known/apple-app-site-association` | `https://appfitech.com/.well-known/apple-app-site-association` |
-| Android | `docs/well-known/assetlinks.json` | `https://appfitech.com/.well-known/assetlinks.json` |
+| Platform | File in repo                                 | Live URL                                                       |
+| -------- | -------------------------------------------- | -------------------------------------------------------------- |
+| iOS      | `docs/well-known/apple-app-site-association` | `https://appfitech.com/.well-known/apple-app-site-association` |
+| Android  | `docs/well-known/assetlinks.json`            | `https://appfitech.com/.well-known/assetlinks.json`            |
 
 AASA must include **`/reset-password`** and **`/reset-password/*`** (not only verify-email).
 

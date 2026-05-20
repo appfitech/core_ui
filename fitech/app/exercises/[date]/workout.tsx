@@ -157,7 +157,9 @@ export default function WorkoutExerciseScreen() {
             ? roundReps(s.repetitions)
             : s.repetitions,
         weightKg:
-          typeof s.weightKg === 'number' ? roundWeightKg(s.weightKg) : s.weightKg,
+          typeof s.weightKg === 'number'
+            ? roundWeightKg(s.weightKg)
+            : s.weightKg,
       })),
     };
 

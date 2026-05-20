@@ -2,15 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
 import {
-  ChangePasswordRequest,
-  ForgotPasswordRequest,
-  ResetPasswordRequest,
-} from '@/types/auth-api';
-import {
   LoginRequestDto,
   LoginResponseDtoReadable,
   VerifyEmailResponse,
 } from '@/types/api/types.gen';
+import {
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
+} from '@/types/auth-api';
 
 import { api } from '../api';
 

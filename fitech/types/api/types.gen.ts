@@ -37,7 +37,7 @@ export type WorkoutSessionDto = {
   exerciseNotes?: string;
   createdAt?: string;
   updatedAt?: string;
-  exerciseSets?: ExerciseSetDto[];
+  exerciseSets?: Array<ExerciseSetDto>;
 };
 
 export type CreateExerciseWithSetsRequest = {
@@ -47,7 +47,7 @@ export type CreateExerciseWithSetsRequest = {
   muscleGroup?: string;
   exerciseOrder?: number;
   exerciseNotes?: string;
-  sets: SetData[];
+  sets: Array<SetData>;
 };
 
 export type SetData = {
@@ -139,7 +139,7 @@ export type PersonDto = {
   /**
    * List of fitness goal types
    */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+  fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
@@ -401,7 +401,7 @@ export type CreateTrainerServiceDto = {
   /**
    * List of districts for in-person services
    */
-  districts?: string[];
+  districts?: Array<string>;
 };
 
 /**
@@ -535,7 +535,7 @@ export type TrainerServiceDtoReadable = {
   /**
    * List of districts where service is available
    */
-  districts?: ServiceDistrictDtoReadable[];
+  districts?: Array<ServiceDistrictDtoReadable>;
 };
 
 /**
@@ -589,7 +589,7 @@ export type TrainerServiceDtoWritable = {
   /**
    * List of districts where service is available
    */
-  districts?: ServiceDistrictDtoWritable[];
+  districts?: Array<ServiceDistrictDtoWritable>;
 };
 
 /**
@@ -623,7 +623,7 @@ export type ProfileUpdateDtoReadable = {
   /**
    * List of fitness goal type IDs
    */
-  fitnessGoalTypeIds?: number[];
+  fitnessGoalTypeIds?: Array<number>;
 };
 
 /**
@@ -653,7 +653,7 @@ export type ProfileUpdateDtoWritable = {
   /**
    * List of fitness goal type IDs
    */
-  fitnessGoalTypeIds?: number[];
+  fitnessGoalTypeIds?: Array<number>;
 };
 
 export type LocationDto = {
@@ -728,14 +728,14 @@ export type CreateMatchPreferencesRequest = {
   gymBroAgeRangeMax?: number;
   gymBroIntensity?: string;
   gymBroShowBioInProfile?: boolean;
-  gymBroWorkoutTimes?: string[];
-  gymBroLocationIds?: number[];
+  gymBroWorkoutTimes?: Array<string>;
+  gymBroLocationIds?: Array<number>;
   gymCrushLookingForGender?: string;
   gymCrushAgeRangeMin?: number;
   gymCrushAgeRangeMax?: number;
   gymCrushLookingFor?: string;
   gymCrushShowBioInProfile?: boolean;
-  gymCrushLocationIds?: number[];
+  gymCrushLocationIds?: Array<number>;
   showAge?: boolean;
   showLocation?: boolean;
   showRealName?: boolean;
@@ -759,9 +759,9 @@ export type MatchPreferencesDto = {
   showAge?: boolean;
   showLocation?: boolean;
   showRealName?: boolean;
-  gymBroWorkoutTimes?: string[];
-  gymBroLocations?: LocationDto[];
-  gymCrushLocations?: LocationDto[];
+  gymBroWorkoutTimes?: Array<string>;
+  gymBroLocations?: Array<LocationDto>;
+  gymCrushLocations?: Array<LocationDto>;
   isActive?: boolean;
   lastUpdatedByUser?: string;
   createdAt?: string;
@@ -1092,7 +1092,7 @@ export type CreateExerciseVideoRequest = {
   /**
    * IDs de los grupos musculares que trabaja el ejercicio
    */
-  muscleGroupIds: number[];
+  muscleGroupIds: Array<number>;
 };
 
 /**
@@ -1142,7 +1142,7 @@ export type ExerciseVideoDto = {
   /**
    * Grupos musculares que trabaja el ejercicio
    */
-  muscleGroups?: MuscleGroupDto[];
+  muscleGroups?: Array<MuscleGroupDto>;
   /**
    * Fecha de creación
    */
@@ -1210,7 +1210,7 @@ export type AchievementDtoReadable = {
   /**
    * List of files uploaded for this achievement
    */
-  filesUpload?: AchievementFileDto[];
+  filesUpload?: Array<AchievementFileDto>;
 };
 
 /**
@@ -1244,7 +1244,7 @@ export type AchievementDtoWritable = {
   /**
    * List of files uploaded for this achievement
    */
-  filesUpload?: AchievementFileDto[];
+  filesUpload?: Array<AchievementFileDto>;
 };
 
 /**
@@ -1264,7 +1264,7 @@ export type AchievementFileDto = {
 export type ExerciseFilterRequest = {
   startDate: string;
   endDate: string;
-  muscleGroups?: string[];
+  muscleGroups?: Array<string>;
   exerciseName?: string;
   minSets?: number;
   maxSets?: number;
@@ -1344,7 +1344,7 @@ export type TrainerSearchDto = {
   /**
    * List of fitness goal IDs to filter trainers
    */
-  fitnessGoalIds?: number[];
+  fitnessGoalIds?: Array<number>;
   /**
    * Search query for trainer name
    */
@@ -1414,7 +1414,7 @@ export type PublicPersonDtoReadable = {
   /**
    * List of fitness goal types
    */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+  fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
@@ -1460,7 +1460,7 @@ export type PublicPersonDtoWritable = {
   /**
    * List of fitness goal types
    */
-  fitnessGoalTypes?: FitnessGoalTypeDto[];
+  fitnessGoalTypes?: Array<FitnessGoalTypeDto>;
 };
 
 /**
@@ -1569,7 +1569,7 @@ export type SupportRequestDto = {
  * Lista de alimentos seleccionados con sus cantidades
  */
 export type MacroCalculationRequestDto = {
-  selectedFoods?: SelectedFoodDto[];
+  selectedFoods?: Array<SelectedFoodDto>;
 };
 
 export type SelectedFoodDto = {
@@ -1588,7 +1588,7 @@ export type FoodCalculationDetailDto = {
 
 export type MacroCalculationResponseDto = {
   totalMacros?: MacroNutrientsDto;
-  foodDetails?: FoodCalculationDetailDto[];
+  foodDetails?: Array<FoodCalculationDetailDto>;
   percentages?: MacroPercentagesDto;
 };
 
@@ -1719,8 +1719,8 @@ export type MatchActionDto = {
   actionType?: string;
   matchSystem?: string;
   like?: boolean;
-  block?: boolean;
   pass?: boolean;
+  block?: boolean;
   validActionType?: boolean;
   validMatchSystem?: boolean;
 };
@@ -1817,11 +1817,11 @@ export type WeeklyStatsDto = {
 export type Pageable = {
   page?: number;
   size?: number;
-  sort?: string[];
+  sort?: Array<string>;
 };
 
 export type ResultPageUserTypeDto = {
-  pagesResult?: UserTypeDto[];
+  pagesResult?: Array<UserTypeDto>;
   totalItems?: number;
   totalPages?: number;
   currentPage?: number;
@@ -1910,7 +1910,7 @@ export type PaymentsResponseDto = {
   /**
    * List of payment transactions
    */
-  payments?: PaymentDataDto[];
+  payments?: Array<PaymentDataDto>;
   summary?: PaymentSummaryDto;
   /**
    * Total number of pages
@@ -1927,9 +1927,9 @@ export type PaymentsResponseDto = {
 };
 
 export type TrainerExperienceDto = {
-  education?: TrainerEducationDto[];
-  certifications?: TrainerCertificationDto[];
-  recognitions?: TrainerRecognitionDto[];
+  education?: Array<TrainerEducationDto>;
+  certifications?: Array<TrainerCertificationDto>;
+  recognitions?: Array<TrainerRecognitionDto>;
   summary?: TrainerExperienceSummaryDto;
 };
 
@@ -1944,13 +1944,13 @@ export type TrainerExperienceSummaryDto = {
 };
 
 export type Page = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
-  content?: {
+  content?: Array<{
     [key: string]: unknown;
-  }[];
+  }>;
   number?: number;
   sort?: SortObject;
   numberOfElements?: number;
@@ -2129,15 +2129,15 @@ export type RatingBreakdownItemDto = {
 export type TrainerRatingBreakdownDto = {
   totalReviews?: number;
   averageRating?: number;
-  breakdown?: RatingBreakdownItemDto[];
+  breakdown?: Array<RatingBreakdownItemDto>;
 };
 
 export type PageReviewResponseDtoReadable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
-  content?: ReviewResponseDtoReadable[];
+  content?: Array<ReviewResponseDtoReadable>;
   number?: number;
   sort?: SortObject;
   numberOfElements?: number;
@@ -2147,11 +2147,11 @@ export type PageReviewResponseDtoReadable = {
 };
 
 export type PageReviewResponseDtoWritable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
-  content?: ReviewResponseDtoWritable[];
+  content?: Array<ReviewResponseDtoWritable>;
   number?: number;
   sort?: SortObject;
   numberOfElements?: number;
@@ -2205,9 +2205,9 @@ export type FoodCategoryDto = {
 };
 
 export type FoodSearchResponseDto = {
-  foods?: FoodItemDto[];
-  categories?: FoodCategoryDto[];
-  popularFoods?: FoodItemDto[];
+  foods?: Array<FoodItemDto>;
+  categories?: Array<FoodCategoryDto>;
+  popularFoods?: Array<FoodItemDto>;
   totalCount?: number;
 };
 
@@ -2226,13 +2226,13 @@ export type NotificationDto = {
 
 export type NotificationListResponseDto = {
   success?: boolean;
-  data?: NotificationDto[];
+  data?: Array<NotificationDto>;
   error?: string;
 };
 
 export type NotificationSummaryDto = {
   unreadCount?: number;
-  recent?: NotificationDto[];
+  recent?: Array<NotificationDto>;
   hasMore?: boolean;
 };
 
@@ -2243,7 +2243,7 @@ export type NotificationSummaryResponseDto = {
 };
 
 export type ResultPageMetricTypeDto = {
-  pagesResult?: MetricTypeDto[];
+  pagesResult?: Array<MetricTypeDto>;
   totalItems?: number;
   totalPages?: number;
   currentPage?: number;
@@ -2274,6 +2274,7 @@ export type MembershipPayment = {
   failureReason?: string;
   cancelled?: boolean;
   collected?: boolean;
+  pending?: boolean;
   observed?: boolean;
   paymentCompleted?: boolean;
   paymentPending?: boolean;
@@ -2283,7 +2284,6 @@ export type MembershipPayment = {
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
-  pending?: boolean;
   availableForCollection?: boolean;
 };
 
@@ -2308,11 +2308,11 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
-  annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
   monthly?: boolean;
+  annual?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {
@@ -2333,7 +2333,7 @@ export type GymCrushMatchResponseDto = {
 export type CandidateResponseWrapperListGymCrushCandidateResponseDto = {
   success?: boolean;
   message?: string;
-  data?: GymCrushCandidateResponseDto[];
+  data?: Array<GymCrushCandidateResponseDto>;
   count?: number;
   error?: string;
   premiumRequired?: boolean;
@@ -2349,13 +2349,14 @@ export type GymCrushCandidateResponseDto = {
   fitnessLevel?: string;
   goals?: string;
   bio?: string;
+  gender?: string;
   gymCrushShowBioInProfile?: boolean;
 };
 
 export type CandidateResponseWrapperListGymBroCandidateResponseDto = {
   success?: boolean;
   message?: string;
-  data?: GymBroCandidateResponseDto[];
+  data?: Array<GymBroCandidateResponseDto>;
   count?: number;
   error?: string;
   premiumRequired?: boolean;
@@ -2371,18 +2372,19 @@ export type GymBroCandidateResponseDto = {
   fitnessLevel?: string;
   goals?: string;
   bio?: string;
+  gender?: string;
   gymBroShowBioInProfile?: boolean;
 };
 
 export type ResultPageFitnessGoalTypeDto = {
-  pagesResult?: FitnessGoalTypeDto[];
+  pagesResult?: Array<FitnessGoalTypeDto>;
   totalItems?: number;
   totalPages?: number;
   currentPage?: number;
 };
 
 export type ResultPageFitnessGoalStatusDto = {
-  pagesResult?: FitnessGoalStatusDto[];
+  pagesResult?: Array<FitnessGoalStatusDto>;
   totalItems?: number;
   totalPages?: number;
   currentPage?: number;
@@ -2395,7 +2397,7 @@ export type AppliedFilters = {
   /**
    * IDs de grupos musculares filtrados
    */
-  muscleGroupIds?: number[];
+  muscleGroupIds?: Array<number>;
   /**
    * Dificultad filtrada
    */
@@ -2413,11 +2415,11 @@ export type ExerciseVideoSearchResponse = {
   /**
    * Lista de videos encontrados
    */
-  videos?: ExerciseVideoDto[];
+  videos?: Array<ExerciseVideoDto>;
   /**
    * Lista de grupos musculares disponibles
    */
-  muscleGroups?: MuscleGroupDto[];
+  muscleGroups?: Array<MuscleGroupDto>;
   /**
    * Total de videos encontrados
    */
@@ -2468,11 +2470,11 @@ export type ClientProfileDto = {
   /**
    * List of fitness goals
    */
-  fitnessGoals?: string[];
+  fitnessGoals?: Array<string>;
   /**
    * List of contracted services
    */
-  services?: ClientServiceInfo[];
+  services?: Array<ClientServiceInfo>;
 };
 
 /**
@@ -2574,7 +2576,7 @@ export type ClientResourceGroupDtoReadable = {
   /**
    * List of resources created for this client
    */
-  resources?: ClientResourceResponseDtoReadable[];
+  resources?: Array<ClientResourceResponseDtoReadable>;
 };
 
 /**
@@ -2592,7 +2594,7 @@ export type ClientResourceGroupDtoWritable = {
   /**
    * List of resources created for this client
    */
-  resources?: ClientResourceResponseDtoWritable[];
+  resources?: Array<ClientResourceResponseDtoWritable>;
 };
 
 /**
@@ -2746,11 +2748,11 @@ export type ClientResourceResponseDtoWritable = {
 };
 
 export type PageClientResourceGroupDtoReadable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
-  content?: ClientResourceGroupDtoReadable[];
+  content?: Array<ClientResourceGroupDtoReadable>;
   number?: number;
   sort?: SortObject;
   numberOfElements?: number;
@@ -2760,11 +2762,11 @@ export type PageClientResourceGroupDtoReadable = {
 };
 
 export type PageClientResourceGroupDtoWritable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
-  content?: ClientResourceGroupDtoWritable[];
+  content?: Array<ClientResourceGroupDtoWritable>;
   number?: number;
   sort?: SortObject;
   numberOfElements?: number;
@@ -2776,7 +2778,7 @@ export type PageClientResourceGroupDtoWritable = {
 export type ChatResponseDtoListConversationDto = {
   success?: boolean;
   message?: string;
-  data?: ConversationDto[];
+  data?: Array<ConversationDto>;
 };
 
 export type ConversationDto = {
@@ -2802,7 +2804,7 @@ export type ChatResponseDtoConversationDto = {
 export type ChatResponseDtoListMessageDto = {
   success?: boolean;
   message?: string;
-  data?: MessageDto[];
+  data?: Array<MessageDto>;
 };
 
 export type MessageDto = {
@@ -2927,7 +2929,7 @@ export type AdminPaymentsResponseDto = {
   /**
    * List of payment transactions
    */
-  payments?: AdminPaymentDataDto[];
+  payments?: Array<AdminPaymentDataDto>;
   summary?: AdminPaymentSummaryDto;
   /**
    * Total number of pages
@@ -2982,7 +2984,7 @@ export type GetAchievementDtoReadable = {
   /**
    * List of files associated with this achievement
    */
-  files?: GetAchievementFileDtoReadable[];
+  files?: Array<GetAchievementFileDtoReadable>;
 };
 
 /**
@@ -3016,7 +3018,7 @@ export type GetAchievementDtoWritable = {
   /**
    * List of files associated with this achievement
    */
-  files?: GetAchievementFileDtoWritable[];
+  files?: Array<GetAchievementFileDtoWritable>;
 };
 
 /**
@@ -3637,7 +3639,7 @@ export type SetProfilePhotoByIdResponses = {
 
 export type UpdateFitnessGoalsByIdData = {
   body: {
-    [key: string]: number[];
+    [key: string]: Array<number>;
   };
   path: {
     userId: number;
@@ -3695,7 +3697,7 @@ export type SetProfilePhotoResponses = {
 
 export type UpdateFitnessGoalsData = {
   body: {
-    [key: string]: number[];
+    [key: string]: Array<number>;
   };
   path?: never;
   query?: never;
@@ -3744,7 +3746,7 @@ export type GetPreferredLocationsResponses = {
   /**
    * OK
    */
-  200: MatchPreferredLocationDto[];
+  200: Array<MatchPreferredLocationDto>;
 };
 
 export type GetPreferredLocationsResponse =
@@ -3773,7 +3775,7 @@ export type AddPreferredLocationResponse =
   AddPreferredLocationResponses[keyof AddPreferredLocationResponses];
 
 export type UpdatePreferredLocationsData = {
-  body: number[];
+  body: Array<number>;
   path: {
     matchSystem: string;
   };
@@ -3785,7 +3787,7 @@ export type UpdatePreferredLocationsResponses = {
   /**
    * OK
    */
-  200: MatchPreferredLocationDto[];
+  200: Array<MatchPreferredLocationDto>;
 };
 
 export type UpdatePreferredLocationsResponse =
@@ -4551,7 +4553,7 @@ export type GetExerciseSetsResponses = {
   /**
    * OK
    */
-  200: ExerciseSetDto[];
+  200: Array<ExerciseSetDto>;
 };
 
 export type GetExerciseSetsResponse =
@@ -4604,7 +4606,7 @@ export type GetUserExercisesByFilterResponses = {
   /**
    * OK
    */
-  200: WorkoutSessionDto[];
+  200: Array<WorkoutSessionDto>;
 };
 
 export type GetUserExercisesByFilterResponse =
@@ -4926,7 +4928,7 @@ export type GetRecognitionsResponses = {
   /**
    * OK
    */
-  200: TrainerRecognitionDto[];
+  200: Array<TrainerRecognitionDto>;
 };
 
 export type GetRecognitionsResponse =
@@ -4964,7 +4966,7 @@ export type GetEducationResponses = {
   /**
    * OK
    */
-  200: TrainerEducationDto[];
+  200: Array<TrainerEducationDto>;
 };
 
 export type GetEducationResponse =
@@ -5002,7 +5004,7 @@ export type GetCertificationsResponses = {
   /**
    * OK
    */
-  200: TrainerCertificationDto[];
+  200: Array<TrainerCertificationDto>;
 };
 
 export type GetCertificationsResponse =
@@ -5038,7 +5040,7 @@ export type SearchTrainersResponses = {
   /**
    * OK
    */
-  200: PublicTrainerDtoReadable[];
+  200: Array<PublicTrainerDtoReadable>;
 };
 
 export type SearchTrainersResponse =
@@ -5207,7 +5209,7 @@ export type GetUserPhotosByIdResponses = {
   /**
    * OK
    */
-  200: UserFilesDtoReadable[];
+  200: Array<UserFilesDtoReadable>;
 };
 
 export type GetUserPhotosByIdResponse =
@@ -5299,7 +5301,7 @@ export type GetUserPhotosResponses = {
   /**
    * OK
    */
-  200: UserFilesDtoReadable[];
+  200: Array<UserFilesDtoReadable>;
 };
 
 export type GetUserPhotosResponse =
@@ -5403,7 +5405,7 @@ export type GetFoodsByIdsData = {
   /**
    * Lista de IDs de alimentos
    */
-  body: number[];
+  body: Array<number>;
   path?: never;
   query?: never;
   url: '/v1/app/nutrition/foods/batch';
@@ -5413,7 +5415,7 @@ export type GetFoodsByIdsResponses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type GetFoodsByIdsResponse =
@@ -5740,7 +5742,7 @@ export type GetAllByUserResponses = {
   /**
    * OK
    */
-  200: UserFilesDtoReadable[];
+  200: Array<UserFilesDtoReadable>;
 };
 
 export type GetAllByUserResponse =
@@ -5798,7 +5800,7 @@ export type GetAllByUserByIdResponses = {
   /**
    * OK
    */
-  200: UserFilesDtoReadable[];
+  200: Array<UserFilesDtoReadable>;
 };
 
 export type GetAllByUserByIdResponse =
@@ -6206,7 +6208,7 @@ export type ListAchievementsResponses = {
   /**
    * OK
    */
-  200: GetAchievementDtoReadable[];
+  200: Array<GetAchievementDtoReadable>;
 };
 
 export type ListAchievementsResponse =
@@ -6394,9 +6396,11 @@ export type GetExerciseFrequencyResponses = {
   /**
    * OK
    */
-  200: {
-    [key: string]: unknown;
-  }[][];
+  200: Array<
+    Array<{
+      [key: string]: unknown;
+    }>
+  >;
 };
 
 export type GetExerciseFrequencyResponse =
@@ -6413,7 +6417,7 @@ export type GetAllMuscleGroupsResponses = {
   /**
    * OK
    */
-  200: string[];
+  200: Array<string>;
 };
 
 export type GetAllMuscleGroupsResponse =
@@ -6432,7 +6436,7 @@ export type GetExercisesByMuscleGroupResponses = {
   /**
    * OK
    */
-  200: WorkoutSessionDto[];
+  200: Array<WorkoutSessionDto>;
 };
 
 export type GetExercisesByMuscleGroupResponse =
@@ -6451,7 +6455,7 @@ export type GetExerciseHistoryResponses = {
   /**
    * OK
    */
-  200: WorkoutSessionDto[];
+  200: Array<WorkoutSessionDto>;
 };
 
 export type GetExerciseHistoryResponse =
@@ -6468,7 +6472,7 @@ export type GetWorkoutDatesResponses = {
   /**
    * OK
    */
-  200: string[];
+  200: Array<string>;
 };
 
 export type GetWorkoutDatesResponse =
@@ -6487,7 +6491,7 @@ export type GetUserExercisesByDateResponses = {
   /**
    * OK
    */
-  200: WorkoutSessionDto[];
+  200: Array<WorkoutSessionDto>;
 };
 
 export type GetUserExercisesByDateResponse =
@@ -6499,7 +6503,7 @@ export type GetUserExercisesByDateRangeData = {
   query: {
     startDate: string;
     endDate: string;
-    muscleGroups?: string[];
+    muscleGroups?: Array<string>;
   };
   url: '/v1/app/workouts/exercises/user/date-range';
 };
@@ -6508,7 +6512,7 @@ export type GetUserExercisesByDateRangeResponses = {
   /**
    * OK
    */
-  200: WorkoutSessionDto[];
+  200: Array<WorkoutSessionDto>;
 };
 
 export type GetUserExercisesByDateRangeResponse =
@@ -6578,7 +6582,7 @@ export type GetAll2Responses = {
   /**
    * OK
    */
-  200: UserTypeDto[];
+  200: Array<UserTypeDto>;
 };
 
 export type GetAll2Response = GetAll2Responses[keyof GetAll2Responses];
@@ -6662,7 +6666,7 @@ export type ExportPaymentsResponses = {
   /**
    * OK
    */
-  200: string[];
+  200: Array<string>;
 };
 
 export type ExportPaymentsResponse =
@@ -6718,7 +6722,7 @@ export type GetTopRecognitionsResponses = {
   /**
    * OK
    */
-  200: TrainerRecognitionDto[];
+  200: Array<TrainerRecognitionDto>;
 };
 
 export type GetTopRecognitionsResponse =
@@ -6737,7 +6741,7 @@ export type GetExpiringSoonCertificationsResponses = {
   /**
    * OK
    */
-  200: TrainerCertificationDto[];
+  200: Array<TrainerCertificationDto>;
 };
 
 export type GetExpiringSoonCertificationsResponse =
@@ -6816,7 +6820,7 @@ export type GetAllTrainersResponses = {
   /**
    * OK
    */
-  200: PublicTrainerDtoReadable[];
+  200: Array<PublicTrainerDtoReadable>;
 };
 
 export type GetAllTrainersResponse =
@@ -6835,7 +6839,7 @@ export type GetTrainerReviewsResponses = {
   /**
    * OK
    */
-  200: ReviewResponseDtoReadable[];
+  200: Array<ReviewResponseDtoReadable>;
 };
 
 export type GetTrainerReviewsResponse =
@@ -6963,7 +6967,7 @@ export type GetServicesByTrainerResponses = {
   /**
    * OK
    */
-  200: TrainerServiceDtoReadable[];
+  200: Array<TrainerServiceDtoReadable>;
 };
 
 export type GetServicesByTrainerResponse =
@@ -7001,7 +7005,7 @@ export type GetActiveServicesByTrainerResponses = {
   /**
    * OK
    */
-  200: TrainerServiceDtoReadable[];
+  200: Array<TrainerServiceDtoReadable>;
 };
 
 export type GetActiveServicesByTrainerResponse =
@@ -7020,7 +7024,7 @@ export type GetServicesByTypeResponses = {
   /**
    * OK
    */
-  200: TrainerServiceDtoReadable[];
+  200: Array<TrainerServiceDtoReadable>;
 };
 
 export type GetServicesByTypeResponse =
@@ -7039,7 +7043,7 @@ export type GetServicesByDistrictResponses = {
   /**
    * OK
    */
-  200: TrainerServiceDtoReadable[];
+  200: Array<TrainerServiceDtoReadable>;
 };
 
 export type GetServicesByDistrictResponse =
@@ -7056,7 +7060,7 @@ export type GetAllActiveServicesResponses = {
   /**
    * OK
    */
-  200: TrainerServiceDtoReadable[];
+  200: Array<TrainerServiceDtoReadable>;
 };
 
 export type GetAllActiveServicesResponse =
@@ -7094,7 +7098,7 @@ export type GetMatchHistoryResponses = {
   /**
    * OK
    */
-  200: MatchHistoryTestDto[];
+  200: Array<MatchHistoryTestDto>;
 };
 
 export type GetMatchHistoryResponse =
@@ -7204,7 +7208,7 @@ export type GetAllActiveServiceTypesResponses = {
   /**
    * OK
    */
-  200: ServiceTypeDto[];
+  200: Array<ServiceTypeDto>;
 };
 
 export type GetAllActiveServiceTypesResponse =
@@ -7303,7 +7307,7 @@ export type SearchFoodsResponses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type SearchFoodsResponse =
@@ -7354,7 +7358,7 @@ export type GetPopularFoodsResponses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type GetPopularFoodsResponse =
@@ -7406,7 +7410,7 @@ export type GetFoodsByCategoryResponses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type GetFoodsByCategoryResponse =
@@ -7433,7 +7437,7 @@ export type SearchFoodsByCategoryResponses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type SearchFoodsByCategoryResponse =
@@ -7450,7 +7454,7 @@ export type GetAllCategoriesResponses = {
   /**
    * OK
    */
-  200: FoodCategoryDto[];
+  200: Array<FoodCategoryDto>;
 };
 
 export type GetAllCategoriesResponse =
@@ -7467,7 +7471,7 @@ export type GetAllPreferredLocationsResponses = {
   /**
    * OK
    */
-  200: MatchPreferredLocationDto[];
+  200: Array<MatchPreferredLocationDto>;
 };
 
 export type GetAllPreferredLocationsResponse =
@@ -7507,7 +7511,7 @@ export type GetUsersByPreferredLocationResponses = {
   /**
    * OK
    */
-  200: MatchPreferredLocationDto[];
+  200: Array<MatchPreferredLocationDto>;
 };
 
 export type GetUsersByPreferredLocationResponse =
@@ -7568,7 +7572,7 @@ export type SearchFoods1Responses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type SearchFoods1Response =
@@ -7619,7 +7623,7 @@ export type GetPopularFoods1Responses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type GetPopularFoods1Response =
@@ -7671,7 +7675,7 @@ export type GetFoodsByCategory1Responses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type GetFoodsByCategory1Response =
@@ -7698,7 +7702,7 @@ export type SearchFoodsByCategory1Responses = {
   /**
    * OK
    */
-  200: FoodItemDto[];
+  200: Array<FoodItemDto>;
 };
 
 export type SearchFoodsByCategory1Response =
@@ -7789,7 +7793,7 @@ export type GetAllCategories1Responses = {
   /**
    * OK
    */
-  200: FoodCategoryDto[];
+  200: Array<FoodCategoryDto>;
 };
 
 export type GetAllCategories1Response =
@@ -7840,7 +7844,7 @@ export type GetAll5Responses = {
   /**
    * OK
    */
-  200: MetricTypeDto[];
+  200: Array<MetricTypeDto>;
 };
 
 export type GetAll5Response = GetAll5Responses[keyof GetAll5Responses];
@@ -7884,7 +7888,7 @@ export type GetUserMembershipsResponses = {
   /**
    * OK
    */
-  200: UserMembership[];
+  200: Array<UserMembership>;
 };
 
 export type GetUserMembershipsResponse =
@@ -7942,7 +7946,7 @@ export type GetUserPaymentsResponses = {
   /**
    * OK
    */
-  200: MembershipPayment[];
+  200: Array<MembershipPayment>;
 };
 
 export type GetUserPaymentsResponse =
@@ -7995,7 +7999,7 @@ export type GetActivePlansResponses = {
   /**
    * OK
    */
-  200: MembershipPlan[];
+  200: Array<MembershipPlan>;
 };
 
 export type GetActivePlansResponse =
@@ -8031,7 +8035,7 @@ export type GetMonthlyPlansResponses = {
   /**
    * OK
    */
-  200: MembershipPlan[];
+  200: Array<MembershipPlan>;
 };
 
 export type GetMonthlyPlansResponse =
@@ -8048,7 +8052,7 @@ export type GetAnnualPlansResponses = {
   /**
    * OK
    */
-  200: MembershipPlan[];
+  200: Array<MembershipPlan>;
 };
 
 export type GetAnnualPlansResponse =
@@ -8065,7 +8069,7 @@ export type GetCurrentUserPaymentHistoryResponses = {
   /**
    * OK
    */
-  200: MembershipPayment[];
+  200: Array<MembershipPayment>;
 };
 
 export type GetCurrentUserPaymentHistoryResponse =
@@ -8084,7 +8088,7 @@ export type GetExpiringMembershipsResponses = {
   /**
    * OK
    */
-  200: UserMembership[];
+  200: Array<UserMembership>;
 };
 
 export type GetExpiringMembershipsResponse =
@@ -8145,7 +8149,7 @@ export type GetGymCrushMatchesResponses = {
   /**
    * OK
    */
-  200: GymCrushMatchResponseDto[];
+  200: Array<GymCrushMatchResponseDto>;
 };
 
 export type GetGymCrushMatchesResponse =
@@ -8238,7 +8242,7 @@ export type GetGymCrushUsersResponses = {
   /**
    * OK
    */
-  200: MatchPreferencesDto[];
+  200: Array<MatchPreferencesDto>;
 };
 
 export type GetGymCrushUsersResponse =
@@ -8255,7 +8259,7 @@ export type GetGymBroUsersResponses = {
   /**
    * OK
    */
-  200: MatchPreferencesDto[];
+  200: Array<MatchPreferencesDto>;
 };
 
 export type GetGymBroUsersResponse =
@@ -8289,7 +8293,7 @@ export type GetAllActiveLocationsResponses = {
   /**
    * OK
    */
-  200: LocationDto[];
+  200: Array<LocationDto>;
 };
 
 export type GetAllActiveLocationsResponse =
@@ -8327,7 +8331,7 @@ export type SearchLocationsResponses = {
   /**
    * OK
    */
-  200: LocationDto[];
+  200: Array<LocationDto>;
 };
 
 export type SearchLocationsResponse =
@@ -8365,7 +8369,7 @@ export type GetLimaDistrictsResponses = {
   /**
    * OK
    */
-  200: string[];
+  200: Array<string>;
 };
 
 export type GetLimaDistrictsResponse =
@@ -8384,7 +8388,7 @@ export type GetLocationsByDepartmentResponses = {
   /**
    * OK
    */
-  200: LocationDto[];
+  200: Array<LocationDto>;
 };
 
 export type GetLocationsByDepartmentResponse =
@@ -8404,7 +8408,7 @@ export type GetLocationsByDepartmentAndProvinceResponses = {
   /**
    * OK
    */
-  200: LocationDto[];
+  200: Array<LocationDto>;
 };
 
 export type GetLocationsByDepartmentAndProvinceResponse =
@@ -8421,7 +8425,7 @@ export type GetAll7Responses = {
   /**
    * OK
    */
-  200: FitnessGoalTypeDto[];
+  200: Array<FitnessGoalTypeDto>;
 };
 
 export type GetAll7Response = GetAll7Responses[keyof GetAll7Responses];
@@ -8437,7 +8441,7 @@ export type GetAll9Responses = {
   /**
    * OK
    */
-  200: FitnessGoalStatusDto[];
+  200: Array<FitnessGoalStatusDto>;
 };
 
 export type GetAll9Response = GetAll9Responses[keyof GetAll9Responses];
@@ -8486,7 +8490,7 @@ export type SearchVideosData = {
     /**
      * IDs de grupos musculares (separados por coma)
      */
-    muscleGroups?: number[];
+    muscleGroups?: Array<number>;
     /**
      * Nivel de dificultad
      */
@@ -8551,7 +8555,7 @@ export type GetPopularVideosResponses = {
   /**
    * Lista de videos populares
    */
-  200: ExerciseVideoDto[];
+  200: Array<ExerciseVideoDto>;
 };
 
 export type GetPopularVideosResponse =
@@ -8568,7 +8572,7 @@ export type GetMuscleGroupsResponses = {
   /**
    * Lista de grupos musculares
    */
-  200: MuscleGroupDto[];
+  200: Array<MuscleGroupDto>;
 };
 
 export type GetMuscleGroupsResponse =
@@ -8868,7 +8872,7 @@ export type GetReviewableContractsResponses = {
   /**
    * OK
    */
-  200: ReviewableContractDto[];
+  200: Array<ReviewableContractDto>;
 };
 
 export type GetReviewableContractsResponse =
@@ -8885,7 +8889,7 @@ export type GetMyReviews1Responses = {
   /**
    * OK
    */
-  200: ReviewResponseDtoReadable[];
+  200: Array<ReviewResponseDtoReadable>;
 };
 
 export type GetMyReviews1Response =
@@ -9296,7 +9300,7 @@ export type GetBankAccountsByPersonResponses = {
   /**
    * OK
    */
-  200: BankAccountDtoReadable[];
+  200: Array<BankAccountDtoReadable>;
 };
 
 export type GetBankAccountsByPersonResponse =
@@ -9451,11 +9455,11 @@ export type ExportPayments1Errors = {
   /**
    * Access denied - Admin role required
    */
-  403: string[];
+  403: Array<string>;
   /**
    * Internal server error
    */
-  500: string[];
+  500: Array<string>;
 };
 
 export type ExportPayments1Error =
@@ -9465,7 +9469,7 @@ export type ExportPayments1Responses = {
   /**
    * CSV file generated successfully
    */
-  200: string[];
+  200: Array<string>;
 };
 
 export type ExportPayments1Response =
@@ -9536,6 +9540,25 @@ export type GetAllFoodCategoriesNoPaginationResponses = {
 
 export type GetAllFoodCategoriesNoPaginationResponse =
   GetAllFoodCategoriesNoPaginationResponses[keyof GetAllFoodCategoriesNoPaginationResponses];
+
+export type DeleteAccountData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/user/delete-account';
+};
+
+export type DeleteAccountResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type DeleteAccountResponse =
+  DeleteAccountResponses[keyof DeleteAccountResponses];
 
 export type DeletePhotoByIdData = {
   body?: never;

@@ -193,7 +193,9 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
                       onPress={() => handlePress(button)}
                       animated={false}
                       style={
-                        isStacked ? styles.footerButtonStacked : styles.footerButtonInline
+                        isStacked
+                          ? styles.footerButtonStacked
+                          : styles.footerButtonInline
                       }
                       buttonStyle={styles.actionButton}
                     />

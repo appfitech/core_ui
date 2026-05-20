@@ -11,11 +11,11 @@ import {
   LIST_SCREEN_FLATLIST,
 } from '@/constants/list-screens';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import {
   ActiveInactiveFilter,
   filterClientResourcesByActive,
 } from '@/lib/list/filter-client-resources';
-import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import { ClientResourceResponseDtoReadable } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
 

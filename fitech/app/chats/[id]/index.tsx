@@ -5,18 +5,18 @@ import {
   ActivityIndicator,
   Image,
   Keyboard,
-  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
+import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import { TextInput } from '@/components/TextInput';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -26,7 +26,6 @@ import {
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { FullTheme } from '@/types/theme';
-import { getFixedHeaderScrollOffset } from '@/utils/layout';
 
 const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 
@@ -76,7 +75,6 @@ export default function ChatDetailScreen() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = getStyles(theme);
-  const keyboardVerticalOffset = getFixedHeaderScrollOffset(insets);
 
   const token = useUserStore((s) => s.getToken());
   const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
@@ -269,45 +267,13 @@ export default function ChatDetailScreen() {
     'Chat';
 
   const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
+  const { chatContractBanner } = TRANSLATIONS;
 
-  const androidKeyboardLift =
-    Platform.OS === 'android' && keyboardInset > 0
-      ? Math.max(0, keyboardInset - insets.bottom)
-      : 0;
-
-  const messageComposer = (
-    <View
-      style={[
-        styles.inputRow,
-        androidKeyboardLift > 0 && { marginBottom: androidKeyboardLift },
-      ]}
-    >
-      <TextInput
-        style={styles.textInput}
-        placeholder="Escribe un mensaje..."
-        placeholderTextColor={theme.text.secondary}
-        value={input}
-        onChangeText={setInput}
-        multiline
-        onFocus={() => scrollMessagesToEnd(true)}
-      />
-      <TouchableOpacity
-        onPress={handleSend}
-        style={[styles.sendButton, !input.trim() && styles.sendButtonDisabled]}
-        disabled={!input.trim()}
-      >
-        <Ionicons name="send" size={20} color={theme.background.app} />
-      </TouchableOpacity>
-    </View>
-  );
+  const composerBottomInset =
+    keyboardInset > 0 ? keyboardInset + 8 : Math.max(insets.bottom, 12);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.keyboardRoot}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      enabled={Platform.OS === 'ios'}
-      keyboardVerticalOffset={keyboardVerticalOffset}
-    >
+    <View style={styles.screenRoot}>
       <PageContainer
         title={headerTitle}
         style={styles.pageStyle}
@@ -315,7 +281,6 @@ export default function ChatDetailScreen() {
         disableScroll
         includeTabBarPadding={false}
         hasBottomPadding={false}
-        footer={messageComposer}
       >
         {isContractConversation && (
           <View style={styles.contractBanner}>
@@ -324,11 +289,18 @@ export default function ChatDetailScreen() {
               style={styles.contractBannerLogo}
               resizeMode="contain"
             />
-            <AppText style={styles.contractBannerText}>
-              {isTrainer
-                ? 'Conversación por contrato — Estás chateando con tu cliente'
-                : 'Conversación por contrato — Estás chateando con tu entrenador'}
-            </AppText>
+            <View style={styles.contractBannerTextWrap}>
+              <AppText style={styles.contractBannerTitle}>
+                {isTrainer
+                  ? chatContractBanner.trainerTitle
+                  : chatContractBanner.clientTitle}
+              </AppText>
+              <AppText style={styles.contractBannerText}>
+                {isTrainer
+                  ? chatContractBanner.trainerSubtitle
+                  : chatContractBanner.clientSubtitle}
+              </AppText>
+            </View>
           </View>
         )}
 
@@ -353,53 +325,88 @@ export default function ChatDetailScreen() {
           ) : (
             <ScrollView
               ref={messagesScrollRef}
-              contentContainerStyle={styles.messagesContent}
+              contentContainerStyle={[
+                styles.messagesContent,
+                { paddingBottom: keyboardInset > 0 ? 12 : 8 },
+              ]}
               onContentSizeChange={() => scrollMessagesToEnd(false)}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
             >
-              {mergedMessages.map((msg) => (
-                <View
-                  key={msg.id}
-                  style={[
-                    styles.messageRow,
-                    msg.from === 'me'
-                      ? styles.messageRowMe
-                      : styles.messageRowThem,
-                  ]}
-                >
+              {mergedMessages.map((msg) => {
+                const isMe = msg.from === 'me';
+
+                return (
                   <View
+                    key={msg.id}
                     style={[
-                      styles.bubble,
-                      msg.from === 'me' ? styles.bubbleMe : styles.bubbleThem,
+                      styles.messageRow,
+                      isMe ? styles.messageRowMe : styles.messageRowThem,
                     ]}
                   >
-                    <AppText
-                      style={
-                        msg.from === 'me'
-                          ? styles.bubbleMeText
-                          : styles.bubbleText
-                      }
+                    <View
+                      style={[
+                        styles.bubble,
+                        isMe ? styles.bubbleMe : styles.bubbleThem,
+                      ]}
                     >
-                      {msg.text}
-                    </AppText>
-                    <AppText style={styles.bubbleTime}>{msg.time}</AppText>
+                      <AppText
+                        style={isMe ? styles.bubbleMeText : styles.bubbleText}
+                      >
+                        {msg.text}
+                      </AppText>
+                      <AppText
+                        style={isMe ? styles.bubbleMeTime : styles.bubbleTime}
+                      >
+                        {msg.time}
+                      </AppText>
+                    </View>
                   </View>
-                </View>
-              ))}
+                );
+              })}
             </ScrollView>
           )}
         </View>
       </PageContainer>
-    </KeyboardAvoidingView>
+
+      <View
+        style={[styles.composerDock, { paddingBottom: composerBottomInset }]}
+      >
+        <View style={styles.inputRow}>
+          <View style={styles.inputField}>
+            <TextInput
+              required={false}
+              placeholder="Escribe un mensaje..."
+              value={input}
+              onChangeText={setInput}
+              multiline
+              numberOfLines={4}
+              onFocus={() => scrollMessagesToEnd(true)}
+              style={styles.messageInput}
+            />
+          </View>
+          <Button
+            type="primary"
+            onPress={handleSend}
+            disabled={!input.trim()}
+            animated={false}
+            style={styles.sendButtonWrap}
+            buttonStyle={styles.sendButton}
+          >
+            <Ionicons name="send" size={20} color={theme.button.primaryText} />
+          </Button>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    keyboardRoot: {
+    screenRoot: {
       flex: 1,
+      backgroundColor: theme.background.app,
     },
     pageContainer: {
       flex: 1,
@@ -416,18 +423,25 @@ const getStyles = (theme: FullTheme) => {
       paddingVertical: 10,
       paddingHorizontal: 12,
       borderRadius: 12,
-      backgroundColor: theme.background.card ?? theme.background.input,
+      backgroundColor: theme.status.info.bg,
       borderWidth: 1,
-      borderColor: theme.border.default,
+      borderColor: theme.status.info.border,
     },
     contractBannerLogo: {
       width: 32,
       height: 32,
     },
-    contractBannerText: {
+    contractBannerTextWrap: {
       flex: 1,
-      ...text.nav,
-      color: theme.text.secondary,
+      rowGap: 2,
+    },
+    contractBannerTitle: {
+      ...text.smallMedium,
+      color: theme.status.info.icon,
+    },
+    contractBannerText: {
+      ...text.caption,
+      color: theme.status.info.text,
     },
     messagesContainer: {
       flex: 1,
@@ -460,73 +474,73 @@ const getStyles = (theme: FullTheme) => {
     },
     bubble: {
       maxWidth: '78%',
-      borderRadius: 18,
-      paddingHorizontal: 16,
-      paddingVertical: 12,
+      borderRadius: 16,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
     },
     bubbleMe: {
-      backgroundColor: theme.text.primary,
-      borderBottomRightRadius: 6,
-      shadowColor: theme.text.primary,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.12,
-      shadowRadius: 3,
-      elevation: 2,
+      backgroundColor: theme.brand.primaryDark,
+      borderBottomRightRadius: 4,
     },
     bubbleThem: {
       backgroundColor: theme.background.input,
       borderWidth: 1,
       borderColor: theme.border.default,
-      borderBottomLeftRadius: 6,
-      shadowColor: theme.text.primary,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.06,
-      shadowRadius: 2,
-      elevation: 1,
+      borderBottomLeftRadius: 4,
     },
     bubbleText: {
+      ...text.small,
       color: theme.text.primary,
-      ...text.link,
-      lineHeight: 22,
+      lineHeight: 20,
     },
     bubbleMeText: {
-      color: theme.background.app,
-      ...text.link,
-      lineHeight: 22,
+      ...text.small,
+      lineHeight: 20,
+      color: theme.text.primary,
     },
     bubbleTime: {
-      marginTop: 6,
+      marginTop: 4,
       ...text.caption,
-      color: theme.text.secondary,
+      color: theme.text.tertiary,
       textAlign: 'right',
+    },
+    bubbleMeTime: {
+      marginTop: 4,
+      ...text.caption,
+      color: 'rgba(245, 247, 245, 0.72)',
+      textAlign: 'right',
+    },
+    composerDock: {
+      paddingHorizontal: 16,
+      paddingTop: 12,
+      borderTopWidth: 1,
+      borderTopColor: theme.border.default,
+      backgroundColor: theme.background.app,
     },
     inputRow: {
       flexDirection: 'row',
       alignItems: 'flex-end',
       columnGap: 10,
     },
-    textInput: {
+    inputField: {
       flex: 1,
-      minHeight: 40,
-      maxHeight: 100,
-      borderRadius: 999,
-      paddingHorizontal: 14,
-      paddingVertical: 8,
-      backgroundColor: theme.background.app,
-      borderWidth: StyleSheet.hairlineWidth,
-      borderColor: theme.border.default,
-      ...text.small,
+      minWidth: 0,
+    },
+    messageInput: {
+      maxHeight: 96,
+      minHeight: 48,
+      textAlignVertical: 'top',
+    },
+    sendButtonWrap: {
+      flexShrink: 0,
     },
     sendButton: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.text.primary,
-    },
-    sendButtonDisabled: {
-      opacity: 0.5,
+      width: 48,
+      height: 48,
+      minHeight: 48,
+      paddingHorizontal: 0,
+      paddingVertical: 0,
+      borderRadius: 12,
     },
   });
 };

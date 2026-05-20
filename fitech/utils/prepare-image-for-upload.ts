@@ -1,5 +1,5 @@
-import type { ImagePickerAsset } from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import type { ImagePickerAsset } from 'expo-image-picker';
 import { Platform } from 'react-native';
 
 export type PreparedUploadImage = {
@@ -33,14 +33,10 @@ export async function prepareImageForUpload(
     actions.push({ resize: { width: MAX_UPLOAD_WIDTH } });
   }
 
-  const result = await ImageManipulator.manipulateAsync(
-    asset.uri,
-    actions,
-    {
-      compress: JPEG_QUALITY,
-      format: ImageManipulator.SaveFormat.JPEG,
-    },
-  );
+  const result = await ImageManipulator.manipulateAsync(asset.uri, actions, {
+    compress: JPEG_QUALITY,
+    format: ImageManipulator.SaveFormat.JPEG,
+  });
 
   return {
     uri: normalizeFileUri(result.uri),

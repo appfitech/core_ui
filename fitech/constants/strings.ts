@@ -139,5 +139,88 @@ export const TRANSLATIONS = {
     findTrainersButton: 'Ver entrenadores',
     trainerLabel: 'Entrenador:',
   },
+  chatContractBanner: {
+    clientTitle: 'Tu entrenador FITECH',
+    clientSubtitle: 'Chat de seguimiento de tu plan activo',
+    trainerTitle: 'Cliente con plan activo',
+    trainerSubtitle: 'Chat de seguimiento FITECH',
+  },
+  workoutsScreen: {
+    client: {
+      title: 'Panel de Entrenamiento',
+      subheader:
+        'Tus dietas, rutinas y contratos en un solo lugar para seguir tu plan.',
+      items: {
+        diets: {
+          title: 'Mis dietas',
+          description: 'Planes de alimentación asignados por tu entrenador.',
+        },
+        routines: {
+          title: 'Mis rutinas',
+          description: 'Programas de entreno según tus objetivos y nivel.',
+        },
+        contracts: {
+          title: 'Mis contratos',
+          description:
+            'Estado de tus planes activos y entrenadores contratados.',
+        },
+      },
+    },
+    trainer: {
+      title: 'Panel de Gestión',
+      subheader:
+        'Administra la actividad de tus clientes y tu negocio desde aquí.',
+      items: {
+        trainerDiets: {
+          title: 'Dietas de clientes',
+          description:
+            'Crea y asigna planes de alimentación a quienes entrenas.',
+        },
+        trainerRoutines: {
+          title: 'Rutinas de clientes',
+          description: 'Diseña rutinas y haz seguimiento del progreso.',
+        },
+        trainerServices: {
+          title: 'Mis servicios',
+          description: 'Configura y publica lo que ofreces como entrenador.',
+        },
+        trainerPayments: {
+          title: 'Mis pagos',
+          description: 'Consulta ingresos y el historial de transacciones.',
+        },
+        trainerReviews: {
+          title: 'Mis calificaciones',
+          description: 'Lee las valoraciones que dejaron tus clientes.',
+        },
+      },
+    },
+  },
+  premiumFeaturesScreen: {
+    title: 'FITECH Premium',
+    subheader: 'Herramientas exclusivas para llevar tu entrenamiento más lejos',
+    badge: 'Premium',
+    features: {
+      workoutLog: {
+        title: 'Registro de entrenos',
+        description:
+          'Anota cada sesión, revisa tu progreso y mantén la constancia.',
+      },
+      library: {
+        title: 'Biblioteca de ejercicios',
+        description:
+          'Rutinas y movimientos organizados, del nivel básico al avanzado.',
+      },
+      gymBro: {
+        title: 'GymBro',
+        description:
+          'Encuentra compañeros de entreno con tu horario y tus objetivos.',
+      },
+      gymCrush: {
+        title: 'GymCrush',
+        description:
+          'Descubre entrenadores alineados a tus metas. Desliza y conéctate.',
+      },
+    },
+  },
   common: {},
 };

@@ -97,7 +97,12 @@ export function ChangeAvatarModal({
             }}
           />
 
-          <Button label="Cancelar" type="tertiary" onPress={onClose} animated={false} />
+          <Button
+            label="Cancelar"
+            type="tertiary"
+            onPress={onClose}
+            animated={false}
+          />
         </View>
       </View>
     </Modal>

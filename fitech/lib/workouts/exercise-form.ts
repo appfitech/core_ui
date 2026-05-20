@@ -108,9 +108,7 @@ function isValidReps(reps: number | undefined): reps is number {
 
 function isValidWeight(weight: number | undefined): weight is number {
   return (
-    typeof weight === 'number' &&
-    weight > 0 &&
-    roundWeightKg(weight) === weight
+    typeof weight === 'number' && weight > 0 && roundWeightKg(weight) === weight
   );
 }
 

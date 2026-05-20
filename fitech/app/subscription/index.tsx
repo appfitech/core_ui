@@ -32,7 +32,7 @@ function SectionItem({ label, sublabel, value, icon }: SectionItemProps) {
     <View style={styles.item}>
       {icon && (
         <View style={styles.iconWrapper}>
-          <Ionicons name={icon} size={18} color={theme.brand.primary} />
+          <Ionicons name={icon} size={18} color={theme.icon.muted} />
         </View>
       )}
       <View style={styles.itemInner}>
@@ -66,10 +66,10 @@ export default function SubscriptionScreen() {
       <View style={styles.content}>
         <Animated.View
           entering={FadeInUp.delay(100).duration(400)}
-          style={[styles.card, styles.cardPrimary]}
+          style={styles.activeCard}
         >
-          <AppText style={styles.cardTitle}>Suscripción Activa</AppText>
-          <AppText style={styles.cardSubtitle}>
+          <AppText style={styles.activeCardTitle}>Suscripción Activa</AppText>
+          <AppText style={styles.activeCardSubtitle}>
             Tu membresía premium está activa y funcionando correctamente.
           </AppText>
         </Animated.View>
@@ -168,6 +168,23 @@ const getStyles = (theme: FullTheme) =>
       paddingTop: 8,
       rowGap: 16,
     },
+    activeCard: {
+      backgroundColor: theme.status.success.bg,
+      borderColor: theme.status.success.border,
+      padding: 12,
+      borderRadius: 14,
+      borderWidth: 1,
+    },
+    activeCardTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: theme.status.success.icon,
+    },
+    activeCardSubtitle: {
+      fontSize: 14,
+      color: theme.status.success.text,
+      marginBottom: 4,
+    },
     card: {
       backgroundColor: theme.background.card,
       borderRadius: 14,
@@ -175,10 +192,6 @@ const getStyles = (theme: FullTheme) =>
       borderColor: theme.border.default,
       padding: 18,
       rowGap: 10,
-    },
-    cardPrimary: {
-      backgroundColor: theme.brand.primarySoft ?? theme.status.success.bgStrong,
-      borderColor: theme.status.success.border ?? theme.border.default,
     },
     cardTitle: {
       fontSize: 18,

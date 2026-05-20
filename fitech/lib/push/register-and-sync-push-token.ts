@@ -5,8 +5,8 @@ import { PUSH_TOKEN_KEY } from '@/constants/push';
 import type { RegisterPushTokenRequest } from '@/types/api/types.gen';
 import { getDeviceId } from '@/utils/device';
 import {
-  registerForPushNotificationsAsync,
   type PushRegistrationOutcome,
+  registerForPushNotificationsAsync,
 } from '@/utils/register-for-push-notification';
 
 export type RegisterAndSyncPushTokenResult = PushRegistrationOutcome & {
@@ -46,7 +46,9 @@ export async function registerAndSyncPushToken(options?: {
       savedToServer = true;
     } catch (e) {
       const message =
-        e instanceof Error ? e.message : 'Failed to register push token on server';
+        e instanceof Error
+          ? e.message
+          : 'Failed to register push token on server';
       console.warn('[Push] savePushToken failed', e);
       return {
         ...outcome,

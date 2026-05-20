@@ -67,7 +67,11 @@ export async function registerForPushNotificationsAsync(): Promise<PushRegistrat
         : 'Notification permission not granted.';
 
     if (__DEV__) {
-      console.warn('[Push]', error, { existingStatus, finalStatus, canAskAgain });
+      console.warn('[Push]', error, {
+        existingStatus,
+        finalStatus,
+        canAskAgain,
+      });
     }
 
     return {
@@ -90,9 +94,8 @@ export async function registerForPushNotificationsAsync(): Promise<PushRegistrat
   }
 
   try {
-    const token = (
-      await Notifications.getExpoPushTokenAsync({ projectId })
-    ).data;
+    const token = (await Notifications.getExpoPushTokenAsync({ projectId }))
+      .data;
 
     return {
       token,

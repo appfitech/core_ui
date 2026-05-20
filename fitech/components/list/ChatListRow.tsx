@@ -1,12 +1,13 @@
-import React, { memo, useState } from 'react';
+import React, { memo } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { AvatarPhoto } from '@/components/AvatarPhoto';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 
-const CONTRACT_LOGO = require('@/assets/images/logos/rounded_logo.webp');
+const FITECH_LOGO = require('@/assets/images/logos/rounded_logo.webp');
 
 export type ChatListRowItem = {
   id: string;
@@ -15,7 +16,7 @@ export type ChatListRowItem = {
   time: string;
   unread: number;
   matchType?: string;
-  avatarUri: string | null;
+  avatarUri?: string | null;
 };
 
 type Props = {
@@ -24,88 +25,58 @@ type Props = {
   onPress: () => void;
 };
 
-function ChatAvatar({
-  matchType,
-  avatarUri,
-  name,
-  isTrainer,
-  styles,
-}: {
-  matchType?: string;
-  avatarUri: string | null;
-  name: string;
-  isTrainer: boolean;
-  styles: ReturnType<typeof getStyles>;
-}) {
-  const [imageError, setImageError] = useState(false);
-
-  if (matchType === 'CONTRACT' && !isTrainer) {
-    return (
-      <View style={styles.avatar}>
-        <Image
-          source={CONTRACT_LOGO}
-          style={styles.avatarImage}
-          resizeMode="cover"
-        />
-      </View>
-    );
-  }
-
-  if (avatarUri && !imageError) {
-    return (
-      <View style={styles.avatar}>
-        <Image
-          source={{ uri: avatarUri }}
-          style={styles.avatarImage}
-          resizeMode="cover"
-          onError={() => setImageError(true)}
-        />
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.avatarInitialsWrap}>
-      <AppText style={styles.avatarInitials}>
-        {name[0]?.toUpperCase() ?? '?'}
-      </AppText>
-    </View>
-  );
-}
-
 function ChatListRowComponent({ chat, isTrainer, onPress }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const hasUnread = chat.unread > 0;
+  const showTrainerLogo = chat.matchType === 'CONTRACT' && !isTrainer;
 
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+      style={({ pressed }) => [
+        styles.row,
+        hasUnread && styles.rowUnread,
+        pressed && styles.rowPressed,
+      ]}
     >
-      <ChatAvatar
-        matchType={chat.matchType}
-        avatarUri={chat.avatarUri}
-        name={chat.name}
-        isTrainer={isTrainer}
-        styles={styles}
-      />
-      <View style={styles.main}>
-        <AppText style={styles.name} numberOfLines={1}>
-          {chat.name}
-        </AppText>
-        <AppText style={styles.preview} numberOfLines={1}>
-          {chat.lastMessage}
-        </AppText>
-      </View>
-      <View style={styles.meta}>
-        <AppText style={styles.time}>{chat.time}</AppText>
-        {chat.unread > 0 ? (
-          <View style={styles.unreadBadge}>
-            <AppText style={styles.unreadText}>
-              {chat.unread > 99 ? '99+' : chat.unread}
-            </AppText>
+      <View style={styles.avatarWrap}>
+        <AvatarPhoto
+          url={chat.avatarUri}
+          size={52}
+          containerStyle={styles.avatar}
+        />
+        {showTrainerLogo ? (
+          <View style={styles.trainerLogoBadge}>
+            <Image
+              source={FITECH_LOGO}
+              style={styles.trainerLogo}
+              resizeMode="contain"
+            />
           </View>
         ) : null}
+      </View>
+
+      <View style={styles.body}>
+        <View style={styles.topLine}>
+          <AppText
+            style={[styles.name, hasUnread && styles.nameUnread]}
+            numberOfLines={1}
+          >
+            {chat.name}
+          </AppText>
+          <View style={styles.meta}>
+            <AppText style={styles.time}>{chat.time}</AppText>
+            {hasUnread ? <View style={styles.unreadDot} /> : null}
+          </View>
+        </View>
+
+        <AppText
+          style={[styles.preview, hasUnread && styles.previewUnread]}
+          numberOfLines={2}
+        >
+          {chat.lastMessage}
+        </AppText>
       </View>
     </Pressable>
   );
@@ -118,56 +89,85 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     row: {
       flexDirection: 'row',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       paddingVertical: 14,
-      paddingHorizontal: 14,
-      borderRadius: 14,
-      backgroundColor: theme.background.card,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      columnGap: 12,
+      paddingHorizontal: 0,
+      columnGap: 14,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.border.default,
     },
-    rowPressed: { opacity: 0.88 },
-    avatar: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: theme.background.input,
-      overflow: 'hidden',
-      borderWidth: 1,
-      borderColor: theme.border.default,
+    rowUnread: {
+      backgroundColor: theme.brand.primaryMuted,
     },
-    avatarImage: { width: 44, height: 44 },
-    avatarInitialsWrap: {
-      width: 44,
-      height: 44,
-      borderRadius: 22,
-      backgroundColor: theme.brand.primarySoft,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: theme.brand.primary,
+    rowPressed: {
+      backgroundColor: theme.background.cardHover,
     },
-    avatarInitials: {
-      color: theme.brand.primary,
-      ...text.lead,
+    avatarWrap: {
+      position: 'relative',
+      marginTop: 2,
     },
-    main: { flex: 1, rowGap: 2, minWidth: 0 },
-    name: { ...text.bodySemibold, color: theme.text.primary },
-    preview: { ...text.nav, color: theme.text.secondary },
-    meta: { alignItems: 'flex-end', rowGap: 6, marginLeft: 8 },
-    time: { ...text.caption, color: theme.text.secondary },
-    unreadBadge: {
-      minWidth: 20,
-      paddingHorizontal: 6,
-      paddingVertical: 2,
-      borderRadius: 999,
+    avatar: {},
+    trainerLogoBadge: {
+      position: 'absolute',
+      right: -1,
+      bottom: -1,
+      width: 22,
+      height: 22,
+      borderRadius: 11,
       backgroundColor: theme.brand.primary,
       alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: theme.background.app,
+      overflow: 'hidden',
     },
-    unreadText: {
-      ...text.label,
-      color: theme.background.app,
+    trainerLogo: {
+      width: 14,
+      height: 14,
+    },
+    body: {
+      flex: 1,
+      minWidth: 0,
+      rowGap: 4,
+      paddingTop: 4,
+    },
+    topLine: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 10,
+    },
+    name: {
+      ...text.bodyMedium,
+      color: theme.text.primary,
+      flex: 1,
+      minWidth: 0,
+    },
+    nameUnread: {
+      fontFamily: 'Inter_600SemiBold',
+    },
+    preview: {
+      ...text.nav,
+      color: theme.text.secondary,
+      lineHeight: 18,
+    },
+    previewUnread: {
+      color: theme.text.primary,
+    },
+    meta: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 6,
+      flexShrink: 0,
+    },
+    time: {
+      ...text.caption,
+      color: theme.text.tertiary,
+    },
+    unreadDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: theme.brand.primary,
     },
   });
 };

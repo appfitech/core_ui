@@ -1,7 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { AnimatedAppText } from '@/components/AnimatedAppText';
 import { Button } from '@/components/Button';

@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-named-as-default -- expo-constants default export
-import Constants from 'expo-constants';
 import * as Application from 'expo-application';
+import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
@@ -93,7 +93,10 @@ export async function collectPushDiagnostics(
       );
     }
 
-    if (status === Notifications.PermissionStatus.DENIED && canAskAgain === false) {
+    if (
+      status === Notifications.PermissionStatus.DENIED &&
+      canAskAgain === false
+    ) {
       issues.push(
         'Notificaciones denegadas. En Android 13+: Ajustes → Apps → FITECH → Notificaciones. En Xiaomi/MIUI puede estar fuera de “Permisos de la app”.',
       );

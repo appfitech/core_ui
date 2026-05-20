@@ -1,10 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { type Href, router } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { ProductFeatureCard } from '@/components/ProductFeatureCard';
+import { getVisiblePremiumFeatures } from '@/constants/premium-features';
+import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
 import { FullTheme } from '@/types/theme';
@@ -13,116 +18,63 @@ export default function PremiumFeaturesScreen() {
   const { theme } = useTheme();
   const { data: matchPreferences } = useGetUserMatchPreferences();
   const styles = getStyles(theme);
+  const { premiumFeaturesScreen: copy } = TRANSLATIONS;
+
+  const visibleFeatures = getVisiblePremiumFeatures(matchPreferences);
 
   return (
     <PageContainer
       hasBackButton={false}
-      title="FITECH Premium"
-      subheader="Funciones exclusivas para llevar tu entrenamiento al siguiente nivel"
+      title={copy.title}
+      subheader={copy.subheader}
       style={styles.pageStyle}
       contentPaddingBottom={220}
     >
       <View style={styles.hero}>
         <View style={styles.heroBadge}>
-          <Ionicons name="star" size={18} color={theme.status.warning.icon} />
-          <AppText style={styles.heroBadgeText}>Premium</AppText>
+          <Ionicons name="star" size={16} color={theme.status.warning.icon} />
+          <AppText style={styles.heroBadgeText}>{copy.badge}</AppText>
         </View>
       </View>
 
       <View style={styles.cardList}>
-        <TouchableOpacity
-          style={[styles.card, styles.cardLibrary]}
-          activeOpacity={0.85}
-        >
-          <View style={styles.cardIconWrap}>
-            <Ionicons
-              name="library-outline"
-              size={28}
-              color={theme.brand.primary}
-            />
-          </View>
-          <View style={styles.cardContent}>
-            <AppText style={styles.cardTitle}>Biblioteca</AppText>
-            <AppText style={styles.cardDescription}>
-              Colección de rutinas y movimientos: desde básicos hasta avanzados.
-            </AppText>
-          </View>
-          <Image
-            source={require('../../assets/images/vectors/gym_library.png')}
-            style={styles.cardImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+        {visibleFeatures.map((feature, index) => {
+          const featureCopy = copy.features[feature.id];
+          const onPress = feature.route
+            ? () => router.push(feature.route as Href)
+            : undefined;
 
-        {matchPreferences?.showInGymBro && (
-          <TouchableOpacity
-            onPress={() => router.push('/gymbro')}
-            style={[styles.card, styles.cardGymBro]}
-            activeOpacity={0.85}
-          >
-            <View style={styles.cardIconWrap}>
-              <Ionicons
-                name="people-outline"
-                size={28}
-                color={theme.brand.primary}
+          return (
+            <Animated.View
+              key={feature.id}
+              entering={FadeInUp.delay(50 * index).duration(260)}
+            >
+              <ProductFeatureCard
+                title={featureCopy.title}
+                description={featureCopy.description}
+                image={feature.image}
+                onPress={onPress}
               />
-            </View>
-            <View style={styles.cardContent}>
-              <AppText style={styles.cardTitle}>GymBro</AppText>
-              <AppText style={styles.cardDescription}>
-                Entrena acompañado. Conecta con alguien que entrene a tu ritmo.
-              </AppText>
-            </View>
-            <Image
-              source={require('../../assets/images/vectors/gym_bro.png')}
-              style={styles.cardImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        )}
-
-        {matchPreferences?.showInGymCrush && (
-          <TouchableOpacity
-            style={[styles.card, styles.cardGymCrush]}
-            onPress={() => router.push('/gymcrush')}
-            activeOpacity={0.85}
-          >
-            <View style={styles.cardIconWrap}>
-              <Ionicons
-                name="heart-outline"
-                size={28}
-                color={theme.brand.primary}
-              />
-            </View>
-            <View style={styles.cardContent}>
-              <AppText style={styles.cardTitle}>GymCrush</AppText>
-              <AppText style={styles.cardDescription}>
-                Descubre entrenadores que se alinean con tus metas. Swipea y
-                conecta.
-              </AppText>
-            </View>
-            <Image
-              source={require('../../assets/images/vectors/gym_crush.png')}
-              style={styles.cardImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        )}
+            </Animated.View>
+          );
+        })}
       </View>
     </PageContainer>
   );
 }
 
-const getStyles = (theme: FullTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: FullTheme) => {
+  const text = textStyles(theme);
+
+  return StyleSheet.create({
     pageStyle: {
-      rowGap: 12,
+      rowGap: 8,
     },
     hero: {
-      alignItems: 'flex-start',
-      paddingVertical: 8,
-      paddingHorizontal: 8,
-      marginTop: 12,
+      alignItems: 'flex-end',
+      paddingVertical: 4,
+      paddingHorizontal: 4,
+      marginTop: 4,
     },
     heroBadge: {
       flexDirection: 'row',
@@ -134,63 +86,12 @@ const getStyles = (theme: FullTheme) =>
       gap: 6,
     },
     heroBadgeText: {
-      fontSize: 13,
-      fontWeight: '700',
+      ...text.captionSemibold,
       color: theme.status.warning.text,
     },
-
     cardList: {
-      rowGap: 16,
-    },
-    card: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: 16,
-      padding: 18,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      backgroundColor: theme.background.card,
-      minHeight: 100,
-    },
-    cardLibrary: {
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-    },
-    cardGymBro: {
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-    },
-    cardGymCrush: {
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-    },
-    cardIconWrap: {
-      width: 48,
-      height: 48,
-      borderRadius: 14,
-      backgroundColor: theme.background.input,
-      alignItems: 'center',
-      justifyContent: 'center',
-      marginRight: 14,
-    },
-    cardContent: {
-      flex: 1,
-      minWidth: 0,
-      rowGap: 4,
-    },
-    cardTitle: {
-      fontSize: 18,
-      fontWeight: '700',
-      color: theme.text.primary,
-    },
-    cardDescription: {
-      fontSize: 14,
-      color: theme.text.secondary,
-      lineHeight: 20,
-    },
-    cardImage: {
-      width: 80,
-      height: 80,
-      marginLeft: 8,
+      rowGap: 12,
+      paddingTop: 4,
     },
   });
+};

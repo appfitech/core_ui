@@ -40,27 +40,21 @@ function formatConversationTime(iso: string | undefined) {
     minute: '2-digit',
   });
 
-  if (isSameDay) return `Hoy · ${time}`;
-  if (isYesterday) return `Ayer · ${time}`;
+  if (isSameDay) return time;
+  if (isYesterday) return 'Ayer';
 
   const weekday = date.toLocaleDateString('es-PE', { weekday: 'short' });
-  const capitalized =
-    weekday.length > 0
-      ? weekday.charAt(0).toUpperCase() + weekday.slice(1)
-      : weekday;
-
-  return `${capitalized} · ${time}`;
+  return weekday.length > 0
+    ? weekday.charAt(0).toUpperCase() + weekday.slice(1)
+    : weekday;
 }
 
-function getAvatarUri(c: ConversationDto): string | null {
-  const urlOrId = c.otherUserProfileImageUrl ?? c.otherUserId;
-  if (urlOrId == null) return null;
-  if (typeof urlOrId === 'string') {
-    const s = urlOrId.trim();
-    if (s === '') return null;
-    if (s.startsWith('http')) return s;
-  }
-  return getFileUploadViewUrl(urlOrId);
+function getChatAvatarUri(c: ConversationDto): string | undefined {
+  const raw = c.otherUserProfileImageUrl?.trim();
+  if (!raw) return undefined;
+  if (raw.startsWith('http')) return raw;
+  if (raw.startsWith('/')) return `https://appfitech.com${raw}`;
+  return getFileUploadViewUrl(raw);
 }
 
 function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
@@ -71,7 +65,7 @@ function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
     time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
     unread: c.unreadCount ?? 0,
     matchType: c.matchType,
-    avatarUri: getAvatarUri(c),
+    avatarUri: getChatAvatarUri(c),
   };
 }
 
@@ -126,7 +120,6 @@ export default function ChatsScreen() {
           )
         }
         contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
         showsVerticalScrollIndicator={false}
         initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
         maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
@@ -144,9 +137,7 @@ const getStyles = (theme: FullTheme) => {
     listContent: {
       paddingBottom: 180,
       flexGrow: 1,
-      paddingTop: 8,
     },
-    separator: { height: LIST_SCREEN_FLATLIST.itemGap },
     loadingWrap: {
       paddingVertical: 48,
       alignItems: 'center',

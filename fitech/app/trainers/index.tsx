@@ -4,11 +4,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { ListFilterSection } from '@/components/list/ListFilterSection';
 import { TrainerListCard } from '@/components/list/TrainerListCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
-import { ListEmptyState } from '@/components/list/ListEmptyState';
-import { ListFilterSection } from '@/components/list/ListFilterSection';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -84,7 +84,9 @@ export default function TrainersSearchScreen() {
     >
       <FlatList
         data={results}
-        keyExtractor={(item) => String(item.id ?? item.person?.id ?? Math.random())}
+        keyExtractor={(item) =>
+          String(item.id ?? item.person?.id ?? Math.random())
+        }
         renderItem={({ item }) => (
           <TrainerListCard
             trainer={item}

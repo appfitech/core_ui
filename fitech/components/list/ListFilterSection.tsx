@@ -1,8 +1,8 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { AppText } from '@/components/AppText';
+import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
