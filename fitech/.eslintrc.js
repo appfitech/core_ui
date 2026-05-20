@@ -8,6 +8,7 @@ module.exports = {
   ],
   ignorePatterns: ['/dist/*'],
   plugins: [
+    'expo',
     'prettier',
     'simple-import-sort',
     'react',

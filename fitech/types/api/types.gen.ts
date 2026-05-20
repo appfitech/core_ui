@@ -1719,8 +1719,8 @@ export type MatchActionDto = {
   actionType?: string;
   matchSystem?: string;
   like?: boolean;
-  pass?: boolean;
   block?: boolean;
+  pass?: boolean;
   validActionType?: boolean;
   validMatchSystem?: boolean;
 };
@@ -2274,7 +2274,6 @@ export type MembershipPayment = {
   failureReason?: string;
   cancelled?: boolean;
   collected?: boolean;
-  pending?: boolean;
   observed?: boolean;
   paymentCompleted?: boolean;
   paymentPending?: boolean;
@@ -2284,6 +2283,7 @@ export type MembershipPayment = {
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
+  pending?: boolean;
   availableForCollection?: boolean;
 };
 
@@ -2308,11 +2308,11 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
+  annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
   monthly?: boolean;
-  annual?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {
@@ -4711,6 +4711,27 @@ export type TestEmailResponses = {
 
 export type TestEmailResponse = TestEmailResponses[keyof TestEmailResponses];
 
+export type ResetPassword1Data = {
+  body: {
+    [key: string]: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/v1/app/user/reset-password';
+};
+
+export type ResetPassword1Responses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type ResetPassword1Response =
+  ResetPassword1Responses[keyof ResetPassword1Responses];
+
 export type RegisterPushTokenData = {
   body: RegisterPushTokenRequest;
   path?: never;
@@ -4776,6 +4797,48 @@ export type LoginResponses = {
 };
 
 export type LoginResponse = LoginResponses[keyof LoginResponses];
+
+export type ForgotPasswordData = {
+  body: {
+    [key: string]: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/v1/app/user/forgot-password';
+};
+
+export type ForgotPasswordResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type ForgotPasswordResponse =
+  ForgotPasswordResponses[keyof ForgotPasswordResponses];
+
+export type ChangePasswordData = {
+  body: {
+    [key: string]: string;
+  };
+  path?: never;
+  query?: never;
+  url: '/v1/app/user/change-password';
+};
+
+export type ChangePasswordResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type ChangePasswordResponse =
+  ChangePasswordResponses[keyof ChangePasswordResponses];
 
 export type GetAll1Data = {
   body?: never;
