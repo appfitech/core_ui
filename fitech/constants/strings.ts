@@ -54,6 +54,30 @@ export const TRANSLATIONS = {
     successTitle: 'Revisa tu correo',
     successMessage:
       'Si existe una cuenta con ese correo, recibirás instrucciones para restablecer tu contraseña.',
+    errorFallback:
+      'No pudimos enviar el correo. Inténtalo de nuevo en unos minutos.',
+  },
+  resetPasswordScreen: {
+    title: 'Nueva contraseña',
+    description: 'Elige una contraseña segura para tu cuenta.',
+    passwordLabel: 'Nueva contraseña',
+    passwordPlaceholder: 'Mínimo 6 caracteres',
+    confirmPasswordLabel: 'Confirmar contraseña',
+    confirmPasswordPlaceholder: 'Repite tu contraseña',
+    submitButton: 'Guardar contraseña',
+    passwordRequired: 'Ingresa tu nueva contraseña.',
+    passwordTooShort: 'La contraseña debe tener al menos 6 caracteres.',
+    confirmRequired: 'Confirma tu nueva contraseña.',
+    passwordsMismatch: 'Las contraseñas no coinciden.',
+    missingToken:
+      'El enlace para restablecer la contraseña no es válido. Solicita uno nuevo desde “¿Olvidaste tu contraseña?”.',
+    successTitle: '¡Contraseña actualizada!',
+    successMessage: 'Ya puedes iniciar sesión con tu nueva contraseña.',
+    errorFallback:
+      'No pudimos actualizar tu contraseña. Inténtalo de nuevo en unos minutos.',
+    invalidToken:
+      'Este enlace no es válido o ya expiró. Solicita un nuevo correo de recuperación.',
+    goToLogin: 'Ir a iniciar sesión',
   },
   userActivitiesSection: {
     sectionTitle: 'Mis actividades',

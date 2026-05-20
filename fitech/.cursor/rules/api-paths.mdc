@@ -1,0 +1,31 @@
+---
+description: API client paths for lib/api mutations and queries
+globs: lib/api/**/*
+alwaysApply: false
+---
+
+# API paths (`lib/api/api.ts`)
+
+`API_BASE_URL` is already `https://appfitech.com/v1/app`.
+
+## Do
+
+- Use paths **relative to `/v1/app`**, starting with `/`:
+  - `api.post('/user/forgot-password', body)`
+  - `api.get('/user/verify-email?token=...')`
+  - `api.put('/profile/${userId}/fitness-goals', body)`
+
+## Do not
+
+- Do **not** prefix with `/v1/app` or `v1/app` in mutation/query paths (duplicates the base URL).
+- Do **not** use full URLs in `api.get` / `api.post` unless bypassing the shared client intentionally.
+
+## Public (unauthenticated) calls
+
+Pass `auth: false` (and usually `retryOn401: false`) as the **fourth** argument to `api.post`:
+
+```ts
+api.post('/user/reset-password', body, false, { auth: false, retryOn401: false });
+```
+
+OpenAPI types in `types/api/types.gen.ts` still show full URLs like `/v1/app/user/...` — that is documentation only, not the path passed to `api`.

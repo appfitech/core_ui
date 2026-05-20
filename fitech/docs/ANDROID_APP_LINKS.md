@@ -1,8 +1,8 @@
-# Android App Links (verify-email)
+# Android App Links (verify-email & reset-password)
 
 ## Why links open in Chrome instead of the app
 
-Android only opens `https://appfitech.com/verify-email?...` in the app when **Digital Asset Links** verification succeeds. If verification fails, the OS keeps the link in the browser (Chrome Custom Tab).
+Android only opens `https://appfitech.com/verify-email?...` or `https://appfitech.com/reset-password?...` in the app when **Digital Asset Links** verification succeeds. If verification fails, the OS keeps the link in the browser (Chrome Custom Tab).
 
 iOS uses Universal Links (`apple-app-site-association`) and can work even when Android setup is broken.
 

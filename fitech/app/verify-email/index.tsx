@@ -1,7 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ImageBackground,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { AnimatedAppText } from '@/components/AnimatedAppText';
 import { Button } from '@/components/Button';
@@ -83,72 +88,87 @@ export default function VerifyEmailScreen() {
         : null;
 
   return (
-    <PageContainer
-      hasBackButton={false}
-      hasBottomPadding={false}
-      hasNoTopPadding
-      contentPaddingBottom={32}
-      style={styles.page}
+    <ImageBackground
+      source={require('@/assets/images/backgrounds/verify_email_bg.jpg')}
+      style={styles.container}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
     >
-      <View style={styles.content}>
-        <View style={styles.iconCircle}>
-          {showSuccess ? (
-            <Ionicons
-              name="checkmark-circle-outline"
-              size={40}
-              color={styles.iconSuccess.color}
-            />
-          ) : showLoading ? (
-            <ActivityIndicator size="large" color={theme.brand.primary} />
-          ) : (
-            <Ionicons
-              name="mail-outline"
-              size={36}
-              color={styles.iconAccent.color}
+      <PageContainer
+        hasBackButton={false}
+        hasBottomPadding={false}
+        hasNoTopPadding
+        contentPaddingBottom={32}
+        style={styles.page}
+      >
+        <View style={styles.content}>
+          <View style={styles.iconCircle}>
+            {showSuccess ? (
+              <Ionicons
+                name="checkmark-circle-outline"
+                size={40}
+                color={styles.iconSuccess.color}
+              />
+            ) : showLoading ? (
+              <ActivityIndicator size="large" color={theme.brand.primary} />
+            ) : (
+              <Ionicons
+                name="mail-outline"
+                size={36}
+                color={styles.iconAccent.color}
+              />
+            )}
+          </View>
+
+          <View style={styles.textContainer}>
+            <AnimatedAppText variant="sectionTitle" style={styles.title}>
+              {showSuccess
+                ? verifyEmailScreen.successTitle
+                : verifyEmailScreen.title}
+            </AnimatedAppText>
+
+            {description ? (
+              <AnimatedAppText variant="subheader" style={styles.description}>
+                {description}
+              </AnimatedAppText>
+            ) : null}
+          </View>
+
+          <ErrorBanner errorMessage={errorMessage} />
+
+          {(showSuccess || isError || !token) && (
+            <Button
+              label={verifyEmailScreen.goToLogin}
+              onPress={handleGoToLogin}
+              animated={false}
             />
           )}
-        </View>
 
-        <View style={styles.textContainer}>
-          <AnimatedAppText variant="sectionTitle" style={styles.title}>
-            {showSuccess
-              ? verifyEmailScreen.successTitle
-              : verifyEmailScreen.title}
-          </AnimatedAppText>
-
-          {description ? (
-            <AnimatedAppText variant="subheader" style={styles.description}>
-              {description}
-            </AnimatedAppText>
+          {isError && token ? (
+            <Button
+              type="secondary"
+              label={verifyEmailScreen.retryButton}
+              onPress={handleRetry}
+              animated={false}
+            />
           ) : null}
         </View>
-
-        <ErrorBanner errorMessage={errorMessage} />
-
-        {(showSuccess || isError || !token) && (
-          <Button
-            label={verifyEmailScreen.goToLogin}
-            onPress={handleGoToLogin}
-            animated={false}
-          />
-        )}
-
-        {isError && token ? (
-          <Button
-            type="secondary"
-            label={verifyEmailScreen.retryButton}
-            onPress={handleRetry}
-            animated={false}
-          />
-        ) : null}
-      </View>
-    </PageContainer>
+      </PageContainer>
+    </ImageBackground>
   );
 }
 
 const getStyles = (theme: FullTheme) => {
   return {
     ...StyleSheet.create({
+      container: {
+        flex: 1,
+      },
+      backgroundImage: {
+        width: '100%',
+        height: '100%',
+        opacity: 0.85,
+      },
       page: {
         paddingHorizontal: 24,
       },

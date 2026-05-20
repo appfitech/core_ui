@@ -9,19 +9,14 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { AllowedPath } from '@/constants/routes';
-import { textStyles } from '@/constants/styles';
+import { MenuItem } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
-import { FullTheme } from '@/types/theme';
+import { AppTheme } from '@/types/theme';
 
 import { AppText } from './AppText';
 
-type Props = {
-  icon?: string;
-  label: string;
-  route?: AllowedPath;
+type Props = MenuItem & {
   hasChevron?: boolean;
-  description?: string;
   style?: StyleProp<ViewStyle>;
   onClick?: null | (() => void);
 };
@@ -29,17 +24,16 @@ type Props = {
 export function ListItem({
   icon,
   label,
-  description,
   route,
   hasChevron = true,
   style = {},
   onClick = null,
+  destructive = false,
 }: Props) {
   const router = useRouter();
   const { theme } = useTheme();
 
   const styles = getStyles(theme);
-  const iconColor = theme.brand.primary;
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -57,19 +51,26 @@ export function ListItem({
     <TouchableOpacity style={[styles.listItem, style]} onPress={handleClick}>
       {!!icon && (
         <View style={styles.iconWrapper}>
-          <Ionicons name={icon as any} size={23} color={iconColor} />
+          <Ionicons
+            name={icon as any}
+            size={20}
+            color={destructive ? theme.status.error.text : theme.icon.muted}
+          />
         </View>
       )}
-      <View style={[{ flex: 1 }, description && { paddingHorizontal: 16 }]}>
-        <AppText style={[styles.label, description && { paddingVertical: 0 }]}>
-          {label}
-        </AppText>
-        {description && (
-          <AppText style={{ color: theme.text.secondary }}>
-            {description}
-          </AppText>
-        )}
-      </View>
+
+      <AppText
+        variant="body"
+        style={[
+          styles.label,
+          {
+            color: destructive ? theme.status.error.text : theme.text.secondary,
+          },
+        ]}
+      >
+        {label}
+      </AppText>
+
       {hasChevron && (
         <Ionicons
           name="chevron-forward"
@@ -81,14 +82,12 @@ export function ListItem({
   );
 }
 
-const getStyles = (theme: FullTheme) => {
-  const text = textStyles(theme);
+const getStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     listItem: {
       flexDirection: 'row',
       alignItems: 'center',
       paddingVertical: 14,
-      paddingHorizontal: 12,
       borderBottomWidth: 1,
       borderBottomColor: theme.border.default,
       columnGap: 12,
@@ -99,8 +98,7 @@ const getStyles = (theme: FullTheme) => {
     },
     label: {
       flex: 1,
-      ...text.body,
-      color: theme.text.primary,
+      color: theme.text.secondary,
     },
   });
 };

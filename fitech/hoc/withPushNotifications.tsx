@@ -1,16 +1,32 @@
 // hoc/withPushNotifications.tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import React, { createElement, useEffect, useRef } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import {
+  AppState,
+  AppStateStatus,
+  InteractionManager,
+  Platform,
+} from 'react-native';
 
+import { PUSH_TOKEN_KEY } from '@/constants/push';
 import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
+import { registerAndSyncPushToken } from '@/lib/push/register-and-sync-push-token';
 import { useUserStore } from '@/stores/user';
-import { getDeviceId } from '@/utils/device';
-import { ensureDefaultAndroidNotificationChannel } from '@/utils/ensure-android-notification-channel';
-import { registerForPushNotificationsAsync } from '@/utils/register-for-push-notification';
 
-export const PUSH_TOKEN_KEY = '@push_token_v1';
+export { PUSH_TOKEN_KEY };
+
+function runAfterAppIsReady(): Promise<void> {
+  return new Promise((resolve) => {
+    InteractionManager.runAfterInteractions(() => {
+      // After login navigation, a short delay improves the Android permission dialog.
+      if (Platform.OS === 'android') {
+        setTimeout(resolve, 400);
+        return;
+      }
+      resolve();
+    });
+  });
+}
 
 export function withPushNotifications<P extends Record<string, unknown>>(
   Wrapped: React.ComponentType<P>,
@@ -23,67 +39,34 @@ export function withPushNotifications<P extends Record<string, unknown>>(
 
     const { mutateAsync: savePushToken } = useSavePushToken();
 
-    const expoPushTokenRef = useRef<string | null>(null);
     const syncInFlightRef = useRef(false);
 
-    const cacheExpoToken = async (pushToken: string) => {
-      const prev = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
-      if (prev !== pushToken) {
-        await AsyncStorage.setItem(PUSH_TOKEN_KEY, pushToken);
-      }
-      expoPushTokenRef.current = pushToken;
-    };
-
-    const clearCachedExpoToken = async () => {
-      expoPushTokenRef.current = null;
-      await AsyncStorage.removeItem(PUSH_TOKEN_KEY).catch(() => {});
-    };
-
-    const fetchAndCacheExpoTokenIfAvailable = async () => {
-      await ensureDefaultAndroidNotificationChannel();
-      const pushToken = await registerForPushNotificationsAsync();
-
-      if (pushToken) {
-        await cacheExpoToken(pushToken);
-      } else {
-        await clearCachedExpoToken();
-      }
-
-      return pushToken ?? null;
-    };
-
-    const syncNow = async () => {
-      if (!isLoggedIn) {
-        return;
-      }
-
-      if (syncInFlightRef.current) {
+    const registerPushForLoggedInUser = async () => {
+      if (!isLoggedIn || syncInFlightRef.current) {
         return;
       }
 
       syncInFlightRef.current = true;
 
       try {
-        const stored = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
-        const expoToken = expoPushTokenRef.current ?? stored ?? null;
-        const deviceId = await getDeviceId();
+        const result = await registerAndSyncPushToken({
+          savePushToken,
+        });
 
-        if (!expoToken) {
-          return;
+        if (__DEV__ && (result.error || !result.savedToServer)) {
+          console.warn('[Push] register/sync', {
+            permissionGranted: result.permissionGranted,
+            permissionStatus: result.permissionStatus,
+            hasToken: !!result.token,
+            savedToServer: result.savedToServer,
+            error: result.error,
+          });
         }
-
-        await savePushToken({ expoToken, deviceId });
       } catch (e) {
-        console.warn('[Push] savePushToken failed', e);
+        console.warn('[Push] registerAndSyncPushToken failed', e);
       } finally {
         syncInFlightRef.current = false;
       }
-    };
-
-    /** Request OS permission, obtain Expo token, cache locally, register with API. */
-    const registerPushForLoggedInUser = async () => {
-      await fetchAndCacheExpoTokenIfAvailable();
-      await syncNow();
     };
 
     useEffect(() => {
@@ -107,17 +90,17 @@ export function withPushNotifications<P extends Record<string, unknown>>(
     // Login, session restore, or account switch: prompt for notifications and sync token.
     useEffect(() => {
       if (!isLoggedIn) {
-        void clearCachedExpoToken();
         return;
       }
 
       let cancelled = false;
 
       void (async () => {
-        await registerPushForLoggedInUser();
+        await runAfterAppIsReady();
         if (cancelled) {
           return;
         }
+        await registerPushForLoggedInUser();
       })();
 
       return () => {

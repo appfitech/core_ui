@@ -6,8 +6,10 @@ iOS can work with only APNs credentials in EAS. **Android also needs FCM (Fireba
 
 1. **Physical device** — push does not work on emulators.
 2. **Notification permission** — Android 13+ must grant notifications when prompted.
-3. **`channelId: "default"`** — every push payload to Android must include the channel id that matches the app channel (`default`). The test mutation and server sends must set this.
-4. **FCM in EAS** — configure credentials, then create a **new Android build** (OTA/JS reload is not enough).
+3. **Native build includes `POST_NOTIFICATIONS`** — In **Settings → Apps → FITECH → Permissions**, you should see **Notifications**. If you only see Camera / Files / Microphone and no Notifications entry, the installed APK was built without the `expo-notifications` manifest merge. **Create a new EAS Android build** and reinstall; JS-only updates cannot add this permission.
+4. **`channelId: "default"`** — every push payload to Android must include the channel id that matches the app channel (`default`). The test mutation and server sends must set this.
+5. **FCM in EAS** — configure credentials, then create a **new Android build** (OTA/JS reload is not enough).
+6. **Token on server** — After login, `withPushNotifications` calls `POST /user/register-push-token` automatically. Confirm your user appears at `GET /user/push-tokens`. Test tools only shows the cached token and sends a test push.
 
 ## Configure FCM in EAS
 

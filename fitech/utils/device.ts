@@ -26,11 +26,7 @@ export async function getDeviceId(): Promise<string> {
     if (Platform.OS === 'ios') {
       id = await Application.getIosIdForVendorAsync(); // can be null
     } else if (Platform.OS === 'android') {
-      const getAndroidIdAsync = (Application as any).getAndroidIdAsync;
-      id =
-        typeof getAndroidIdAsync === 'function'
-          ? await getAndroidIdAsync()
-          : ((Application as any).androidId ?? null);
+      id = Application.getAndroidId();
     }
   } catch {
     // swallow; we'll fall back

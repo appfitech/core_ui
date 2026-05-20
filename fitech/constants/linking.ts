@@ -5,6 +5,7 @@ export const LINKING = {
   host: 'appfitech.com',
   paths: {
     verifyEmail: '/verify-email',
+    resetPassword: '/reset-password',
   },
 } as const;
 
@@ -18,4 +19,14 @@ export function buildVerifyEmailUrl(token: string): string {
 export function buildVerifyEmailAppUrl(token: string): string {
   const params = new URLSearchParams({ token });
   return `${LINKING.scheme}://verify-email?${params.toString()}`;
+}
+
+export function buildResetPasswordUrl(token: string): string {
+  const params = new URLSearchParams({ token });
+  return `https://${LINKING.host}${LINKING.paths.resetPassword}?${params.toString()}`;
+}
+
+export function buildResetPasswordAppUrl(token: string): string {
+  const params = new URLSearchParams({ token });
+  return `${LINKING.scheme}://reset-password?${params.toString()}`;
 }

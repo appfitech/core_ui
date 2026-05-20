@@ -17,9 +17,19 @@ type ExpoPushTicket =
   | { status: 'error'; message: string; details?: { error?: string } };
 
 type ExpoPushResponse = {
-  data?: ExpoPushTicket[];
+  /** Array when body is an array; single object when one recipient (Expo API quirk). */
+  data?: ExpoPushTicket[] | ExpoPushTicket;
   errors?: { code: string; message: string }[];
 };
+
+function firstPushTicket(
+  data: ExpoPushResponse['data'],
+): ExpoPushTicket | undefined {
+  if (data == null) return undefined;
+  if (Array.isArray(data)) return data[0];
+  if (typeof data === 'object' && 'status' in data) return data;
+  return undefined;
+}
 
 export async function sendExpoPushMessage(
   message: ExpoPushMessage,
@@ -31,7 +41,8 @@ export async function sendExpoPushMessage(
       Accept: 'application/json',
       'Accept-encoding': 'gzip, deflate',
     },
-    body: JSON.stringify(message),
+    // Expo expects an array of messages (up to 100 per request).
+    body: JSON.stringify([message]),
   });
 
   const payload = (await response.json()) as ExpoPushResponse;
@@ -41,7 +52,7 @@ export async function sendExpoPushMessage(
     throw new Error(apiError || 'Expo push API request failed');
   }
 
-  const ticket = payload.data?.[0];
+  const ticket = firstPushTicket(payload.data);
 
   if (!ticket) {
     throw new Error('Expo push API returned no ticket');

@@ -3,6 +3,7 @@ import type { Href } from 'expo-router';
 export const ROUTES = {
   login: '/login',
   forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
   verifyEmail: '/verify-email',
   register: '/register',
   onboarding: '/onboarding',
@@ -31,6 +32,8 @@ export const ROUTES = {
   testTools: '/test-tools',
   notifications: '/notifications',
   chats: '/chats',
+  changePassword: '/change-password',
+  deleteAccount: '/delete-account',
 } as const;
 
 type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

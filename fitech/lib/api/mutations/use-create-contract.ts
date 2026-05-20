@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { invalidateContractQueries } from '@/lib/api/mutation-cache';
+import { onContractMutationSuccess } from '@/lib/api/mutation-cache';
 import {
   CreateContractRequest,
   CreateContractResponse,
@@ -16,7 +16,7 @@ export const useCreateContract = () => {
       return api.post('/contracts', request);
     },
     onSuccess: async () => {
-      await invalidateContractQueries(queryClient);
+      await onContractMutationSuccess(queryClient);
     },
   });
 };

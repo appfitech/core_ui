@@ -7,6 +7,7 @@ import type {
 } from '@/types/api/types.gen';
 import type { LoginResponse } from '@/types/user';
 
+import { api } from './api';
 import { queryKeys } from './query-keys';
 
 type MutationUserPayload =
@@ -64,7 +65,33 @@ export async function invalidateContractQueries(
     queryClient.invalidateQueries({
       queryKey: queryKeys.trainers.clients.list,
     }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.subscription.user }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.subscription.payments }),
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.clientResources.grouped,
+    }),
   ]);
+}
+
+/** Refetch `/user/{id}` and merge into Zustand (premium, premiumBy, etc.). */
+export async function refreshCurrentUserSession(): Promise<void> {
+  const userId = useUserStore.getState().getUserId();
+  if (userId == null) return;
+
+  try {
+    const user = (await api.get(`/user/${userId}`)) as UserResponseDtoReadable;
+    await useUserStore.getState().updateUserInfo(user);
+  } catch (e) {
+    console.warn('[Session] refreshCurrentUserSession failed', e);
+  }
+}
+
+/** After create/cancel/complete contract — refresh lists and session user. */
+export async function onContractMutationSuccess(
+  queryClient: QueryClient,
+): Promise<void> {
+  await invalidateContractQueries(queryClient);
+  await refreshCurrentUserSession();
 }
 
 export async function invalidateWorkoutQueries(

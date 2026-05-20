@@ -2,16 +2,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
-import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 
 import AvatarSvg from '@/assets/images/avatar.svg';
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import { ListItem } from '@/components/ListItem';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
-import { PROFILE_LIST_ITEMS } from '@/constants/screens';
+import { PROFILE_MENU_SECTIONS } from '@/constants/screens';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
@@ -46,7 +44,7 @@ export default function ProfileScreen() {
 
   return (
     <PageContainer hasBackButton={false}>
-      <Animated.View entering={FadeInDown.duration(500)} style={styles.header}>
+      <View style={styles.header}>
         {userAvatarURL ? (
           <Image
             source={{
@@ -78,7 +76,7 @@ export default function ProfileScreen() {
           {user?.premium && !isTrainer && (
             <TouchableOpacity onPress={handleSubscriptionClick}>
               <Tag
-                icon="cash-outline"
+                icon="star"
                 label={`Premium ${user?.premiumBy === 'CONTRACT' ? '(Con Contrato)' : '(Por Pago)'}`}
                 textColor={theme.status.warning.text}
                 backgroundColor={theme.status.warning.bg}
@@ -86,31 +84,43 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           )}
         </View>
-      </Animated.View>
+      </View>
 
-      <Animated.View
-        entering={FadeInUp.delay(100).duration(500)}
-        style={styles.section}
-      >
-        {PROFILE_LIST_ITEMS.map((item) => {
-          if (item?.userOnly && isTrainer) {
-            return null;
-          }
+      <View style={styles.sectionsContainer}>
+        {PROFILE_MENU_SECTIONS.map((section, index) => {
+          const { title, items } = section;
 
-          if (item?.premiumOnly && !user?.premium) {
-            return null;
-          }
+          return (
+            <View key={`${title}-${index}`}>
+              <AppText style={styles.smallMedium}>{title}</AppText>
+              <View>
+                {items.map((item, index) => {
+                  const { type, userOnly, premiumOnly } = item;
+                  const isLogout = type === 'logout';
 
-          return <ListItem key={item.route} {...item} />;
+                  const handleItemClick = isLogout ? handleLogout : null;
+
+                  if (userOnly && isTrainer) {
+                    return null;
+                  }
+
+                  if (premiumOnly && !user?.premium) {
+                    return null;
+                  }
+
+                  return (
+                    <ListItem
+                      key={`${item.label}-${index}`}
+                      {...item}
+                      onClick={handleItemClick}
+                    />
+                  );
+                })}
+              </View>
+            </View>
+          );
         })}
-      </Animated.View>
-
-      <Button
-        label="Cerrar sesión"
-        style={styles.logoutButton}
-        onPress={handleLogout}
-        type="destructive"
-      />
+      </View>
     </PageContainer>
   );
 }
@@ -118,6 +128,7 @@ export default function ProfileScreen() {
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
+    ...text,
     header: {
       alignItems: 'center',
       marginBottom: 24,
@@ -150,17 +161,11 @@ const getStyles = (theme: FullTheme) => {
       marginTop: 12,
       columnGap: 8,
     },
-    section: {
-      backgroundColor: theme.background.card,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      paddingVertical: 4,
-      paddingHorizontal: 4,
-      overflow: 'hidden',
-    },
     logoutButton: {
       marginTop: 24,
+    },
+    sectionsContainer: {
+      rowGap: 24,
     },
   });
 };

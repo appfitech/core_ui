@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { Tag } from '@/components/Tag';
 import { formStyles, textStyles } from '@/constants/styles';
 import { useDatePickerOverlay } from '@/contexts/DatePickerOverlayContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -17,6 +18,7 @@ type Props = {
   minDate?: Date | undefined;
   maxDate?: Date | undefined;
   label?: string;
+  required?: boolean;
 };
 
 export function DatePicker({
@@ -26,6 +28,7 @@ export function DatePicker({
   minDate = undefined,
   maxDate = undefined,
   label = '',
+  required = true,
 }: Props) {
   const { theme } = useTheme();
   const { openDatePicker } = useDatePickerOverlay();
@@ -63,7 +66,19 @@ export function DatePicker({
 
   return (
     <View>
-      {label ? <AppText style={styles.label}>{label}</AppText> : null}
+      {label ? (
+        <View style={styles.labelContainer}>
+          <AppText style={styles.label}>{label}</AppText>
+          {!required && (
+            <Tag
+              backgroundColor={theme.status.warning.bg}
+              textColor={theme.status.warning.text}
+              style={styles.optionalTag}
+              label="Opcional"
+            />
+          )}
+        </View>
+      ) : null}
       <Pressable style={styles.inputRow} onPress={handlePress}>
         <Ionicons
           name="calendar-outline"
@@ -88,7 +103,9 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
 
   return StyleSheet.create({
+    labelContainer: form.labelContainer,
     label: form.label,
+    optionalTag: form.optionalTag,
     inputRow: {
       ...form.inputWrapper,
       minHeight: 52,

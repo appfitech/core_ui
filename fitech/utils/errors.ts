@@ -63,3 +63,29 @@ export function resolveVerifyEmailError(
 
   return raw;
 }
+
+type ResetPasswordErrorCopy = {
+  invalidToken: string;
+  fallback: string;
+};
+
+/** User-facing copy for reset-password API failures (invalid/expired token, etc.). */
+export function resolveResetPasswordError(
+  err: unknown,
+  copy: ResetPasswordErrorCopy,
+): string {
+  const raw = extractErrorMessage(err, copy.fallback);
+  const normalized = raw.toLowerCase();
+
+  if (
+    normalized.includes('inválido') ||
+    normalized.includes('invalid') ||
+    normalized.includes('expirado') ||
+    normalized.includes('expired') ||
+    normalized.includes('token')
+  ) {
+    return copy.invalidToken;
+  }
+
+  return raw;
+}

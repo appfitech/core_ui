@@ -2,14 +2,20 @@
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { Platform } from 'react-native';
 
 import { ensureDefaultAndroidNotificationChannel } from '@/utils/ensure-android-notification-channel';
 
 let warnedSimulatorPush = false;
 
-export async function registerForPushNotificationsAsync(): Promise<
-  string | undefined
-> {
+export type PushRegistrationOutcome = {
+  token?: string;
+  permissionStatus: Notifications.PermissionStatus;
+  permissionGranted: boolean;
+  error?: string;
+};
+
+export async function registerForPushNotificationsAsync(): Promise<PushRegistrationOutcome> {
   await ensureDefaultAndroidNotificationChannel();
 
   if (!Device.isDevice) {
@@ -17,10 +23,15 @@ export async function registerForPushNotificationsAsync(): Promise<
       warnedSimulatorPush = true;
       console.warn('Push notifications require a physical device.');
     }
-    return;
+    return {
+      permissionStatus: Notifications.PermissionStatus.UNDETERMINED,
+      permissionGranted: false,
+      error: 'Push notifications require a physical device.',
+    };
   }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  const { status: existingStatus, canAskAgain } =
+    await Notifications.getPermissionsAsync();
 
   let finalStatus = existingStatus;
 
@@ -31,15 +42,34 @@ export async function registerForPushNotificationsAsync(): Promise<
         allowBadge: true,
         allowSound: true,
       },
+      android: {},
     });
     finalStatus = status;
   }
 
-  if (finalStatus !== 'granted') {
+  const permissionGranted = finalStatus === 'granted';
+
+  if (!permissionGranted) {
+    const needsRebuildHint =
+      Platform.OS === 'android' &&
+      existingStatus === 'undetermined' &&
+      finalStatus === 'undetermined';
+
+    const error = needsRebuildHint
+      ? 'Notifications permission was not requested. Install a new Android build that includes POST_NOTIFICATIONS (expo-notifications native module).'
+      : canAskAgain === false
+        ? 'Notification permission denied. Enable notifications for FITECH in system Settings.'
+        : 'Notification permission not granted.';
+
     if (__DEV__) {
-      console.warn('[Push] Notification permission not granted:', finalStatus);
+      console.warn('[Push]', error, { existingStatus, finalStatus, canAskAgain });
     }
-    return;
+
+    return {
+      permissionStatus: finalStatus,
+      permissionGranted: false,
+      error,
+    };
   }
 
   const projectId =
@@ -47,10 +77,35 @@ export async function registerForPushNotificationsAsync(): Promise<
     Constants?.easConfig?.projectId;
 
   if (!projectId) {
-    throw new Error('Missing projectId');
+    return {
+      permissionStatus: finalStatus,
+      permissionGranted: true,
+      error: 'Missing EAS projectId in app config.',
+    };
   }
 
-  const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+  try {
+    const token = (
+      await Notifications.getExpoPushTokenAsync({ projectId })
+    ).data;
 
-  return token;
+    return {
+      token,
+      permissionStatus: finalStatus,
+      permissionGranted: true,
+    };
+  } catch (e) {
+    const message =
+      e instanceof Error
+        ? e.message
+        : 'Failed to obtain Expo push token (check FCM credentials in EAS for Android).';
+
+    console.warn('[Push] getExpoPushTokenAsync failed', e);
+
+    return {
+      permissionStatus: finalStatus,
+      permissionGranted: true,
+      error: message,
+    };
+  }
 }

@@ -2,51 +2,100 @@ import { Option } from '@/types/forms';
 
 import { AllowedPath, ROUTES } from './routes';
 
-export const PROFILE_LIST_ITEMS: {
+export type MenuItem = {
   icon?: string;
   label: string;
-  route: AllowedPath;
+  route?: AllowedPath;
   userOnly?: boolean;
   premiumOnly?: boolean;
+  destructive?: boolean;
+  type?: 'logout';
+};
+
+export const PROFILE_MENU_SECTIONS: {
+  title: string;
+  items: MenuItem[];
 }[] = [
   {
-    icon: 'person-outline',
-    route: ROUTES.personalInfo,
-    label: 'Información Personal',
+    title: 'Perfil',
+    items: [
+      {
+        label: 'Información personal',
+        icon: 'person-outline',
+        route: ROUTES.personalInfo,
+      },
+      {
+        icon: 'images-outline',
+        route: ROUTES.imageGallery,
+        label: 'Galería de fotos',
+      },
+      {
+        icon: 'lock-closed-outline',
+        route: ROUTES.changePassword,
+        label: 'Cambiar contraseña',
+      },
+    ],
   },
   {
-    icon: 'images-outline',
-    route: ROUTES.imageGallery,
-    label: 'Galería de fotos',
+    title: 'Fitness y preferencias',
+    items: [
+      {
+        icon: 'list-outline',
+        route: ROUTES.goals,
+        label: 'Objetivos fitness',
+        userOnly: true,
+      },
+      {
+        icon: 'heart-outline',
+        route: ROUTES.matchPreferences,
+        label: 'Preferencias de match',
+        userOnly: true,
+        premiumOnly: true,
+      },
+    ],
   },
   {
-    icon: 'list-outline',
-    route: ROUTES.goals,
-    label: 'Objetivos Fitness',
-    userOnly: true,
+    title: 'Cuenta',
+    items: [
+      {
+        icon: 'cash-outline',
+        route: ROUTES.subscription,
+        label: 'Suscripción',
+        userOnly: true,
+        premiumOnly: true,
+      },
+      {
+        icon: 'notifications-outline',
+        route: ROUTES.notifications,
+        label: 'Notificaciones',
+        userOnly: true,
+      },
+    ],
   },
   {
-    icon: 'heart-outline',
-    route: ROUTES.matchPreferences,
-    label: 'Preferencias de match',
-    userOnly: true,
-    premiumOnly: true,
+    title: 'Ayuda',
+    items: [
+      { icon: 'help-circle-outline', route: ROUTES.support, label: 'Soporte' },
+      //TODO: Add FAQ and Privacy Policy items later
+      { icon: 'logo-github', route: ROUTES.testTools, label: 'Testing tools' },
+    ],
   },
   {
-    icon: 'cash-outline',
-    route: ROUTES.subscription,
-    label: 'Mi Suscripción',
-    userOnly: true,
-    premiumOnly: true,
+    title: '',
+    items: [
+      {
+        label: 'Eliminar cuenta',
+        icon: 'trash',
+        route: ROUTES.deleteAccount,
+      },
+      {
+        label: 'Logout',
+        icon: 'log-out-outline',
+        type: 'logout',
+        destructive: true,
+      },
+    ],
   },
-  {
-    icon: 'notifications-outline',
-    route: ROUTES.notifications,
-    label: 'Notificaciones',
-    userOnly: true,
-  },
-  { icon: 'help-circle-outline', route: ROUTES.support, label: 'Soporte' },
-  { icon: 'logo-github', route: ROUTES.testTools, label: 'Testing tools' },
 ];
 
 export const MATCH_SCREEN_TABS: Option[] = [

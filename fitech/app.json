@@ -27,6 +27,11 @@
       }
     },
     "android": {
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.VIBRATE",
+        "android.permission.RECEIVE_BOOT_COMPLETED"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android-adaptive-foreground.png",
         "backgroundColor": "#39CC39"
@@ -47,6 +52,16 @@
               "scheme": "https",
               "host": "www.appfitech.com",
               "pathPrefix": "/verify-email"
+            },
+            {
+              "scheme": "https",
+              "host": "appfitech.com",
+              "pathPrefix": "/reset-password"
+            },
+            {
+              "scheme": "https",
+              "host": "www.appfitech.com",
+              "pathPrefix": "/reset-password"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
@@ -57,6 +72,10 @@
             {
               "scheme": "fitech",
               "host": "verify-email"
+            },
+            {
+              "scheme": "fitech",
+              "host": "reset-password"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

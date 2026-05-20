@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 
 import { AnimatedAppText } from '@/components/AnimatedAppText';
 import { Button } from '@/components/Button';
@@ -11,7 +11,9 @@ import { TextInput } from '@/components/TextInput';
 import { showInfoToast } from '@/components/Toast';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useForgotPassword } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
+import { extractErrorMessage } from '@/utils/errors';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -23,7 +25,8 @@ export default function ForgotPasswordScreen() {
 
   const [email, setEmail] = useState('');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { mutate: forgotPassword, isPending } = useForgotPassword();
 
   const handleSubmit = useCallback(() => {
     const trimmed = email.trim();
@@ -39,81 +42,100 @@ export default function ForgotPasswordScreen() {
     }
 
     setErrorMsg(null);
-    setIsSubmitting(true);
 
-    // TODO: wire forgot-password API when available
-    setTimeout(() => {
-      setIsSubmitting(false);
-      showInfoToast(
-        forgotPasswordScreen.successTitle,
-        forgotPasswordScreen.successMessage,
-      );
-      router.back();
-    }, 600);
-  }, [email, forgotPasswordScreen, router]);
+    forgotPassword(trimmed, {
+      onSuccess: () => {
+        showInfoToast(
+          forgotPasswordScreen.successTitle,
+          forgotPasswordScreen.successMessage,
+        );
+        router.back();
+      },
+      onError: (error) => {
+        setErrorMsg(
+          extractErrorMessage(error, forgotPasswordScreen.errorFallback),
+        );
+      },
+    });
+  }, [email, forgotPassword, forgotPasswordScreen, router]);
 
   return (
-    <PageContainer
-      authOptimized
-      hasBackButton
-      hasBottomPadding={false}
-      hasNoTopPadding
-      contentPaddingBottom={32}
-      style={styles.page}
+    <ImageBackground
+      source={require('@/assets/images/backgrounds/forgot_password_bg.jpg')}
+      style={styles.container}
+      imageStyle={styles.backgroundImage}
+      resizeMode="cover"
     >
-      <View style={styles.content}>
-        <View style={styles.iconCircle}>
-          <Ionicons
-            name="lock-closed-outline"
-            size={36}
-            color={styles.iconAccent.color}
+      <PageContainer
+        authOptimized
+        hasBackButton
+        hasBottomPadding={false}
+        hasNoTopPadding
+        contentPaddingBottom={32}
+        style={styles.page}
+      >
+        <View style={styles.content}>
+          <View style={styles.iconCircle}>
+            <Ionicons
+              name="lock-closed-outline"
+              size={36}
+              color={styles.iconAccent.color}
+            />
+          </View>
+
+          <View style={styles.textContainer}>
+            <AnimatedAppText variant="sectionTitle" style={styles.title}>
+              {forgotPasswordScreen.title}
+            </AnimatedAppText>
+
+            <AnimatedAppText variant="subheader" style={styles.description}>
+              {forgotPasswordScreen.description}
+            </AnimatedAppText>
+          </View>
+          <ErrorBanner
+            errorMessage={errorMsg}
+            onClear={() => setErrorMsg(null)}
+          />
+
+          <TextInput
+            startElement={
+              <Ionicons name="at" size={20} color={styles.iconColor.color} />
+            }
+            label={forgotPasswordScreen.emailLabel}
+            required
+            value={email}
+            onChangeText={setEmail}
+            placeholder={forgotPasswordScreen.emailPlaceholder}
+            keyboardType="email-address"
+            textContentType="emailAddress"
+            autoComplete="email"
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+
+          <Button
+            label={forgotPasswordScreen.submitButton}
+            onPress={handleSubmit}
+            disabled={!email.trim() || isPending}
+            animated={false}
           />
         </View>
-
-        <View style={styles.textContainer}>
-          <AnimatedAppText variant="sectionTitle" style={styles.title}>
-            {forgotPasswordScreen.title}
-          </AnimatedAppText>
-
-          <AnimatedAppText variant="subheader" style={styles.description}>
-            {forgotPasswordScreen.description}
-          </AnimatedAppText>
-        </View>
-        <ErrorBanner
-          errorMessage={errorMsg}
-          onClear={() => setErrorMsg(null)}
-        />
-
-        <TextInput
-          startElement={
-            <Ionicons name="at" size={20} color={styles.iconColor.color} />
-          }
-          label={forgotPasswordScreen.emailLabel}
-          required
-          value={email}
-          onChangeText={setEmail}
-          placeholder={forgotPasswordScreen.emailPlaceholder}
-          keyboardType="email-address"
-          textContentType="emailAddress"
-          autoComplete="email"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-
-        <Button
-          label={forgotPasswordScreen.submitButton}
-          onPress={handleSubmit}
-          disabled={!email.trim() || isSubmitting}
-          animated={false}
-        />
-      </View>
-    </PageContainer>
+      </PageContainer>
+    </ImageBackground>
   );
 }
 
 const getStyles = (theme: FullTheme) => {
   return {
     ...StyleSheet.create({
+      container: {
+        flex: 1,
+      },
+      backgroundImage: {
+        width: '100%',
+        height: '100%',
+        opacity: 0.85,
+      },
       page: {
         paddingHorizontal: 24,
       },

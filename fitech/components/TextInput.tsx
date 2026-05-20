@@ -76,6 +76,7 @@ export function TextInput(props: Props) {
     onChangeText,
     onFocus,
     onBlur,
+    editable = true,
     ...rest
   } = props;
 
@@ -137,6 +138,7 @@ export function TextInput(props: Props) {
         <NativeTextInput
           {...rest}
           {...secureAutofillProps}
+          editable={editable}
           value={displayValue}
           onChangeText={handleChangeText}
           onFocus={handleFocus}
@@ -148,6 +150,7 @@ export function TextInput(props: Props) {
           placeholderTextColor={theme.icon.muted}
           style={[
             styles.input,
+            { color: editable ? theme.text.primary : theme.text.disabled },
             inputStyleProp ?? {},
             multiline
               ? {

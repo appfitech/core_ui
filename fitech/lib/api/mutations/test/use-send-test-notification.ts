@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 
-import { PUSH_TOKEN_KEY } from '@/hoc/withPushNotifications';
+import { PUSH_TOKEN_KEY } from '@/constants/push';
 import {
   DEFAULT_ANDROID_NOTIFICATION_CHANNEL_ID,
   sendExpoPushMessage,

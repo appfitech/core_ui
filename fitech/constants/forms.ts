@@ -119,3 +119,51 @@ export const REGISTER_CREDENTIALS_FIELDS: CreateUserFormField[] = [
     isBase: true,
   },
 ];
+
+export type PersonalInfoFormField = CreateUserFormField & {
+  editable?: boolean;
+  showEmailVerifiedBadge?: boolean;
+};
+
+export const PERSONAL_INFO_FORM_FIELDS: PersonalInfoFormField[] = [
+  {
+    label: 'Documento',
+    field: 'documentNumber',
+    editable: false,
+  },
+  {
+    label: 'Email',
+    field: 'email',
+    editable: false,
+    showEmailVerifiedBadge: true,
+  },
+  { label: 'Nombre', field: 'firstName', placeholder: 'Nombre' },
+  { label: 'Apellido', field: 'lastName', placeholder: 'Apellido' },
+  {
+    label: 'Fecha de Nacimiento',
+    field: 'birthDate',
+    inputType: 'date',
+    placeholder: 'Seleccionar fecha',
+  },
+  {
+    label: 'Teléfono',
+    field: 'phoneNumber',
+    keyboardType: 'phone-pad',
+    placeholder: 'Teléfono',
+  },
+  {
+    label: 'Ubicación',
+    field: 'residenceLocationId',
+    inputType: 'location-picker',
+    placeholder: 'Seleccionar distrito',
+    isOptional: true,
+  },
+  {
+    label: 'Acerca de ti',
+    field: 'bio',
+    placeholder: 'Cuéntanos un poco sobre ti...',
+    multiline: true,
+    numberOfLines: 8,
+    isOptional: true,
+  },
+];
