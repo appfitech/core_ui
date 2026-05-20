@@ -1,18 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  Platform,
-  type NativeSyntheticEvent,
-  type TextInputFocusEventData,
-} from 'react-native';
+import { Platform, type TextInputProps } from 'react-native';
 
-type FocusHandler = (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+type FocusHandler = NonNullable<TextInputProps['onFocus']>;
+type BlurHandler = NonNullable<TextInputProps['onBlur']>;
 
 type Options = {
   value: string | undefined;
   onChangeText: ((text: string) => void) | undefined;
   enabled: boolean;
   onFocus?: FocusHandler;
-  onBlur?: FocusHandler;
+  onBlur?: BlurHandler;
 };
 
 /**
@@ -69,15 +66,15 @@ export function useAndroidControlledTextBuffer({
       setLocalValue(text);
       onChangeText?.(text);
     },
-    handleFocus: (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    handleFocus: ((e) => {
       isFocusedRef.current = true;
       onFocus?.(e);
-    },
-    handleBlur: (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+    }) as FocusHandler,
+    handleBlur: ((e) => {
       isFocusedRef.current = false;
       onChangeText?.(localRef.current);
       onBlur?.(e);
-    },
+    }) as BlurHandler,
   };
 }
 

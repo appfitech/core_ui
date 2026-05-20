@@ -141,9 +141,7 @@ export function TextInput(props: Props) {
           onChangeText={handleChangeText}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          importantForAutofill={
-            bufferActive ? 'no' : rest.importantForAutofill
-          }
+          importantForAutofill={bufferActive ? 'no' : rest.importantForAutofill}
           secureTextEntry={secureTextEntry}
           multiline={multiline}
           scrollEnabled={multiline ? false : rest.scrollEnabled}

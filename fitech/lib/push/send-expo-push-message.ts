@@ -49,9 +49,7 @@ export async function sendExpoPushMessage(
 
   if (ticket.status === 'error') {
     const detail = ticket.details?.error;
-    throw new Error(
-      detail ? `${ticket.message} (${detail})` : ticket.message,
-    );
+    throw new Error(detail ? `${ticket.message} (${detail})` : ticket.message);
   }
 
   return ticket;

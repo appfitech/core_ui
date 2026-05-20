@@ -36,10 +36,7 @@ export function DatePickerOverlayProvider({
     setSheet(options);
   }, []);
 
-  const value = useMemo(
-    () => ({ openDatePicker }),
-    [openDatePicker],
-  );
+  const value = useMemo(() => ({ openDatePicker }), [openDatePicker]);
 
   return (
     <DatePickerOverlayContext.Provider value={value}>

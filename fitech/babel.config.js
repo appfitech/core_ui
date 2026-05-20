@@ -9,7 +9,7 @@ module.exports = function (api) {
   if (isProd) {
     plugins.push(['transform-remove-console', { exclude: ['error', 'warn'] }]);
   }
-  plugins.push('react-native-reanimated/plugin');
+  // Reanimated 4 / worklets Babel plugin is added by babel-preset-expo when installed.
 
   return {
     presets: ['babel-preset-expo'],
