@@ -47,12 +47,14 @@ function MacroFoodCardInner({
           },
         ]}
       >
-        <Image
-          source={{ uri: foodItem?.imageUrl }}
-          style={{ width: '100%', height: 100 }}
-          resizeMode="cover"
-          resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
-        />
+        {foodItem?.imageUrl ? (
+          <Image
+            source={{ uri: foodItem.imageUrl }}
+            style={{ width: '100%', height: 100 }}
+            resizeMode="cover"
+            resizeMethod={Platform.OS === 'android' ? 'resize' : undefined}
+          />
+        ) : null}
         <View style={{ padding: 16, rowGap: 4 }}>
           <AppText
             style={{

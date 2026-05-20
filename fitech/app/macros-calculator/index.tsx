@@ -15,7 +15,7 @@ import { AppText } from '@/components/AppText';
 import { MacroFoodCard } from '@/components/macros/MacroFoodCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
-import { formStyles, textStyles } from '@/constants/styles';
+import { textStyles } from '@/constants/styles';
 import { useMacroFoodItemsContext } from '@/contexts/MacroFoodItemsContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
@@ -25,22 +25,23 @@ import { AppTheme } from '@/types/theme';
 
 const LIST_ITEM_GAP = 10;
 
-type HeaderProps = {
+type SearchHeaderProps = {
   query: string;
   onQueryChange: (q: string) => void;
   onCalculate: () => void;
+  styles: ReturnType<typeof getStyles>;
+  theme: AppTheme;
 };
 
 function MacrosSearchHeader({
   query,
   onQueryChange,
   onCalculate,
-}: HeaderProps) {
-  const { theme } = useTheme();
-  const styles = getStyles(theme);
-
+  styles,
+  theme,
+}: SearchHeaderProps) {
   return (
-    <>
+    <View style={styles.searchHeader}>
       <AppText style={styles.sectionLabel}>
         {'Selecciona tus alimentos'}
       </AppText>
@@ -70,13 +71,13 @@ function MacrosSearchHeader({
           <Ionicons name="play" size={20} color={theme.background.app} />
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   );
 }
 
 export default function MacrosCalculatorScreen() {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [query, setQuery] = useState('');
   const { selectedItems, onFoodSelection } = useMacroFoodItemsContext();
@@ -84,7 +85,7 @@ export default function MacrosCalculatorScreen() {
   const debouncedQuery = useDebounce(query, 400);
   const trimmedDebounced = debouncedQuery.trim();
   const {
-    data: macrosResults,
+    data: macrosResults = [],
     isFetching,
     isLoading,
   } = useSearchMacros(trimmedDebounced);
@@ -107,12 +108,11 @@ export default function MacrosCalculatorScreen() {
     [selectedIds],
   );
 
-  const listData: FoodItemDto[] =
-    trimmedDebounced.length > 0 ? (macrosResults ?? []) : [];
+  const listData = trimmedDebounced.length > 0 ? macrosResults : [];
 
   const renderItem: ListRenderItem<FoodItemDto> = useCallback(
     ({ item }) => (
-      <View style={{ marginBottom: LIST_ITEM_GAP }}>
+      <View style={styles.cardGap}>
         <MacroFoodCard
           foodItem={item}
           onSelectFood={onFoodSelection}
@@ -120,20 +120,13 @@ export default function MacrosCalculatorScreen() {
         />
       </View>
     ),
-    [onFoodSelection, selectedIds],
+    [onFoodSelection, selectedIds, styles.cardGap],
   );
 
-  const keyExtractor = useCallback((item: FoodItemDto) => String(item.id), []);
-
-  const listHeader = useCallback(
-    () => (
-      <MacrosSearchHeader
-        query={query}
-        onQueryChange={setQuery}
-        onCalculate={handleOpenCalculateMacros}
-      />
-    ),
-    [handleOpenCalculateMacros, query],
+  const keyExtractor = useCallback(
+    (item: FoodItemDto, index: number) =>
+      item.id != null ? String(item.id) : `food-${index}`,
+    [],
   );
 
   const listEmpty = useCallback(() => {
@@ -165,7 +158,7 @@ export default function MacrosCalculatorScreen() {
     trimmedDebounced.length,
   ]);
 
-  const listFooter = useCallback(() => <View style={{ height: 24 }} />, []);
+  const listFooter = useCallback(() => <View style={styles.listFooter} />, [styles.listFooter]);
 
   return (
     <PageContainer
@@ -176,17 +169,24 @@ export default function MacrosCalculatorScreen() {
       includeTabBarPadding={false}
       hasBottomPadding={false}
     >
+      <MacrosSearchHeader
+        query={query}
+        onQueryChange={setQuery}
+        onCalculate={handleOpenCalculateMacros}
+        styles={styles}
+        theme={theme}
+      />
       <FlatList
         data={listData}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
-        ListHeaderComponent={listHeader}
         ListEmptyComponent={listEmpty}
         ListFooterComponent={listFooter}
         extraData={selectedIdsKey}
         style={styles.list}
         contentContainerStyle={styles.listContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
         initialNumToRender={6}
         maxToRenderPerBatch={8}
@@ -200,16 +200,25 @@ export default function MacrosCalculatorScreen() {
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    ...formStyles(theme),
     pageContent: {
       paddingHorizontal: 0,
       paddingBottom: 0,
+    },
+    searchHeader: {
+      paddingHorizontal: 16,
+      paddingBottom: 8,
     },
     list: { flex: 1 },
     listContent: {
       paddingHorizontal: 16,
       flexGrow: 1,
       paddingBottom: 24,
+    },
+    cardGap: {
+      marginBottom: LIST_ITEM_GAP,
+    },
+    listFooter: {
+      height: 24,
     },
     sectionLabel: {
       ...text.bodySemibold,
@@ -239,7 +248,7 @@ const getStyles = (theme: AppTheme) => {
     calculateRow: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
-      marginBottom: 12,
+      marginBottom: 4,
     },
     calculateButton: {
       paddingVertical: 10,
