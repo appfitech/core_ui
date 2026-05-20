@@ -7,15 +7,16 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Accordion } from '@/components/Accordion';
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserPayments } from '@/lib/api/queries/use-get-user-payments';
 import { useGetUserSubscription } from '@/lib/api/queries/use-get-user-subscription';
 import { FullTheme } from '@/types/theme';
 
-const PAYMENT_METHODS_MAPPER: Record<string, string> = {
-  CONTRACT_PAYMENT: 'Pago de Contrato',
-  STRIPE: 'Stripe',
-};
+const { subscriptionScreen: copy } = TRANSLATIONS;
+
+const PAYMENT_METHODS_MAPPER: Record<string, string> =
+  copy.paymentMethods as Record<string, string>;
 
 type SectionItemProps = {
   label: string;
@@ -59,8 +60,8 @@ export default function SubscriptionScreen() {
 
   return (
     <PageContainer
-      title="Mi Suscripción"
-      subheader="Gestiona tu membresía premium"
+      title={copy.title}
+      subheader={copy.subheader}
       style={styles.pageStyle}
     >
       <View style={styles.content}>
@@ -68,9 +69,9 @@ export default function SubscriptionScreen() {
           entering={FadeInUp.delay(100).duration(400)}
           style={styles.activeCard}
         >
-          <AppText style={styles.activeCardTitle}>Suscripción Activa</AppText>
+          <AppText style={styles.activeCardTitle}>{copy.activeTitle}</AppText>
           <AppText style={styles.activeCardSubtitle}>
-            Tu membresía premium está activa y funcionando correctamente.
+            {copy.activeSubtitle}
           </AppText>
         </Animated.View>
 
@@ -78,29 +79,27 @@ export default function SubscriptionScreen() {
           entering={FadeInUp.delay(150).duration(400)}
           style={styles.card}
         >
-          <AppText style={styles.cardTitle}>Información de Suscripción</AppText>
-          <AppText style={styles.cardSubtitle}>
-            Detalles de tu membresía actual
-          </AppText>
+          <AppText style={styles.cardTitle}>{copy.infoTitle}</AppText>
+          <AppText style={styles.cardSubtitle}>{copy.infoSubtitle}</AppText>
 
           <SectionItem
-            label="Fecha de inicio"
+            label={copy.startDateLabel}
             value={subscription?.startDate}
             icon="calendar-outline"
           />
           <SectionItem
-            label="Fecha de finalización"
+            label={copy.endDateLabel}
             value={subscription?.endDate}
             icon="calendar-outline"
           />
           <SectionItem
-            label="Tipo de Membresía"
+            label={copy.membershipTypeLabel}
             value={subscription?.membershipType}
             icon="book-outline"
           />
           {subscription?.trainerName && (
             <SectionItem
-              label="Entrenador"
+              label={copy.trainerLabel}
               value={subscription.trainerName}
               icon="person-outline"
             />
@@ -111,17 +110,17 @@ export default function SubscriptionScreen() {
           entering={FadeInUp.delay(200).duration(400)}
           style={styles.card}
         >
-          <AppText style={styles.cardTitle}>Información del Contrato</AppText>
+          <AppText style={styles.cardTitle}>{copy.contractInfoTitle}</AppText>
           <AppText style={styles.cardSubtitle}>
-            Detalles de tu contrato con el entrenador
+            {copy.contractInfoSubtitle}
           </AppText>
           <AppText style={styles.contractDetails}>
-            {subscription?.contractDetails ?? '—'}
+            {subscription?.contractDetails ?? TRANSLATIONS.common.dash}
           </AppText>
         </Animated.View>
 
         <Accordion
-          title="Ver Historial de Pagos"
+          title={copy.paymentHistoryTitle}
           themeColors={{
             background: theme.background.card,
             text: theme.text.primary,
@@ -133,9 +132,11 @@ export default function SubscriptionScreen() {
             entering={FadeInUp.delay(100).duration(400)}
             style={styles.card}
           >
-            <AppText style={styles.cardTitle}>Historial de Pagos</AppText>
+            <AppText style={styles.cardTitle}>
+              {copy.paymentHistoryCardTitle}
+            </AppText>
             <AppText style={styles.cardSubtitle}>
-              Últimos pagos realizados
+              {copy.paymentHistoryCardSubtitle}
             </AppText>
 
             {payments?.length ? (
@@ -149,7 +150,7 @@ export default function SubscriptionScreen() {
               ))
             ) : (
               <AppText style={styles.emptyPayments}>
-                Aún no hay pagos registrados.
+                {copy.emptyPayments}
               </AppText>
             )}
           </Animated.View>

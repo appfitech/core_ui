@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
 import {
+  DeleteAccountResponse,
   LoginRequestDto,
   LoginResponseDtoReadable,
   VerifyEmailResponse,
@@ -69,5 +70,17 @@ export const useChangePassword = () => {
   return useMutation<MessageResponse, Error, ChangePasswordRequest>({
     mutationFn: async (request): Promise<MessageResponse> =>
       api.post('/user/change-password', request),
+  });
+};
+
+export const useDeleteAccount = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<DeleteAccountResponse, Error, void>({
+    mutationFn: async (): Promise<DeleteAccountResponse> =>
+      api.delete('/user/delete-account'),
+    onSuccess: () => {
+      clearAppQueryCache(queryClient);
+    },
   });
 };

@@ -33,8 +33,8 @@ const getStyles = (theme: FullTheme) => {
 
   return StyleSheet.create({
     container: {
-      paddingVertical: 10,
-      paddingHorizontal: 14,
+      paddingVertical: 7,
+      paddingHorizontal: 12,
       borderRadius: 999,
       backgroundColor: theme.background.card,
       borderWidth: 1,
@@ -45,7 +45,7 @@ const getStyles = (theme: FullTheme) => {
       borderColor: theme.brand.primary,
     },
     label: {
-      ...text.linkSemibold,
+      ...text.smallSemibold,
       color: theme.text.primary,
     },
     labelSelected: {

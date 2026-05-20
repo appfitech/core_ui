@@ -10,6 +10,7 @@ import {
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import PageContainer from '@/components/PageContainer';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
@@ -41,7 +42,7 @@ function formatConversationTime(iso: string | undefined) {
   });
 
   if (isSameDay) return time;
-  if (isYesterday) return 'Ayer';
+  if (isYesterday) return TRANSLATIONS.common.yesterday;
 
   const weekday = date.toLocaleDateString('es-PE', { weekday: 'short' });
   return weekday.length > 0
@@ -60,8 +61,11 @@ function getChatAvatarUri(c: ConversationDto): string | undefined {
 function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
   return {
     id: String(c.id ?? ''),
-    name: c.otherUserName || c.otherUserUsername || 'Usuario Fitech',
-    lastMessage: c.lastMessageContent ?? 'Aún no hay mensajes.',
+    name:
+      c.otherUserName ||
+      c.otherUserUsername ||
+      TRANSLATIONS.common.defaultUserName,
+    lastMessage: c.lastMessageContent ?? TRANSLATIONS.common.noMessagesYet,
     time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
     unread: c.unreadCount ?? 0,
     matchType: c.matchType,
@@ -74,6 +78,7 @@ export default function ChatsScreen() {
   const styles = getStyles(theme);
   const router = useRouter();
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const { chatsScreen: copy } = TRANSLATIONS;
 
   const { data, isLoading } = useGetChats();
 
@@ -100,8 +105,8 @@ export default function ChatsScreen() {
 
   return (
     <PageContainer
-      title="Chats"
-      subheader="Mantén el contacto con tus gymcrush y gymbros cuando lo necesites"
+      title={copy.title}
+      subheader={copy.subheader}
       disableScroll
       style={styles.pageStyle}
     >
@@ -113,10 +118,10 @@ export default function ChatsScreen() {
           isLoading ? (
             <View style={styles.loadingWrap}>
               <ActivityIndicator color={theme.brand.primary} />
-              <AppText style={styles.loadingText}>Cargando chats…</AppText>
+              <AppText style={styles.loadingText}>{copy.loading}</AppText>
             </View>
           ) : (
-            <ListEmptyState title="Aún no tienes conversaciones activas" />
+            <ListEmptyState title={copy.emptyTitle} />
           )
         }
         contentContainerStyle={styles.listContent}

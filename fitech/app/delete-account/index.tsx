@@ -1,16 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useDeleteAccount } from '@/lib/api/mutations/use-account-mutations';
+import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
+import { extractErrorMessage } from '@/utils/errors';
 
 export default function DeleteAccountScreen() {
   const { theme } = useTheme();
@@ -19,23 +23,57 @@ export default function DeleteAccountScreen() {
   const { showAlert } = useAlert();
   const { deleteAccountScreen } = TRANSLATIONS;
 
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const { mutate: deleteAccount, isPending } = useDeleteAccount();
+
   const handleCancel = useCallback(() => {
     router.back();
   }, [router]);
 
+  const performDelete = useCallback(() => {
+    setErrorMsg(null);
+
+    deleteAccount(undefined, {
+      onSuccess: async () => {
+        await useUserStore.getState().logout();
+        showAlert({
+          title: deleteAccountScreen.successTitle,
+          message: deleteAccountScreen.successMessage,
+          buttons: [
+            {
+              text: deleteAccountScreen.successButton,
+              onPress: () => router.replace(ROUTES.login),
+            },
+          ],
+        });
+      },
+      onError: (error) => {
+        setErrorMsg(
+          extractErrorMessage(error, deleteAccountScreen.errorFallback),
+        );
+      },
+    });
+  }, [
+    deleteAccount,
+    deleteAccountScreen,
+    router,
+    showAlert,
+  ]);
+
   const handleConfirmDelete = useCallback(() => {
     showAlert({
-      title: deleteAccountScreen.unavailableTitle,
-      message: deleteAccountScreen.unavailableMessage,
+      title: deleteAccountScreen.confirmTitle,
+      message: deleteAccountScreen.confirmMessage,
       buttons: [
-        { text: 'Entendido', style: 'default' },
+        { text: deleteAccountScreen.confirmCancel, style: 'cancel' },
         {
-          text: 'Ir a soporte',
-          onPress: () => router.push(ROUTES.support),
+          text: deleteAccountScreen.confirmAction,
+          style: 'destructive',
+          onPress: performDelete,
         },
       ],
     });
-  }, [deleteAccountScreen, router, showAlert]);
+  }, [deleteAccountScreen, performDelete, showAlert]);
 
   return (
     <PageContainer title={deleteAccountScreen.title} style={styles.page}>
@@ -66,10 +104,17 @@ export default function DeleteAccountScreen() {
         {deleteAccountScreen.note}
       </AppText>
 
+      <ErrorBanner
+        errorMessage={errorMsg}
+        onClear={() => setErrorMsg(null)}
+      />
+
       <View style={styles.actions}>
         <Button
           type="destructive"
           label={deleteAccountScreen.confirmButton}
+          loadingLabel={deleteAccountScreen.deletingButton}
+          loading={isPending}
           onPress={handleConfirmDelete}
           animated={false}
           style={styles.actionButton}
@@ -78,6 +123,7 @@ export default function DeleteAccountScreen() {
           type="secondary"
           label={deleteAccountScreen.cancelButton}
           onPress={handleCancel}
+          disabled={isPending}
           animated={false}
           style={styles.actionButton}
         />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { ChipToggle } from '@/components/atoms/ChipToggle';
@@ -15,6 +15,7 @@ type Props = {
   selectedValue?: string;
   onChipPress?: (value: string) => void;
   children?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
 };
 
 export function ListFilterSection({
@@ -23,12 +24,13 @@ export function ListFilterSection({
   selectedValue,
   onChipPress,
   children,
+  style,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, style]}>
       <AppText style={styles.hint}>{hint}</AppText>
       {chips && selectedValue != null && onChipPress ? (
         <View style={styles.chipRow}>
@@ -54,23 +56,24 @@ const getStyles = (theme: FullTheme) => {
   return StyleSheet.create({
     card: {
       backgroundColor: theme.background.card,
-      borderRadius: 14,
+      borderRadius: 12,
       borderWidth: 1,
       borderColor: theme.border.default,
-      borderLeftWidth: 4,
+      borderLeftWidth: 3,
       borderLeftColor: theme.brand.primary,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      rowGap: 12,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
+      rowGap: 8,
     },
     hint: {
       ...text.caption,
       color: theme.text.secondary,
+      lineHeight: 16,
     },
     chipRow: {
       flexDirection: 'row',
       flexWrap: 'wrap',
-      gap: 10,
+      gap: 8,
     },
   });
 };

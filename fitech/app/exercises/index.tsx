@@ -6,8 +6,10 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Calendar, type DateData } from 'react-native-calendars';
 
 import { AppText } from '@/components/AppText';
+import { ListFilterSection } from '@/components/list/ListFilterSection';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import PageContainer from '@/components/PageContainer';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
@@ -50,6 +52,7 @@ export default function ExercisesScreen() {
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme);
+  const { exercisesScreen: copy } = TRANSLATIONS;
   const { data: muscleGroups } = useGetMuscleGroups();
 
   const [visibleYM, setVisibleYM] = useState(() => {
@@ -108,11 +111,8 @@ export default function ExercisesScreen() {
       subheader="Lleva el control de tus workouts y alcanza tus metas fitness"
       style={styles.pageStyle}
     >
-      <View style={styles.filterCard}>
-        <AppText style={styles.filterTitle}>Filtro por grupo muscular</AppText>
-        <AppText style={styles.filterHint}>
-          Toca un grupo para filtrar los entrenamientos del mes
-        </AppText>
+      <ListFilterSection hint={copy.filterHint} style={styles.filterSection}>
+        <AppText style={styles.filterTitle}>{copy.filterTitle}</AppText>
         <ChipsList
           selectedValues={muscleGroupFilter}
           onChange={setMuscleGroupFilter}
@@ -120,7 +120,7 @@ export default function ExercisesScreen() {
             muscleGroups?.map((item) => ({ label: item, value: item })) ?? []
           }
         />
-      </View>
+      </ListFilterSection>
 
       <View style={styles.calendarCard}>
         <Calendar
@@ -204,24 +204,10 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 180 },
-    filterCard: {
-      backgroundColor: theme.background.input,
-      borderRadius: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      marginTop: 16,
-      rowGap: 8,
-    },
+    filterSection: { marginTop: 12 },
     filterTitle: {
-      ...text.bodySemibold,
+      ...text.smallSemibold,
       color: theme.brand.primaryLight,
-    },
-    filterHint: {
-      ...text.caption,
-      color: theme.text.secondary,
-      marginTop: -2,
     },
     calendarCard: {
       marginTop: 20,

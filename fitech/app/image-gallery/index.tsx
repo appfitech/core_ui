@@ -14,6 +14,7 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ChangeAvatarModal } from '@/components/gallery/ChangeAvatarModal';
 import PageContainer from '@/components/PageContainer';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDeletePhoto } from '@/lib/api/mutations/useDeletePhoto';
@@ -49,7 +50,9 @@ function ActiveAvatarBadge({
   return (
     <View style={styles.activeAvatarBadge}>
       <Ionicons name="shield-checkmark" size={12} color={theme.text.inverse} />
-      <AppText style={styles.activeAvatarBadgeText}>Foto de perfil</AppText>
+      <AppText style={styles.activeAvatarBadgeText}>
+        {TRANSLATIONS.imageGalleryScreen.profilePhotoBadge}
+      </AppText>
     </View>
   );
 }
@@ -58,6 +61,7 @@ export default function ImageGalleryScreen() {
   const { theme } = useTheme();
   const { showAlert } = useAlert();
   const styles = getStyles(theme);
+  const { imageGalleryScreen: copy, common } = TRANSLATIONS;
   const [isPicking, setIsPicking] = useState(false);
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [uploadIntent, setUploadIntent] = useState<UploadIntent>('gallery');
@@ -100,44 +104,46 @@ export default function ImageGalleryScreen() {
           onError: (err) => {
             console.warn('[Gallery] profile photo set failed', err);
             showAlert({
-              title: 'Error',
-              message: 'No se pudo actualizar tu foto de perfil.',
+              title: common.errorTitle,
+              message: copy.profilePhotoError,
             });
           },
         },
       );
     },
-    [setProfilePhoto, showAlert, updateProfilePhotoId],
+    [common.errorTitle, copy.profilePhotoError, setProfilePhoto, showAlert, updateProfilePhotoId],
   );
 
   const confirmSetAsProfile = useCallback(
     (photoId: number, options?: { isFirstUpload?: boolean }) => {
       showAlert({
-        title: options?.isFirstUpload ? 'Foto de perfil' : 'Confirmar',
+        title: options?.isFirstUpload
+          ? copy.confirmProfileTitle
+          : common.confirm,
         message: options?.isFirstUpload
-          ? 'Esta es tu primera foto. ¿Quieres usarla como tu foto de perfil?'
-          : '¿Quieres usar esta foto como tu nueva foto de perfil?',
+          ? copy.confirmProfileFirstMessage
+          : copy.confirmProfileMessage,
         buttons: [
           {
-            text: options?.isFirstUpload ? 'Ahora no' : 'Cancelar',
+            text: options?.isFirstUpload ? common.notNow : common.cancel,
             style: 'cancel',
           },
           {
-            text: 'Sí, usar',
+            text: common.yesUse,
             onPress: () => applyProfilePhoto(photoId),
           },
         ],
       });
     },
-    [applyProfilePhoto, showAlert],
+    [applyProfilePhoto, common, copy, showAlert],
   );
 
   const pickImage = useCallback(
     async (intent: UploadIntent = 'gallery') => {
       if (photos.length >= MAX_PHOTOS) {
         showAlert({
-          title: 'Límite alcanzado',
-          message: 'Solo puedes subir hasta 10 fotos.',
+          title: copy.limitReachedTitle,
+          message: copy.limitReachedMessage,
         });
         return;
       }
@@ -145,7 +151,7 @@ export default function ImageGalleryScreen() {
       const permission = await requestMediaLibraryPermission();
       if (!permission.granted) {
         showAlert({
-          title: 'Permiso requerido',
+          title: copy.permissionRequiredTitle,
           message: permission.message,
         });
         return;
@@ -185,22 +191,16 @@ export default function ImageGalleryScreen() {
           },
           onError: (error) => {
             showAlert({
-              title: 'Error',
-              message: extractErrorMessage(
-                error,
-                'No se pudo subir la foto. Inténtalo de nuevo.',
-              ),
+              title: common.errorTitle,
+              message: extractErrorMessage(error, copy.uploadErrorFallback),
             });
           },
         });
       } catch (error) {
         console.warn('[Gallery] pick/upload failed', error);
         showAlert({
-          title: 'Error',
-          message: extractErrorMessage(
-            error,
-            'No se pudo procesar la imagen seleccionada.',
-          ),
+          title: common.errorTitle,
+          message: extractErrorMessage(error, copy.processImageErrorFallback),
         });
       } finally {
         setIsPicking(false);
@@ -208,7 +208,9 @@ export default function ImageGalleryScreen() {
     },
     [
       applyProfilePhoto,
+      common.errorTitle,
       confirmSetAsProfile,
+      copy,
       photos.length,
       refetch,
       showAlert,
@@ -227,8 +229,8 @@ export default function ImageGalleryScreen() {
 
     if (!hasPhotos) {
       showAlert({
-        title: 'Sin fotos',
-        message: 'Sube al menos una foto para poder elegir tu avatar.',
+        title: copy.noPhotosTitle,
+        message: copy.noPhotosMessage,
       });
       return;
     }
@@ -239,50 +241,52 @@ export default function ImageGalleryScreen() {
       onPress?: () => void;
     }[] = [
       {
-        text: 'Elegir de tus fotos',
+        text: copy.pickExistingPhoto,
         onPress: () => setShowAvatarPicker(true),
       },
     ];
 
     if (canUpload) {
       buttons.push({
-        text: 'Subir nueva foto',
+        text: copy.uploadNewPhoto,
         onPress: () => void pickImage('avatar'),
       });
     }
 
-    buttons.push({ text: 'Cancelar', style: 'cancel' });
+    buttons.push({ text: common.cancel, style: 'cancel' });
 
     showAlert({
-      title: 'Cambiar avatar',
+      title: copy.changeAvatarTitle,
       message: canUpload
-        ? 'Elige una foto existente o sube una nueva'
-        : 'Elige una de tus fotos de la galería',
+        ? copy.changeAvatarMessageUpload
+        : copy.changeAvatarMessagePick,
       buttons,
     });
-  }, [photos.length, pickImage, showAlert]);
+  }, [common.cancel, copy, photos.length, pickImage, showAlert]);
 
   const removePhoto = useCallback(
     (photoId: number) => {
       const isProfile = profilePhotoId === photoId;
 
       showAlert({
-        title: isProfile ? 'Eliminar foto de perfil' : 'Eliminar foto',
+        title: isProfile
+          ? copy.deleteProfilePhotoTitle
+          : copy.deletePhotoTitle,
         message: isProfile
-          ? 'Esta es tu foto de perfil. Si la eliminas, deberás elegir otra.'
-          : '¿Seguro que quieres eliminar esta foto?',
+          ? copy.deleteProfilePhotoMessage
+          : copy.deletePhotoMessage,
         buttons: [
-          { text: 'Cancelar', style: 'cancel' },
+          { text: common.cancel, style: 'cancel' },
           {
-            text: 'Eliminar',
+            text: common.delete,
             style: 'destructive',
             onPress: () => {
               deletePhoto(photoId, {
                 onSuccess: () => refetch(),
                 onError: () => {
                   showAlert({
-                    title: 'Error',
-                    message: 'No se pudo eliminar la foto.',
+                    title: common.errorTitle,
+                    message: copy.deletePhotoError,
                   });
                 },
               });
@@ -291,7 +295,7 @@ export default function ImageGalleryScreen() {
         ],
       });
     },
-    [deletePhoto, profilePhotoId, refetch, showAlert],
+    [common, copy, deletePhoto, profilePhotoId, refetch, showAlert],
   );
 
   const isBusy = isPicking || isUploading || isSettingProfile;
@@ -302,24 +306,26 @@ export default function ImageGalleryScreen() {
     const percent = Math.round((uploaded / MAX_PHOTOS) * 100);
     const legend =
       uploaded >= MAX_PHOTOS
-        ? 'Has subido el máximo de fotos permitidas'
+        ? copy.progressMaxReached
         : remaining === 1
-          ? 'Te falta 1 foto para completar tu galería'
-          : `Te faltan ${remaining} fotos para completar tu galería`;
+          ? copy.progressOneRemaining
+          : copy.progressManyRemaining.replace(
+              '{remaining}',
+              String(remaining),
+            );
 
     return { uploaded, remaining, percent, legend };
-  }, [photos.length]);
+  }, [copy, photos.length]);
 
   const listHeader = useMemo(
     () => (
       <View style={styles.headerBlock}>
         <View style={styles.bannerCard}>
           <AppText variant="sectionTitle" style={styles.bannerTitle}>
-            Haz que tu perfil destaque
+            {copy.bannerTitle}
           </AppText>
           <AppText style={styles.bannerText}>
-            Sube hasta {MAX_PHOTOS} fotos que muestren tu estilo, resultados y
-            experiencia como trainer.
+            {copy.bannerText.replace('{max}', String(MAX_PHOTOS))}
           </AppText>
 
           <View style={styles.progressSection}>
@@ -368,19 +374,19 @@ export default function ImageGalleryScreen() {
                   color={theme.text.tertiary}
                 />
                 <AppText style={styles.avatarPlaceholderText}>
-                  Sin foto de perfil
+                  {copy.noProfilePhoto}
                 </AppText>
               </View>
             )}
           </View>
 
           <Button
-            label="Cambiar avatar"
+            label={copy.changeAvatarButton}
             type="secondary"
             onPress={openChangeAvatar}
             disabled={isBusy}
             loading={isSettingProfile}
-            loadingLabel="Actualizando…"
+            loadingLabel={copy.updatingAvatar}
             animated={false}
             style={styles.changeAvatarButton}
           />
@@ -388,6 +394,7 @@ export default function ImageGalleryScreen() {
       </View>
     ),
     [
+      copy,
       isBusy,
       isSettingProfile,
       openChangeAvatar,
@@ -414,7 +421,7 @@ export default function ImageGalleryScreen() {
                 <View style={styles.uploadIconBox}>
                   <Ionicons name="add" size={22} color={theme.text.inverse} />
                 </View>
-                <AppText style={styles.uploadLabel}>AGREGAR FOTO</AppText>
+                <AppText style={styles.uploadLabel}>{copy.addPhotoLabel}</AppText>
               </>
             )}
           </Pressable>
@@ -448,6 +455,7 @@ export default function ImageGalleryScreen() {
       );
     },
     [
+      copy.addPhotoLabel,
       isBusy,
       pickImage,
       profilePhotoId,
@@ -459,7 +467,7 @@ export default function ImageGalleryScreen() {
   );
 
   return (
-    <PageContainer title="Gestiona tus fotos" disableScroll style={styles.page}>
+    <PageContainer title={copy.title} disableScroll style={styles.page}>
       {isLoading ? (
         <View style={styles.loadingWrap}>
           <ActivityIndicator color={theme.brand.primary} />

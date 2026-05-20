@@ -10,6 +10,7 @@ import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
 import { PROFILE_MENU_SECTIONS } from '@/constants/screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { clearAppQueryCache } from '@/lib/api/mutation-cache';
@@ -29,6 +30,7 @@ export default function ProfileScreen() {
 
   const queryClient = useQueryClient();
   const styles = getStyles(theme);
+  const { profileScreen: copy } = TRANSLATIONS;
 
   const handleLogout = async () => {
     clearAppQueryCache(queryClient);
@@ -58,7 +60,9 @@ export default function ProfileScreen() {
         <View style={styles.tagsRow}>
           <Tag
             icon="person-outline"
-            label={userType === 1 ? 'Trainer' : 'Usuario'}
+            label={
+              userType === 1 ? copy.userTypeTrainer : copy.userTypeUser
+            }
             textColor={theme.status.success.text}
             backgroundColor={theme.status.success.bg}
           />
@@ -66,7 +70,11 @@ export default function ProfileScreen() {
             <TouchableOpacity onPress={handleSubscriptionClick}>
               <Tag
                 icon="star"
-                label={`Premium ${user?.premiumBy === 'CONTRACT' ? '(Con Contrato)' : '(Por Pago)'}`}
+                label={
+                  user?.premiumBy === 'CONTRACT'
+                    ? copy.premiumByContract
+                    : copy.premiumByPayment
+                }
                 textColor={theme.status.warning.text}
                 backgroundColor={theme.status.warning.bg}
               />

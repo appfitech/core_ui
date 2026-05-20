@@ -10,6 +10,7 @@ import {
   ACTIVE_INACTIVE_CHIPS,
   LIST_SCREEN_FLATLIST,
 } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
 import {
@@ -22,6 +23,7 @@ export default function RoutinesScreen() {
   const [filter, setFilter] = useState<ActiveInactiveFilter>('ACTIVE');
   const { theme } = useTheme();
   const router = useRouter();
+  const { routinesScreen: copy, common, listFilters } = TRANSLATIONS;
 
   const { data: routines, isLoading } = useGetRoutines();
 
@@ -38,13 +40,13 @@ export default function RoutinesScreen() {
   const listHeader = useMemo(
     () => (
       <ListFilterSection
-        hint="Mostrar solo rutinas activas o inactivas"
+        hint={listFilters.routinesActiveHint}
         chips={ACTIVE_INACTIVE_CHIPS}
         selectedValue={filter}
         onChipPress={(value) => setFilter(value as ActiveInactiveFilter)}
       />
     ),
-    [filter],
+    [filter, listFilters.routinesActiveHint],
   );
 
   const renderItem = useCallback(
@@ -56,8 +58,8 @@ export default function RoutinesScreen() {
 
   return (
     <PageContainer
-      title="Mis Rutinas de Entrenamiento"
-      subheader="Organiza, sigue y mejora tus sesiones de entrenamiento"
+      title={copy.title}
+      subheader={copy.subheader}
       disableScroll
       style={{ paddingBottom: 0 }}
     >
@@ -73,8 +75,8 @@ export default function RoutinesScreen() {
             </View>
           ) : (
             <ListEmptyState
-              title="No hay rutinas con este filtro"
-              hint="Prueba el otro filtro o vuelve más tarde"
+              title={copy.emptyTitle}
+              hint={common.tryOtherFilterHint}
             />
           )
         }

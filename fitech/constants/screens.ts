@@ -1,6 +1,7 @@
 import { Option } from '@/types/forms';
 
 import { AllowedPath, ROUTES } from './routes';
+import { TRANSLATIONS } from './strings';
 
 export type MenuItem = {
   icon?: string;
@@ -12,85 +13,95 @@ export type MenuItem = {
   type?: 'logout';
 };
 
+const { profileMenu } = TRANSLATIONS;
+
 export const PROFILE_MENU_SECTIONS: {
   title: string;
   items: MenuItem[];
 }[] = [
   {
-    title: 'Perfil',
+    title: profileMenu.sections.profile,
     items: [
       {
-        label: 'Información personal',
+        label: profileMenu.items.personalInfo,
         icon: 'person-outline',
         route: ROUTES.personalInfo,
       },
       {
         icon: 'images-outline',
         route: ROUTES.imageGallery,
-        label: 'Galería de fotos',
+        label: profileMenu.items.photoGallery,
       },
       {
         icon: 'lock-closed-outline',
         route: ROUTES.changePassword,
-        label: 'Cambiar contraseña',
+        label: profileMenu.items.changePassword,
       },
     ],
   },
   {
-    title: 'Fitness y preferencias',
+    title: profileMenu.sections.fitness,
     items: [
       {
         icon: 'list-outline',
         route: ROUTES.goals,
-        label: 'Objetivos fitness',
+        label: profileMenu.items.fitnessGoals,
         userOnly: true,
       },
       {
         icon: 'heart-outline',
         route: ROUTES.matchPreferences,
-        label: 'Preferencias de match',
+        label: profileMenu.items.matchPreferences,
         userOnly: true,
         premiumOnly: true,
       },
     ],
   },
   {
-    title: 'Cuenta',
+    title: profileMenu.sections.account,
     items: [
       {
         icon: 'cash-outline',
         route: ROUTES.subscription,
-        label: 'Suscripción',
+        label: profileMenu.items.subscription,
         userOnly: true,
         premiumOnly: true,
       },
       {
         icon: 'notifications-outline',
         route: ROUTES.notifications,
-        label: 'Notificaciones',
+        label: profileMenu.items.notifications,
         userOnly: true,
       },
     ],
   },
   {
-    title: 'Ayuda',
+    title: profileMenu.sections.help,
     items: [
-      { icon: 'help-circle-outline', route: ROUTES.support, label: 'Soporte' },
+      {
+        icon: 'help-circle-outline',
+        route: ROUTES.support,
+        label: profileMenu.items.support,
+      },
       //TODO: Add FAQ and Privacy Policy items later
-      { icon: 'logo-github', route: ROUTES.testTools, label: 'Testing tools' },
+      {
+        icon: 'logo-github',
+        route: ROUTES.testTools,
+        label: profileMenu.items.testTools,
+      },
     ],
   },
   {
     title: '',
     items: [
       {
-        label: 'Eliminar cuenta',
+        label: profileMenu.items.deleteAccount,
         icon: 'trash',
         route: ROUTES.deleteAccount,
         destructive: true,
       },
       {
-        label: 'Logout',
+        label: profileMenu.items.logout,
         icon: 'log-out-outline',
         type: 'logout',
         destructive: true,

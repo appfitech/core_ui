@@ -10,6 +10,7 @@ import { TrainerListCard } from '@/components/list/TrainerListCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
@@ -24,6 +25,7 @@ export default function TrainersSearchScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { trainersScreen: copy } = TRANSLATIONS;
 
   const performSearch = useCallback(
     (q: string) => {
@@ -56,9 +58,9 @@ export default function TrainersSearchScreen() {
   const listHeader = useMemo(
     () => (
       <>
-        <ListFilterSection hint="Busca por nombre del entrenador">
+        <ListFilterSection hint={copy.searchHint}>
           <SearchBar
-            placeholder="Buscar por nombre"
+            placeholder={copy.searchPlaceholder}
             value={query}
             onChangeText={setQuery}
             shouldHideEndIcon
@@ -66,18 +68,19 @@ export default function TrainersSearchScreen() {
           />
         </ListFilterSection>
         <AppText style={styles.resultCount}>
-          {results.length} entrenador{results.length === 1 ? '' : 'es'}{' '}
-          encontrado{results.length === 1 ? '' : 's'}
+          {results.length === 1
+            ? copy.resultCountOne
+            : copy.resultCountMany.replace('{count}', String(results.length))}
         </AppText>
       </>
     ),
-    [query, results.length, styles.resultCount, styles.searchBar],
+    [copy, query, results.length, styles.resultCount, styles.searchBar],
   );
 
   return (
     <PageContainer
-      title="Encuentra tu entrenador ideal"
-      subheader="Descubre entrenadores especializados en tus objetivos fitness"
+      title={copy.title}
+      subheader={copy.subheader}
       hasBackButton={false}
       disableScroll
       style={styles.pageStyle}
@@ -101,8 +104,8 @@ export default function TrainersSearchScreen() {
             </View>
           ) : (
             <ListEmptyState
-              title="No encontramos entrenadores"
-              hint="Prueba con otro nombre o deja el buscador vacío para ver todos"
+              title={copy.emptyTitle}
+              hint={copy.emptyHint}
             />
           )
         }

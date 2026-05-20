@@ -10,6 +10,7 @@ import {
   ACTIVE_INACTIVE_CHIPS,
   LIST_SCREEN_FLATLIST,
 } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDiets } from '@/lib/api/queries/use-get-diets';
 import {
@@ -24,6 +25,7 @@ export default function DietsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
   const styles = getStyles(theme);
+  const { dietsScreen: copy, common, listFilters } = TRANSLATIONS;
 
   const { data: diets, isLoading } = useGetDiets();
 
@@ -40,13 +42,13 @@ export default function DietsScreen() {
   const listHeader = useMemo(
     () => (
       <ListFilterSection
-        hint="Mostrar solo planes activos o inactivos"
+        hint={listFilters.dietsActiveHint}
         chips={ACTIVE_INACTIVE_CHIPS}
         selectedValue={filter}
         onChipPress={(value) => setFilter(value as ActiveInactiveFilter)}
       />
     ),
-    [filter],
+    [filter, listFilters.dietsActiveHint],
   );
 
   const renderItem = useCallback(
@@ -58,8 +60,8 @@ export default function DietsScreen() {
 
   return (
     <PageContainer
-      title="Mis Planes Nutricionales"
-      subheader="Dietas personalizadas para alcanzar tus objetivos de salud"
+      title={copy.title}
+      subheader={copy.subheader}
       disableScroll
       style={styles.pageStyle}
     >
@@ -75,8 +77,8 @@ export default function DietsScreen() {
             </View>
           ) : (
             <ListEmptyState
-              title="No hay planes con este filtro"
-              hint="Prueba el otro filtro o vuelve más tarde"
+              title={copy.emptyTitle}
+              hint={common.tryOtherFilterHint}
             />
           )
         }

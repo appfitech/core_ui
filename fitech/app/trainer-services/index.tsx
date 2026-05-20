@@ -9,7 +9,10 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ListFilterSection } from '@/components/list/ListFilterSection';
 import PageContainer from '@/components/PageContainer';
+import { ACTIVE_INACTIVE_CHIPS } from '@/constants/list-screens';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
@@ -46,6 +49,7 @@ const formatPEN = (n: number) => PEN.format(n);
 export default function TrainerServicesScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { listFilters, common } = TRANSLATIONS;
   const { width } = useWindowDimensions();
 
   const { data: services } = useTrainerGetServices();
@@ -242,39 +246,19 @@ export default function TrainerServicesScreen() {
         <AppText style={styles.sectionTitle}>MIS SERVICIOS</AppText>
       </View>
 
-      <View style={styles.filterCard}>
-        <AppText style={styles.filterHint}>
-          Mostrar solo servicios activos o inactivos
-        </AppText>
-        <View style={styles.tabRow}>
-          {(['ACTIVE', 'INACTIVE'] as const).map((status) => {
-            const isActive = statusFilter === status;
-            return (
-              <TouchableOpacity
-                key={status}
-                style={[styles.tabButton, isActive && styles.tabButtonActive]}
-                onPress={() => setStatusFilter(status)}
-                activeOpacity={0.8}
-              >
-                <AppText
-                  style={[styles.tabText, isActive && styles.tabTextActive]}
-                >
-                  {status === 'ACTIVE' ? 'Activos' : 'Inactivos'}
-                </AppText>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      </View>
+      <ListFilterSection
+        hint={listFilters.trainerServicesHint}
+        chips={ACTIVE_INACTIVE_CHIPS}
+        selectedValue={statusFilter}
+        onChipPress={(value) => setStatusFilter(value as FilterOpt)}
+      />
 
       {filtered.length === 0 ? (
         <View style={styles.emptyWrap}>
           <AppText style={styles.emptyText}>
             No hay servicios con el filtro aplicado
           </AppText>
-          <AppText style={styles.emptyHint}>
-            Prueba otro filtro o crea un nuevo servicio
-          </AppText>
+          <AppText style={styles.emptyHint}>{common.tryOtherFilterHint}</AppText>
         </View>
       ) : (
         <FlatList
@@ -354,45 +338,6 @@ const getStyles = (theme: FullTheme) => {
       color: theme.text.secondary,
       letterSpacing: 0.6,
       textTransform: 'uppercase',
-    },
-    filterCard: {
-      backgroundColor: theme.background.input,
-      borderRadius: 12,
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
-      marginBottom: 16,
-    },
-    filterHint: {
-      ...text.caption,
-      color: theme.text.secondary,
-      marginBottom: 10,
-    },
-    tabRow: {
-      flexDirection: 'row',
-      columnGap: 10,
-      flexWrap: 'wrap',
-    },
-    tabButton: {
-      paddingVertical: 10,
-      paddingHorizontal: 18,
-      alignItems: 'center',
-      borderRadius: 999,
-      backgroundColor: theme.background.card,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-    },
-    tabButtonActive: {
-      backgroundColor: theme.brand.primary,
-      borderColor: theme.brand.primary,
-    },
-    tabText: {
-      ...text.link,
-      color: theme.text.primary,
-    },
-    tabTextActive: {
-      color: theme.background.app,
     },
     emptyWrap: {
       paddingVertical: 32,
