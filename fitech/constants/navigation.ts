@@ -14,3 +14,23 @@ export const STACK_SCREEN_OPTIONS: NativeStackNavigationOptions = {
   animation: Platform.OS === 'android' ? 'ios_from_right' : 'default',
   animationTypeForReplace: 'push',
 };
+
+/**
+ * Top-level tab destinations — tab bar + premium FAB stay visible here only.
+ * Nested routes (detail screens, lists opened from a tab, profile sub-pages, etc.) hide the bar.
+ */
+export const NAV_BAR_ROOT_ROUTES = [
+  'home',
+  'workouts',
+  'trainers',
+  'trainer-clients',
+  'profile',
+  'premium-features',
+] as const;
+
+export function shouldShowNavBar(segments: readonly string[]): boolean {
+  const path = segments.filter(Boolean);
+  const root = path[0];
+  if (!root || path.length > 1) return false;
+  return (NAV_BAR_ROOT_ROUTES as readonly string[]).includes(root);
+}

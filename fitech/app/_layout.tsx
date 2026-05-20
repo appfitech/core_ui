@@ -17,7 +17,10 @@ import Toast from 'react-native-toast-message';
 
 import { NavBar } from '@/components/NavBar';
 import { toastConfig } from '@/components/Toast';
-import { STACK_SCREEN_OPTIONS } from '@/constants/navigation';
+import {
+  shouldShowNavBar,
+  STACK_SCREEN_OPTIONS,
+} from '@/constants/navigation';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { DatePickerOverlayProvider } from '@/contexts/DatePickerOverlayContext';
@@ -31,23 +34,6 @@ import { getHrefFromPushData } from '@/utils/navigate-from-push-notification';
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 
 SplashScreen.preventAutoHideAsync();
-
-const HIDE_NAV_ROUTES = [
-  'login',
-  'support',
-  'register',
-  'chats',
-  'forgot-password',
-  'reset-password',
-  'verify-email',
-  'match-preferences',
-  'personal-info',
-  'image-gallery',
-  'change-password',
-  'goals',
-  'subscription',
-  'notifications',
-];
 
 const PUBLIC_ROUTES = [
   'login',
@@ -139,11 +125,7 @@ function RoutedApp() {
     }
   }, [isSessionHydrated, isAuthenticated, currentRoute, router]);
 
-  const shouldHideNav =
-    HIDE_NAV_ROUTES.includes(currentRoute) ||
-    currentRoute === undefined ||
-    (currentRoute === 'exercises' &&
-      segments.some((segment) => segment === 'workout'));
+  const shouldHideNav = !shouldShowNavBar(segments);
 
   return (
     <View style={styles.flex1}>

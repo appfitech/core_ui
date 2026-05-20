@@ -111,6 +111,8 @@ export default function ExercisesScreen() {
       title="Mi Registro de Entrenamientos"
       subheader="Lleva el control de tus workouts y alcanza tus metas fitness"
       style={styles.pageStyle}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
     >
       <ListFilterSection hint={copy.filterHint} style={styles.filterSection}>
         <AppText style={styles.filterTitle}>{copy.filterTitle}</AppText>
@@ -204,7 +206,7 @@ export default function ExercisesScreen() {
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: { paddingBottom: 180 },
+    pageStyle: { paddingBottom: 24 },
     filterSection: { marginTop: 12 },
     filterTitle: {
       ...text.smallSemibold,

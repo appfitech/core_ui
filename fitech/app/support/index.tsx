@@ -104,7 +104,7 @@ export default function SupportScreen() {
           />
           <Button
             onPress={handleSubmit}
-            label="Enviar Consulta"
+            label="Enviar"
             style={styles.footerButton}
           />
         </View>

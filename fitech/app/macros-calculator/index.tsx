@@ -173,6 +173,8 @@ export default function MacrosCalculatorScreen() {
       subheader="Descubre si estás alimentando músculo, energía... o puro gustito."
       style={styles.pageContent}
       disableScroll
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
     >
       <FlatList
         data={listData}
@@ -201,15 +203,13 @@ const getStyles = (theme: AppTheme) => {
     ...formStyles(theme),
     pageContent: {
       paddingHorizontal: 0,
-      paddingVertical: 0,
-      paddingTop: 0,
       paddingBottom: 0,
     },
     list: { flex: 1 },
     listContent: {
       paddingHorizontal: 16,
-      paddingTop: 0,
       flexGrow: 1,
+      paddingBottom: 24,
     },
     sectionLabel: {
       ...text.bodySemibold,

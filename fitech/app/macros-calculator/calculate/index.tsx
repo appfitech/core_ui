@@ -42,14 +42,11 @@ export default function MacrosCalculatorCalculateScreen() {
     <PageContainer
       title="¿Cuánto comiste?"
       subheader="Ajusta las porciones para obtener tu desglose de macros."
-      style={{ padding: 16, paddingBottom: 200 }}
+      style={styles.page}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
     >
-      <View
-        style={{
-          gap: 10,
-          marginTop: 30,
-        }}
-      >
+      <View style={styles.content}>
         {!selectedItems.length && (
           <View style={styles.banner}>
             <AppText style={styles.bannerLabel}>
@@ -185,13 +182,19 @@ const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     ...formStyles(theme),
+    page: {
+      paddingHorizontal: 16,
+      paddingBottom: 32,
+    },
+    content: {
+      gap: 10,
+    },
     banner: {
       backgroundColor: theme.status.warning.bg,
       borderColor: theme.status.warning.border,
       borderWidth: 2,
       borderRadius: 20,
       padding: 16,
-      marginTop: 100,
     },
     bannerLabel: {
       ...text.sectionTitle,

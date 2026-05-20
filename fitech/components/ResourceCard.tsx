@@ -4,7 +4,10 @@ import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { getClientResourceValidityValue } from '@/components/list/client-resource-dates';
-import { RESOURCE_LIST_BACKGROUNDS } from '@/constants/activity-backgrounds';
+import {
+  getDietListLandscapeBackground,
+  getRoutineListLandscapeBackground,
+} from '@/constants/activity-backgrounds';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -25,9 +28,10 @@ export function ResourceCard({ onClick, resource }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const isDiet = isDietResourceType(resource.resourceType);
+  const seed = resource.id ?? 0;
   const background = isDiet
-    ? RESOURCE_LIST_BACKGROUNDS.diet
-    : RESOURCE_LIST_BACKGROUNDS.routine;
+    ? getDietListLandscapeBackground(seed)
+    : getRoutineListLandscapeBackground(seed);
 
   const handlePress = useCallback(() => {
     if (!resource?.id) return;

@@ -110,10 +110,14 @@ export default function WorkoutDayScreen() {
 
 const getStyles = (theme: AppTheme) =>
   StyleSheet.create({
-    pageStyle: { padding: 16, rowGap: 10 },
+    pageStyle: {
+      paddingHorizontal: 16,
+      paddingBottom: 0,
+      rowGap: 10,
+    },
     summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
     listStyle: { flex: 1 },
-    listContent: { paddingBottom: 180 },
+    listContent: { paddingBottom: 100 },
     cardWrapper: { marginBottom: 12 },
     emptyText: {
       fontSize: 19,
@@ -125,7 +129,7 @@ const getStyles = (theme: AppTheme) =>
       position: 'absolute',
       left: 16,
       right: 16,
-      bottom: 140,
+      bottom: 24,
       flexDirection: 'row',
       gap: 12,
       paddingTop: 20,

@@ -1,9 +1,11 @@
+import { useSegments } from 'expo-router';
 import React, { useState } from 'react';
 import { Platform, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { shouldShowNavBar } from '@/constants/navigation';
 import { textStyles } from '@/constants/styles';
 import { useTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -31,6 +33,10 @@ const KEYBOARD_EXTRA_SCROLL = {
 
 type Props = {
   children: React.ReactNode;
+  /**
+   * When omitted, a back button is shown on screens without the tab bar; hidden on tab roots.
+   * Pass `false` explicitly on tab roots (home, profile, workouts, …) and auth entry screens.
+   */
   hasBackButton?: boolean;
   hasNoTopPadding?: boolean;
   style?: ViewStyle;
@@ -69,7 +75,7 @@ type Props = {
 
 export default function PageContainer({
   children,
-  hasBackButton = true,
+  hasBackButton: hasBackButtonProp,
   hasNoTopPadding = false,
   style = {},
   title = '',
@@ -87,11 +93,14 @@ export default function PageContainer({
   includeTabBarPadding = true,
   transparentBackground = false,
 }: Props) {
+  const segments = useSegments();
   const insets = useSafeAreaInsets();
   const tabBarInset = useTabBarInset();
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const [measuredFixedHeaderHeight, setMeasuredFixedHeaderHeight] = useState(0);
+
+  const hasBackButton = hasBackButtonProp ?? !shouldShowNavBar(segments);
 
   const defaultBottomPadding =
     includeTabBarPadding && hasBottomPadding
