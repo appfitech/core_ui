@@ -110,7 +110,12 @@
   "overrides": {
     "react-native-calendars": {
       "react-native-safe-area-context": "$react-native-safe-area-context"
-    }
+    },
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "@typescript-eslint/typescript-estree": "^8.46.0",
+    "@typescript-eslint/utils": "^8.46.0",
+    "@typescript-eslint/type-utils": "^8.46.0"
   },
   "expo": {
     "doctor": {
