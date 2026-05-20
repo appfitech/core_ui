@@ -27,6 +27,7 @@
       }
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",
@@ -112,6 +113,12 @@
         }
       ],
       "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "FITECH necesita acceso a tus fotos para actualizar tu galería de perfil."
+        }
+      ],
       "expo-secure-store",
       [
         "@react-native-community/datetimepicker",

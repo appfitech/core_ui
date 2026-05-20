@@ -17,6 +17,8 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import { useLogin } from '@/lib/api/mutations/use-account-mutations';
+import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
+import { syncPushAfterAuth } from '@/lib/push/sync-push-after-auth';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
@@ -42,6 +44,7 @@ export default function LoginScreen() {
   const setUser = useUserStore((s) => s.setUser);
 
   const { mutate: submitLogin, isPending } = useLogin();
+  const { mutateAsync: savePushToken } = useSavePushToken();
 
   useEffect(() => {
     const t = setTimeout(() => setShowUI(true), AUTH_UI_REVEAL_DELAY_MS);
@@ -63,6 +66,7 @@ export default function LoginScreen() {
       {
         onSuccess: async (response) => {
           await setUser(response);
+          void syncPushAfterAuth(savePushToken);
           router.replace(ROUTES.home);
         },
         onError: (error) => {
@@ -76,6 +80,7 @@ export default function LoginScreen() {
     loginScreen.loginErrorFallback,
     password,
     router,
+    savePushToken,
     setUser,
     submitLogin,
     username,

@@ -34,28 +34,36 @@ export default function WorkoutDayScreen() {
     refetchDailyWorkouts();
   }, [close, refetchDailyWorkouts]);
 
+  const listHeader = useCallback(() => {
+    if (exerciseCount <= 0) return null;
+
+    return (
+      <View style={styles.summaryRow}>
+        <Tag
+          backgroundColor={theme.brand.primary}
+          textColor={theme.background.app}
+          label={`🏋️ ${exerciseCount} ejercicio${exerciseCount > 1 ? 's' : ''}`}
+        />
+      </View>
+    );
+  }, [exerciseCount, styles.summaryRow, theme]);
+
   return (
     <>
       <PageContainer
         title={moment(date).format('DD/MM/YYYY')}
         subheader="Entrenamientos registrados"
+        disableScroll
         style={styles.pageStyle}
         hasBottomPadding={false}
+        includeTabBarPadding={false}
       >
-        {exerciseCount > 0 && (
-          <View style={styles.summaryRow}>
-            <Tag
-              backgroundColor={theme.brand.primary}
-              textColor={theme.background.app}
-              label={`🏋️ ${exerciseCount} ejercicio${exerciseCount > 1 ? 's' : ''}`}
-            />
-          </View>
-        )}
         <FlatList
           style={styles.listStyle}
-          data={sessions}
+          data={sessions ?? []}
           keyExtractor={(item) => `exercise-card-${date}-${item.id}`}
           contentContainerStyle={styles.listContent}
+          ListHeaderComponent={listHeader}
           renderItem={({ item }) => (
             <View style={styles.cardWrapper}>
               <ExerciseCard

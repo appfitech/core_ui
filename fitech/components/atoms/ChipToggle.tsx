@@ -4,6 +4,7 @@ import { AppText } from '@/components/AppText';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
+
 type Props = {
   label: string;
   value: string;
@@ -13,20 +14,12 @@ type Props = {
 
 export function ChipToggle({ label, selected, value, onPress }: Props) {
   const { theme } = useTheme();
-
   const styles = getStyles(theme);
-
-  const handlePress = () => {
-    onPress(value);
-  };
 
   return (
     <Pressable
-      onPress={handlePress}
-      style={[
-        styles.container,
-        selected && { backgroundColor: theme.text.primary },
-      ]}
+      onPress={() => onPress(value)}
+      style={[styles.container, selected && styles.containerSelected]}
     >
       <AppText style={[styles.label, selected && styles.labelSelected]}>
         {label}
@@ -37,14 +30,26 @@ export function ChipToggle({ label, selected, value, onPress }: Props) {
 
 const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
+
   return StyleSheet.create({
     container: {
       paddingVertical: 10,
       paddingHorizontal: 14,
       borderRadius: 999,
-      backgroundColor: '#F1F1F1',
+      backgroundColor: theme.background.card,
+      borderWidth: 1,
+      borderColor: theme.border.default,
     },
-    label: { ...text.linkSemibold, color: theme.text.primary },
-    labelSelected: { ...text.linkSemibold, color: theme.background.app },
+    containerSelected: {
+      backgroundColor: theme.brand.primary,
+      borderColor: theme.brand.primary,
+    },
+    label: {
+      ...text.linkSemibold,
+      color: theme.text.primary,
+    },
+    labelSelected: {
+      color: theme.background.app,
+    },
   });
 };

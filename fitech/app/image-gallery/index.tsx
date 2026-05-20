@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { ActivityIndicator, Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
@@ -13,6 +13,12 @@ import { useUploadPhoto } from '@/lib/api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '@/lib/api/queries/useGetUserPhotos';
 import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
+import { extractErrorMessage } from '@/utils/errors';
+import {
+  createImageUploadFormData,
+  prepareImageForUpload,
+} from '@/utils/prepare-image-for-upload';
+import { requestMediaLibraryPermission } from '@/utils/request-media-library-permission';
 
 const MAX_PHOTOS = 10;
 
@@ -20,54 +26,79 @@ export default function ImageGalleryScreen() {
   const { theme } = useTheme();
   const { showAlert } = useAlert();
   const styles = getStyles(theme);
+  const [isPicking, setIsPicking] = useState(false);
+
   const profilePhotoId = useUserStore(
     (s) => s?.user?.user?.person?.profilePhotoId,
   );
   const updateProfilePhotoId = useUserStore((s) => s.updateProfilePhotoId);
 
-  const { mutate: uploadPhoto } = useUploadPhoto();
+  const { mutate: uploadPhoto, isPending: isUploading } = useUploadPhoto();
   const { mutate: deletePhoto } = useDeletePhoto();
   const { mutate: setProfilePhoto } = useSetProfilePhoto();
 
   const { data: photos = [], isLoading, refetch } = useGetUserPhotos();
 
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.7,
-      base64: true,
-    });
+  const pickImage = useCallback(async () => {
+    if (photos.length >= MAX_PHOTOS) {
+      showAlert({
+        title: 'Límite alcanzado',
+        message: 'Solo puedes subir hasta 10 fotos.',
+      });
+      return;
+    }
 
-    if (!result.canceled) {
-      const file = result.assets[0];
+    const permission = await requestMediaLibraryPermission();
+    if (!permission.granted) {
+      showAlert({
+        title: 'Permiso requerido',
+        message: permission.message,
+      });
+      return;
+    }
 
-      if (photos.length >= MAX_PHOTOS) {
-        showAlert({
-          title: 'Límite alcanzado',
-          message: 'Solo puedes subir hasta 10 fotos.',
-        });
+    setIsPicking(true);
+
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        quality: 1,
+        exif: false,
+      });
+
+      if (result.canceled || !result.assets[0]) {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('file', {
-        uri: file.uri,
-        name: file.fileName ?? `photo.jpg`,
-        type: file.type ?? 'image/jpeg',
-      } as any);
+      const prepared = await prepareImageForUpload(result.assets[0]);
+      const formData = createImageUploadFormData(prepared);
 
       uploadPhoto(formData, {
         onSuccess: () => refetch(),
-        onError: () => {
+        onError: (error) => {
           showAlert({
             title: 'Error',
-            message: 'No se pudo subir la foto.',
+            message: extractErrorMessage(
+              error,
+              'No se pudo subir la foto. Inténtalo de nuevo.',
+            ),
           });
         },
       });
+    } catch (error) {
+      console.warn('[Gallery] pick/upload failed', error);
+      showAlert({
+        title: 'Error',
+        message: extractErrorMessage(
+          error,
+          'No se pudo procesar la imagen seleccionada.',
+        ),
+      });
+    } finally {
+      setIsPicking(false);
     }
-  };
+  }, [photos.length, refetch, showAlert, uploadPhoto]);
 
   const removePhoto = (index: number) => {
     const photo = photos[index];
@@ -98,7 +129,7 @@ export default function ImageGalleryScreen() {
                   await updateProfilePhotoId(photoId);
                 },
                 onError: (err) => {
-                  console.error('[K] profile photo set failed', err);
+                  console.error('[Gallery] profile photo set failed', err);
                 },
               },
             );
@@ -107,6 +138,8 @@ export default function ImageGalleryScreen() {
       ],
     });
   };
+
+  const isBusy = isPicking || isUploading;
 
   return (
     <PageContainer title="Gestiona tus fotos" style={styles.pageContent}>
@@ -206,11 +239,18 @@ export default function ImageGalleryScreen() {
 
           {photos.length < MAX_PHOTOS && (
             <TouchableOpacity
-              onPress={pickImage}
+              onPress={() => void pickImage()}
+              disabled={isBusy}
               style={[styles.thumbnailWrapper, styles.uploadBtn]}
             >
-              <Ionicons name="add" size={24} color={theme.brand.primary} />
-              <AppText style={styles.uploadText}>Agregar</AppText>
+              {isBusy ? (
+                <ActivityIndicator color={theme.brand.primary} />
+              ) : (
+                <>
+                  <Ionicons name="add" size={24} color={theme.brand.primary} />
+                  <AppText style={styles.uploadText}>Agregar</AppText>
+                </>
+              )}
             </TouchableOpacity>
           )}
         </View>

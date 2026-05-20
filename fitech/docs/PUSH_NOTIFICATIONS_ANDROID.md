@@ -15,7 +15,7 @@ iOS can work with only APNs credentials in EAS. **Android also needs FCM (Fireba
 
 1. In [Firebase Console](https://console.firebase.google.com/), create or open the project linked to `com.fitech`.
 2. Add an Android app with package name `com.fitech`.
-3. Download `google-services.json` (optional in repo if you use EAS credentials UI only).
+3. Download `google-services.json` and commit it at `fitech/google-services.json` (referenced via `android.googleServicesFile` in `app.json`).
 4. Run:
 
    ```bash

@@ -20,7 +20,7 @@ function runAfterAppIsReady(): Promise<void> {
     InteractionManager.runAfterInteractions(() => {
       // After login navigation, a short delay improves the Android permission dialog.
       if (Platform.OS === 'android') {
-        setTimeout(resolve, 400);
+        setTimeout(resolve, 800);
         return;
       }
       resolve();
@@ -34,6 +34,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
   const WithPush: React.FC<P> = (props) => {
     const authToken = useUserStore((s) => s.token);
     const userId = useUserStore((s) => (s.user as any)?.user?.id ?? null);
+    const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
 
     const isLoggedIn = !!authToken;
 
@@ -53,7 +54,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
           savePushToken,
         });
 
-        if (__DEV__ && (result.error || !result.savedToServer)) {
+        if (result.error || !result.savedToServer) {
           console.warn('[Push] register/sync', {
             permissionGranted: result.permissionGranted,
             permissionStatus: result.permissionStatus,
@@ -89,7 +90,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
 
     // Login, session restore, or account switch: prompt for notifications and sync token.
     useEffect(() => {
-      if (!isLoggedIn) {
+      if (!isLoggedIn || !isSessionHydrated) {
         return;
       }
 
@@ -107,7 +108,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
         cancelled = true;
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoggedIn, userId]);
+    }, [isLoggedIn, isSessionHydrated, userId]);
 
     useEffect(() => {
       const onAppStateChange = async (state: AppStateStatus) => {
@@ -122,7 +123,7 @@ export function withPushNotifications<P extends Record<string, unknown>>(
 
       return () => sub.remove();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoggedIn, userId]);
+    }, [isLoggedIn, isSessionHydrated, userId]);
 
     return createElement(Wrapped, props as P);
   };

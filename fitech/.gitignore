@@ -32,6 +32,10 @@ yarn-error.*
 # local env files
 .env*.local
 
+# Firebase FCM service account (secret — upload to EAS only)
+fcm-service-account.json
+*-firebase-adminsdk*.json
+
 # typescript
 *.tsbuildinfo
 
