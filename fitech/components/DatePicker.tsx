@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useMemo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useCallback, useMemo } from 'react';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { formStyles, textStyles } from '@/constants/styles';
@@ -8,6 +8,7 @@ import { useDatePickerOverlay } from '@/contexts/DatePickerOverlayContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { FullTheme } from '@/types/theme';
 import { formatToDDMMYYYY } from '@/utils/dates';
+import { openAndroidDatePicker } from '@/utils/open-android-date-picker';
 
 type Props = {
   value: string | null;
@@ -35,22 +36,35 @@ export function DatePicker({
     [value, placeholder],
   );
 
+  const handlePress = useCallback(() => {
+    if (Platform.OS === 'android') {
+      openAndroidDatePicker({ value, onChange, minDate, maxDate, theme });
+      return;
+    }
+
+    openDatePicker({
+      value,
+      onChange,
+      placeholder,
+      minDate,
+      maxDate,
+      label,
+    });
+  }, [
+    value,
+    onChange,
+    placeholder,
+    minDate,
+    maxDate,
+    label,
+    theme,
+    openDatePicker,
+  ]);
+
   return (
     <View>
       {label ? <AppText style={styles.label}>{label}</AppText> : null}
-      <Pressable
-        style={styles.inputRow}
-        onPress={() =>
-          openDatePicker({
-            value,
-            onChange,
-            placeholder,
-            minDate,
-            maxDate,
-            label,
-          })
-        }
-      >
+      <Pressable style={styles.inputRow} onPress={handlePress}>
         <Ionicons
           name="calendar-outline"
           size={20}

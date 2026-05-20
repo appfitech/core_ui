@@ -34,6 +34,11 @@ export function withPushNotifications<P extends Record<string, unknown>>(
       expoPushTokenRef.current = pushToken;
     };
 
+    const clearCachedExpoToken = async () => {
+      expoPushTokenRef.current = null;
+      await AsyncStorage.removeItem(PUSH_TOKEN_KEY).catch(() => {});
+    };
+
     const fetchAndCacheExpoTokenIfAvailable = async () => {
       await ensureDefaultAndroidNotificationChannel();
       const pushToken = await registerForPushNotificationsAsync();
@@ -41,10 +46,10 @@ export function withPushNotifications<P extends Record<string, unknown>>(
       if (pushToken) {
         await cacheExpoToken(pushToken);
       } else {
-        expoPushTokenRef.current = null;
-
-        await AsyncStorage.removeItem(PUSH_TOKEN_KEY).catch(() => {});
+        await clearCachedExpoToken();
       }
+
+      return pushToken ?? null;
     };
 
     const syncNow = async () => {
@@ -75,9 +80,13 @@ export function withPushNotifications<P extends Record<string, unknown>>(
       }
     };
 
-    useEffect(() => {
-      let cancelled = false;
+    /** Request OS permission, obtain Expo token, cache locally, register with API. */
+    const registerPushForLoggedInUser = async () => {
+      await fetchAndCacheExpoTokenIfAvailable();
+      await syncNow();
+    };
 
+    useEffect(() => {
       Notifications.setNotificationHandler({
         handleNotification: async () => ({
           shouldShowAlert: true,
@@ -86,46 +95,47 @@ export function withPushNotifications<P extends Record<string, unknown>>(
         }),
       });
 
-      (async () => {
-        await fetchAndCacheExpoTokenIfAvailable();
-
-        if (!cancelled) {
-          await syncNow();
-        }
-      })();
-
       const subReceived = Notifications.addNotificationReceivedListener(
         () => {},
       );
 
+      return () => subReceived.remove();
+    }, []);
+
+    // Login, session restore, or account switch: prompt for notifications and sync token.
+    useEffect(() => {
+      if (!isLoggedIn) {
+        void clearCachedExpoToken();
+        return;
+      }
+
+      let cancelled = false;
+
+      void (async () => {
+        await registerPushForLoggedInUser();
+        if (cancelled) {
+          return;
+        }
+      })();
+
       return () => {
         cancelled = true;
-        subReceived.remove();
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isLoggedIn, userId]);
 
     useEffect(() => {
       const onAppStateChange = async (state: AppStateStatus) => {
-        if (state !== 'active') {
+        if (state !== 'active' || !isLoggedIn) {
           return;
         }
 
-        await fetchAndCacheExpoTokenIfAvailable();
-        await syncNow();
+        await registerPushForLoggedInUser();
       };
 
       const sub = AppState.addEventListener('change', onAppStateChange);
 
       return () => sub.remove();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLoggedIn, userId]);
-
-    // Auth transitions (login / user switch): sync
-    useEffect(() => {
-      if (isLoggedIn) {
-        void syncNow();
-      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoggedIn, userId]);
 

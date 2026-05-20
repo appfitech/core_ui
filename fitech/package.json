@@ -11,11 +11,11 @@
     "test": "jest --watchAll",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit",
-    "generate_apk": "eas build --platform android --profile apk",
+    "generate_apk": "npx eas-cli build --platform android --profile apk",
     "generate:android-icon": "npx --yes -p sharp node scripts/generate-android-adaptive-icon.mjs",
-    "generate_ios": "eas build --platform ios --profile production",
-    "generate_ios_autosubmit": "eas build --platform ios --profile production --auto-submit",
-    "submit_ios": "eas submit --platform ios --latest",
+    "generate_ios": "npx eas-cli build --platform ios --profile production",
+    "generate_ios_autosubmit": "npx eas-cli build --platform ios --profile production --auto-submit",
+    "submit_ios": "npx eas-cli submit --platform ios --latest",
     "codegen": "openapi-ts --file openapi/fitech.config.ts",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
@@ -26,14 +26,14 @@
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.3.0",
-    "@expo/vector-icons": "^14.0.2",
+    "@expo/vector-icons": "~14.0.4",
     "@gorhom/bottom-sheet": "^4.4.5",
-    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
-    "@react-navigation/drawer": "^7.3.12",
+    "@react-navigation/drawer": "^7.1.1",
     "@react-navigation/material-top-tabs": "^7.2.13",
-    "@react-navigation/native": "^7.1.9",
+    "@react-navigation/native": "^7.0.14",
     "@tanstack/react-query": "^5.77.2",
     "expo": "~52.0.49",
     "expo-application": "~6.0.2",
@@ -91,7 +91,6 @@
     "@types/react": "~18.3.12",
     "@types/react-test-renderer": "^18.3.0",
     "babel-plugin-transform-remove-console": "^6.9.4",
-    "eas-cli": "^18.12.2",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^10.1.5",
@@ -107,5 +106,21 @@
     "react-test-renderer": "18.3.1",
     "typescript": "^5.3.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "listUnknownPackages": false,
+        "exclude": [
+          "react-native-keyboard-aware-scroll-view",
+          "react-native-dropdown-picker",
+          "expo-random",
+          "moment",
+          "moment-timezone",
+          "react-native-vector-icons",
+          "ubigeo-fns"
+        ]
+      }
+    }
+  }
 }
