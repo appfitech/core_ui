@@ -1,6 +1,6 @@
 // utils/device.ts (safe version)
 import * as Application from 'expo-application';
-import * as Random from 'expo-random';
+import * as Crypto from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
@@ -39,7 +39,7 @@ export async function getDeviceId(): Promise<string> {
   // Fallback: random install ID
   if (!id) {
     try {
-      const bytes = await Random.getRandomBytesAsync(16);
+      const bytes = await Crypto.getRandomBytesAsync(16);
       id = toHex(bytes);
     } catch {
       // absolute worst case: time-based pseudo-id
