@@ -45,7 +45,7 @@ export default function MacroInput({ foodItem, requestItem }: Props) {
         <TextInput
           placeholderTextColor={theme.icon.muted}
           placeholder=""
-          keyboardType="numeric"
+          keyboardType="decimal-pad"
           style={[styles.input]}
           value={requestItem?.quantity?.toString()}
           onChangeText={(text: string) =>

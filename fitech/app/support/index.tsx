@@ -2,18 +2,18 @@ import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { showInfoToast } from '@/components/Toast';
 import { AppText } from '@/components/AppText';
-import { useAlert } from '@/contexts/AlertContext';
-import { useUserStore } from '@/stores/user';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { showInfoToast } from '@/components/Toast';
 import { textStyles } from '@/constants/styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSendInquiry } from '@/lib/api/mutations/useSendInquiry';
+import { useUserStore } from '@/stores/user';
 import { FullTheme } from '@/types/theme';
 
 const SUPPORT_TYPES = [
@@ -49,15 +49,24 @@ export default function SupportScreen() {
 
   const handleSubmit = () => {
     if (!form.type) {
-      showAlert({ title: 'Completa los campos', message: 'Selecciona un tipo de consulta.' });
+      showAlert({
+        title: 'Completa los campos',
+        message: 'Selecciona un tipo de consulta.',
+      });
       return;
     }
     if (!form.subject.trim()) {
-      showAlert({ title: 'Completa los campos', message: 'El asunto es requerido.' });
+      showAlert({
+        title: 'Completa los campos',
+        message: 'El asunto es requerido.',
+      });
       return;
     }
     if (form.description.trim().length < 20) {
-      showAlert({ title: 'Completa los campos', message: 'La descripción debe tener al menos 20 caracteres.' });
+      showAlert({
+        title: 'Completa los campos',
+        message: 'La descripción debe tener al menos 20 caracteres.',
+      });
       return;
     }
 
@@ -71,7 +80,10 @@ export default function SupportScreen() {
         });
       },
       onError: () => {
-        showInfoToast('Error', 'No se pudo enviar la consulta. Intenta nuevamente.');
+        showInfoToast(
+          'Error',
+          'No se pudo enviar la consulta. Intenta nuevamente.',
+        );
       },
     });
   };
@@ -83,16 +95,7 @@ export default function SupportScreen() {
       includeTabBarPadding={false}
       style={styles.pageStyle}
     >
-      <Card
-        style={[
-          styles.contactCard,
-          {
-            backgroundColor: theme.background.card,
-            borderWidth: 1,
-            borderColor: theme.border.default,
-          },
-        ]}
-      >
+      <Card style={styles.contactCard}>
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
           <Ionicons name="call-outline" size={20} color={theme.brand.primary} />
@@ -114,18 +117,10 @@ export default function SupportScreen() {
         </View>
       </Card>
 
-      <Card
-        style={[
-          styles.formCard,
-          {
-            backgroundColor: theme.background.card,
-            borderWidth: 1,
-            borderColor: theme.border.default,
-          },
-        ]}
-      >
+      <View style={styles.formCard}>
         <AppText style={styles.formCardTitle}>Enviar consulta</AppText>
         <Dropdown
+          placeholder="Tipo de consulta*"
           value={form.type}
           options={SUPPORT_TYPES}
           onChange={(value) =>
@@ -149,7 +144,7 @@ export default function SupportScreen() {
           numberOfLines={5}
           style={styles.descriptionInput}
         />
-      </Card>
+      </View>
 
       <View style={styles.buttonRow}>
         <Button
@@ -172,10 +167,12 @@ const getStyles = (theme: FullTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: {
-      paddingHorizontal: 16,
-      rowGap: 16,
+      rowGap: 24,
     },
     contactCard: {
+      backgroundColor: theme.background.card,
+      borderWidth: 1,
+      borderColor: theme.border.default,
       rowGap: 12,
     },
     contactTitle: {
@@ -192,8 +189,6 @@ const getStyles = (theme: FullTheme) => {
       color: theme.text.secondary,
     },
     formCard: {
-      borderRadius: 14,
-      padding: 18,
       rowGap: 14,
     },
     formCardTitle: {

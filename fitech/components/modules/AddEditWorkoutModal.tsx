@@ -229,14 +229,14 @@ export function AddEditExerciseModal({
 
                   <View style={styles.setInputsRow}>
                     <TextInput
-                      keyboardType="numeric"
+                      keyboardType="number-pad"
                       placeholder="Repeticiones"
                       value={String(s.repetitions || '')}
                       onChangeText={(t) => updateSet(idx, 'repetitions', t)}
                       style={[styles.input, styles.inputSmall]}
                     />
                     <TextInput
-                      keyboardType="numeric"
+                      keyboardType="decimal-pad"
                       placeholder="Peso (kg)"
                       value={
                         typeof s.weightKg === 'number' ? String(s.weightKg) : ''

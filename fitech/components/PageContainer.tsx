@@ -124,7 +124,7 @@ export default function PageContainer({
   const sharedInnerStyle: StyleProp<ViewStyle> = [
     styles.scrollContent,
     {
-      paddingHorizontal: 24,
+      paddingHorizontal: 16,
       paddingTop: scrollPaddingTop,
     },
     style,
@@ -309,7 +309,7 @@ const getStyles = (theme: FullTheme) => {
       right: 0,
       left: 0,
       zIndex: 10,
-      paddingHorizontal: 20,
+      paddingHorizontal: 16,
       paddingBottom: 10,
       backgroundColor: theme.background.elevated,
       borderBottomWidth: StyleSheet.hairlineWidth,
@@ -347,7 +347,7 @@ const getStyles = (theme: FullTheme) => {
       flex: 1,
     },
     footer: {
-      paddingHorizontal: 24,
+      paddingHorizontal: 16,
       paddingTop: 12,
       borderTopWidth: 1,
       borderTopColor: theme.border.default,
