@@ -1,8 +1,9 @@
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { textStyles } from '@/constants/styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
   GymBroCandidateResponseDto,
@@ -36,6 +37,7 @@ type Props = {
 export function MatchContactCard({ candidate, onDiscard }: Props) {
   const router = useRouter();
   const { theme } = useTheme();
+  const { showAlert } = useAlert();
   const styles = getStyles(theme);
 
   const profileImageUrl = getCandidateProfileImageUrl(
@@ -49,14 +51,15 @@ export function MatchContactCard({ candidate, onDiscard }: Props) {
   };
 
   const handleDiscardPress = () => {
-    Alert.alert(
-      'Quitar match',
-      '¿Estás seguro de que quieres quitar este match? Ya no podrás ver su perfil ni enviar mensajes.',
-      [
+    showAlert({
+      title: 'Quitar match',
+      message:
+        '¿Estás seguro de que quieres quitar este match? Ya no podrás ver su perfil ni enviar mensajes.',
+      buttons: [
         { text: 'Cancelar', style: 'cancel' },
         { text: 'Quitar', style: 'destructive', onPress: onDiscard },
       ],
-    );
+    });
   };
 
   const showBio =

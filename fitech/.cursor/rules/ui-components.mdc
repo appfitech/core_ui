@@ -15,8 +15,11 @@ Prefer components from `@/components/` over native equivalents:
 | `TextInput` | `TextInput` from `@/components/TextInput` |
 | `TouchableOpacity` / pressables for actions | `Button` from `@/components/Button` |
 | Layout helpers | `PageContainer`, `Card`, `FormWrapper`, etc. |
+| `Alert.alert` | `showAlert` from `@/contexts/AlertContext` (`useAlert`) |
 
 If no wrapper exists for a native component, **ask whether one should be created** before using the native component directly.
+
+See `.cursor/rules/show-alert.mdc` for alert button patterns and toast vs alert guidance.
 
 ```tsx
 // ❌ BAD

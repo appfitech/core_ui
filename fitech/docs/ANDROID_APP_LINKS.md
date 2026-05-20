@@ -1,10 +1,12 @@
 # Android App Links (verify-email & reset-password)
 
+See also **`docs/DEEPLINKS.md`** for backend URL contracts and iOS Universal Links.
+
 ## Why links open in Chrome instead of the app
 
 Android only opens `https://appfitech.com/verify-email?...` or `https://appfitech.com/reset-password?...` in the app when **Digital Asset Links** verification succeeds. If verification fails, the OS keeps the link in the browser (Chrome Custom Tab).
 
-iOS uses Universal Links (`apple-app-site-association`) and can work even when Android setup is broken.
+iOS uses Universal Links (`apple-app-site-association`). **Each path must be listed in AASA** — if only `/verify-email` is present, reset-password links will open in Safari, not the app.
 
 ## Current server issue (confirmed)
 
@@ -55,21 +57,28 @@ SHA-256 fingerprints in `assetlinks.json` **must use colon-separated hex pairs**
 
    `appfitech.com` should show `verified`.
 
+## Server files to deploy
+
+| Platform | File in repo | Live URL |
+|----------|--------------|----------|
+| iOS | `docs/well-known/apple-app-site-association` | `https://appfitech.com/.well-known/apple-app-site-association` |
+| Android | `docs/well-known/assetlinks.json` | `https://appfitech.com/.well-known/assetlinks.json` |
+
+AASA must include **`/reset-password`** and **`/reset-password/*`** (not only verify-email).
+
 ## App-side config (this repo)
 
-- `app.json` → `android.intentFilters` with `autoVerify: true` for `https://appfitech.com/verify-email`
-- Custom scheme fallback: `fitech://verify-email?token=...` (works without server verification; email/backend must use it if needed)
+- `app.json` → `android.intentFilters` with `autoVerify: true` for verify-email and reset-password
+- `app/+native-intent.tsx` → normalizes `fitech://reset-password` and alternate query param names
+- Custom scheme fallback: `fitech://verify-email?token=...` / `fitech://reset-password?token=...`
 
 After changing `app.json`, create a **new native build** (EAS); hot reload is not enough.
 
 ## Email links
 
-Preferred (after server fix):
+```
+https://appfitech.com/verify-email?token=...
+https://appfitech.com/reset-password?token=...
+```
 
-`https://appfitech.com/verify-email?token=...`
-
-Fallback (always opens app if installed):
-
-`fitech://verify-email?token=...`
-
-See `buildVerifyEmailAppUrl()` in `constants/linking.ts`.
+See `constants/linking.ts` (`buildVerifyEmailUrl`, `buildResetPasswordUrl`).

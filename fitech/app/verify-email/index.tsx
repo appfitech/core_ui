@@ -17,16 +17,8 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useVerifyEmail } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
+import { resolveTokenFromParams } from '@/utils/deep-link';
 import { resolveVerifyEmailError } from '@/utils/errors';
-
-function resolveTokenParam(
-  token: string | string[] | undefined,
-): string | undefined {
-  if (token == null) return undefined;
-  const value = Array.isArray(token) ? token[0] : token;
-  const trimmed = value?.trim();
-  return trimmed || undefined;
-}
 
 export default function VerifyEmailScreen() {
   const { theme } = useTheme();
@@ -34,10 +26,12 @@ export default function VerifyEmailScreen() {
   const router = useRouter();
   const { verifyEmailScreen } = TRANSLATIONS;
 
-  const { token: tokenParam } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     token?: string | string[];
+    resetToken?: string | string[];
+    reset_token?: string | string[];
   }>();
-  const token = resolveTokenParam(tokenParam);
+  const token = resolveTokenFromParams(params);
 
   const hasAttemptedRef = useRef(false);
 

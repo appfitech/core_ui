@@ -1,0 +1,55 @@
+---
+description: Use showAlert from AlertContext for all user-facing dialogs
+alwaysApply: true
+---
+
+# Alerts & confirmations
+
+## Always use `showAlert`
+
+For confirmations, errors, success messages, and multi-choice prompts, use **`showAlert`** from `@/contexts/AlertContext` via `useAlert()`.
+
+**Do not** use React Native `Alert.alert` or other system alert APIs.
+
+```tsx
+// ❌ BAD
+import { Alert } from 'react-native';
+Alert.alert('Title', 'Message', [{ text: 'OK' }]);
+
+// ✅ GOOD
+import { useAlert } from '@/contexts/AlertContext';
+
+const { showAlert } = useAlert();
+
+showAlert({
+  title: 'Title',
+  message: 'Message',
+  buttons: [{ text: 'OK' }],
+});
+```
+
+## Button patterns
+
+- **Single action:** one button (e.g. `Entendido`, `OK`).
+- **Confirm / cancel:** pass both; cancel uses `style: 'cancel'`, destructive actions use `style: 'destructive'`.
+- **Three or more choices:** list all options in `buttons`; cancel last with `style: 'cancel'`. The alert stacks buttons vertically.
+
+```tsx
+showAlert({
+  title: 'Eliminar foto',
+  message: '¿Seguro que quieres eliminar esta foto?',
+  buttons: [
+    { text: 'Cancelar', style: 'cancel' },
+    { text: 'Eliminar', style: 'destructive', onPress: handleDelete },
+  ],
+});
+```
+
+## Toasts vs alerts
+
+- **`showAlert`:** blocking feedback the user must acknowledge (success after forgot password, delete confirm, errors that need attention).
+- **`showInfoToast`:** brief non-blocking feedback (save succeeded, background actions). Do not replace confirms with toasts.
+
+## Provider
+
+`AlertProvider` wraps the app in `app/_layout.tsx`. Any screen under that tree can call `useAlert()`.

@@ -55,14 +55,12 @@ function resolveBodyText(title: string, message?: string) {
   return titleText;
 }
 
-function resolveActionButton(buttons: AlertButton[]) {
-  return (
+function resolveIcon(buttons: AlertButton[]): keyof typeof Ionicons.glyphMap {
+  const primary =
+    buttons.find((b) => b.style === 'destructive') ??
     buttons.find((b) => b.style !== 'cancel') ??
-    buttons[buttons.length - 1] ?? { text: 'OK', onPress: () => {} }
-  );
-}
-
-function resolveIcon(button: AlertButton): keyof typeof Ionicons.glyphMap {
+    buttons[buttons.length - 1];
+  const button = primary ?? { text: 'OK' };
   if (button.style === 'destructive') return 'warning-outline';
   return 'information-circle-outline';
 }
@@ -115,9 +113,9 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
 
   const buttons = state.buttons ?? [];
   const bodyText = resolveBodyText(state.title, state.message);
-  const actionButton = resolveActionButton(buttons);
-  const iconName = resolveIcon(actionButton);
-  const isDestructive = actionButton.style === 'destructive';
+  const iconName = resolveIcon(buttons);
+  const isDestructive = buttons.some((b) => b.style === 'destructive');
+  const isStacked = buttons.length > 2;
 
   return (
     <AlertContext.Provider value={{ showAlert }}>
@@ -181,15 +179,25 @@ export function AlertProvider({ children }: { children: React.ReactNode }) {
                   </AppText>
                 </View>
 
-                <View style={styles.footer}>
-                  <Button
-                    label={actionButton.text}
-                    type={resolveButtonType(actionButton)}
-                    onPress={() => handlePress(actionButton)}
-                    animated={false}
-                    style={styles.actionWrap}
-                    buttonStyle={styles.actionButton}
-                  />
+                <View
+                  style={[
+                    styles.footer,
+                    isStacked ? styles.footerStacked : styles.footerInline,
+                  ]}
+                >
+                  {buttons.map((button, index) => (
+                    <Button
+                      key={`${button.text}-${index}`}
+                      label={button.text}
+                      type={resolveButtonType(button)}
+                      onPress={() => handlePress(button)}
+                      animated={false}
+                      style={
+                        isStacked ? styles.footerButtonStacked : styles.footerButtonInline
+                      }
+                      buttonStyle={styles.actionButton}
+                    />
+                  ))}
                 </View>
               </View>
             </View>
@@ -266,12 +274,22 @@ const getStyles = (theme: FullTheme) => {
       paddingTop: 8,
     },
     footer: {
+      marginTop: 16,
+      gap: 10,
+    },
+    footerInline: {
       flexDirection: 'row',
       justifyContent: 'flex-end',
-      marginTop: 16,
+      flexWrap: 'wrap',
     },
-    actionWrap: {
+    footerStacked: {
+      flexDirection: 'column',
+    },
+    footerButtonInline: {
       alignSelf: 'flex-end',
+    },
+    footerButtonStacked: {
+      alignSelf: 'stretch',
     },
     actionButton: {
       minHeight: 40,

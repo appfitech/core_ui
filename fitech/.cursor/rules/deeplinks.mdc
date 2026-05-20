@@ -1,0 +1,24 @@
+---
+description: Deep links — use showAlert patterns and correct URL shapes for auth emails
+globs: app/**/*.tsx,constants/linking.ts,utils/deep-link.ts
+alwaysApply: false
+---
+
+# Deep links
+
+## User-facing URLs (backend emails)
+
+- Verify: `https://appfitech.com/verify-email?token={token}`
+- Reset: `https://appfitech.com/reset-password?token={token}`
+
+Do not use API paths (`/v1/app/user/...`) in email links.
+
+## Native handling
+
+- Route files: `app/verify-email/index.tsx`, `app/reset-password/index.tsx`
+- Path rewriting: `app/+native-intent.tsx` + `utils/deep-link.ts`
+- Server AASA must list **both** `/verify-email` and `/reset-password` — see `docs/well-known/apple-app-site-association`
+
+## Never use `Alert.alert` for in-app dialogs
+
+Use `showAlert` from `@/contexts/AlertContext` (see `show-alert.mdc`).

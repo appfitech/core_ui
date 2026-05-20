@@ -54,12 +54,7 @@ export default function ChangePasswordScreen() {
     if (current === next) return changePasswordScreen.sameAsCurrent;
 
     return null;
-  }, [
-    changePasswordScreen,
-    confirmPassword,
-    currentPassword,
-    newPassword,
-  ]);
+  }, [changePasswordScreen, confirmPassword, currentPassword, newPassword]);
 
   const performChange = useCallback(() => {
     const validationError = validate();
@@ -259,18 +254,18 @@ const getStyles = (theme: FullTheme) => {
         paddingBottom: 32,
       },
       introCard: {
-        backgroundColor: theme.background.card,
+        backgroundColor: theme.status.warning.bg,
         borderRadius: 12,
         padding: 16,
         borderWidth: 1,
-        borderColor: theme.border.default,
+        borderColor: theme.status.warning.border,
         rowGap: 8,
       },
       introTitle: {
-        color: theme.text.primary,
+        color: theme.status.warning.text,
       },
       introBody: {
-        color: theme.text.secondary,
+        color: theme.status.warning.text,
         lineHeight: 20,
       },
       actions: {

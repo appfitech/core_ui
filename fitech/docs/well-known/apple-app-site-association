@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "LCZFDBWQ2Y.com.fitech",
+        "paths": [
+          "/verify-email",
+          "/verify-email/*",
+          "/reset-password",
+          "/reset-password/*"
+        ]
+      }
+    ]
+  }
+}

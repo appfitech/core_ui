@@ -4,6 +4,10 @@ import { Linking, Platform, ScrollView, Text } from 'react-native';
 
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import {
+  buildResetPasswordAppUrl,
+  buildVerifyEmailAppUrl,
+} from '@/constants/linking';
 import { useAlert } from '@/contexts/AlertContext';
 import { useResetMatchList } from '@/lib/api/mutations/matches/use-reset-match-list';
 import { useSendTestNotification } from '@/lib/api/mutations/test/use-send-test-notification';
@@ -179,6 +183,16 @@ export default function Register() {
         label={isSendingTestPush ? 'Enviando…' : 'Test notification'}
         onPress={sendTestPush}
         disabled={isSendingTestPush || isRegisteringPush}
+      />
+      <Button
+        type="secondary"
+        label="Deep link: verify-email"
+        onPress={() => void Linking.openURL(buildVerifyEmailAppUrl('TEST'))}
+      />
+      <Button
+        type="secondary"
+        label="Deep link: reset-password"
+        onPress={() => void Linking.openURL(buildResetPasswordAppUrl('TEST'))}
       />
     </PageContainer>
   );

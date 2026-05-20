@@ -13,19 +13,11 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useResetPassword } from '@/lib/api/mutations/use-account-mutations';
 import { FullTheme } from '@/types/theme';
+import { resolveTokenFromParams } from '@/utils/deep-link';
 import {
   extractErrorMessage,
   resolveResetPasswordError,
 } from '@/utils/errors';
-
-function resolveTokenParam(
-  token: string | string[] | undefined,
-): string | undefined {
-  if (token == null) return undefined;
-  const value = Array.isArray(token) ? token[0] : token;
-  const trimmed = value?.trim();
-  return trimmed || undefined;
-}
 
 const MIN_PASSWORD_LENGTH = 6;
 
@@ -35,10 +27,12 @@ export default function ResetPasswordScreen() {
   const router = useRouter();
   const { resetPasswordScreen } = TRANSLATIONS;
 
-  const { token: tokenParam } = useLocalSearchParams<{
+  const params = useLocalSearchParams<{
     token?: string | string[];
+    resetToken?: string | string[];
+    reset_token?: string | string[];
   }>();
-  const token = resolveTokenParam(tokenParam);
+  const token = resolveTokenFromParams(params);
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

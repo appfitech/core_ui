@@ -97,18 +97,26 @@ export default function SupportScreen() {
       <Card style={styles.contactCard}>
         <AppText style={styles.contactTitle}>Contacto directo</AppText>
         <View style={styles.contactRow}>
-          <Ionicons name="call-outline" size={20} color={theme.brand.primary} />
+          <Ionicons
+            name="call-outline"
+            size={20}
+            color={theme.status.info.icon}
+          />
           <AppText style={styles.contactText}>+51 961 529 776</AppText>
         </View>
         <View style={styles.contactRow}>
-          <Ionicons name="mail-outline" size={20} color={theme.brand.primary} />
+          <Ionicons
+            name="mail-outline"
+            size={20}
+            color={theme.status.info.icon}
+          />
           <AppText style={styles.contactText}>soporte@appfitech.com</AppText>
         </View>
         <View style={styles.contactRow}>
           <Ionicons
             name="location-outline"
             size={20}
-            color={theme.brand.primary}
+            color={theme.status.info.icon}
           />
           <AppText style={styles.contactText}>
             Joaquín Capelo 320, Miraflores, Lima, Perú
@@ -169,14 +177,14 @@ const getStyles = (theme: FullTheme) => {
       rowGap: 24,
     },
     contactCard: {
-      backgroundColor: theme.background.card,
+      backgroundColor: theme.status.info.bg,
       borderWidth: 1,
-      borderColor: theme.border.default,
+      borderColor: theme.status.info.border,
       rowGap: 12,
     },
     contactTitle: {
       ...text.sectionTitle,
-      color: theme.text.primary,
+      color: theme.status.info.icon,
     },
     contactRow: {
       flexDirection: 'row',
@@ -185,7 +193,7 @@ const getStyles = (theme: FullTheme) => {
     },
     contactText: {
       ...text.link,
-      color: theme.text.secondary,
+      color: theme.status.info.text,
     },
     formCard: {
       rowGap: 14,

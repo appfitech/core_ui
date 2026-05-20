@@ -3,7 +3,6 @@ import * as ImagePicker from 'expo-image-picker';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
   Image,
   Pressable,
@@ -36,22 +35,20 @@ const GRID_COLUMNS = 2;
 
 type Photo = { id: number };
 
-type GridCell =
-  | { kind: 'photo'; photo: Photo }
-  | { kind: 'upload' };
+type GridCell = { kind: 'photo'; photo: Photo } | { kind: 'upload' };
 
 type UploadIntent = 'gallery' | 'avatar';
 
-function ActiveAvatarBadge({ styles }: { styles: ReturnType<typeof getStyles> }) {
+function ActiveAvatarBadge({
+  styles,
+}: {
+  styles: ReturnType<typeof getStyles>;
+}) {
   const { theme } = useTheme();
 
   return (
     <View style={styles.activeAvatarBadge}>
-      <Ionicons
-        name="shield-checkmark"
-        size={12}
-        color={theme.text.inverse}
-      />
+      <Ionicons name="shield-checkmark" size={12} color={theme.text.inverse} />
       <AppText style={styles.activeAvatarBadgeText}>Foto de perfil</AppText>
     </View>
   );
@@ -236,7 +233,7 @@ export default function ImageGalleryScreen() {
       return;
     }
 
-    const options: {
+    const buttons: {
       text: string;
       style?: 'cancel';
       onPress?: () => void;
@@ -248,21 +245,21 @@ export default function ImageGalleryScreen() {
     ];
 
     if (canUpload) {
-      options.push({
+      buttons.push({
         text: 'Subir nueva foto',
         onPress: () => void pickImage('avatar'),
       });
     }
 
-    options.push({ text: 'Cancelar', style: 'cancel' });
+    buttons.push({ text: 'Cancelar', style: 'cancel' });
 
-    Alert.alert(
-      'Cambiar avatar',
-      canUpload
+    showAlert({
+      title: 'Cambiar avatar',
+      message: canUpload
         ? 'Elige una foto existente o sube una nueva'
         : 'Elige una de tus fotos de la galería',
-      options,
-    );
+      buttons,
+    });
   }, [photos.length, pickImage, showAlert]);
 
   const removePhoto = useCallback(
@@ -327,8 +324,8 @@ export default function ImageGalleryScreen() {
 
           <View style={styles.progressSection}>
             <View style={styles.progressLegendRow}>
-              <AppText style={styles.progressCount}>
-                {photoProgress.uploaded} de {MAX_PHOTOS} fotos subidas
+              <AppText style={styles.progressLegend}>
+                {photoProgress.legend}
               </AppText>
               <AppText style={styles.progressPercent}>
                 {photoProgress.percent}%
@@ -350,7 +347,6 @@ export default function ImageGalleryScreen() {
                 ]}
               />
             </View>
-            <AppText style={styles.progressLegend}>{photoProgress.legend}</AppText>
           </View>
         </View>
 
@@ -442,7 +438,11 @@ export default function ImageGalleryScreen() {
             onPress={() => removePhoto(photo.id)}
             hitSlop={6}
           >
-            <Ionicons name="trash-outline" size={16} color={theme.background.app} />
+            <Ionicons
+              name="trash-outline"
+              size={16}
+              color={theme.background.app}
+            />
           </Pressable>
         </View>
       );
@@ -516,10 +516,11 @@ const getStyles = (theme: FullTheme) =>
       padding: 16,
       rowGap: 8,
     },
-    bannerTitle: { color: theme.text.primary },
+    bannerTitle: { color: theme.status.info.text },
     bannerText: {
       fontSize: 14,
-      color: theme.text.secondary,
+      color: theme.status.info.text,
+      fontFamily: '400',
       lineHeight: 20,
     },
     progressSection: {
@@ -531,19 +532,14 @@ const getStyles = (theme: FullTheme) =>
       alignItems: 'center',
       justifyContent: 'space-between',
     },
-    progressCount: {
-      fontSize: 13,
-      fontWeight: '600',
-      color: theme.text.primary,
-    },
     progressPercent: {
       fontSize: 13,
       fontWeight: '700',
-      color: theme.brand.primaryLight,
+      color: theme.status.info.icon,
     },
     progressTrack: {
       height: 10,
-      backgroundColor: theme.background.input,
+      backgroundColor: theme.status.info.bg,
       borderRadius: 6,
       overflow: 'hidden',
       borderWidth: 1,
@@ -551,15 +547,16 @@ const getStyles = (theme: FullTheme) =>
     },
     progressFill: {
       height: '100%',
-      backgroundColor: theme.brand.primary,
+      backgroundColor: theme.status.info.text,
       borderRadius: 6,
     },
     progressLegend: {
       fontSize: 12,
-      color: theme.text.secondary,
+      color: theme.text.tertiary,
       lineHeight: 18,
     },
     avatarSection: {
+      alignItems: 'center',
       rowGap: 12,
     },
     avatarHero: {
