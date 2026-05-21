@@ -29,9 +29,13 @@ After deploy, reinstall the app or wait for iOS to refresh AASA (can take hours;
 
 ## Android
 
-Deploy `docs/well-known/assetlinks.json` to `https://appfitech.com/.well-known/assetlinks.json` with **colon-separated** SHA-256 fingerprints.
+Deploy `docs/well-known/assetlinks.json` to `https://appfitech.com/.well-known/assetlinks.json` with **colon-separated** SHA-256 fingerprints for **every** APK signing key you ship (EAS production, internal preview, Play App Signing if different).
 
-`app.json` already declares App Links for both paths. You need a **new native build** after any `app.json` change.
+`app.json` declares App Links; `plugins/with-android-verified-app-links.js` fixes dev-client breaking `autoVerify`. You need a **new EAS Android build** after any native config change.
+
+If HTTPS links still open Chrome, test `fitech://reset-password?token=TEST` — that confirms routing works and the issue is App Link verification only.
+
+Full troubleshooting: **`docs/ANDROID_APP_LINKS.md`**.
 
 Verify on device:
 

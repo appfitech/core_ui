@@ -4,23 +4,28 @@ See also **`docs/DEEPLINKS.md`** for backend URL contracts and iOS Universal Lin
 
 ## Why links open in Chrome instead of the app
 
-Android only opens `https://appfitech.com/verify-email?...` or `https://appfitech.com/reset-password?...` in the app when **Digital Asset Links** verification succeeds. If verification fails, the OS keeps the link in the browser (Chrome Custom Tab).
+Android only opens `https://appfitech.com/verify-email?...` or `https://appfitech.com/reset-password?...` in the app when **Digital Asset Links** verification succeeds. If verification fails, the OS keeps the link in the browser (Chrome).
 
 iOS uses Universal Links (`apple-app-site-association`). **Each path must be listed in AASA** — if only `/verify-email` is present, reset-password links will open in Safari, not the app.
 
-## Current server issue (confirmed)
+### Common causes (check in this order)
 
-Google’s verifier reports the live file is **invalid**:
+1. **Stale or wrong Android build** — App Links are baked into the native APK. OTA / JS-only updates are not enough after changing `app.json` or `plugins/`.
+2. **Wrong signing certificate** — `assetlinks.json` must list the SHA-256 of the **same keystore** used to sign the APK you installed (EAS production vs internal preview vs Play App Signing).
+3. **Broken `autoVerify` manifest** — `expo-dev-client` can inject `exp+fitech` into verified intent filters and break verification. This repo includes `plugins/with-android-verified-app-links.js` to strip those schemes (must be first in `app.json` → `plugins`).
+4. **User chose “Always open in browser”** for `appfitech.com` — reset in system Settings → Apps → FITECH → Open by default.
 
-```text
-malformed cert fingerprint: 1f9252a8a2967e257b9fbfe7d63358c57acd43bef8187fc3fd48d5b02a973126
-```
+### Server: `assetlinks.json` format
 
-SHA-256 fingerprints in `assetlinks.json` **must use colon-separated hex pairs**, for example:
+SHA-256 fingerprints **must use colon-separated hex pairs**, for example:
 
 `1F:92:52:A8:A2:96:7E:25:7B:9F:BF:E7:D6:33:58:C5:7A:CD:43:BE:F8:18:7E:C3:FD:48:D5:B0:2A:97:31:26`
 
 —not a continuous 64-character string without colons.
+
+Verify live JSON:
+
+https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://appfitech.com&relation=delegate_permission/common.handle_all_urls
 
 ## Fix on the server
 
@@ -68,11 +73,27 @@ AASA must include **`/reset-password`** and **`/reset-password/*`** (not only ve
 
 ## App-side config (this repo)
 
-- `app.json` → `android.intentFilters` with `autoVerify: true` for verify-email and reset-password
+- `app.json` → separate `android.intentFilters` with `autoVerify: true` per host + path
+- `plugins/with-android-verified-app-links.js` → keeps only `https` in verified filters (fixes dev-client / Expo Go scheme pollution)
 - `app/+native-intent.tsx` → normalizes `fitech://reset-password` and alternate query param names
-- Custom scheme fallback: `fitech://verify-email?token=...` / `fitech://reset-password?token=...`
+- Custom scheme fallback: `fitech://verify-email?token=...` / `fitech://reset-password?token=...` (works without App Links)
 
-After changing `app.json`, create a **new native build** (EAS); hot reload is not enough.
+After changing `app.json` or plugins, create a **new EAS Android build** and reinstall; hot reload is not enough.
+
+### Test on a physical device (after new build)
+
+```bash
+# Custom scheme — should open the app even if App Links fail
+adb shell am start -a android.intent.action.VIEW -d "fitech://reset-password?token=TEST"
+
+# HTTPS — only works when App Links are verified
+adb shell am start -a android.intent.action.VIEW -d "https://appfitech.com/verify-email?token=TEST"
+
+adb shell pm verify-app-links --re-verify com.fitech
+adb shell pm get-app-links com.fitech
+```
+
+`appfitech.com` should show **verified** for the build you installed. If status is `none` or `legacy_failure`, add that APK’s SHA-256 to `assetlinks.json` (see `eas credentials -p android`).
 
 ## Email links
 
