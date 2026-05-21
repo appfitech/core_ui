@@ -19,6 +19,7 @@ import { TextInput } from '@/components/TextInput';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { buildChatWsUrl } from '@/lib/api/chat-ws';
 import {
   useGetChat,
   useGetChatMessages,
@@ -35,18 +36,6 @@ type Message = {
   text: string;
   time: string;
 };
-
-const WS_BASE_URL = 'ws://appfitech.com/api';
-
-function buildWsUrl(token: string) {
-  const base = WS_BASE_URL.endsWith('/')
-    ? WS_BASE_URL.slice(0, -1)
-    : WS_BASE_URL;
-
-  const url = `${base}/ws-native?token=${encodeURIComponent(token)}`;
-
-  return url;
-}
 
 function formatTime(isoDate?: string) {
   if (!isoDate) return '';
@@ -165,7 +154,7 @@ export default function ChatDetailScreen() {
     let isUnmounted = false;
 
     const connect = () => {
-      const url = buildWsUrl(token);
+      const url = buildChatWsUrl(token);
       if (__DEV__) {
         console.log('[WebSocket] 🔌 Attempting connection to:', url);
       }

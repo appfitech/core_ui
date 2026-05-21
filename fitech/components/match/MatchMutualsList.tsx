@@ -52,7 +52,7 @@ export function MatchMutualsList({
 const styles = StyleSheet.create({
   list: { flex: 1 },
   content: {
-    gap: 12,
+    gap: 10,
     paddingBottom: 24,
     flexGrow: 1,
   },
