@@ -17,10 +17,8 @@ import Toast from 'react-native-toast-message';
 
 import { NavBar } from '@/components/NavBar';
 import { toastConfig } from '@/components/Toast';
-import {
-  shouldShowNavBar,
-  STACK_SCREEN_OPTIONS,
-} from '@/constants/navigation';
+import { shouldShowNavBar, STACK_SCREEN_OPTIONS } from '@/constants/navigation';
+import { ROUTES } from '@/constants/routes';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
 import { DatePickerOverlayProvider } from '@/contexts/DatePickerOverlayContext';
@@ -29,7 +27,11 @@ import { ThemeProvider } from '@/contexts/ThemeContext';
 import { withPushNotifications } from '@/hoc/withPushNotifications';
 import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 import { useUserStore } from '@/stores/user';
-import { getHrefFromPushData } from '@/utils/navigate-from-push-notification';
+import {
+  getHrefFromPushData,
+  setPendingPushHref,
+  takePendingPushHref,
+} from '@/utils/navigate-from-push-notification';
 
 import { ReactQueryProvider } from '../providers/ReactQueryProvider';
 
@@ -56,7 +58,6 @@ function RoutedApp() {
   const currentRoute = segments[0];
   const isAuthenticated = Boolean(token ?? user);
 
-  const pendingPushHref = useRef<string | null>(null);
   /** Only read getLastNotificationResponseAsync once per app session (avoid stale repeats on effect re-run). */
   const coldStartPushChecked = useRef(false);
 
@@ -64,35 +65,25 @@ function RoutedApp() {
     (data: unknown) => {
       const href = getHrefFromPushData(data);
       if (!href) return;
-      if (!token) {
-        pendingPushHref.current = href as string;
+
+      const hrefStr = href as string;
+
+      if (!isSessionHydrated || !token) {
+        setPendingPushHref(hrefStr);
         return;
       }
-      pendingPushHref.current = null;
+
+      setPendingPushHref(null);
       InteractionManager.runAfterInteractions(() => {
         try {
-          router.push(href);
+          router.replace(href);
         } catch (e) {
-          console.warn('[Push] router.push failed', e);
+          console.warn('[Push] router.replace failed', e);
         }
       });
     },
-    [router, token],
+    [isSessionHydrated, router, token],
   );
-
-  useEffect(() => {
-    if (token && pendingPushHref.current) {
-      const href = pendingPushHref.current;
-      pendingPushHref.current = null;
-      InteractionManager.runAfterInteractions(() => {
-        try {
-          router.push(href as Parameters<typeof router.push>[0]);
-        } catch (e) {
-          console.warn('[Push] deferred router.push failed', e);
-        }
-      });
-    }
-  }, [token, router]);
 
   useEffect(() => {
     const onResponse = (response: Notifications.NotificationResponse) => {
@@ -116,11 +107,21 @@ function RoutedApp() {
   useEffect(() => {
     if (!isSessionHydrated) return;
 
-    if (
-      !isAuthenticated &&
-      currentRoute &&
-      !PUBLIC_ROUTES.includes(currentRoute)
-    ) {
+    if (isAuthenticated) {
+      const pending = takePendingPushHref();
+      if (pending) {
+        router.replace(pending as Parameters<typeof router.replace>[0]);
+        return;
+      }
+
+      // Logged-in user on welcome (`/`): segments[0] is usually undefined, not "index".
+      if (!currentRoute) {
+        router.replace(ROUTES.home);
+      }
+      return;
+    }
+
+    if (currentRoute && !PUBLIC_ROUTES.includes(currentRoute)) {
       router.replace('/');
     }
   }, [isSessionHydrated, isAuthenticated, currentRoute, router]);

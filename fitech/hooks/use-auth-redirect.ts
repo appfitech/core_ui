@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { ROUTES } from '@/constants/routes';
 import { bootstrapAuthSession } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
+import { hasPendingPushHref } from '@/utils/navigate-from-push-notification';
 
 export const useAuthRedirect = (redirectPath: Href = ROUTES.home) => {
   const router = useRouter();
@@ -17,7 +18,7 @@ export const useAuthRedirect = (redirectPath: Href = ROUTES.home) => {
 
       const token = useUserStore.getState().getToken();
 
-      if (token) {
+      if (token && !hasPendingPushHref()) {
         router.replace(redirectPath);
       }
     };

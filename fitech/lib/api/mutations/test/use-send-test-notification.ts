@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Platform } from 'react-native';
 
 import { PUSH_TOKEN_KEY } from '@/constants/push';
+import { ROUTES } from '@/constants/routes';
 import {
   DEFAULT_ANDROID_NOTIFICATION_CHANNEL_ID,
   sendExpoPushMessage,
@@ -25,7 +26,8 @@ export const useSendTestNotification = () => {
         priority: 'high',
         title: 'Testing',
         body: 'Esta es una notificacion de prueba',
-        data: { navigateTo: '/gymbro' },
+        // Use app routes (e.g. ROUTES.diets), not "/" — "/" is welcome and ends on /home.
+        data: { navigateTo: ROUTES.gymbro },
         ...(Platform.OS === 'android' && {
           channelId: DEFAULT_ANDROID_NOTIFICATION_CHANNEL_ID,
         }),
