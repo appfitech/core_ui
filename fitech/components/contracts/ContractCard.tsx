@@ -55,53 +55,82 @@ export function ContractCard({ contract, onViewDetail, onReview }: Props) {
     ['CANCELLED', 'COMPLETED'].includes(contract.contractStatus ?? '');
 
   return (
-    <View style={styles.card}>
+    <Pressable
+      onPress={onViewDetail}
+      accessibilityRole="button"
+      accessibilityLabel={`${contract.serviceName ?? 'Contrato'}, ${copy.viewDetail}`}
+      style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+    >
       <View style={styles.headerRow}>
-        <AppText style={styles.title} numberOfLines={2}>
-          {contract.serviceName}
-        </AppText>
-        {statusTag}
+        <View style={styles.titleBlock}>
+          <AppText style={styles.title} numberOfLines={2}>
+            {contract.serviceName}
+          </AppText>
+          {statusTag ? (
+            <View style={styles.statusWrap}>{statusTag}</View>
+          ) : null}
+        </View>
+        <View style={styles.chevronWrap}>
+          <Ionicons
+            name="chevron-forward"
+            size={20}
+            color={theme.text.tertiary}
+          />
+        </View>
       </View>
 
-      {contract.trainerName ? (
-        <InfoRow
-          icon="person-outline"
-          text={contract.trainerName}
-          styles={styles}
-          theme={theme}
-        />
-      ) : null}
+      <View style={styles.metaBlock}>
+        {contract.trainerName ? (
+          <InfoRow
+            icon="person-outline"
+            text={contract.trainerName}
+            styles={styles}
+            theme={theme}
+          />
+        ) : null}
 
-      {dateLine ? (
-        <InfoRow
-          icon="calendar-outline"
-          text={dateLine}
-          styles={styles}
-          theme={theme}
-        />
-      ) : null}
+        {dateLine ? (
+          <InfoRow
+            icon="calendar-outline"
+            text={dateLine}
+            styles={styles}
+            theme={theme}
+          />
+        ) : null}
 
-      {amount != null ? (
-        <InfoRow
-          icon="cash-outline"
-          text={copy.amount.replace('{amount}', amount.toFixed(2))}
-          styles={styles}
-          theme={theme}
-        />
-      ) : null}
+        {amount != null ? (
+          <InfoRow
+            icon="cash-outline"
+            text={copy.amount.replace('{amount}', amount.toFixed(2))}
+            styles={styles}
+            theme={theme}
+            emphasize
+          />
+        ) : null}
+      </View>
 
       <View style={styles.footer}>
-        <Pressable style={styles.detailLink} onPress={onViewDetail}>
+        <View style={styles.detailHint}>
           <AppText style={styles.detailText}>{copy.viewDetail}</AppText>
           <Ionicons
             name="chevron-forward"
             size={16}
             color={theme.brand.primary}
           />
-        </Pressable>
+        </View>
 
         {showReview ? (
-          <Pressable style={styles.reviewButton} onPress={onReview}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.reviewButton,
+              pressed && styles.reviewButtonPressed,
+            ]}
+            onPress={() => onReview?.()}
+            accessibilityRole="button"
+            accessibilityLabel={
+              contract.existingReviewId ? copy.editReview : copy.leaveReview
+            }
+          >
             <Ionicons
               name="star-outline"
               size={14}
@@ -113,7 +142,7 @@ export function ContractCard({ contract, onViewDetail, onReview }: Props) {
           </Pressable>
         ) : null}
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -122,16 +151,23 @@ function InfoRow({
   text,
   styles,
   theme,
+  emphasize = false,
 }: {
   icon: keyof typeof Ionicons.glyphMap;
   text: string;
   styles: ReturnType<typeof getStyles>;
   theme: AppTheme;
+  emphasize?: boolean;
 }) {
   return (
     <View style={styles.row}>
-      <Ionicons name={icon} size={15} color={theme.text.tertiary} />
-      <AppText style={styles.rowText} numberOfLines={1}>
+      <View style={styles.rowIconWrap}>
+        <Ionicons name={icon} size={14} color={theme.text.tertiary} />
+      </View>
+      <AppText
+        style={[styles.rowText, emphasize && styles.rowTextEmphasize]}
+        numberOfLines={1}
+      >
         {text}
       </AppText>
     </View>
@@ -153,47 +189,76 @@ const getStyles = (theme: AppTheme) => {
   return StyleSheet.create({
     card: {
       backgroundColor: theme.background.card,
-      borderRadius: 12,
+      borderRadius: 16,
       borderWidth: 1,
       borderColor: theme.border.default,
-      padding: 14,
-      rowGap: 8,
+      padding: 16,
+      rowGap: 12,
+    },
+    cardPressed: {
+      backgroundColor: theme.background.input,
+      borderColor: theme.border.strong,
     },
     headerRow: {
       flexDirection: 'row',
       alignItems: 'flex-start',
-      justifyContent: 'space-between',
-      columnGap: 8,
+      columnGap: 10,
+    },
+    titleBlock: {
+      flex: 1,
+      minWidth: 0,
+      rowGap: 8,
     },
     title: {
-      ...text.linkSemibold,
-      flex: 1,
+      ...text.leadSemibold,
       color: theme.text.primary,
+    },
+    statusWrap: {
+      alignSelf: 'flex-start',
+    },
+    chevronWrap: {
+      paddingTop: 2,
+    },
+    metaBlock: {
+      rowGap: 8,
     },
     row: {
       flexDirection: 'row',
       alignItems: 'center',
-      columnGap: 8,
+      columnGap: 10,
+    },
+    rowIconWrap: {
+      width: 28,
+      height: 28,
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.background.input,
     },
     rowText: {
       ...text.small,
       flex: 1,
       color: theme.text.secondary,
     },
+    rowTextEmphasize: {
+      ...text.smallSemibold,
+      color: theme.text.primary,
+    },
     footer: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginTop: 4,
-      paddingTop: 10,
-      paddingBottom: 4,
+      columnGap: 10,
+      marginTop: 2,
+      paddingTop: 12,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: theme.border.default,
     },
-    detailLink: {
+    detailHint: {
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 2,
+      flex: 1,
     },
     detailText: {
       ...text.smallSemibold,
@@ -203,12 +268,15 @@ const getStyles = (theme: AppTheme) => {
       flexDirection: 'row',
       alignItems: 'center',
       columnGap: 4,
-      paddingVertical: 6,
-      paddingHorizontal: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
       borderRadius: 999,
       borderWidth: 1,
       borderColor: theme.brand.primary,
       backgroundColor: theme.brand.primarySoft,
+    },
+    reviewButtonPressed: {
+      opacity: 0.85,
     },
     reviewText: {
       ...text.captionSemibold,

@@ -41,15 +41,19 @@ const getStyles = (theme: AppTheme) => {
     tagContainer: {
       flexDirection: 'row',
       alignItems: 'center',
+      flexGrow: 0,
+      flexShrink: 0,
       backgroundColor: theme.status.warning.bg,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 8,
       columnGap: 4,
       alignSelf: 'flex-start',
+      maxWidth: '100%',
     },
     text: {
       ...text.smallSemibold,
+      flexShrink: 0,
       color: theme.status.warning.text,
     },
   });

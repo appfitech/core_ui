@@ -135,6 +135,12 @@ export default function ChatDetailScreen() {
     return Array.from(byId.values());
   }, [restMessages, wsMessages]);
 
+  useEffect(() => {
+    if (mergedMessages.length > 0) {
+      scrollMessagesToEnd(false);
+    }
+  }, [mergedMessages.length]);
+
   const hasError =
     !!messagesError || (messagesData && messagesData.success === false);
 
@@ -254,8 +260,10 @@ export default function ChatDetailScreen() {
   const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
   const { chatContractBanner } = TRANSLATIONS;
 
-  const composerBottomInset =
-    keyboardInset > 0 ? keyboardInset + 8 : Math.max(insets.bottom, 12);
+  const composerDockStyle =
+    keyboardInset > 0
+      ? { marginBottom: keyboardInset, paddingBottom: 8 }
+      : { paddingBottom: Math.max(insets.bottom, 12) };
 
   return (
     <View style={styles.screenRoot}>
@@ -310,10 +318,7 @@ export default function ChatDetailScreen() {
           ) : (
             <ScrollView
               ref={messagesScrollRef}
-              contentContainerStyle={[
-                styles.messagesContent,
-                { paddingBottom: keyboardInset > 0 ? 12 : 8 },
-              ]}
+              contentContainerStyle={styles.messagesContent}
               onContentSizeChange={() => scrollMessagesToEnd(false)}
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="interactive"
@@ -354,9 +359,7 @@ export default function ChatDetailScreen() {
         </View>
       </PageContainer>
 
-      <View
-        style={[styles.composerDock, { paddingBottom: composerBottomInset }]}
-      >
+      <View style={[styles.composerDock, composerDockStyle]}>
         <View style={styles.inputRow}>
           <View style={styles.inputField}>
             <TextInput
@@ -433,13 +436,16 @@ const getStyles = (theme: AppTheme) => {
       minHeight: 0,
     },
     messagesContent: {
+      flexGrow: 1,
+      justifyContent: 'flex-end',
       paddingVertical: 8,
       rowGap: 8,
     },
     centered: {
       flex: 1,
-      justifyContent: 'center',
+      justifyContent: 'flex-end',
       alignItems: 'center',
+      paddingBottom: 16,
     },
     systemText: {
       marginTop: 8,

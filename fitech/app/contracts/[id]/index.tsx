@@ -3,10 +3,10 @@ import { useCallback, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import CancelModal from '@/components/contracts/CancelModal';
 import CompleteModal from '@/components/contracts/CompleteModal';
 import { ContractDetailRow } from '@/components/contracts/ContractDetailRow';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
@@ -104,10 +104,27 @@ export default function ContractDetailScreen() {
     );
   })();
 
+  const isActive = parsedContract?.contractStatus === 'ACTIVE';
+  const actionsBusy = isCompleting || isCancelling;
+
+  const footer = isActive ? (
+    <FooterActions
+      layout="column"
+      primaryLabel={copy.completeButton}
+      onPrimary={() => setDisplayComplete(true)}
+      cancelLabel={copy.cancelButton}
+      onCancel={() => setDisplayCancel(true)}
+      primaryDisabled={actionsBusy}
+      cancelDisabled={actionsBusy}
+    />
+  ) : undefined;
+
   return (
     <PageContainer
       title={parsedContract?.serviceName ?? copy.defaultTitle}
-      style={styles.pageStyle}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={footer}
     >
       <View style={styles.card}>
         {statusTag ? <View style={styles.statusRow}>{statusTag}</View> : null}
@@ -165,23 +182,6 @@ export default function ContractDetailScreen() {
         ) : null}
       </View>
 
-      {parsedContract?.contractStatus === 'ACTIVE' && (
-        <View style={styles.actions}>
-          <Button
-            label={copy.completeButton}
-            onPress={() => setDisplayComplete(true)}
-            type="primary"
-            style={styles.actionButton}
-          />
-          <Button
-            label={copy.cancelButton}
-            onPress={() => setDisplayCancel(true)}
-            type="secondary"
-            style={styles.actionButton}
-          />
-        </View>
-      )}
-
       <CompleteModal
         isOpen={displayComplete}
         onCloseModal={() => setDisplayComplete(false)}
@@ -203,7 +203,6 @@ export default function ContractDetailScreen() {
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    pageStyle: { paddingBottom: 180 },
     card: {
       backgroundColor: theme.background.card,
       borderRadius: 12,
@@ -234,13 +233,6 @@ const getStyles = (theme: AppTheme) => {
       ...text.small,
       color: theme.text.secondary,
       lineHeight: 20,
-    },
-    actions: {
-      marginTop: 20,
-      rowGap: 10,
-    },
-    actionButton: {
-      width: '100%',
     },
   });
 };

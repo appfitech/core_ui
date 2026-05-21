@@ -55,9 +55,10 @@ export default function WorkoutDayScreen() {
     return (
       <View style={styles.summaryRow}>
         <Tag
+          icon="barbell-outline"
           backgroundColor={theme.brand.primary}
           textColor={theme.background.app}
-          label={`🏋️ ${exerciseCount} ejercicio${exerciseCount > 1 ? 's' : ''}`}
+          label={`${exerciseCount} ejercicio${exerciseCount > 1 ? 's' : ''}`}
         />
       </View>
     );
@@ -133,7 +134,13 @@ const getStyles = (theme: AppTheme) => {
       paddingBottom: 0,
       rowGap: 10,
     },
-    summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 12 },
+    summaryRow: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      gap: 10,
+      marginBottom: 12,
+    },
     listStyle: { flex: 1 },
     listContent: { paddingBottom: 100 },
     cardWrapper: { marginBottom: 12 },

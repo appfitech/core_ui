@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
@@ -104,8 +104,25 @@ export default function TrainerReviewsScreen() {
             (reviews as { content?: TrainerReviewItem[] } | undefined)
               ?.content ?? []
           ).map((review: TrainerReviewItem) => (
-            <View key={review.id ?? review?.contractId} style={styles.card}>
-              <AppText style={styles.cardTitle}>{review.clientName}</AppText>
+            <Pressable
+              key={review.id ?? review?.contractId}
+              onPress={() => handleDetails(review)}
+              accessibilityRole="button"
+              style={({ pressed }) => [
+                styles.card,
+                pressed && styles.cardPressed,
+              ]}
+            >
+              <View style={styles.cardHeader}>
+                <AppText style={styles.cardTitle} numberOfLines={1}>
+                  {review.clientName}
+                </AppText>
+                <Ionicons
+                  name="chevron-forward"
+                  size={20}
+                  color={theme.text.tertiary}
+                />
+              </View>
               {review.comment ? (
                 <AppText style={styles.cardComment} numberOfLines={4}>
                   {review.comment}
@@ -116,19 +133,15 @@ export default function TrainerReviewsScreen() {
                 textColor={theme.status.info.text}
                 label={review?.serviceName ?? 'Servicio'}
               />
-              <TouchableOpacity
-                style={styles.respondButton}
-                onPress={() => handleDetails(review)}
-                activeOpacity={0.8}
-              >
-                <AppText style={styles.respondButtonText}>Responder</AppText>
+              <View style={styles.respondHint}>
+                <AppText style={styles.respondHintText}>Responder</AppText>
                 <Ionicons
                   name="chevron-forward"
                   size={16}
-                  color={theme.background.app}
+                  color={theme.brand.primary}
                 />
-              </TouchableOpacity>
-            </View>
+              </View>
+            </Pressable>
           ))}
         </View>
       </View>
@@ -200,8 +213,19 @@ const getStyles = (theme: AppTheme) => {
       padding: 16,
       gap: 10,
     },
+    cardPressed: {
+      backgroundColor: theme.background.input,
+      borderColor: theme.border.strong,
+    },
+    cardHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      columnGap: 8,
+    },
     cardTitle: {
       ...text.leadSemibold,
+      flex: 1,
       color: theme.text.primary,
     },
     cardComment: {
@@ -209,20 +233,19 @@ const getStyles = (theme: AppTheme) => {
       color: theme.text.secondary,
       lineHeight: 20,
     },
-    respondButton: {
+    respondHint: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      gap: 8,
+      alignSelf: 'flex-start',
+      columnGap: 2,
       marginTop: 4,
-      backgroundColor: theme.brand.primary,
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      borderRadius: 12,
+      paddingTop: 10,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: theme.border.default,
     },
-    respondButtonText: {
-      color: theme.background.app,
-      ...text.linkSemibold,
+    respondHintText: {
+      ...text.smallSemibold,
+      color: theme.brand.primary,
     },
   });
 };
