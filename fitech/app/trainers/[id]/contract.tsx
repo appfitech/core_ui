@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
@@ -62,7 +62,7 @@ export default function TrainerContractScreen() {
   const styles = getStyles(theme);
 
   const handleConfirm = async () => {
-    if (!service || !clientId) return;
+    if (!service || !clientId || !accepted) return;
 
     try {
       await createContract({
@@ -92,12 +92,50 @@ export default function TrainerContractScreen() {
     );
   }
 
+  const footer = (
+    <FooterActions
+      layout="column"
+      primaryLabel="Contratar"
+      onPrimary={handleConfirm}
+      onCancel={() => router.back()}
+      primaryDisabled={!accepted}
+      primaryLoading={isPending}
+      header={
+        <TouchableOpacity
+          style={styles.checkboxRow}
+          onPress={() => setAccepted((a) => !a)}
+          activeOpacity={0.7}
+        >
+          <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
+            {accepted && (
+              <Ionicons
+                name="checkmark"
+                size={14}
+                color={theme.background.app}
+              />
+            )}
+          </View>
+          <AppText style={styles.checkboxLabel}>
+            He leído y acepto los términos y condiciones del servicio
+          </AppText>
+        </TouchableOpacity>
+      }
+    />
+  );
+
   return (
-    <PageContainer title="Contratar servicio" subheader={service.name}>
+    <PageContainer
+      title="Contratar servicio"
+      subheader={service.name}
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={footer}
+    >
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.card}>
           <AppText style={styles.cardTitle}>Resumen del servicio</AppText>
@@ -151,38 +189,6 @@ export default function TrainerContractScreen() {
             </View>
           ))}
         </View>
-
-        <TouchableOpacity
-          style={styles.checkboxRow}
-          onPress={() => setAccepted((a) => !a)}
-          activeOpacity={0.7}
-        >
-          <View style={[styles.checkbox, accepted && styles.checkboxChecked]}>
-            {accepted && (
-              <Ionicons
-                name="checkmark"
-                size={14}
-                color={theme.background.app}
-              />
-            )}
-          </View>
-          <AppText style={styles.checkboxLabel}>
-            He leído y acepto los términos y condiciones del servicio
-          </AppText>
-        </TouchableOpacity>
-
-        <View style={styles.actions}>
-          <Button
-            label="Cancelar"
-            onPress={() => router.back()}
-            type="tertiary"
-          />
-          <Button
-            label="Contratar"
-            onPress={handleConfirm}
-            disabled={!accepted || isPending}
-          />
-        </View>
       </ScrollView>
     </PageContainer>
   );
@@ -192,7 +198,7 @@ const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     scroll: { flex: 1 },
-    scrollContent: { paddingBottom: 180 },
+    scrollContent: { paddingBottom: 16 },
     errorText: {
       ...text.body,
       color: theme.text.secondary,
@@ -243,8 +249,6 @@ const getStyles = (theme: AppTheme) => {
     checkboxRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginTop: 24,
-      marginBottom: 8,
       gap: 12,
     },
     checkbox: {
@@ -264,10 +268,6 @@ const getStyles = (theme: AppTheme) => {
       flex: 1,
       ...text.smallMedium,
       color: theme.text.primary,
-    },
-    actions: {
-      marginTop: 24,
-      rowGap: 12,
     },
   });
 };

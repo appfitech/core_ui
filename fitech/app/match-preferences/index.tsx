@@ -5,8 +5,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ChipToggle } from '@/components/atoms/ChipToggle';
 import { SwitchRow } from '@/components/atoms/SwitchRow';
-import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
+import { FooterActions } from '@/components/FooterActions';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import { MultiLocationPicker } from '@/components/MultiLocationPicker';
 import PageContainer from '@/components/PageContainer';
@@ -218,19 +218,11 @@ export default function MatchPreferencesScreen() {
       style={styles.page}
       includeTabBarPadding={false}
       footer={
-        <View style={styles.footer}>
-          <Button
-            label="Guardar"
-            onPress={handleSave}
-            style={styles.footerButton}
-          />
-          <Button
-            label="Cancelar"
-            type="tertiary"
-            onPress={() => router.back()}
-            style={styles.footerButton}
-          />
-        </View>
+        <FooterActions
+          primaryLabel="Guardar"
+          onPrimary={handleSave}
+          onCancel={() => router.back()}
+        />
       }
     >
       <Card style={styles.card}>
@@ -565,13 +557,6 @@ const getStyles = (theme: AppTheme) => {
       color: theme.text.tertiary,
       textAlign: 'center',
       paddingVertical: 8,
-    },
-    footer: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    footerButton: {
-      flex: 1,
     },
   });
 };

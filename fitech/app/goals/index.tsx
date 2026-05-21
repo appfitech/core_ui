@@ -2,9 +2,11 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/Button';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { SelectableCard } from '@/components/SelectableCard';
+import { TRANSLATIONS } from '@/constants/strings';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
 import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
@@ -16,6 +18,8 @@ import { AppTheme } from '@/types/theme';
 export default function FitnessGoalsScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { fitnessGoalsScreen: copy } = TRANSLATIONS;
+  const { showAlert } = useAlert();
 
   const [selectedGoals, setSelectedGoals] = useState<FitnessGoal[]>([]);
   const { mutate: updateFitnessGoals } = useUpdateFitnessGoals();
@@ -62,10 +66,29 @@ export default function FitnessGoalsScreen() {
         onSuccess: async (response) => {
           if (response?.user)
             await updateUserInfo(response.user as UserResponseDtoReadable);
+          showAlert({
+            title: copy.successTitle,
+            message: copy.successMessage,
+          });
+        },
+        onError: () => {
+          showAlert({
+            title: copy.errorTitle,
+            message: copy.errorMessage,
+          });
         },
       },
     );
-  }, [selectedGoals, updateFitnessGoals, updateUserInfo]);
+  }, [
+    selectedGoals,
+    updateFitnessGoals,
+    updateUserInfo,
+    showAlert,
+    copy.successTitle,
+    copy.successMessage,
+    copy.errorTitle,
+    copy.errorMessage,
+  ]);
 
   const handleCancel = useCallback(() => {
     router.back();
@@ -73,25 +96,18 @@ export default function FitnessGoalsScreen() {
 
   return (
     <PageContainer
-      title="Objetivos Fitness"
-      subheader="Selecciona tus metas para recomendaciones personalizadas"
+      title={copy.title}
+      subheader={copy.subheader}
       style={styles.pageStyle}
       includeTabBarPadding={false}
       hasBottomPadding={false}
       footer={
-        <View style={styles.footer}>
-          <Button
-            onPress={handleUpdate}
-            label="Actualizar"
-            style={styles.footerButton}
-          />
-          <Button
-            type="tertiary"
-            onPress={handleCancel}
-            label="Cancelar"
-            style={styles.footerButton}
-          />
-        </View>
+        <FooterActions
+          primaryLabel={copy.updateButton}
+          onPrimary={handleUpdate}
+          cancelLabel={copy.cancelButton}
+          onCancel={handleCancel}
+        />
       }
     >
       <View style={styles.cardList}>
@@ -124,12 +140,5 @@ const getStyles = (theme: AppTheme) =>
     },
     cardList: {
       rowGap: 12,
-    },
-    footer: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    footerButton: {
-      flex: 1,
     },
   });

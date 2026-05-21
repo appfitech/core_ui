@@ -5,8 +5,8 @@ import { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { ROUTES } from '@/constants/routes';
@@ -135,24 +135,15 @@ export default function ChangePasswordScreen() {
       includeTabBarPadding={false}
       hasBottomPadding={false}
       footer={
-        <View style={styles.footer}>
-          <Button
-            label={changePasswordScreen.submitButton}
-            onPress={handleSubmitPress}
-            disabled={!canSubmit || isPending}
-            loading={isPending}
-            animated={false}
-            style={styles.footerButton}
-          />
-          <Button
-            type="tertiary"
-            label={changePasswordScreen.cancelButton}
-            onPress={() => router.back()}
-            disabled={isPending}
-            animated={false}
-            style={styles.footerButton}
-          />
-        </View>
+        <FooterActions
+          primaryLabel={changePasswordScreen.submitButton}
+          onPrimary={handleSubmitPress}
+          cancelLabel={changePasswordScreen.cancelButton}
+          onCancel={() => router.back()}
+          primaryDisabled={!canSubmit}
+          primaryLoading={isPending}
+          cancelDisabled={isPending}
+        />
       }
     >
       <View style={styles.introCard}>
@@ -258,13 +249,6 @@ const getStyles = (theme: AppTheme) => {
         paddingHorizontal: 16,
         rowGap: 16,
         paddingBottom: 0,
-      },
-      footer: {
-        flexDirection: 'row',
-        gap: 10,
-      },
-      footerButton: {
-        flex: 1,
       },
       introCard: {
         backgroundColor: theme.status.warning.bg,

@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { Button } from '@/components/Button';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { WorkoutExerciseForm } from '@/components/workouts/WorkoutExerciseForm';
 import usePreviousValue from '@/hooks/use-previous-value';
@@ -188,23 +188,14 @@ export default function WorkoutExerciseScreen() {
   ]);
 
   const footer = (
-    <View style={styles.footerRow}>
-      <Button
-        label="Cancelar"
-        type="tertiary"
-        onPress={() => router.back()}
-        disabled={isSaving}
-        style={styles.footerButton}
-      />
-      <Button
-        label="Guardar"
-        onPress={handleSave}
-        disabled={!canSave || isSaving}
-        loading={isSaving}
-        style={styles.footerButton}
-        buttonStyle={!canSave ? styles.saveButtonDisabled : undefined}
-      />
-    </View>
+    <FooterActions
+      primaryLabel="Guardar"
+      onPrimary={handleSave}
+      onCancel={() => router.back()}
+      primaryDisabled={!canSave}
+      primaryLoading={isSaving}
+      cancelDisabled={isSaving}
+    />
   );
 
   return (
@@ -242,16 +233,6 @@ const styles = StyleSheet.create({
   pageStyle: {
     rowGap: 16,
     paddingBottom: 8,
-  },
-  footerRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  footerButton: {
-    flex: 1,
-  },
-  saveButtonDisabled: {
-    opacity: 0.5,
   },
   loadingWrap: {
     paddingVertical: 48,

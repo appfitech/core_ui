@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -13,6 +14,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useCalculateMacros } from '@/lib/api/mutations/use-calculate-macros';
 import { MacroCalculationResponseDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
+import { getFooterScrollPaddingBottom } from '@/utils/layout';
 
 function normalizeCalculationResult(
   result: unknown,
@@ -28,10 +30,16 @@ function normalizeCalculationResult(
   return result as MacroCalculationResponseDto;
 }
 
+const EXTRA_RESULTS_BOTTOM_PADDING = 24;
+
 export default function MacrosCalculatorCalculateScreen() {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => getStyles(theme), [theme]);
   const { macrosCalculatorScreen: copy } = TRANSLATIONS;
+
+  const contentPaddingBottom =
+    getFooterScrollPaddingBottom(insets) + EXTRA_RESULTS_BOTTOM_PADDING;
 
   const {
     selectedItems,
@@ -81,7 +89,7 @@ export default function MacrosCalculatorCalculateScreen() {
           <AppText style={styles.bannerLabel}>{copy.noSelectionBanner}</AppText>
         </View>
       ) : (
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingBottom: contentPaddingBottom }]}>
           <AppText style={styles.sectionLabel}>{copy.portionsSection}</AppText>
 
           <View style={styles.portionsList}>

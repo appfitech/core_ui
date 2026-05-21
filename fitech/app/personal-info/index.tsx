@@ -1,9 +1,9 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
-import { Button } from '@/components/Button';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { PersonalInfoFormFields } from '@/components/personal-info/PersonalInfoFormFields';
 import { PERSONAL_INFO_FORM_FIELDS } from '@/constants/forms';
@@ -56,23 +56,14 @@ export default function PersonalInfoScreen() {
       includeTabBarPadding={false}
       hasBottomPadding={false}
       footer={
-        <View style={styles.footer}>
-          <Button
-            label="Actualizar"
-            type="primary"
-            onPress={handleUpdate}
-            disabled={!canSubmit || isPending}
-            loading={isPending}
-            style={styles.footerButton}
-          />
-          <Button
-            label="Cancelar"
-            type="tertiary"
-            onPress={handleCancel}
-            disabled={isPending}
-            style={styles.footerButton}
-          />
-        </View>
+        <FooterActions
+          primaryLabel="Actualizar"
+          onPrimary={handleUpdate}
+          onCancel={handleCancel}
+          primaryDisabled={!canSubmit}
+          primaryLoading={isPending}
+          cancelDisabled={isPending}
+        />
       }
     >
       <Animated.View entering={FadeInUp.delay(100).duration(500)}>
@@ -92,12 +83,5 @@ const getStyles = () =>
     pageStyle: {
       paddingHorizontal: 16,
       paddingBottom: 32,
-    },
-    footer: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    footerButton: {
-      flex: 1,
     },
   });

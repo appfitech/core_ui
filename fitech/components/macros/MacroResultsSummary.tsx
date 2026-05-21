@@ -15,11 +15,12 @@ type Props = {
   calculation: MacroCalculationResponseDto;
 };
 
+type MacroStatusKey = 'error' | 'warning' | 'info';
+
 type MacroBarConfig = {
   key: keyof Pick<MacroNutrientsDto, 'carbohydrates' | 'fats' | 'proteins'>;
   label: string;
-  color: string;
-  trackColor: string;
+  status: MacroStatusKey;
   apiPctKey: 'carbohydratePercentage' | 'fatPercentage' | 'proteinPercentage';
 };
 
@@ -27,22 +28,19 @@ const MACRO_BARS: MacroBarConfig[] = [
   {
     key: 'carbohydrates',
     label: 'Carbohidratos',
-    color: '#FF6B9D',
-    trackColor: 'rgba(255, 107, 157, 0.2)',
+    status: 'error',
     apiPctKey: 'carbohydratePercentage',
   },
   {
     key: 'fats',
     label: 'Grasas',
-    color: '#F5B84B',
-    trackColor: 'rgba(245, 184, 75, 0.2)',
+    status: 'warning',
     apiPctKey: 'fatPercentage',
   },
   {
     key: 'proteins',
     label: 'Proteínas',
-    color: '#4DA3FF',
-    trackColor: 'rgba(77, 163, 255, 0.2)',
+    status: 'info',
     apiPctKey: 'proteinPercentage',
   },
 ];
@@ -122,6 +120,7 @@ export function MacroResultsSummary({ calculation }: Props) {
           const grams = totals?.[bar.key] ?? 0;
           const apiPct = percentages?.[bar.apiPctKey];
           const percent = resolvePercent(grams, apiPct, macroMassTotal);
+          const statusColors = theme.status[bar.status];
 
           return (
             <MacroProgressBar
@@ -129,8 +128,8 @@ export function MacroResultsSummary({ calculation }: Props) {
               label={bar.label}
               grams={grams}
               percent={percent}
-              color={bar.color}
-              trackColor={bar.trackColor}
+              color={statusColors.icon}
+              trackColor={statusColors.bg}
               styles={styles}
             />
           );
@@ -195,6 +194,7 @@ const getStyles = (theme: AppTheme) => {
     wrap: {
       rowGap: 16,
       marginTop: 8,
+      paddingBottom: 8,
     },
     sectionTitle: {
       ...text.sectionTitle,

@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { Dropdown } from '@/components/Dropdown';
+import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { textStyles } from '@/constants/styles';
@@ -95,19 +95,12 @@ export default function SupportScreen() {
       hasBottomPadding={false}
       style={styles.pageStyle}
       footer={
-        <View style={styles.footer}>
-          <Button
-            type="tertiary"
-            onPress={handleClear}
-            label="Limpiar"
-            style={styles.footerButton}
-          />
-          <Button
-            onPress={handleSubmit}
-            label="Enviar"
-            style={styles.footerButton}
-          />
-        </View>
+        <FooterActions
+          primaryLabel="Enviar"
+          onPrimary={handleSubmit}
+          cancelLabel="Limpiar"
+          onCancel={handleClear}
+        />
       }
     >
       <Card style={styles.contactCard}>
@@ -178,13 +171,6 @@ const getStyles = (theme: AppTheme) => {
     pageStyle: {
       rowGap: 24,
       paddingBottom: 0,
-    },
-    footer: {
-      flexDirection: 'row',
-      gap: 10,
-    },
-    footerButton: {
-      flex: 1,
     },
     contactCard: {
       backgroundColor: theme.status.info.bg,

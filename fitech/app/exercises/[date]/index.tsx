@@ -1,12 +1,21 @@
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import moment from 'moment';
 import React, { useCallback } from 'react';
-import { FlatList, Pressable, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ExerciseCard } from '@/components/modules/ExerciseCard';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
+import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
 import { AppTheme } from '@/types/theme';
@@ -16,6 +25,8 @@ export default function WorkoutDayScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const styles = getStyles(theme);
+  const { exercisesScreen: copy } = TRANSLATIONS;
+  const dayCopy = copy.workoutDay;
 
   const {
     data: sessions,
@@ -56,7 +67,7 @@ export default function WorkoutDayScreen() {
     <>
       <PageContainer
         title={moment(date).format('DD/MM/YYYY')}
-        subheader="Entrenamientos registrados"
+        subheader={dayCopy.subheader}
         disableScroll
         style={styles.pageStyle}
         hasBottomPadding={false}
@@ -77,12 +88,18 @@ export default function WorkoutDayScreen() {
             </View>
           )}
           ListEmptyComponent={
-            !isLoading ? (
-              <AppText style={styles.emptyText}>
-                Hoy no tienes ejercicios registrados. Añade una rutina y sigue
-                sumando progreso. 🏋️
-              </AppText>
-            ) : null
+            isLoading ? (
+              <View style={styles.loadingWrap}>
+                <ActivityIndicator color={theme.brand.primary} />
+                <AppText style={styles.loadingText}>{dayCopy.loading}</AppText>
+              </View>
+            ) : (
+              <ListEmptyState
+                icon="barbell-outline"
+                title={dayCopy.emptyTitle}
+                hint={dayCopy.emptyHint}
+              />
+            )
           }
         />
       </PageContainer>
@@ -100,7 +117,7 @@ export default function WorkoutDayScreen() {
           onPress={openAddExercise}
         >
           <AppText style={[styles.buttonText, styles.buttonTextPrimary]}>
-            + Agregar Ejercicio
+            + Ejercicio
           </AppText>
         </Pressable>
       </View>
@@ -108,8 +125,9 @@ export default function WorkoutDayScreen() {
   );
 }
 
-const getStyles = (theme: AppTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: AppTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       paddingHorizontal: 16,
       paddingBottom: 0,
@@ -119,11 +137,14 @@ const getStyles = (theme: AppTheme) =>
     listStyle: { flex: 1 },
     listContent: { paddingBottom: 100 },
     cardWrapper: { marginBottom: 12 },
-    emptyText: {
-      fontSize: 19,
-      color: theme.text.disabled,
-      marginTop: 40,
-      textAlign: 'center',
+    loadingWrap: {
+      paddingVertical: 48,
+      alignItems: 'center',
+      rowGap: 12,
+    },
+    loadingText: {
+      ...text.nav,
+      color: theme.text.secondary,
     },
     bottomBar: {
       position: 'absolute',
@@ -147,3 +168,4 @@ const getStyles = (theme: AppTheme) =>
     buttonTextGhost: { color: theme.text.primary },
     buttonTextPrimary: { color: theme.background.app },
   });
+};

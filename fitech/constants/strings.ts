@@ -412,7 +412,8 @@ export const TRANSLATIONS = {
     addedFood: 'Agregado',
     removeFood: 'Quitar',
     calculateTitle: '¿Cuánto comiste?',
-    calculateSubheader: 'Ajusta las porciones para obtener tu desglose de macros.',
+    calculateSubheader:
+      'Ajusta las porciones para obtener tu desglose de macros.',
     noSelectionBanner:
       'Todavía no elegiste ningún alimento. Agrega uno para calcular tus macros.',
     showResultsButton: 'Mostrar resultados',
@@ -456,12 +457,29 @@ export const TRANSLATIONS = {
     subheader: 'Lleva el control de tus workouts y alcanza tus metas fitness',
     filterTitle: 'Filtro por grupo muscular',
     filterHint: 'Toca un grupo para filtrar los entrenamientos del mes',
+    workoutDay: {
+      subheader: 'Entrenamientos registrados',
+      loading: 'Cargando entrenamientos…',
+      emptyTitle: 'Sin entrenamientos este día',
+      emptyHint:
+        'Registra tus ejercicios con el botón de abajo y lleva tu progreso al día.',
+    },
   },
   profileScreen: {
     userTypeTrainer: 'Trainer',
     userTypeUser: 'Usuario',
     premiumByContract: 'Premium (Con Contrato)',
     premiumByPayment: 'Premium (Por Pago)',
+  },
+  fitnessGoalsScreen: {
+    title: 'Objetivos Fitness',
+    subheader: 'Selecciona tus metas para recomendaciones personalizadas',
+    updateButton: 'Actualizar',
+    cancelButton: 'Cancelar',
+    successTitle: '¡Listo!',
+    successMessage: 'Tus objetivos fitness se actualizaron correctamente.',
+    errorTitle: 'No se pudo actualizar',
+    errorMessage: 'Intenta de nuevo en unos momentos.',
   },
   profileMenu: {
     sections: {
