@@ -23,21 +23,14 @@ export function MacroSelectedFoodPills({ items, onRemove }: Props) {
         <Pressable
           key={item.id ?? item.name}
           onPress={() => onRemove(item)}
-          style={({ pressed }) => [
-            styles.pill,
-            pressed && styles.pillPressed,
-          ]}
+          style={({ pressed }) => [styles.pill, pressed && styles.pillPressed]}
           accessibilityRole="button"
           accessibilityLabel={`Quitar ${item.name}`}
         >
           <AppText style={styles.pillText} numberOfLines={1}>
             {item.name}
           </AppText>
-          <Ionicons
-            name="close"
-            size={16}
-            color={theme.brand.primary}
-          />
+          <Ionicons name="close" size={16} color={theme.brand.primary} />
         </Pressable>
       ))}
     </View>

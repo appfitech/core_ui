@@ -7,12 +7,12 @@ import { TextInput } from '@/components/TextInput';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { parsePortionInput } from '@/lib/macros/portion-input';
 import {
   formatGrams,
   getGramsPerServing,
   getTotalGramsFromPortions,
 } from '@/lib/macros/serving-weight';
-import { parsePortionInput } from '@/lib/macros/portion-input';
 import { FoodItemDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 

@@ -1,4 +1,7 @@
-const { createRunOncePlugin, withAndroidManifest } = require('@expo/config-plugins');
+const {
+  createRunOncePlugin,
+  withAndroidManifest,
+} = require('@expo/config-plugins');
 
 /**
  * Fixes Android App Link verification when expo-dev-client / other plugins inject

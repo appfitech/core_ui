@@ -1,12 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { memo, useCallback } from 'react';
-import {
-  ImageBackground,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { ImageBackground, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { Tag } from '@/components/Tag';
@@ -75,13 +70,7 @@ function MacroFoodCarouselCardInner({
   );
 
   return (
-    <View
-      style={[
-        styles.card,
-        { width },
-        isSelected && styles.cardSelected,
-      ]}
-    >
+    <View style={[styles.card, { width }, isSelected && styles.cardSelected]}>
       <View style={styles.mediaLayer} pointerEvents="none">
         {imageLayer}
         {!foodItem.imageUrl ? (

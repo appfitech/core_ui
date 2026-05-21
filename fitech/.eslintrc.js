@@ -7,6 +7,16 @@ module.exports = {
     'plugin:import/typescript',
   ],
   ignorePatterns: ['/dist/*'],
+  overrides: [
+    {
+      files: ['plugins/**/*.js'],
+      env: { node: true },
+      parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'script',
+      },
+    },
+  ],
   plugins: [
     'expo',
     'prettier',

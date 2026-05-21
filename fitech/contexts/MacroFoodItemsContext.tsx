@@ -38,7 +38,9 @@ export const MacroFoodItemsProvider: React.FC<{
 }> = ({ children }) => {
   const [selected, setSelected] = useState<FoodItemDto[]>([]);
   const [foodItemRequest, setFoodItemRequest] = useState<SelectedFoodDto[]>([]);
-  const [portionInputs, setPortionInputs] = useState<Record<number, string>>({});
+  const [portionInputs, setPortionInputs] = useState<Record<number, string>>(
+    {},
+  );
   const [calculation, setCalculation] =
     useState<MacroCalculationResponseDto | null>(null);
 
