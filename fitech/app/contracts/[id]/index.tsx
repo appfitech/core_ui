@@ -25,8 +25,10 @@ const formatDate = (iso?: string) =>
 export default function ContractDetailScreen() {
   const { theme } = useTheme();
   const { contract } = useLocalSearchParams();
-  const { mutate: completeContract } = useCompleteContract();
-  const { mutate: cancelContract } = useCancelContract();
+  const { mutate: completeContract, isPending: isCompleting } =
+    useCompleteContract();
+  const { mutate: cancelContract, isPending: isCancelling } =
+    useCancelContract();
   const router = useRouter();
 
   const [displayComplete, setDisplayComplete] = useState(false);
@@ -43,6 +45,7 @@ export default function ContractDetailScreen() {
   const handleComplete = useCallback(() => {
     completeContract(parsedContract?.id ?? parsedContract?.contractId, {
       onSuccess: () => {
+        setDisplayComplete(false);
         router.push(ROUTES.contracts);
       },
     });
@@ -56,6 +59,7 @@ export default function ContractDetailScreen() {
   const handleCancel = useCallback(() => {
     cancelContract(parsedContract?.id ?? parsedContract?.contractId, {
       onSuccess: () => {
+        setDisplayCancel(false);
         router.push(ROUTES.contracts);
       },
     });
@@ -182,11 +186,15 @@ export default function ContractDetailScreen() {
         isOpen={displayComplete}
         onCloseModal={() => setDisplayComplete(false)}
         onComplete={handleComplete}
+        confirmLoading={isCompleting}
+        confirmLoadingLabel={TRANSLATIONS.common.updating}
       />
       <CancelModal
         isOpen={displayCancel}
         onCloseModal={() => setDisplayCancel(false)}
         onCancel={handleCancel}
+        confirmLoading={isCancelling}
+        confirmLoadingLabel={TRANSLATIONS.common.updating}
       />
     </PageContainer>
   );

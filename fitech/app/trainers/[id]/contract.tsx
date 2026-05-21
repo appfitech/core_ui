@@ -100,6 +100,8 @@ export default function TrainerContractScreen() {
       onCancel={() => router.back()}
       primaryDisabled={!accepted}
       primaryLoading={isPending}
+      primaryLoadingLabel="Contratando…"
+      cancelDisabled={isPending}
       header={
         <TouchableOpacity
           style={styles.checkboxRow}

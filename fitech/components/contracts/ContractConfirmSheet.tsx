@@ -22,6 +22,9 @@ type Props = {
   dismissLabel: string;
   confirmLabel: string;
   confirmVariant?: ConfirmVariant;
+  confirmLoading?: boolean;
+  confirmLoadingLabel?: string;
+  dismissDisabled?: boolean;
 };
 
 export function ContractConfirmSheet({
@@ -36,13 +39,16 @@ export function ContractConfirmSheet({
   dismissLabel,
   confirmLabel,
   confirmVariant = 'primary',
+  confirmLoading = false,
+  confirmLoadingLabel,
+  dismissDisabled = false,
 }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = getStyles(theme, insets.bottom);
 
   const handleConfirm = () => {
-    onClose();
+    if (confirmLoading) return;
     onConfirm();
   };
 
@@ -82,6 +88,7 @@ export function ContractConfirmSheet({
               type="secondary"
               label={dismissLabel}
               onPress={onClose}
+              disabled={dismissDisabled || confirmLoading}
               animated={false}
               style={styles.actionButton}
             />
@@ -91,6 +98,9 @@ export function ContractConfirmSheet({
               }
               label={confirmLabel}
               onPress={handleConfirm}
+              disabled={confirmLoading}
+              loading={confirmLoading}
+              loadingLabel={confirmLoadingLabel}
               animated={false}
               style={styles.actionButton}
             />

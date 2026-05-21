@@ -120,6 +120,8 @@ export default function ForgotPasswordScreen() {
             label={forgotPasswordScreen.submitButton}
             onPress={handleSubmit}
             disabled={!email.trim() || isPending}
+            loading={isPending}
+            loadingLabel={TRANSLATIONS.common.sending}
             animated={false}
           />
         </View>

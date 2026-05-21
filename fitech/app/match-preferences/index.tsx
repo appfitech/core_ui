@@ -12,6 +12,7 @@ import { MultiLocationPicker } from '@/components/MultiLocationPicker';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { MATCH_WORKOUT_SCHEDULES } from '@/constants/match';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -76,7 +77,8 @@ export default function MatchPreferencesScreen() {
     isLoading,
     refetch,
   } = useGetUserMatchPreferences();
-  const { mutate: updatePreferences } = useUpdateMatchPreferences();
+  const { mutate: updatePreferences, isPending: isSaving } =
+    useUpdateMatchPreferences();
 
   const [matchPreferences, setMatchPreferences] =
     useState<MatchPreferencesDto | null>(null);
@@ -219,9 +221,12 @@ export default function MatchPreferencesScreen() {
       includeTabBarPadding={false}
       footer={
         <FooterActions
-          primaryLabel="Guardar"
+          primaryLabel={TRANSLATIONS.common.save}
+          primaryLoadingLabel={TRANSLATIONS.common.saving}
           onPrimary={handleSave}
           onCancel={() => router.back()}
+          primaryLoading={isSaving}
+          cancelDisabled={isSaving}
         />
       }
     >

@@ -21,6 +21,8 @@ import { rippleFromHex } from '@/utils/theme';
 
 import { AppText } from './AppText';
 
+const TRACK_INSET = 4;
+
 type Props = {
   options: Option[];
   value: string;
@@ -76,7 +78,7 @@ export function Tabs({ options, value, onSelect }: Props) {
             onPress={() => onSelect(optValue)}
             android_ripple={
               Platform.OS === 'android'
-                ? { color: rippleFromHex(theme.status.info.icon, 0.2) }
+                ? { color: rippleFromHex(theme.brand.primary, 0.25) }
                 : undefined
             }
             style={({ pressed }) => [styles.tab, pressed && styles.tabPressed]}
@@ -84,7 +86,7 @@ export function Tabs({ options, value, onSelect }: Props) {
             <AppText
               style={[
                 styles.tabText,
-                isSelected ? styles.textSelected : undefined,
+                isSelected && styles.tabTextSelected,
               ]}
             >
               {label}
@@ -103,22 +105,25 @@ const getStyles = (theme: AppTheme) => {
       position: 'relative',
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'space-between',
-      borderRadius: 16,
+      borderRadius: 999,
       overflow: 'hidden',
-      backgroundColor: theme.status.info.bg,
+      padding: TRACK_INSET,
+      backgroundColor: theme.background.card,
+      borderWidth: 1,
+      borderColor: theme.border.default,
     },
     pill: {
       position: 'absolute',
       left: 0,
-      top: 0,
-      bottom: 0,
-      borderRadius: 16,
-      backgroundColor: theme.status.info.icon,
+      top: TRACK_INSET,
+      bottom: TRACK_INSET,
+      borderRadius: 999,
+      backgroundColor: theme.brand.primary,
     },
     tab: {
       flex: 1,
       height: 44,
+      zIndex: 1,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -126,11 +131,12 @@ const getStyles = (theme: AppTheme) => {
       opacity: 0.88,
     },
     tabText: {
-      ...text.body,
-      color: theme.text.primary,
+      ...text.bodyMedium,
+      color: theme.text.secondary,
     },
-    textSelected: {
-      color: theme.background.app,
+    tabTextSelected: {
+      ...text.bodySemibold,
+      color: theme.text.inverse,
     },
   });
 };

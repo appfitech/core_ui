@@ -22,7 +22,8 @@ export default function FitnessGoalsScreen() {
   const { showAlert } = useAlert();
 
   const [selectedGoals, setSelectedGoals] = useState<FitnessGoal[]>([]);
-  const { mutate: updateFitnessGoals } = useUpdateFitnessGoals();
+  const { mutate: updateFitnessGoals, isPending: isSaving } =
+    useUpdateFitnessGoals();
   const updateUserInfo = useUserStore((s) => s.updateUserInfo);
   const router = useRouter();
 
@@ -104,9 +105,12 @@ export default function FitnessGoalsScreen() {
       footer={
         <FooterActions
           primaryLabel={copy.updateButton}
+          primaryLoadingLabel={TRANSLATIONS.common.updating}
           onPrimary={handleUpdate}
           cancelLabel={copy.cancelButton}
           onCancel={handleCancel}
+          primaryLoading={isSaving}
+          cancelDisabled={isSaving}
         />
       }
     >

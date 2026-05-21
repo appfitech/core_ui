@@ -194,6 +194,7 @@ export default function WorkoutExerciseScreen() {
       onCancel={() => router.back()}
       primaryDisabled={!canSave}
       primaryLoading={isSaving}
+      primaryLoadingLabel="Guardando…"
       cancelDisabled={isSaving}
     />
   );

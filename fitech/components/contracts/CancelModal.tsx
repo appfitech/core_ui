@@ -6,11 +6,19 @@ type Props = {
   isOpen: boolean;
   onCloseModal: () => void;
   onCancel: () => void;
+  confirmLoading?: boolean;
+  confirmLoadingLabel?: string;
 };
 
-const { cancelContractModal: copy } = TRANSLATIONS;
+const { cancelContractModal: copy, common } = TRANSLATIONS;
 
-export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
+export default function CancelModal({
+  isOpen,
+  onCloseModal,
+  onCancel,
+  confirmLoading = false,
+  confirmLoadingLabel = common.updating,
+}: Props) {
   return (
     <ContractConfirmSheet
       visible={isOpen}
@@ -23,6 +31,9 @@ export default function CancelModal({ isOpen, onCloseModal, onCancel }: Props) {
       dismissLabel={copy.dismiss}
       confirmLabel={copy.confirm}
       confirmVariant="destructive"
+      confirmLoading={confirmLoading}
+      confirmLoadingLabel={confirmLoadingLabel}
+      dismissDisabled={confirmLoading}
     />
   );
 }

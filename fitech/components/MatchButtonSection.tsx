@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/contexts/ThemeContext';
 import { MatchScreenType } from '@/types/forms';
@@ -26,10 +27,15 @@ export function MatchButtonSection({
   onRefresh,
 }: Props) {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
+  const bottomOffset = Math.max(insets.bottom, 12) + 8;
 
   if (!hideRefresh) {
     return (
-      <View style={styles.container} pointerEvents="box-none">
+      <View
+        style={[styles.container, { bottom: bottomOffset }]}
+        pointerEvents="box-none"
+      >
         <Button
           type="secondary"
           label="Actualizar"
@@ -45,11 +51,16 @@ export function MatchButtonSection({
   }
 
   return (
-    <View style={styles.container} pointerEvents="box-none">
+    <View
+      style={[styles.container, { bottom: bottomOffset }]}
+      pointerEvents="box-none"
+    >
       <DiscardLottieButton onPress={onDiscard} />
-
-      {type === 'gymbro' && <MuscleLottieButton onPress={onMatch} />}
-      {type === 'gymcrush' && <HeartLottieButton onPress={onMatch} />}
+      {type === 'gymbro' ? (
+        <MuscleLottieButton onPress={onMatch} />
+      ) : (
+        <HeartLottieButton onPress={onMatch} />
+      )}
     </View>
   );
 }
@@ -59,11 +70,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 150,
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
+    columnGap: 48,
     zIndex: 20,
+    paddingHorizontal: 24,
   },
   refreshButton: {
     minWidth: 160,

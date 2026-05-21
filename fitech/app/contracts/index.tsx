@@ -30,8 +30,11 @@ export default function ContractsScreen() {
     useGetActiveContracts();
   const { data: inactiveContracts, refetch: refetchInactiveContracts } =
     useGetInactiveContracts();
-  const { mutate: submitReview } = useSubmitReview();
-  const { mutate: updateReview } = useUpdateReview();
+  const { mutate: submitReview, isPending: isSubmittingReview } =
+    useSubmitReview();
+  const { mutate: updateReview, isPending: isUpdatingReview } =
+    useUpdateReview();
+  const isReviewSubmitting = isSubmittingReview || isUpdatingReview;
   const { refetch: refetchReviews } = useGetReviews();
 
   const [displayReview, setDisplayReview] = useState(false);
@@ -155,6 +158,7 @@ export default function ContractsScreen() {
         }}
         existingReviewId={selectedReviewId}
         onSubmit={handleSubmitReview}
+        isSubmitting={isReviewSubmitting}
       />
     </PageContainer>
   );

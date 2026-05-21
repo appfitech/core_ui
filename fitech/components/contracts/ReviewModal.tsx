@@ -32,6 +32,7 @@ type Props = {
   onCloseModal: () => void;
   contractId?: number | null;
   existingReviewId?: number | null;
+  isSubmitting?: boolean;
 };
 
 const { reviewModal: copy, common } = TRANSLATIONS;
@@ -42,6 +43,7 @@ export function ReviewModal({
   onSubmit,
   contractId = null,
   existingReviewId = null,
+  isSubmitting = false,
 }: Props) {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
@@ -78,9 +80,8 @@ export function ReviewModal({
   };
 
   const handleSubmit = () => {
-    if (!contractId) return;
+    if (!contractId || isSubmitting) return;
     onSubmit(rating, comment.trim(), anonymous, contractId, existingReviewId);
-    handleClose();
   };
 
   return (
@@ -137,6 +138,7 @@ export function ReviewModal({
                 type="secondary"
                 label={common.cancel}
                 onPress={handleClose}
+                disabled={isSubmitting}
                 animated={false}
                 style={styles.actionButton}
               />
@@ -144,6 +146,9 @@ export function ReviewModal({
                 type="primary"
                 label={copy.submit}
                 onPress={handleSubmit}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                loadingLabel={copy.submitting}
                 animated={false}
                 style={styles.actionButton}
               />

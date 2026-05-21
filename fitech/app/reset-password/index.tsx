@@ -228,13 +228,11 @@ export default function ResetPasswordScreen() {
         />
 
         <Button
-          label={
-            isPending
-              ? `${resetPasswordScreen.submitButton}…`
-              : resetPasswordScreen.submitButton
-          }
+          label={resetPasswordScreen.submitButton}
           onPress={handleSubmit}
           disabled={isPending || !password.trim() || !confirmPassword.trim()}
+          loading={isPending}
+          loadingLabel={TRANSLATIONS.common.saving}
           animated={false}
         />
       </View>

@@ -137,6 +137,22 @@ export async function invalidateMatchQueries(
   ]);
 }
 
+/** After pass/like — refresh matches list only; keep local discover queue stable. */
+export async function invalidateMatchMutuals(
+  queryClient: QueryClient,
+  system: 'gymbro' | 'gymcrush',
+): Promise<void> {
+  const mutualKey =
+    system === 'gymbro'
+      ? queryKeys.gymbro.mutuals
+      : queryKeys.gymcrush.mutuals;
+
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: mutualKey }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.chats.all }),
+  ]);
+}
+
 export async function invalidateNotificationQueries(
   queryClient: QueryClient,
 ): Promise<void> {

@@ -7,6 +7,7 @@ import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { PersonalInfoFormFields } from '@/components/personal-info/PersonalInfoFormFields';
 import { PERSONAL_INFO_FORM_FIELDS } from '@/constants/forms';
+import { TRANSLATIONS } from '@/constants/strings';
 import { useUpdateUser } from '@/lib/api/mutations/useUpdateUser';
 import { isPersonalInfoFormValid } from '@/lib/personal-info/form';
 import { useUserStore } from '@/stores/user';
@@ -58,6 +59,7 @@ export default function PersonalInfoScreen() {
       footer={
         <FooterActions
           primaryLabel="Actualizar"
+          primaryLoadingLabel={TRANSLATIONS.common.updating}
           onPrimary={handleUpdate}
           onCancel={handleCancel}
           primaryDisabled={!canSubmit}

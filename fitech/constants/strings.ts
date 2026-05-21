@@ -240,7 +240,10 @@ export const TRANSLATIONS = {
   common: {
     cancel: 'Cancelar',
     save: 'Guardar',
+    saving: 'Guardando…',
     update: 'Actualizar',
+    updating: 'Actualizando…',
+    sending: 'Enviando…',
     delete: 'Eliminar',
     confirm: 'Confirmar',
     errorTitle: 'Error',

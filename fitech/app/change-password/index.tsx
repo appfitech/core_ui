@@ -142,6 +142,7 @@ export default function ChangePasswordScreen() {
           onCancel={() => router.back()}
           primaryDisabled={!canSubmit}
           primaryLoading={isPending}
+          primaryLoadingLabel={TRANSLATIONS.common.updating}
           cancelDisabled={isPending}
         />
       }

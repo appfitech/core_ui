@@ -1,6 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { invalidateMatchQueries } from '@/lib/api/mutation-cache';
+import {
+  invalidateMatchMutuals,
+  invalidateMatchQueries,
+} from '@/lib/api/mutation-cache';
 import { MatchActionDto, MatchActionResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
@@ -17,7 +20,7 @@ export const useDiscardGymBro = () => {
       } satisfies MatchActionDto);
     },
     onSuccess: async () => {
-      await invalidateMatchQueries(queryClient);
+      await invalidateMatchMutuals(queryClient, 'gymbro');
     },
   });
 };
@@ -34,7 +37,7 @@ export const useMatchGymBro = () => {
       } satisfies MatchActionDto);
     },
     onSuccess: async () => {
-      await invalidateMatchQueries(queryClient);
+      await invalidateMatchMutuals(queryClient, 'gymbro');
     },
   });
 };
@@ -51,7 +54,7 @@ export const useDiscardGymCrush = () => {
       } satisfies MatchActionDto);
     },
     onSuccess: async () => {
-      await invalidateMatchQueries(queryClient);
+      await invalidateMatchMutuals(queryClient, 'gymcrush');
     },
   });
 };
@@ -68,7 +71,9 @@ export const useMatchGymCrush = () => {
       } satisfies MatchActionDto);
     },
     onSuccess: async () => {
-      await invalidateMatchQueries(queryClient);
+      await invalidateMatchMutuals(queryClient, 'gymcrush');
     },
   });
 };
+
+export { invalidateMatchQueries };

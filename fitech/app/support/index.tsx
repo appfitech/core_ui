@@ -8,6 +8,7 @@ import { Dropdown } from '@/components/Dropdown';
 import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -36,7 +37,7 @@ export default function SupportScreen() {
 
   const [form, setForm] = useState(initialState);
 
-  const { mutate: submitInquiry } = useSendInquiry();
+  const { mutate: submitInquiry, isPending: isSending } = useSendInquiry();
 
   const handleClear = () => {
     setForm(initialState);
@@ -97,9 +98,12 @@ export default function SupportScreen() {
       footer={
         <FooterActions
           primaryLabel="Enviar"
+          primaryLoadingLabel={TRANSLATIONS.common.sending}
           onPrimary={handleSubmit}
           cancelLabel="Limpiar"
           onCancel={handleClear}
+          primaryLoading={isSending}
+          cancelDisabled={isSending}
         />
       }
     >

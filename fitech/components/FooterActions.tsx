@@ -2,6 +2,9 @@ import React from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { Button } from '@/components/Button';
+import { TRANSLATIONS } from '@/constants/strings';
+
+const { common: copy } = TRANSLATIONS;
 
 type Props = {
   /** Row: cancel left, primary right. Column: primary top, cancel bottom. */
@@ -12,6 +15,8 @@ type Props = {
   onCancel?: () => void;
   primaryDisabled?: boolean;
   primaryLoading?: boolean;
+  /** Shown on the primary button while loading. Defaults to “Guardando…”. */
+  primaryLoadingLabel?: string;
   cancelDisabled?: boolean;
   /** Shown above the buttons (e.g. terms checkbox). */
   header?: React.ReactNode;
@@ -27,15 +32,17 @@ export function FooterActions({
   layout = 'row',
   primaryLabel,
   onPrimary,
-  cancelLabel = 'Cancelar',
+  cancelLabel = copy.cancel,
   onCancel,
   primaryDisabled = false,
   primaryLoading = false,
+  primaryLoadingLabel = copy.saving,
   cancelDisabled = false,
   header,
   style,
 }: Props) {
   const isRow = layout === 'row';
+  const primaryBusy = primaryLoading;
 
   const cancelButton =
     onCancel != null ? (
@@ -43,7 +50,7 @@ export function FooterActions({
         type="tertiary"
         label={cancelLabel}
         onPress={onCancel}
-        disabled={cancelDisabled || primaryLoading}
+        disabled={cancelDisabled || primaryBusy}
         animated={false}
         style={isRow ? styles.buttonRow : styles.buttonColumn}
       />
@@ -53,8 +60,9 @@ export function FooterActions({
     <Button
       label={primaryLabel}
       onPress={onPrimary}
-      disabled={primaryDisabled}
-      loading={primaryLoading}
+      disabled={primaryDisabled || primaryBusy}
+      loading={primaryBusy}
+      loadingLabel={primaryLoadingLabel}
       animated={false}
       style={isRow ? styles.buttonRow : styles.buttonColumn}
     />
