@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
@@ -25,14 +25,14 @@ type CandidateWithBioPref = (
 };
 
 type Props = {
-  /** Stable slot id so the card instance never remounts on promote (a | b). */
+  /** Stable slot id — card instance never remounts on promote (a | b). */
   slotId: 'a' | 'b';
   candidate: GymBroCandidateResponseDto | GymCrushCandidateResponseDto;
 };
 
 function MatchProfileCardInner({ candidate }: Props) {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const imageUri = getCandidateProfileImageUrl(candidate?.profilePhotoUrl);
 
@@ -61,7 +61,6 @@ function MatchProfileCardInner({ candidate }: Props) {
           contentFit="cover"
           transition={0}
           cachePolicy="memory-disk"
-          recyclingKey={imageUri}
           onLoad={handleImageLoad}
         />
       ) : (
@@ -120,7 +119,11 @@ function propsAreEqual(prev: Props, next: Props) {
     prev.candidate?.age === next.candidate?.age &&
     prev.candidate?.bio === next.candidate?.bio &&
     prev.candidate?.city === next.candidate?.city &&
-    prev.candidate?.fitnessLevel === next.candidate?.fitnessLevel
+    prev.candidate?.fitnessLevel === next.candidate?.fitnessLevel &&
+    (prev.candidate as CandidateWithBioPref).gymBroShowBioInProfile ===
+      (next.candidate as CandidateWithBioPref).gymBroShowBioInProfile &&
+    (prev.candidate as CandidateWithBioPref).gymCrushShowBioInProfile ===
+      (next.candidate as CandidateWithBioPref).gymCrushShowBioInProfile
   );
 }
 

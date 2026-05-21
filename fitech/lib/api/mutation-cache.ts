@@ -143,9 +143,7 @@ export async function invalidateMatchMutuals(
   system: 'gymbro' | 'gymcrush',
 ): Promise<void> {
   const mutualKey =
-    system === 'gymbro'
-      ? queryKeys.gymbro.mutuals
-      : queryKeys.gymcrush.mutuals;
+    system === 'gymbro' ? queryKeys.gymbro.mutuals : queryKeys.gymcrush.mutuals;
 
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: mutualKey }),

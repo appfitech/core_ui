@@ -1,17 +1,15 @@
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
-import { MatchContactCard } from '@/components/MatchContactCard';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { MatchContactCard } from '@/components/MatchContactCard';
 import {
   GymBroCandidateResponseDto,
   GymCrushCandidateResponseDto,
 } from '@/types/api/types.gen';
 
-type Mutual =
-  | GymBroCandidateResponseDto
-  | GymCrushCandidateResponseDto;
+type Mutual = GymBroCandidateResponseDto | GymCrushCandidateResponseDto;
 
 type Props = {
   mutuals: Mutual[] | undefined;

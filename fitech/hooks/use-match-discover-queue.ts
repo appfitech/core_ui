@@ -9,7 +9,9 @@ type WithUserId = { userId?: number };
 export function useMatchDiscoverQueue<T extends WithUserId>(
   candidates: T[] | undefined,
 ) {
-  const [discardedIds, setDiscardedIds] = useState<Set<string>>(() => new Set());
+  const [discardedIds, setDiscardedIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [savedIds, setSavedIds] = useState<Set<string>>(() => new Set());
 
   const available = useMemo(() => {

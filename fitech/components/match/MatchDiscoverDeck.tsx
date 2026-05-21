@@ -1,7 +1,9 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  cancelAnimation,
+  type SharedValue,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
@@ -27,9 +29,23 @@ type Props = {
   emptyHint?: string;
 };
 
+function setFrontSlotShared(frontIsA: boolean, shared: SharedValue<number>) {
+  shared.value = frontIsA ? 1 : 0;
+}
+
+function resetSlotMotion(
+  translateX: SharedValue<number>,
+  rotation: SharedValue<number>,
+) {
+  cancelAnimation(translateX);
+  cancelAnimation(rotation);
+  translateX.value = 0;
+  rotation.value = 0;
+}
+
 /**
- * Two fixed slots (A/B) in stable tree positions. Swipe transforms only apply to
- * the front slot; back slot always keeps identity transform (no promote "pop").
+ * Two fixed slots (A/B). Each slot keeps its own swipe transform so a card that
+ * flew off-screen does not snap back to center when it becomes the back slot.
  */
 export function MatchDiscoverDeck({
   current,
@@ -39,16 +55,28 @@ export function MatchDiscoverDeck({
   emptyHint,
 }: Props) {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const [slotA, setSlotA] = useState<Candidate | null>(() => current ?? null);
   const [slotB, setSlotB] = useState<Candidate | null>(() => next ?? null);
   const [frontIsA, setFrontIsA] = useState(true);
   const frontIsAShared = useSharedValue(1);
   const skipSyncRef = useRef(false);
+  const nextCandidateRef = useRef<Candidate | null | undefined>(next);
 
-  const { pan, translateX, rotation, resetCardPosition } =
-    useMatchSwipeGesture(onSwiped);
+  const slotATranslateX = useSharedValue(0);
+  const slotARotation = useSharedValue(0);
+  const slotBTranslateX = useSharedValue(0);
+  const slotBRotation = useSharedValue(0);
+
+  nextCandidateRef.current = next;
+
+  const { pan } = useMatchSwipeGesture({
+    onSwiped,
+    frontIsAShared,
+    slotA: { translateX: slotATranslateX, rotation: slotARotation },
+    slotB: { translateX: slotBTranslateX, rotation: slotBRotation },
+  });
 
   useLayoutEffect(() => {
     const frontId = frontIsA ? slotA?.userId : slotB?.userId;
@@ -56,13 +84,20 @@ export function MatchDiscoverDeck({
 
     if (current?.userId === backId && current?.userId !== frontId) {
       skipSyncRef.current = true;
-      setFrontIsA((wasA) => {
-        frontIsAShared.value = wasA ? 0 : 1;
-        if (wasA) setSlotA(next ?? null);
-        else setSlotB(next ?? null);
-        return !wasA;
-      });
-      resetCardPosition();
+      const wasAFront = frontIsA;
+      const nextFrontIsA = !wasAFront;
+      const backfill = nextCandidateRef.current ?? null;
+
+      setFrontSlotShared(nextFrontIsA, frontIsAShared);
+      setFrontIsA(nextFrontIsA);
+
+      if (wasAFront) {
+        setSlotA(backfill);
+        resetSlotMotion(slotATranslateX, slotARotation);
+      } else {
+        setSlotB(backfill);
+        resetSlotMotion(slotBTranslateX, slotBRotation);
+      }
       return;
     }
 
@@ -75,7 +110,9 @@ export function MatchDiscoverDeck({
       setSlotA(current ?? null);
       setSlotB(next ?? null);
       setFrontIsA(true);
-      resetCardPosition();
+      setFrontSlotShared(true, frontIsAShared);
+      resetSlotMotion(slotATranslateX, slotARotation);
+      resetSlotMotion(slotBTranslateX, slotBRotation);
       return;
     }
 
@@ -89,16 +126,22 @@ export function MatchDiscoverDeck({
     frontIsA,
     slotA?.userId,
     slotB?.userId,
-    resetCardPosition,
+    next,
+    frontIsAShared,
+    slotATranslateX,
+    slotARotation,
+    slotBTranslateX,
+    slotBRotation,
   ]);
 
   const slotAStyle = useAnimatedStyle(() => {
     const isFront = frontIsAShared.value === 1;
     return {
       zIndex: isFront ? 2 : 1,
+      elevation: isFront ? 4 : 1,
       transform: [
-        { translateX: isFront ? translateX.value : 0 },
-        { rotate: isFront ? `${rotation.value}deg` : '0deg' },
+        { translateX: slotATranslateX.value },
+        { rotate: `${slotARotation.value}deg` },
       ],
     };
   });
@@ -107,9 +150,10 @@ export function MatchDiscoverDeck({
     const isFront = frontIsAShared.value === 0;
     return {
       zIndex: isFront ? 2 : 1,
+      elevation: isFront ? 4 : 1,
       transform: [
-        { translateX: isFront ? translateX.value : 0 },
-        { rotate: isFront ? `${rotation.value}deg` : '0deg' },
+        { translateX: slotBTranslateX.value },
+        { rotate: `${slotBRotation.value}deg` },
       ],
     };
   });

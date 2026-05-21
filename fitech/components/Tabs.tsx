@@ -84,10 +84,7 @@ export function Tabs({ options, value, onSelect }: Props) {
             style={({ pressed }) => [styles.tab, pressed && styles.tabPressed]}
           >
             <AppText
-              style={[
-                styles.tabText,
-                isSelected && styles.tabTextSelected,
-              ]}
+              style={[styles.tabText, isSelected && styles.tabTextSelected]}
             >
               {label}
             </AppText>
