@@ -58,31 +58,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "www.appfitech.com",
-              "pathPrefix": "/verify-email"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
-        },
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
               "host": "appfitech.com",
-              "pathPrefix": "/reset-password"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
-        },
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "www.appfitech.com",
               "pathPrefix": "/reset-password"
             }
           ],
