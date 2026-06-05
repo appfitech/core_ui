@@ -1,17 +1,13 @@
-import LottieView from 'lottie-react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import ConfettiAnimation from '@/assets/lottie/confetti.json';
-import { AppText } from '@/components/AppText';
+import { MatchCelebrationModal } from '@/components/match/MatchCelebrationModal';
 import { MatchDiscoverDeck } from '@/components/match/MatchDiscoverDeck';
 import { MatchMutualsList } from '@/components/match/MatchMutualsList';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import PageContainer from '@/components/PageContainer';
 import { Tabs } from '@/components/Tabs';
-import { showMatchToast } from '@/components/Toast';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
-import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useMatchDiscoverQueue } from '@/hooks/use-match-discover-queue';
 import {
@@ -24,6 +20,10 @@ import {
 } from '@/lib/api/queries/matches/use-get-gymbro-list';
 import { MatchScreenTab } from '@/types/forms';
 import { AppTheme } from '@/types/theme';
+import {
+  buildMatchCelebrationFromResponse,
+  MatchCelebrationPayload,
+} from '@/utils/match-celebration';
 import { prefetchMatchProfileImage } from '@/utils/match-profile-image-cache';
 import { getCandidateProfileImageUrl } from '@/utils/user';
 
@@ -51,7 +51,8 @@ export default function GymBroScreen() {
     useMatchDiscoverQueue(candidates);
 
   const [selectedTab, setSelectedTab] = useState<MatchScreenTab>('discover');
-  const [matchName, setMatchName] = useState<string | null>(null);
+  const [celebration, setCelebration] =
+    useState<MatchCelebrationPayload | null>(null);
 
   useEffect(() => {
     for (const candidate of [current, next]) {
@@ -76,13 +77,13 @@ export default function GymBroScreen() {
       if (dir === 'right') {
         matchGymBro(targetUserId, {
           onSuccess: (response) => {
-            if (response.hasMatch) {
-              showMatchToast({
-                type: 'gymbro',
-                name: response?.matchedUserName ?? '',
-              });
-              setMatchName(response?.matchedUserName ?? '');
-              setTimeout(() => setMatchName(null), 2500);
+            const payload = buildMatchCelebrationFromResponse(
+              'gymbro',
+              response,
+            );
+            if (payload) {
+              setCelebration(payload);
+              void refetchMutuals();
             }
           },
         });
@@ -90,7 +91,7 @@ export default function GymBroScreen() {
         discardGymBro(targetUserId);
       }
     },
-    [current, removeCurrent, matchGymBro, discardGymBro],
+    [current, removeCurrent, matchGymBro, discardGymBro, refetchMutuals],
   );
 
   const handleRemoveMatch = useCallback(
@@ -151,29 +152,17 @@ export default function GymBroScreen() {
         )}
       </View>
 
-      {matchName ? (
-        <View style={styles.matchOverlay} pointerEvents="none">
-          <LottieView
-            source={ConfettiAnimation}
-            autoPlay
-            loop
-            style={styles.matchLottie}
-          />
-          <View style={styles.matchTextContainer}>
-            <AppText style={styles.matchTitle}>¡Es un match! 💚</AppText>
-            <AppText style={styles.matchSubtitle}>
-              Tú y {matchName} ahora son GymBros.
-            </AppText>
-          </View>
-        </View>
-      ) : null}
+      <MatchCelebrationModal
+        celebration={celebration}
+        onDismiss={() => setCelebration(null)}
+        onViewMatches={() => setSelectedTab('matches')}
+      />
     </PageContainer>
   );
 }
 
-const getStyles = (theme: AppTheme) => {
-  const text = textStyles(theme);
-  return StyleSheet.create({
+const getStyles = (_theme: AppTheme) =>
+  StyleSheet.create({
     pageContainer: { paddingBottom: 0 },
     root: {
       flex: 1,
@@ -185,37 +174,4 @@ const getStyles = (theme: AppTheme) => {
       flex: 1,
       paddingBottom: 120,
     },
-    matchOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    matchLottie: {
-      width: 260,
-      height: 260,
-    },
-    matchTextContainer: {
-      position: 'absolute',
-      bottom: '18%',
-      paddingHorizontal: 24,
-      paddingVertical: 12,
-      borderRadius: 20,
-      backgroundColor: 'rgba(0,0,0,0.7)',
-    },
-    matchTitle: {
-      ...text.sectionTitle,
-      color: '#fff',
-      textAlign: 'center',
-      marginBottom: 4,
-    },
-    matchSubtitle: {
-      ...text.smallMedium,
-      color: '#fff',
-      textAlign: 'center',
-    },
   });
-};

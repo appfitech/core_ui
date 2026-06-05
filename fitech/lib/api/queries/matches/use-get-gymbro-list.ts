@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useUserStore } from '@/stores/user';
 import { GymBroCandidateResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
+import { useSessionQueryEnabled } from '../use-session-query-enabled';
 
 export const useGetGymBroCandidates = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<GymBroCandidateResponseDto[]>({
     queryKey: ['get-gymbro-candidates'],
@@ -15,12 +15,12 @@ export const useGetGymBroCandidates = () => {
 
       return result?.data ?? [];
     },
-    enabled: !!token,
+    enabled,
   });
 };
 
 export const useGetGymBroMutuals = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<GymBroCandidateResponseDto[]>({
     queryKey: ['get-gymbro-mutuals'],
@@ -29,6 +29,6 @@ export const useGetGymBroMutuals = () => {
 
       return result?.data ?? [];
     },
-    enabled: !!token,
+    enabled,
   });
 };

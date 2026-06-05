@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/lib/api/query-keys';
-import { useUserStore } from '@/stores/user';
 import { FoodCategoryDto } from '@/types/api/types.gen';
 
 import { api } from '../api';
+import { useSessionQueryEnabled } from './use-session-query-enabled';
 
 function normalizeFoodCategories(result: unknown): FoodCategoryDto[] {
   if (Array.isArray(result)) {
@@ -35,7 +35,7 @@ function normalizeFoodCategories(result: unknown): FoodCategoryDto[] {
 
 /** Lists active food categories from `/nutrition/foods/categories`. */
 export const useGetFoodCategories = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<FoodCategoryDto[]>({
     queryKey: queryKeys.macros.categories,
@@ -43,7 +43,7 @@ export const useGetFoodCategories = () => {
       const result = await api.get('/nutrition/foods/categories');
       return normalizeFoodCategories(result);
     },
-    enabled: !!token,
+    enabled,
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,
   });

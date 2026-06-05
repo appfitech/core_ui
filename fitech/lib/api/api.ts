@@ -1,6 +1,6 @@
 import { refreshAccessToken } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
-import { extractAccessToken } from '@/utils/auth-token';
+import { extractAccessToken, isJwtExpired } from '@/utils/auth-token';
 
 const API_BASE_URL = 'https://appfitech.com/v1/app';
 
@@ -37,13 +37,22 @@ async function handleResponse(res: Response) {
 }
 
 async function refreshTokenOnce(): Promise<string | null> {
+  const before = useUserStore.getState().getToken();
   const result = await refreshAccessToken();
 
   if (result === 'logged_out') {
     return null;
   }
 
-  return useUserStore.getState().getToken();
+  const after = useUserStore.getState().getToken();
+  if (!after) return null;
+
+  if (result === 'unchanged' && before && isJwtExpired(before)) {
+    await useUserStore.getState().logout();
+    return null;
+  }
+
+  return after;
 }
 
 type RequestOptions = {
@@ -96,7 +105,8 @@ async function request(path: string, opts: RequestOptions = {}) {
 
   let res = await doFetch();
 
-  if (res.status === 401 && auth && retryOn401) {
+  // Backend may return 403 (not only 401) for an expired JWT — refresh once and retry.
+  if (auth && retryOn401 && (res.status === 401 || res.status === 403)) {
     const newToken = await refreshTokenOnce();
 
     if (newToken) {
@@ -108,9 +118,15 @@ async function request(path: string, opts: RequestOptions = {}) {
     }
   }
 
-  // Only clear session when the token is actually rejected (401), not for permission errors (403).
-  if (res.status === 401 && auth) {
+  if (auth && res.status === 401) {
     await useUserStore.getState().logout();
+  }
+
+  if (auth && res.status === 403) {
+    const sessionToken = useUserStore.getState().getToken();
+    if (!sessionToken || isJwtExpired(sessionToken)) {
+      await useUserStore.getState().logout();
+    }
   }
 
   return handleResponse(res);

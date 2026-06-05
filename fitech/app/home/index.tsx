@@ -2,11 +2,13 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { PremiumWelcomeBanner } from '@/components/home/PremiumWelcomeBanner';
 import { TrainerHomeContent } from '@/components/home/TrainerHomeContent';
 import { UserHomeContent } from '@/components/home/UserHomeContent';
 import { GreetingHeader } from '@/components/modules/GreetingHeader';
 import PageContainer from '@/components/PageContainer';
 import { useTheme } from '@/contexts/ThemeContext';
+import { usePremiumWelcomeFromPush } from '@/hooks/use-premium-welcome-from-push';
 import { useUserStore } from '@/stores/user';
 import { AppTheme } from '@/types/theme';
 
@@ -15,6 +17,8 @@ export default function HomeScreen() {
   const styles = getStyles(theme);
   const insets = useSafeAreaInsets();
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const { showPremiumWelcome, dismissPremiumWelcome } =
+    usePremiumWelcomeFromPush(isTrainer);
 
   return (
     <View style={[styles.wrapper, { paddingTop: insets.top }]}>
@@ -26,6 +30,9 @@ export default function HomeScreen() {
         style={styles.pageContainer}
       >
         <View style={styles.contentWrapper}>
+          {showPremiumWelcome && !isTrainer ? (
+            <PremiumWelcomeBanner onDismiss={dismissPremiumWelcome} />
+          ) : null}
           {isTrainer ? <TrainerHomeContent /> : <UserHomeContent />}
         </View>
       </PageContainer>

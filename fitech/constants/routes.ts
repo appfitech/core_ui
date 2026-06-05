@@ -8,6 +8,8 @@ export const ROUTES = {
   register: '/register',
   onboarding: '/onboarding',
   home: '/home',
+  /** Push deep link after premium upgrade — home shows welcome banner. */
+  homePremiumWelcome: '/home?from=premium',
   workouts: '/workouts',
   trainers: '/trainers',
   profile: '/profile',

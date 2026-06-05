@@ -12,11 +12,13 @@ import { Tag } from '@/components/Tag';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useCancelContract } from '@/lib/api/mutations/use-cancel-contract';
 import { useCompleteContract } from '@/lib/api/mutations/use-complete-contract';
 import { AppTheme } from '@/types/theme';
 import { moment } from '@/utils/dates';
+import { extractErrorMessage } from '@/utils/errors';
 import { getFileUploadViewUrl } from '@/utils/files';
 
 const formatDate = (iso?: string) =>
@@ -30,6 +32,7 @@ export default function ContractDetailScreen() {
   const { mutate: cancelContract, isPending: isCancelling } =
     useCancelContract();
   const router = useRouter();
+  const { showAlert } = useAlert();
 
   const [displayComplete, setDisplayComplete] = useState(false);
   const [displayCancel, setDisplayCancel] = useState(false);
@@ -40,7 +43,8 @@ export default function ContractDetailScreen() {
   );
 
   const styles = getStyles(theme);
-  const { contractDetailScreen: copy, common } = TRANSLATIONS;
+  const { contractDetailScreen: copy, common, cancelContractModal } =
+    TRANSLATIONS;
 
   const handleComplete = useCallback(() => {
     completeContract(parsedContract?.id ?? parsedContract?.contractId, {
@@ -56,14 +60,44 @@ export default function ContractDetailScreen() {
     router,
   ]);
 
-  const handleCancel = useCallback(() => {
-    cancelContract(parsedContract?.id ?? parsedContract?.contractId, {
-      onSuccess: () => {
-        setDisplayCancel(false);
-        router.push(ROUTES.contracts);
-      },
-    });
-  }, [parsedContract?.id, parsedContract?.contractId, cancelContract, router]);
+  const handleCancel = useCallback(
+    (payload: { reason: string; fileIds: number[] }) => {
+      const contractId = parsedContract?.id ?? parsedContract?.contractId;
+      if (contractId == null) return;
+
+      cancelContract(
+        {
+          contractId,
+          reason: payload.reason,
+          fileIds: payload.fileIds,
+        },
+        {
+          onSuccess: () => {
+            setDisplayCancel(false);
+            router.push(ROUTES.contracts);
+          },
+          onError: (error) => {
+            showAlert({
+              title: common.errorTitle,
+              message: extractErrorMessage(
+                error,
+                cancelContractModal.cancelServerError,
+              ),
+            });
+          },
+        },
+      );
+    },
+    [
+      parsedContract?.id,
+      parsedContract?.contractId,
+      cancelContract,
+      router,
+      showAlert,
+      common.errorTitle,
+      cancelContractModal.cancelServerError,
+    ],
+  );
 
   const createdAtFormatted = parsedContract?.createdAt
     ? moment(parsedContract.createdAt).format('D MMM YYYY')

@@ -29,6 +29,7 @@ function ChatListRowComponent({ chat, isTrainer, onPress }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const hasUnread = chat.unread > 0;
+  const unreadLabel = chat.unread > 99 ? '99+' : String(chat.unread);
   const showTrainerLogo = chat.matchType === 'CONTRACT' && !isTrainer;
 
   return (
@@ -67,7 +68,11 @@ function ChatListRowComponent({ chat, isTrainer, onPress }: Props) {
           </AppText>
           <View style={styles.meta}>
             <AppText style={styles.time}>{chat.time}</AppText>
-            {hasUnread ? <View style={styles.unreadDot} /> : null}
+            {hasUnread ? (
+              <View style={styles.unreadBadge}>
+                <AppText style={styles.unreadBadgeText}>{unreadLabel}</AppText>
+              </View>
+            ) : null}
           </View>
         </View>
 
@@ -163,11 +168,20 @@ const getStyles = (theme: AppTheme) => {
       ...text.caption,
       color: theme.text.tertiary,
     },
-    unreadDot: {
-      width: 8,
-      height: 8,
-      borderRadius: 4,
+    unreadBadge: {
+      minWidth: 20,
+      height: 20,
+      paddingHorizontal: 6,
+      borderRadius: 10,
       backgroundColor: theme.brand.primary,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    unreadBadgeText: {
+      ...text.captionSemibold,
+      color: theme.background.app,
+      fontSize: 11,
+      lineHeight: 14,
     },
   });
 };

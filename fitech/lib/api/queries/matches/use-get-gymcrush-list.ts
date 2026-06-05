@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useUserStore } from '@/stores/user';
 import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
+import { useSessionQueryEnabled } from '../use-session-query-enabled';
 
 export const useGetGymCrushCandidates = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<GymCrushCandidateResponseDto[]>({
     queryKey: ['get-gymcrush-candidates'],
@@ -15,12 +15,12 @@ export const useGetGymCrushCandidates = () => {
 
       return result?.data ?? [];
     },
-    enabled: !!token,
+    enabled,
   });
 };
 
 export const useGetGymCrushMutuals = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<GymCrushCandidateResponseDto[]>({
     queryKey: ['get-gymcrush-mutuals'],
@@ -29,6 +29,6 @@ export const useGetGymCrushMutuals = () => {
 
       return result?.data ?? [];
     },
-    enabled: !!token,
+    enabled,
   });
 };

@@ -1,6 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -10,7 +17,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
@@ -18,12 +24,13 @@ import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
+import { useChatWebSocket } from '@/contexts/ChatWebSocketContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { buildChatWsUrl } from '@/lib/api/chat-ws';
 import {
   useGetChat,
   useGetChatMessages,
 } from '@/lib/api/queries/use-chat-queries';
+import { queryKeys } from '@/lib/api/query-keys';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
@@ -62,12 +69,17 @@ function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
 export default function ChatDetailScreen() {
   const { id, title } = useLocalSearchParams<{ id: string; title?: string }>();
   const { theme } = useTheme();
-  const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
   const styles = getStyles(theme);
 
-  const token = useUserStore((s) => s.getToken());
+  const invalidateChatList = useCallback(() => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.chats.all });
+  }, [queryClient]);
+
   const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const { sendMessage: sendChatMessage, subscribe: subscribeChatMessages } =
+    useChatWebSocket();
 
   const conversationId = id;
   const conversationIdNumber = Number(id);
@@ -82,13 +94,7 @@ export default function ChatDetailScreen() {
 
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
 
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
-
   const messagesScrollRef = useRef<ScrollView | null>(null);
-  const [keyboardInset, setKeyboardInset] = useState(0);
 
   const scrollMessagesToEnd = (animated = true) => {
     messagesScrollRef.current?.scrollToEnd({ animated });
@@ -97,18 +103,13 @@ export default function ChatDetailScreen() {
   useEffect(() => {
     const showEvent =
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent =
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
-    const showSub = Keyboard.addListener(showEvent, (event) => {
-      setKeyboardInset(event.endCoordinates.height);
+    const showSub = Keyboard.addListener(showEvent, () => {
       scrollMessagesToEnd(true);
     });
-    const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardInset(0));
 
     return () => {
       showSub.remove();
-      hideSub.remove();
     };
   }, []);
 
@@ -133,91 +134,26 @@ export default function ChatDetailScreen() {
   const hasError =
     !!messagesError || (messagesData && messagesData.success === false);
 
-  /** websocket */
   useEffect(() => {
-    if (__DEV__) {
-      console.log('[WebSocket] Effect triggered with:', {
-        conversationId: conversationIdNumber,
-        hasToken: !!token,
-        tokenLength: token?.length || 0,
-        userId: currentUserId,
+    if (!conversationIdNumber || !currentUserId) return;
+
+    return subscribeChatMessages((msgFromApi) => {
+      if (msgFromApi.conversationId !== conversationIdNumber) return;
+
+      const mapped = mapMessageFromApi(msgFromApi, currentUserId);
+
+      setWsMessages((prev) => {
+        if (prev.some((m) => m.id === mapped.id)) return prev;
+        return [...prev, mapped];
       });
-    }
-
-    if (!conversationIdNumber || !token || !currentUserId) {
-      if (__DEV__) {
-        console.log('[WebSocket] ❌ Missing requirements - not connecting');
-      }
-      return;
-    }
-
-    let isUnmounted = false;
-
-    const connect = () => {
-      const url = buildChatWsUrl(token);
-      if (__DEV__) {
-        console.log('[WebSocket] 🔌 Attempting connection to:', url);
-      }
-      const ws = new WebSocket(url);
-
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        if (__DEV__) {
-          console.log('Chat WebSocket connected');
-        }
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const msgFromApi: MessageDto = JSON.parse(event.data);
-
-          if (msgFromApi.conversationId !== conversationIdNumber) return;
-
-          const mapped = mapMessageFromApi(msgFromApi, currentUserId);
-
-          setWsMessages((prev) => {
-            if (prev.some((m) => m.id === mapped.id)) return prev;
-            return [...prev, mapped];
-          });
-        } catch (error) {
-          console.error('Error parsing chat WebSocket message', error);
-        }
-      };
-
-      ws.onclose = (event) => {
-        wsRef.current = null;
-
-        if (isUnmounted) return;
-
-        if (event.code === 1008) {
-          console.warn('Invalid token for chat WebSocket (1008)');
-          return;
-        }
-
-        reconnectTimeoutRef.current = setTimeout(connect, 3000);
-      };
-
-      ws.onerror = (event) => {
-        console.error('Chat WebSocket error', event);
-      };
-    };
-
-    connect();
-
-    return () => {
-      isUnmounted = true;
-
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
-    };
-  }, [conversationIdNumber, token, currentUserId]);
+      invalidateChatList();
+    });
+  }, [
+    conversationIdNumber,
+    currentUserId,
+    invalidateChatList,
+    subscribeChatMessages,
+  ]);
 
   const [input, setInput] = useState('');
 
@@ -225,16 +161,15 @@ export default function ChatDetailScreen() {
     const text = input.trim();
     if (!text || !conversationIdNumber) return;
 
-    const ws = wsRef.current;
-    const payload = {
+    const sent = sendChatMessage({
       conversationId: conversationIdNumber,
       messageContent: text,
-    };
+    });
 
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(payload));
+    if (sent) {
+      invalidateChatList();
     } else {
-      console.warn('Chat WebSocket not connected, message was not sent.');
+      console.warn('[ChatWS] Not connected — message was not sent.');
     }
 
     setInput('');
@@ -249,149 +184,137 @@ export default function ChatDetailScreen() {
   const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
   const { chatContractBanner } = TRANSLATIONS;
 
-  const composerDockStyle =
-    keyboardInset > 0
-      ? { marginBottom: keyboardInset, paddingBottom: 8 }
-      : { paddingBottom: Math.max(insets.bottom, 12) };
-
-  return (
-    <View style={styles.screenRoot}>
-      <PageContainer
-        title={headerTitle}
-        style={styles.pageStyle}
-        styleContainer={styles.pageContainer}
-        disableScroll
-        includeTabBarPadding={false}
-        hasBottomPadding={false}
-      >
-        {isContractConversation && (
-          <View style={styles.contractBanner}>
-            <Image
-              source={CONTRACT_LOGO}
-              style={styles.contractBannerLogo}
-              resizeMode="contain"
-            />
-            <View style={styles.contractBannerTextWrap}>
-              <AppText style={styles.contractBannerTitle}>
-                {isTrainer
-                  ? chatContractBanner.trainerTitle
-                  : chatContractBanner.clientTitle}
-              </AppText>
-              <AppText style={styles.contractBannerText}>
-                {isTrainer
-                  ? chatContractBanner.trainerSubtitle
-                  : chatContractBanner.clientSubtitle}
-              </AppText>
-            </View>
-          </View>
-        )}
-
-        <View style={styles.messagesContainer}>
-          {isMessagesLoading ? (
-            <View style={styles.centered}>
-              <ActivityIndicator color={theme.text.primary} />
-              <AppText style={styles.systemText}>Cargando mensajes...</AppText>
-            </View>
-          ) : hasError ? (
-            <View style={styles.centered}>
-              <AppText style={styles.systemText}>
-                No se pudieron cargar los mensajes.
-              </AppText>
-            </View>
-          ) : mergedMessages.length === 0 ? (
-            <View style={styles.centered}>
-              <AppText style={styles.systemText}>
-                Aún no hay mensajes. ¡Envía el primero!
-              </AppText>
-            </View>
-          ) : (
-            <ScrollView
-              ref={messagesScrollRef}
-              contentContainerStyle={styles.messagesContent}
-              onContentSizeChange={() => scrollMessagesToEnd(false)}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="interactive"
-            >
-              {mergedMessages.map((msg) => {
-                const isMe = msg.from === 'me';
-
-                return (
-                  <View
-                    key={msg.id}
-                    style={[
-                      styles.messageRow,
-                      isMe ? styles.messageRowMe : styles.messageRowThem,
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.bubble,
-                        isMe ? styles.bubbleMe : styles.bubbleThem,
-                      ]}
-                    >
-                      <AppText
-                        style={isMe ? styles.bubbleMeText : styles.bubbleText}
-                      >
-                        {msg.text}
-                      </AppText>
-                      <AppText
-                        style={isMe ? styles.bubbleMeTime : styles.bubbleTime}
-                      >
-                        {msg.time}
-                      </AppText>
-                    </View>
-                  </View>
-                );
-              })}
-            </ScrollView>
-          )}
+  const composer = (
+    <View style={styles.composerDock}>
+      <View style={styles.inputRow}>
+        <View style={styles.inputField}>
+          <TextInput
+            required={false}
+            placeholder="Escribe un mensaje..."
+            value={input}
+            onChangeText={setInput}
+            multiline
+            numberOfLines={4}
+            onFocus={() => scrollMessagesToEnd(true)}
+            style={styles.messageInput}
+          />
         </View>
-      </PageContainer>
-
-      <View style={[styles.composerDock, composerDockStyle]}>
-        <View style={styles.inputRow}>
-          <View style={styles.inputField}>
-            <TextInput
-              required={false}
-              placeholder="Escribe un mensaje..."
-              value={input}
-              onChangeText={setInput}
-              multiline
-              numberOfLines={4}
-              onFocus={() => scrollMessagesToEnd(true)}
-              style={styles.messageInput}
-            />
-          </View>
-          <Button
-            type="primary"
-            onPress={handleSend}
-            disabled={!input.trim()}
-            animated={false}
-            style={styles.sendButtonWrap}
-            buttonStyle={styles.sendButton}
-          >
-            <Ionicons name="send" size={20} color={theme.button.primaryText} />
-          </Button>
-        </View>
+        <Button
+          type="primary"
+          onPress={handleSend}
+          disabled={!input.trim()}
+          animated={false}
+          style={styles.sendButtonWrap}
+          buttonStyle={styles.sendButton}
+        >
+          <Ionicons name="send" size={20} color={theme.button.primaryText} />
+        </Button>
       </View>
     </View>
+  );
+
+  return (
+    <PageContainer
+      title={headerTitle}
+      style={styles.pageStyle}
+      disableScroll
+      includeTabBarPadding={false}
+      hasBottomPadding={false}
+      footer={composer}
+    >
+      {isContractConversation && (
+        <View style={styles.contractBanner}>
+          <Image
+            source={CONTRACT_LOGO}
+            style={styles.contractBannerLogo}
+            resizeMode="contain"
+          />
+          <View style={styles.contractBannerTextWrap}>
+            <AppText style={styles.contractBannerTitle}>
+              {isTrainer
+                ? chatContractBanner.trainerTitle
+                : chatContractBanner.clientTitle}
+            </AppText>
+            <AppText style={styles.contractBannerText}>
+              {isTrainer
+                ? chatContractBanner.trainerSubtitle
+                : chatContractBanner.clientSubtitle}
+            </AppText>
+          </View>
+        </View>
+      )}
+
+      <View style={styles.messagesContainer}>
+        {isMessagesLoading ? (
+          <View style={styles.centered}>
+            <ActivityIndicator color={theme.text.primary} />
+            <AppText style={styles.systemText}>Cargando mensajes...</AppText>
+          </View>
+        ) : hasError ? (
+          <View style={styles.centered}>
+            <AppText style={styles.systemText}>
+              No se pudieron cargar los mensajes.
+            </AppText>
+          </View>
+        ) : mergedMessages.length === 0 ? (
+          <View style={styles.centered}>
+            <AppText style={styles.systemText}>
+              Aún no hay mensajes. ¡Envía el primero!
+            </AppText>
+          </View>
+        ) : (
+          <ScrollView
+            ref={messagesScrollRef}
+            contentContainerStyle={styles.messagesContent}
+            onContentSizeChange={() => scrollMessagesToEnd(false)}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="interactive"
+          >
+            {mergedMessages.map((msg) => {
+              const isMe = msg.from === 'me';
+
+              return (
+                <View
+                  key={msg.id}
+                  style={[
+                    styles.messageRow,
+                    isMe ? styles.messageRowMe : styles.messageRowThem,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.bubble,
+                      isMe ? styles.bubbleMe : styles.bubbleThem,
+                    ]}
+                  >
+                    <AppText
+                      style={isMe ? styles.bubbleMeText : styles.bubbleText}
+                    >
+                      {msg.text}
+                    </AppText>
+                    <AppText
+                      style={isMe ? styles.bubbleMeTime : styles.bubbleTime}
+                    >
+                      {msg.time}
+                    </AppText>
+                  </View>
+                </View>
+              );
+            })}
+          </ScrollView>
+        )}
+      </View>
+    </PageContainer>
   );
 }
 
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
-    screenRoot: {
-      flex: 1,
-      backgroundColor: theme.background.app,
-    },
-    pageContainer: {
-      flex: 1,
-    },
     pageStyle: {
       flex: 1,
       paddingBottom: 0,
-      rowGap: 16,
+      rowGap: 12,
     },
     contractBanner: {
       flexDirection: 'row',
@@ -491,11 +414,7 @@ const getStyles = (theme: AppTheme) => {
       textAlign: 'right',
     },
     composerDock: {
-      paddingHorizontal: 16,
-      paddingTop: 12,
-      borderTopWidth: 1,
-      borderTopColor: theme.border.default,
-      backgroundColor: theme.background.app,
+      width: '100%',
     },
     inputRow: {
       flexDirection: 'row',

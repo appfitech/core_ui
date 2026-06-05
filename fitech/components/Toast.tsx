@@ -72,6 +72,47 @@ const toastStyles = StyleSheet.create({
   textWrap: { flex: 1, rowGap: 4, paddingTop: 4 },
   title: { color: THEME.text.primary },
   subtitle: { color: THEME.text.secondary, lineHeight: 18 },
+  matchCard: {
+    width: '92%',
+    maxWidth: 380,
+    alignSelf: 'center',
+    marginTop: 56,
+    backgroundColor: 'rgba(5, 6, 7, 0.94)',
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: THEME.brand.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    columnGap: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: THEME.brand.primary,
+        shadowOpacity: 0.35,
+        shadowRadius: 20,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: { elevation: 14 },
+    }),
+  },
+  matchIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: THEME.brand.primarySoft,
+  },
+  matchEmoji: { fontSize: 22, lineHeight: 26 },
+  matchTitle: { color: THEME.text.primary },
+  matchSubtitle: { color: THEME.text.secondary, lineHeight: 18 },
+  matchCta: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 10,
+    backgroundColor: THEME.brand.primary,
+  },
+  matchCtaText: { color: THEME.text.inverse },
 });
 
 export const toastConfig = {
@@ -79,44 +120,33 @@ export const toastConfig = {
   info: InfoSuccessToast,
   match: ({ text1, text2, props }: MatchToastProps) => (
     <Animated.View
-      entering={FadeInDown.duration(220)}
-      style={{
-        backgroundColor: '#111827', // near-black (cool look)
-        borderRadius: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        margin: 20,
-        marginTop: 60,
-        gap: 10,
-      }}
+      entering={FadeInDown.duration(280)}
+      style={toastStyles.matchCard}
     >
-      <AppText style={{ fontSize: 22, lineHeight: 22 }}>❤️</AppText>
-      <View style={{ flex: 1 }}>
-        <AppText variant="bodySemibold" style={{ color: 'white' }}>
+      <View style={toastStyles.matchIconWrap}>
+        <AppText style={toastStyles.matchEmoji}>✨</AppText>
+      </View>
+      <View style={toastStyles.textWrap}>
+        <AppText variant="bodySemibold" style={toastStyles.matchTitle}>
           {text1}
         </AppText>
         {!!text2 && (
-          <AppText style={{ color: 'rgba(255,255,255,0.8)' }}>{text2}</AppText>
+          <AppText variant="caption" style={toastStyles.matchSubtitle}>
+            {text2}
+          </AppText>
         )}
       </View>
 
-      {props?.onPress && (
+      {props?.onPress ? (
         <Pressable
           onPress={props.onPress as () => void}
-          style={{
-            paddingHorizontal: 10,
-            paddingVertical: 6,
-            borderRadius: 10,
-            backgroundColor: '#FFFFFF',
-          }}
+          style={toastStyles.matchCta}
         >
-          <AppText variant="smallSemibold" style={{ color: '#111827' }}>
+          <AppText variant="smallSemibold" style={toastStyles.matchCtaText}>
             Abrir chat
           </AppText>
         </Pressable>
-      )}
+      ) : null}
     </Animated.View>
   ),
 } as const;

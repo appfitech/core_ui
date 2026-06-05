@@ -160,6 +160,24 @@ export const TRANSLATIONS = {
     trainerTitle: 'Cliente con plan activo',
     trainerSubtitle: 'Chat de seguimiento FITECH',
   },
+  matchCelebration: {
+    gymbroTitle: '¡Es un match!',
+    gymbroSubtitle:
+      'Tú y {name} son GymBros. Arma hora y rutina — el entrenamiento pesa menos en equipo.',
+    gymcrushTitle: '¡Es un match!',
+    gymcrushSubtitle:
+      'Tú y {name} se gustaron. Rompan el hielo con un plan y vean si hay química.',
+    viewMatches: 'Ver mis matches',
+    continue: 'Seguir descubriendo',
+  },
+  homePremiumWelcome: {
+    title: '¡Felicidades, ya eres Premium!',
+    body:
+      'Tu membresía está activa. Ahora tienes acceso a herramientas exclusivas: registro de entrenos, biblioteca de ejercicios, GymBro y GymCrush.',
+    hint: 'Configura tus preferencias de GymBro y GymCrush para empezar a encontrar matches.',
+    cta: 'Ir a preferencias de match',
+    dismiss: 'Cerrar',
+  },
   workoutsScreen: {
     client: {
       title: 'Panel de Entrenamiento',
@@ -288,6 +306,17 @@ export const TRANSLATIONS = {
       'Perderás acceso inmediato a los recursos del entrenador.',
       'Te enviaremos un correo con el estado de tu solicitud.',
     ],
+    reasonLabel: 'Motivo de cancelación',
+    reasonPlaceholder: 'Cuéntanos por qué deseas cancelar…',
+    reasonRequired: 'Indica un motivo para continuar.',
+    attachmentLabel: 'Adjunto (opcional)',
+    attachmentHint: 'PDF o imagen (JPG, PNG)',
+    pickAttachment: 'Adjuntar archivo',
+    removeAttachment: 'Quitar adjunto',
+    attachmentUploadFailed:
+      'No pudimos subir el adjunto. Inténtalo de nuevo o continúa sin archivo.',
+    cancelServerError:
+      'No pudimos cancelar el contrato. Si no adjuntaste un archivo, el servidor puede requerirlo por ahora — prueba con un adjunto o contacta a soporte.',
     warning: 'Esta acción no se puede deshacer',
     dismiss: 'Volver',
     confirm: 'Sí, cancelar',

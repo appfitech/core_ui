@@ -7,6 +7,8 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 import { SummaryCard } from '@/app/trainer-payments';
 import { AppText } from '@/components/AppText';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
+import { ReviewsCarouselSkeleton } from '@/components/home/skeletons/ReviewsCarouselSkeleton';
+import { TrainerPaymentsSkeleton } from '@/components/home/skeletons/TrainerPaymentsSkeleton';
 import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -23,8 +25,9 @@ export function TrainerHomeContent() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const { data: reviews } = useTrainerGetReviews(true);
-  const { data: paymentsSummary } = useTrainerGetPaymentsSummary(true);
+  const { data: reviews, isLoading: reviewsLoading } = useTrainerGetReviews(true);
+  const { data: paymentsSummary, isLoading: paymentsLoading } =
+    useTrainerGetPaymentsSummary(true);
 
   return (
     <View style={styles.contentWrapper}>
@@ -44,37 +47,45 @@ export function TrainerHomeContent() {
         onClick={() => router.push(ROUTES.trainerPayments)}
         titleStyle={styles.sectionTitle}
       >
-        <View style={styles.pagosCard}>
-          <View style={styles.summaryCardsRow}>
-            <SummaryCard
-              icon={<Ionicons name="checkmark-done" size={18} color="#FFF" />}
-              label="COBRADO HASTA LA FECHA"
-              amount={paymentsSummary?.collectedToDate}
-              tone="green"
-            />
-            <SummaryCard
-              icon={<Ionicons name="time-outline" size={18} color="#FFF" />}
-              label="PENDIENTE DE COBRO"
-              amount={paymentsSummary?.pendingCollection}
-              tone="blue"
-            />
-            <SummaryCard
-              icon={
-                <MaterialCommunityIcons
-                  name="wallet-outline"
-                  size={18}
-                  color="#FFF"
-                />
-              }
-              label="DISPONIBLE PARA COBRAR"
-              amount={paymentsSummary?.availableForCollection}
-              tone="orange"
-            />
+        {paymentsLoading ? (
+          <TrainerPaymentsSkeleton />
+        ) : (
+          <View style={styles.pagosCard}>
+            <View style={styles.summaryCardsRow}>
+              <SummaryCard
+                icon={
+                  <Ionicons name="checkmark-done" size={18} color="#FFF" />
+                }
+                label="COBRADO HASTA LA FECHA"
+                amount={paymentsSummary?.collectedToDate}
+                tone="green"
+              />
+              <SummaryCard
+                icon={<Ionicons name="time-outline" size={18} color="#FFF" />}
+                label="PENDIENTE DE COBRO"
+                amount={paymentsSummary?.pendingCollection}
+                tone="blue"
+              />
+              <SummaryCard
+                icon={
+                  <MaterialCommunityIcons
+                    name="wallet-outline"
+                    size={18}
+                    color="#FFF"
+                  />
+                }
+                label="DISPONIBLE PARA COBRAR"
+                amount={paymentsSummary?.availableForCollection}
+                tone="orange"
+              />
+            </View>
           </View>
-        </View>
+        )}
       </HomeSectionContainer>
 
-      {reviews?.content && reviews.content.length > 0 && (
+      {reviewsLoading ? (
+        <ReviewsCarouselSkeleton />
+      ) : reviews?.content && reviews.content.length > 0 ? (
         <View style={styles.reviewsSection}>
           <AppText style={styles.sectionTitle}>ÚLTIMAS VALORACIONES</AppText>
           <ScrollView
@@ -112,7 +123,7 @@ export function TrainerHomeContent() {
             })}
           </ScrollView>
         </View>
-      )}
+      ) : null}
     </View>
   );
 }

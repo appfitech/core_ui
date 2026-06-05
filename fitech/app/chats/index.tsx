@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
@@ -59,15 +59,17 @@ function getChatAvatarUri(c: ConversationDto): string | undefined {
 }
 
 function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
+  const preview = c.lastMessageContent?.trim();
+
   return {
     id: String(c.id ?? ''),
     name:
       c.otherUserName ||
       c.otherUserUsername ||
       TRANSLATIONS.common.defaultUserName,
-    lastMessage: c.lastMessageContent ?? TRANSLATIONS.common.noMessagesYet,
+    lastMessage: preview || TRANSLATIONS.common.noMessagesYet,
     time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
-    unread: c.unreadCount ?? 0,
+    unread: Math.max(0, c.unreadCount ?? 0),
     matchType: c.matchType,
     avatarUri: getChatAvatarUri(c),
   };
@@ -80,7 +82,15 @@ export default function ChatsScreen() {
   const isTrainer = useUserStore((s) => s.getIsTrainer());
   const { chatsScreen: copy } = TRANSLATIONS;
 
-  const { data, isLoading } = useGetChats();
+  const { data, isLoading, refetch } = useGetChats();
+
+  console.log('[K] chats', data);
+
+  useFocusEffect(
+    useCallback(() => {
+      void refetch();
+    }, [refetch]),
+  );
 
   const chats = useMemo(
     () => (data?.data ?? []).map(mapConversationToChatItem),

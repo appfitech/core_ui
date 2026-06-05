@@ -25,6 +25,8 @@ type Props = {
   confirmLoading?: boolean;
   confirmLoadingLabel?: string;
   dismissDisabled?: boolean;
+  confirmDisabled?: boolean;
+  children?: React.ReactNode;
 };
 
 export function ContractConfirmSheet({
@@ -42,13 +44,15 @@ export function ContractConfirmSheet({
   confirmLoading = false,
   confirmLoadingLabel,
   dismissDisabled = false,
+  confirmDisabled = false,
+  children,
 }: Props) {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const styles = getStyles(theme, insets.bottom);
 
   const handleConfirm = () => {
-    if (confirmLoading) return;
+    if (confirmLoading || confirmDisabled) return;
     onConfirm();
   };
 
@@ -79,6 +83,8 @@ export function ContractConfirmSheet({
             </View>
           ) : null}
 
+          {children}
+
           <View style={styles.warningPill}>
             <AppText style={styles.warningText}>{warning}</AppText>
           </View>
@@ -98,7 +104,7 @@ export function ContractConfirmSheet({
               }
               label={confirmLabel}
               onPress={handleConfirm}
-              disabled={confirmLoading}
+              disabled={confirmLoading || confirmDisabled}
               loading={confirmLoading}
               loadingLabel={confirmLoadingLabel}
               animated={false}

@@ -13,6 +13,7 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { Card } from '@/components/Card';
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
+import { HomeCarouselSkeleton } from '@/components/home/skeletons/HomeCarouselSkeleton';
 import { UserActivityPromoCard } from '@/components/modules/UserActivityPromoCard';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
@@ -29,6 +30,7 @@ const FEATURED_ACTIVITY_LIMIT = 3;
 const CARD_GAP = 12;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_WIDTH = Math.min(300, SCREEN_WIDTH * 0.6);
+const CARD_HEIGHT = 228;
 
 export function UserActivitiesSection() {
   const router = useRouter();
@@ -74,7 +76,18 @@ export function UserActivitiesSection() {
   }, [router]);
 
   if (isLoading) {
-    return null;
+    return (
+      <HomeSectionContainer
+        title={t.sectionTitle}
+        onClick={() => router.push(ROUTES.workouts)}
+      >
+        <HomeCarouselSkeleton
+          cardWidth={CARD_WIDTH}
+          cardHeight={CARD_HEIGHT}
+          gap={CARD_GAP}
+        />
+      </HomeSectionContainer>
+    );
   }
 
   if (activities.length === 0) {

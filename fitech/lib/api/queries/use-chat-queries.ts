@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { useUserStore } from '@/stores/user';
+import { queryKeys } from '@/lib/api/query-keys';
 import {
   ChatResponseDtoConversationDto,
   ChatResponseDtoListConversationDto,
@@ -8,39 +8,41 @@ import {
 } from '@/types/api/types.gen';
 
 import { api } from '../api';
+import { useSessionQueryEnabled } from './use-session-query-enabled';
 
 export const useGetChats = () => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled();
 
   return useQuery<ChatResponseDtoListConversationDto>({
-    queryKey: ['/chats'],
+    queryKey: queryKeys.chats.all,
     queryFn: async () => {
       return api.get(`/chats`);
     },
-    enabled: !!token,
+    enabled,
+    staleTime: 0,
   });
 };
 
 export const useGetChat = (conversationId: string) => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled(!!conversationId);
 
   return useQuery<ChatResponseDtoConversationDto>({
-    queryKey: [`/chats/${conversationId}`],
+    queryKey: queryKeys.chats.detail(conversationId),
     queryFn: async () => {
       return api.get(`/chats/${conversationId}`);
     },
-    enabled: !!token,
+    enabled,
   });
 };
 
 export const useGetChatMessages = (conversationId: string) => {
-  const token = useUserStore((s) => s.getToken());
+  const enabled = useSessionQueryEnabled(!!conversationId);
 
   return useQuery<ChatResponseDtoListMessageDto>({
-    queryKey: [`/chats/${conversationId}/messages`],
+    queryKey: queryKeys.chats.messages(conversationId),
     queryFn: async () => {
       return api.get(`/chats/${conversationId}/messages`);
     },
-    enabled: !!token,
+    enabled,
   });
 };

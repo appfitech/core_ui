@@ -4,6 +4,7 @@ import { AppState, AppStateStatus } from 'react-native';
 import { api } from '@/lib/api/api';
 import {
   bootstrapAuthSession,
+  handleAppForeground,
   refreshAccessToken,
 } from '@/services/auth-session';
 import { useUserStore } from '@/stores/user';
@@ -65,7 +66,7 @@ export function useAutoRefreshToken() {
       appState.current = nextState;
 
       if (prev.match(/inactive|background/) && nextState === 'active') {
-        void refreshAccessToken().then(() => hydrateUserIfNeeded());
+        void handleAppForeground().then(() => hydrateUserIfNeeded());
         startRefreshInterval();
         return;
       }

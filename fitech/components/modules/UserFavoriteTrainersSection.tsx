@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { HomeSectionContainer } from '@/components/HomeSectionContainer';
+import { HomeCarouselSkeleton } from '@/components/home/skeletons/HomeCarouselSkeleton';
 import { FeaturedTrainerCarouselCard } from '@/components/modules/FeaturedTrainerCarouselCard';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
@@ -23,6 +24,7 @@ const FEATURED_TRAINER_LIMIT = 3;
 const CARD_GAP = 12;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_WIDTH = Math.min(280, SCREEN_WIDTH * 0.78);
+const CARD_HEIGHT = 220;
 
 export function UserFavoriteTrainersSection() {
   const router = useRouter();
@@ -37,9 +39,13 @@ export function UserFavoriteTrainersSection() {
 
   const { mutate: searchTrainers } = useSearchTrainers();
 
+  const isSessionReady = useUserStore(
+    (s) => s.isSessionHydrated && !s.isSessionHydrating,
+  );
+
   useEffect(() => {
-    if (!token) {
-      setIsLoading(false);
+    if (!token || !isSessionReady) {
+      if (!token) setIsLoading(false);
       return;
     }
 
@@ -53,7 +59,7 @@ export function UserFavoriteTrainersSection() {
         onError: () => setIsLoading(false),
       },
     );
-  }, [token, searchTrainers]);
+  }, [token, isSessionReady, searchTrainers]);
 
   const featuredTrainers = useMemo(
     () => trainers.slice(0, FEATURED_TRAINER_LIMIT),
@@ -79,7 +85,22 @@ export function UserFavoriteTrainersSection() {
     [router],
   );
 
-  if (isLoading || featuredTrainers.length === 0) {
+  if (isLoading) {
+    return (
+      <HomeSectionContainer
+        title={copy.title}
+        onClick={() => router.push(ROUTES.trainers)}
+      >
+        <HomeCarouselSkeleton
+          cardWidth={CARD_WIDTH}
+          cardHeight={CARD_HEIGHT}
+          gap={CARD_GAP}
+        />
+      </HomeSectionContainer>
+    );
+  }
+
+  if (featuredTrainers.length === 0) {
     return null;
   }
 

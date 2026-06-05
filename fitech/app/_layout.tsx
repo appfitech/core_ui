@@ -21,6 +21,7 @@ import { shouldShowNavBar, STACK_SCREEN_OPTIONS } from '@/constants/navigation';
 import { ROUTES } from '@/constants/routes';
 import { THEME } from '@/constants/theme';
 import { AlertProvider } from '@/contexts/AlertContext';
+import { ChatWebSocketProvider } from '@/contexts/ChatWebSocketContext';
 import { DatePickerOverlayProvider } from '@/contexts/DatePickerOverlayContext';
 import { TabBarInsetProvider } from '@/contexts/TabBarInsetContext';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -175,11 +176,13 @@ export default function RootLayout() {
         <ThemeProvider>
           <TabBarInsetProvider>
             <ReactQueryProvider>
-              <AlertProvider>
-                <DatePickerOverlayProvider>
-                  <RoutedAppWithPush />
-                </DatePickerOverlayProvider>
-              </AlertProvider>
+              <ChatWebSocketProvider>
+                <AlertProvider>
+                  <DatePickerOverlayProvider>
+                    <RoutedAppWithPush />
+                  </DatePickerOverlayProvider>
+                </AlertProvider>
+              </ChatWebSocketProvider>
             </ReactQueryProvider>
           </TabBarInsetProvider>
         </ThemeProvider>
