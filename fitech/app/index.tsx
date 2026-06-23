@@ -42,9 +42,9 @@ export default function WelcomeScreen() {
           style={styles.logoContainer}
         >
           <Image
-            source={require('@/assets/images/logos/rounded_logo.webp')}
+            source={require('@/assets/images/logos/welcome_logo.png')}
             style={styles.logo}
-            resizeMode={'contain'}
+            resizeMode="contain"
           />
         </Animated.View>
 
@@ -105,7 +105,7 @@ const getStyles = () =>
     },
     logo: {
       width: '100%',
-      height: 150,
+      height: 200,
     },
     textContainer: {
       marginBottom: 40,
