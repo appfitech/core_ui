@@ -9,9 +9,27 @@ import {
   sendExpoPushMessage,
 } from '@/lib/push/send-expo-push-message';
 
+export type TestNotificationOptions = {
+  title?: string;
+  body?: string;
+  navigateTo?: string;
+};
+
+const DEFAULT_TEST_NOTIFICATION: Required<TestNotificationOptions> = {
+  title: 'Testing',
+  body: 'Esta es una notificacion de prueba',
+  navigateTo: ROUTES.gymbro,
+};
+
+export const PREMIUM_TEST_NOTIFICATION: Required<TestNotificationOptions> = {
+  title: '¡Ya eres Premium!',
+  body: 'Tu membresía está activa. Abre la app para ver GymBro y GymCrush.',
+  navigateTo: ROUTES.homePremiumWelcome,
+};
+
 export const useSendTestNotification = () => {
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (options?: TestNotificationOptions) => {
       const expoPushToken = await AsyncStorage.getItem(PUSH_TOKEN_KEY);
 
       if (!expoPushToken?.startsWith('ExponentPushToken[')) {
@@ -20,14 +38,18 @@ export const useSendTestNotification = () => {
         );
       }
 
+      const { title, body, navigateTo } = {
+        ...DEFAULT_TEST_NOTIFICATION,
+        ...options,
+      };
+
       await sendExpoPushMessage({
         to: expoPushToken,
         sound: 'default',
         priority: 'high',
-        title: 'Testing',
-        body: 'Esta es una notificacion de prueba',
-        // Use app routes (e.g. ROUTES.diets), not "/" — "/" is welcome and ends on /home.
-        data: { navigateTo: ROUTES.gymbro },
+        title,
+        body,
+        data: { navigateTo },
         ...(Platform.OS === 'android' && {
           channelId: DEFAULT_ANDROID_NOTIFICATION_CHANNEL_ID,
         }),

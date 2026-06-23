@@ -171,10 +171,11 @@ export const TRANSLATIONS = {
     continue: 'Seguir descubriendo',
   },
   homePremiumWelcome: {
-    title: '¡Felicidades, ya eres Premium!',
+    title: '¡Ya eres Premium!',
     body:
-      'Tu membresía está activa. Ahora tienes acceso a herramientas exclusivas: registro de entrenos, biblioteca de ejercicios, GymBro y GymCrush.',
-    hint: 'Configura tus preferencias de GymBro y GymCrush para empezar a encontrar matches.',
+      'Tu membresía está activa. Ahora puedes usar GymBro y GymCrush para encontrar tu dupla de entrenamiento o conectar con tu crush fitness.',
+    hint:
+      'Configura tus preferencias de match para empezar a descubrir perfiles y usar ambas funciones.',
     cta: 'Ir a preferencias de match',
     dismiss: 'Cerrar',
   },
@@ -411,6 +412,11 @@ export const TRANSLATIONS = {
     contractBlockedDefault:
       'Ya tienes un servicio contratado y no puedes volver a contratarlo',
   },
+  contractSuccessToast: {
+    title: '¡Listo!',
+    message: 'Su contrato ha sido generado satisfactoriamente.',
+    chatCta: 'Chatear con tu entrenador',
+  },
   routinesScreen: {
     title: 'Mis Rutinas de Entrenamiento',
     subheader: 'Organiza, sigue y mejora tus sesiones de entrenamiento',
@@ -427,6 +433,10 @@ export const TRANSLATIONS = {
       'Mantén el contacto con tus gymcrush y gymbros cuando lo necesites',
     loading: 'Cargando chats…',
     emptyTitle: 'Aún no tienes conversaciones activas',
+    deleteTitle: '¿Eliminar conversación?',
+    deleteMessage:
+      'Se eliminará el chat con {name}. Esta acción no se puede deshacer.',
+    deleteError: 'No se pudo eliminar la conversación.',
   },
   macrosCalculatorScreen: {
     title: '¿Cuántos gramos tiene tu antojo?',
@@ -452,6 +462,16 @@ export const TRANSLATIONS = {
     portionsSection: 'Tus porciones',
     gramsPerPortion: '{grams} por porción',
     portionsGrams: '{portions} porc. · {grams}',
+  },
+  foodUnitTypes: {
+    grams: 'Gramos',
+    unit: 'Unidad/Pieza',
+    scoop: 'Scoop',
+    cup: 'Taza',
+    tablespoon: 'Cucharada',
+    teaspoon: 'Cucharadita',
+    piece: 'Pieza',
+    ml: 'Mililitros',
   },
   notificationsScreen: {
     title: 'Notificaciones',

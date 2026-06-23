@@ -4,13 +4,18 @@ import { Linking, Platform, ScrollView, Text } from 'react-native';
 
 import { Button } from '@/components/Button';
 import PageContainer from '@/components/PageContainer';
+import { showInfoToast } from '@/components/Toast';
 import {
   buildResetPasswordAppUrl,
   buildVerifyEmailAppUrl,
 } from '@/constants/linking';
 import { useAlert } from '@/contexts/AlertContext';
 import { useResetMatchList } from '@/lib/api/mutations/matches/use-reset-match-list';
-import { useSendTestNotification } from '@/lib/api/mutations/test/use-send-test-notification';
+import {
+  PREMIUM_TEST_NOTIFICATION,
+  type TestNotificationOptions,
+  useSendTestNotification,
+} from '@/lib/api/mutations/test/use-send-test-notification';
 import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 import {
   collectPushDiagnostics,
@@ -29,7 +34,25 @@ export default function Register() {
   const { mutateAsync: savePushToken } = useSavePushToken();
   const { mutate: sendTestNotification, isPending: isSendingTestPush } =
     useSendTestNotification();
-  const { mutate: resetMatchList } = useResetMatchList();
+  const { mutate: resetMatchList, isPending: isClearingMatches } =
+    useResetMatchList();
+
+  const handleClearMatches = useCallback(() => {
+    resetMatchList(undefined, {
+      onSuccess: () => {
+        showInfoToast(
+          'Matches borrados',
+          'Tu historial de match se limpió correctamente.',
+        );
+      },
+      onError: (error) => {
+        showAlert({
+          title: 'Error',
+          message: error.message,
+        });
+      },
+    });
+  }, [resetMatchList, showAlert]);
 
   const refreshPushState = useCallback(async () => {
     const token = await getCachedExpoPushToken();
@@ -93,54 +116,75 @@ export default function Register() {
     }
   }, [refreshPushState, savePushToken, showAlert]);
 
-  function sendTestPush() {
-    void (async () => {
-      const stored = await getCachedExpoPushToken();
-      if (!stored?.startsWith('ExponentPushToken[')) {
-        showAlert({
-          title: 'Sin token de push',
-          message:
-            diagnostics?.issues.join('\n\n') ??
-            'Pulsa “Registrar notificaciones” primero. Si en Ajustes no aparece “Notificaciones”, instala un build Android nuevo (EAS).',
-          buttons: [
-            { text: 'Cerrar', style: 'cancel' },
-            {
-              text: 'Registrar',
-              onPress: () => void registerPush(),
-            },
-            {
-              text: 'Abrir ajustes',
-              onPress: () => void Linking.openSettings(),
-            },
-          ],
-        });
-        return;
-      }
-
-      sendTestNotification(undefined, {
-        onSuccess: async () => {
-          await refreshPushState();
+  const sendTestPush = useCallback(
+    (options?: TestNotificationOptions) => {
+      void (async () => {
+        const stored = await getCachedExpoPushToken();
+        if (!stored?.startsWith('ExponentPushToken[')) {
           showAlert({
-            title: 'Push enviado',
+            title: 'Sin token de push',
             message:
-              Platform.OS === 'android'
-                ? 'Si no aparece, revisa permisos y FCM en EAS.'
-                : 'Revisa el centro de notificaciones.',
+              diagnostics?.issues.join('\n\n') ??
+              'Pulsa “Registrar notificaciones” primero. Si en Ajustes no aparece “Notificaciones”, instala un build Android nuevo (EAS).',
+            buttons: [
+              { text: 'Cerrar', style: 'cancel' },
+              {
+                text: 'Registrar',
+                onPress: () => void registerPush(),
+              },
+              {
+                text: 'Abrir ajustes',
+                onPress: () => void Linking.openSettings(),
+              },
+            ],
           });
-        },
-        onError: (error) => {
-          showAlert({
-            title: 'Error al enviar push',
-            message: error.message,
-          });
-        },
-      });
-    })();
-  }
+          return;
+        }
+
+        sendTestNotification(options, {
+          onSuccess: async () => {
+            await refreshPushState();
+            showAlert({
+              title: 'Push enviado',
+              message:
+                Platform.OS === 'android'
+                  ? 'Si no aparece, revisa permisos y FCM en EAS.'
+                  : 'Revisa el centro de notificaciones.',
+            });
+          },
+          onError: (error) => {
+            showAlert({
+              title: 'Error al enviar push',
+              message: error.message,
+            });
+          },
+        });
+      })();
+    },
+    [
+      diagnostics?.issues,
+      refreshPushState,
+      registerPush,
+      sendTestNotification,
+      showAlert,
+    ],
+  );
+
+  const handleSendTestPush = useCallback(() => {
+    sendTestPush();
+  }, [sendTestPush]);
+
+  const handleSendPremiumTestPush = useCallback(() => {
+    sendTestPush(PREMIUM_TEST_NOTIFICATION);
+  }, [sendTestPush]);
 
   return (
     <PageContainer title="Testing tools" style={{ padding: 16, rowGap: 16 }}>
-      <Button label={'Clear matches'} onPress={resetMatchList} />
+      <Button
+        label={isClearingMatches ? 'Borrando…' : 'Clear matches'}
+        onPress={handleClearMatches}
+        disabled={isClearingMatches}
+      />
 
       <ScrollView style={{ maxHeight: 220 }} nestedScrollEnabled>
         <Text
@@ -181,7 +225,12 @@ export default function Register() {
       />
       <Button
         label={isSendingTestPush ? 'Enviando…' : 'Test notification'}
-        onPress={sendTestPush}
+        onPress={handleSendTestPush}
+        disabled={isSendingTestPush || isRegisteringPush}
+      />
+      <Button
+        label={isSendingTestPush ? 'Enviando…' : 'Test premium push'}
+        onPress={handleSendPremiumTestPush}
         disabled={isSendingTestPush || isRegisteringPush}
       />
       <Button

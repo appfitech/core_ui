@@ -10,6 +10,7 @@ import { Tabs } from '@/components/Tabs';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useMatchDiscoverQueue } from '@/hooks/use-match-discover-queue';
+import { useMatchScreenTab } from '@/hooks/use-match-screen-tab';
 import {
   useDiscardGymBro,
   useMatchGymBro,
@@ -18,7 +19,6 @@ import {
   useGetGymBroCandidates,
   useGetGymBroMutuals,
 } from '@/lib/api/queries/matches/use-get-gymbro-list';
-import { MatchScreenTab } from '@/types/forms';
 import { AppTheme } from '@/types/theme';
 import {
   buildMatchCelebrationFromResponse,
@@ -50,7 +50,7 @@ export default function GymBroScreen() {
   const { current, next, removeCurrent, resetQueue } =
     useMatchDiscoverQueue(candidates);
 
-  const [selectedTab, setSelectedTab] = useState<MatchScreenTab>('discover');
+  const [selectedTab, setSelectedTab] = useMatchScreenTab();
   const [celebration, setCelebration] =
     useState<MatchCelebrationPayload | null>(null);
 

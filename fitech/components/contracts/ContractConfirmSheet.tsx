@@ -1,5 +1,13 @@
 import React from 'react';
-import { Modal, Pressable, StyleSheet, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
@@ -64,54 +72,72 @@ export function ContractConfirmSheet({
       onRequestClose={onClose}
     >
       <Pressable style={styles.backdrop} onPress={onClose}>
-        <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
-          <View style={styles.handle} />
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.keyboardView}
+        >
+          <Pressable style={styles.sheet} onPress={(e) => e.stopPropagation()}>
+            <KeyboardAwareScrollView
+              enableOnAndroid
+              enableAutomaticScroll
+              enableResetScrollToCoords={false}
+              keyboardOpeningTime={0}
+              extraScrollHeight={Platform.OS === 'ios' ? 16 : 24}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
+              showsVerticalScrollIndicator={false}
+              nestedScrollEnabled
+              contentContainerStyle={styles.scrollContent}
+            >
+              <View style={styles.handle} />
 
-          <AppText style={styles.title}>{title}</AppText>
-          <AppText style={styles.intro}>{intro}</AppText>
+              <AppText style={styles.title}>{title}</AppText>
+              <AppText style={styles.intro}>{intro}</AppText>
 
-          {body ? <AppText style={styles.body}>{body}</AppText> : null}
+              {body ? <AppText style={styles.body}>{body}</AppText> : null}
 
-          {bullets?.length ? (
-            <View style={styles.bulletList}>
-              {bullets.map((item) => (
-                <View key={item} style={styles.bulletRow}>
-                  <AppText style={styles.bulletMarker}>•</AppText>
-                  <AppText style={styles.bulletText}>{item}</AppText>
+              {bullets?.length ? (
+                <View style={styles.bulletList}>
+                  {bullets.map((item) => (
+                    <View key={item} style={styles.bulletRow}>
+                      <AppText style={styles.bulletMarker}>•</AppText>
+                      <AppText style={styles.bulletText}>{item}</AppText>
+                    </View>
+                  ))}
                 </View>
-              ))}
-            </View>
-          ) : null}
+              ) : null}
 
-          {children}
+              {children}
 
-          <View style={styles.warningPill}>
-            <AppText style={styles.warningText}>{warning}</AppText>
-          </View>
+              <View style={styles.warningPill}>
+                <AppText style={styles.warningText}>{warning}</AppText>
+              </View>
 
-          <View style={styles.actions}>
-            <Button
-              type="secondary"
-              label={dismissLabel}
-              onPress={onClose}
-              disabled={dismissDisabled || confirmLoading}
-              animated={false}
-              style={styles.actionButton}
-            />
-            <Button
-              type={
-                confirmVariant === 'destructive' ? 'destructive' : 'primary'
-              }
-              label={confirmLabel}
-              onPress={handleConfirm}
-              disabled={confirmLoading || confirmDisabled}
-              loading={confirmLoading}
-              loadingLabel={confirmLoadingLabel}
-              animated={false}
-              style={styles.actionButton}
-            />
-          </View>
-        </Pressable>
+              <View style={styles.actions}>
+                <Button
+                  type="secondary"
+                  label={dismissLabel}
+                  onPress={onClose}
+                  disabled={dismissDisabled || confirmLoading}
+                  animated={false}
+                  style={styles.actionButton}
+                />
+                <Button
+                  type={
+                    confirmVariant === 'destructive' ? 'destructive' : 'primary'
+                  }
+                  label={confirmLabel}
+                  onPress={handleConfirm}
+                  disabled={confirmLoading || confirmDisabled}
+                  loading={confirmLoading}
+                  loadingLabel={confirmLoadingLabel}
+                  animated={false}
+                  style={styles.actionButton}
+                />
+              </View>
+            </KeyboardAwareScrollView>
+          </Pressable>
+        </KeyboardAvoidingView>
       </Pressable>
     </Modal>
   );
@@ -127,17 +153,24 @@ const getStyles = (theme: AppTheme, safeBottom: number) => {
       justifyContent: 'flex-end',
       backgroundColor: 'rgba(0, 0, 0, 0.55)',
     },
+    keyboardView: {
+      width: '100%',
+      maxHeight: '92%',
+    },
     sheet: {
       backgroundColor: theme.background.card,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
+      borderWidth: 1,
+      borderBottomWidth: 0,
+      borderColor: theme.border.default,
+      maxHeight: '100%',
+    },
+    scrollContent: {
       paddingHorizontal: 20,
       paddingTop: 10,
       paddingBottom: sheetBottom,
       rowGap: 10,
-      borderWidth: 1,
-      borderBottomWidth: 0,
-      borderColor: theme.border.default,
     },
     handle: {
       alignSelf: 'center',

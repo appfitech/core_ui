@@ -1,11 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
+import { showContractToast } from '@/components/Toast';
+import { ROUTES } from '@/constants/routes';
+import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -50,6 +53,7 @@ export default function TrainerContractScreen() {
   const clientId = useUserStore((s) => s?.user?.user?.id);
   const { theme } = useTheme();
   const { showAlert } = useAlert();
+  const { contractSuccessToast: contractToastCopy } = TRANSLATIONS;
 
   const service = useMemo(
     () => (serviceParam ? (JSON.parse(serviceParam) as TrainerService) : null),
@@ -61,7 +65,7 @@ export default function TrainerContractScreen() {
 
   const styles = getStyles(theme);
 
-  const handleConfirm = async () => {
+  const handleConfirm = useCallback(async () => {
     if (!service || !clientId || !accepted) return;
 
     try {
@@ -71,18 +75,28 @@ export default function TrainerContractScreen() {
         termsAccepted: true,
         notes: `Contrato desde perfil del trainer ${service.trainerId}`,
       });
-      showAlert({
-        title: '¡Listo!',
-        message: 'Su contrato ha sido generado satisfactoriamente',
+      router.replace(ROUTES.home);
+      showContractToast({
+        title: contractToastCopy.title,
+        message: contractToastCopy.message,
+        ctaLabel: contractToastCopy.chatCta,
+        onOpenChats: () => router.push(ROUTES.chats),
       });
-      router.replace('/home');
     } catch {
       showAlert({
         title: 'Error',
         message: 'No se pudo crear el contrato. Intente de nuevo.',
       });
     }
-  };
+  }, [
+    accepted,
+    clientId,
+    contractToastCopy,
+    createContract,
+    router,
+    service,
+    showAlert,
+  ]);
 
   if (!service) {
     return (

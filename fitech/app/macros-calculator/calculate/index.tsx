@@ -75,6 +75,8 @@ export default function MacrosCalculatorCalculateScreen() {
     />
   );
 
+  console.log('[K] selectedItems', selectedItems);
+
   return (
     <PageContainer
       title={copy.calculateTitle}

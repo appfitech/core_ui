@@ -4,15 +4,17 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import {
-  ChatListRow,
-  type ChatListRowItem,
-} from '@/components/list/ChatListRow';
+  SwipeableChatListRow,
+} from '@/components/list/SwipeableChatListRow';
+import { type ChatListRowItem } from '@/components/list/ChatListRow';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import PageContainer from '@/components/PageContainer';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useDeleteChat } from '@/lib/api/mutations/use-delete-chat';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
@@ -75,16 +77,24 @@ function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
   };
 }
 
+function getDeleteChatAlertMessage(name: string): string {
+  const template = TRANSLATIONS.chatsScreen.deleteMessage;
+  if (!template) {
+    return `Se eliminará el chat con ${name}. Esta acción no se puede deshacer.`;
+  }
+  return template.replace('{name}', name);
+}
+
 export default function ChatsScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const router = useRouter();
+  const { showAlert } = useAlert();
   const isTrainer = useUserStore((s) => s.getIsTrainer());
-  const { chatsScreen: copy } = TRANSLATIONS;
+  const { chatsScreen: copy, common } = TRANSLATIONS;
 
   const { data, isLoading, refetch } = useGetChats();
-
-  console.log('[K] chats', data);
+  const { mutate: deleteChat } = useDeleteChat();
 
   useFocusEffect(
     useCallback(() => {
@@ -97,9 +107,41 @@ export default function ChatsScreen() {
     [data],
   );
 
+  const handleDeleteChat = useCallback(
+    (item: ChatListRowItem) => {
+      const conversationId = Number(item.id);
+      if (!conversationId) return;
+
+      showAlert({
+        title: copy.deleteTitle ?? '¿Eliminar conversación?',
+        message: getDeleteChatAlertMessage(item.name),
+        buttons: [
+          { text: common.cancel, style: 'cancel' },
+          {
+            text: common.delete,
+            style: 'destructive',
+            onPress: () => {
+              deleteChat(conversationId, {
+                onError: () => {
+                  showAlert({
+                    title: common.errorTitle,
+                    message:
+                      copy.deleteError ??
+                      'No se pudo eliminar la conversación.',
+                  });
+                },
+              });
+            },
+          },
+        ],
+      });
+    },
+    [common, copy, deleteChat, showAlert],
+  );
+
   const renderItem = useCallback(
     ({ item }: { item: ChatListRowItem }) => (
-      <ChatListRow
+      <SwipeableChatListRow
         chat={item}
         isTrainer={isTrainer}
         onPress={() =>
@@ -108,9 +150,10 @@ export default function ChatsScreen() {
             params: { id: item.id, title: item.name },
           })
         }
+        onDelete={() => handleDeleteChat(item)}
       />
     ),
-    [isTrainer, router],
+    [handleDeleteChat, isTrainer, router],
   );
 
   return (

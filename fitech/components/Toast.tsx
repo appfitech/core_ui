@@ -11,6 +11,10 @@ type MatchToastProps = BaseToastProps & {
   props?: { onPress?: () => void };
 };
 
+type ContractToastProps = BaseToastProps & {
+  props?: { onPress?: () => void; ctaLabel?: string };
+};
+
 function InfoSuccessToast({ text1, text2 }: BaseToastProps) {
   return (
     <Animated.View entering={FadeInDown.duration(220)} style={toastStyles.card}>
@@ -113,6 +117,41 @@ const toastStyles = StyleSheet.create({
     backgroundColor: THEME.brand.primary,
   },
   matchCtaText: { color: THEME.text.inverse },
+  contractCard: {
+    width: '92%',
+    maxWidth: 380,
+    alignSelf: 'center',
+    marginTop: 56,
+    backgroundColor: 'rgba(5, 6, 7, 0.94)',
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: THEME.brand.primary,
+    rowGap: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: THEME.brand.primary,
+        shadowOpacity: 0.35,
+        shadowRadius: 20,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: { elevation: 14 },
+    }),
+  },
+  contractHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    columnGap: 12,
+  },
+  contractCta: {
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 10,
+    backgroundColor: THEME.brand.primary,
+  },
+  contractCtaText: { color: THEME.text.inverse, textAlign: 'center' },
 });
 
 export const toastConfig = {
@@ -149,6 +188,43 @@ export const toastConfig = {
       ) : null}
     </Animated.View>
   ),
+  contract: ({ text1, text2, props }: ContractToastProps) => (
+    <Animated.View
+      entering={FadeInDown.duration(280)}
+      style={toastStyles.contractCard}
+    >
+      <View style={toastStyles.contractHeaderRow}>
+        <View style={toastStyles.matchIconWrap}>
+          <Ionicons
+            name="chatbubbles-outline"
+            size={22}
+            color={THEME.brand.primaryLight}
+          />
+        </View>
+        <View style={toastStyles.textWrap}>
+          <AppText variant="bodySemibold" style={toastStyles.matchTitle}>
+            {text1}
+          </AppText>
+          {!!text2 && (
+            <AppText variant="caption" style={toastStyles.matchSubtitle}>
+              {text2}
+            </AppText>
+          )}
+        </View>
+      </View>
+
+      {props?.onPress ? (
+        <Pressable
+          onPress={props.onPress as () => void}
+          style={toastStyles.contractCta}
+        >
+          <AppText variant="smallSemibold" style={toastStyles.contractCtaText}>
+            {props.ctaLabel ?? 'Ir a chats'}
+          </AppText>
+        </Pressable>
+      ) : null}
+    </Animated.View>
+  ),
 } as const;
 
 // Convenience helpers
@@ -172,6 +248,29 @@ export function showMatchToast(opts: {
     position: 'top',
     topOffset: 60,
     visibilityTime: 6000,
+  });
+}
+
+export function showContractToast(opts: {
+  title: string;
+  message: string;
+  ctaLabel: string;
+  onOpenChats?: () => void;
+}) {
+  Toast.show({
+    type: 'contract',
+    text1: opts.title,
+    text2: opts.message,
+    props: {
+      ctaLabel: opts.ctaLabel,
+      onPress: () => {
+        Toast.hide();
+        opts.onOpenChats?.();
+      },
+    },
+    position: 'top',
+    topOffset: 60,
+    visibilityTime: 8000,
   });
 }
 

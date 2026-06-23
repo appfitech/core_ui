@@ -18,6 +18,7 @@ import {
 import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
 import { NotificationDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
+import { parseAppRedirectUrl } from '@/utils/navigate-from-push-notification';
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -30,6 +31,8 @@ export default function NotificationsScreen() {
     () => data?.recent ?? [],
     [data],
   );
+
+  console.log('[K] notifications', notifications);
 
   const hasUnread = useMemo(
     () =>
@@ -60,7 +63,7 @@ export default function NotificationsScreen() {
         });
       }
       if (item.redirectUrl) {
-        router.push(item.redirectUrl as Parameters<typeof router.push>[0]);
+        router.push(parseAppRedirectUrl(item.redirectUrl));
       }
     },
     [markNotifRead, refetch, router],

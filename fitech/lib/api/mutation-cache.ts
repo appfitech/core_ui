@@ -159,6 +159,28 @@ export async function invalidateNotificationQueries(
   });
 }
 
+export async function invalidateChatQueries(
+  queryClient: QueryClient,
+  conversationId?: number | string,
+): Promise<void> {
+  const tasks = [
+    queryClient.invalidateQueries({ queryKey: queryKeys.chats.all }),
+  ];
+
+  if (conversationId != null) {
+    tasks.push(
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.chats.detail(conversationId),
+      }),
+      queryClient.removeQueries({
+        queryKey: queryKeys.chats.messages(conversationId),
+      }),
+    );
+  }
+
+  await Promise.all(tasks);
+}
+
 export async function invalidateReviewQueries(
   queryClient: QueryClient,
 ): Promise<void> {

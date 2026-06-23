@@ -1,4 +1,3 @@
-import { Ionicons } from '@expo/vector-icons';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocalSearchParams } from 'expo-router';
 import React, {
@@ -17,11 +16,11 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
-import { Button } from '@/components/Button';
+import { ChatMessageComposer, CHAT_COMPOSER_RESERVE } from '@/components/chat/ChatMessageComposer';
 import PageContainer from '@/components/PageContainer';
-import { TextInput } from '@/components/TextInput';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useChatWebSocket } from '@/contexts/ChatWebSocketContext';
@@ -69,6 +68,7 @@ function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
 export default function ChatDetailScreen() {
   const { id, title } = useLocalSearchParams<{ id: string; title?: string }>();
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const styles = getStyles(theme);
 
@@ -93,25 +93,34 @@ export default function ChatDetailScreen() {
   } = useGetChatMessages(conversationId);
 
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const messagesScrollRef = useRef<ScrollView | null>(null);
 
-  const scrollMessagesToEnd = (animated = true) => {
+  const scrollMessagesToEnd = useCallback((animated = true) => {
     messagesScrollRef.current?.scrollToEnd({ animated });
-  };
+  }, []);
 
   useEffect(() => {
     const showEvent =
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
 
-    const showSub = Keyboard.addListener(showEvent, () => {
+    const showSub = Keyboard.addListener(showEvent, (event) => {
+      setKeyboardHeight(event.endCoordinates.height);
       scrollMessagesToEnd(true);
+    });
+    const hideSub = Keyboard.addListener(hideEvent, () => {
+      setKeyboardHeight(0);
     });
 
     return () => {
       showSub.remove();
+      hideSub.remove();
     };
-  }, []);
+  }, [scrollMessagesToEnd]);
 
   const restMessages: Message[] = useMemo(() => {
     const backendMessages: MessageDto[] = messagesData?.data ?? [];
@@ -129,7 +138,7 @@ export default function ChatDetailScreen() {
     if (mergedMessages.length > 0) {
       scrollMessagesToEnd(false);
     }
-  }, [mergedMessages.length]);
+  }, [mergedMessages.length, scrollMessagesToEnd]);
 
   const hasError =
     !!messagesError || (messagesData && messagesData.success === false);
@@ -155,9 +164,22 @@ export default function ChatDetailScreen() {
     subscribeChatMessages,
   ]);
 
-  const [input, setInput] = useState('');
+  const composerOffset = useMemo(() => {
+    if (keyboardHeight > 0) return keyboardHeight;
+    return 0;
+  }, [keyboardHeight]);
 
-  const handleSend = () => {
+  const composerSafePadding = useMemo(() => {
+    if (keyboardHeight > 0) return 8;
+    return Math.max(insets.bottom, 12);
+  }, [insets.bottom, keyboardHeight]);
+
+  const messagesBottomPadding = useMemo(
+    () => CHAT_COMPOSER_RESERVE + composerOffset + composerSafePadding + 8,
+    [composerOffset, composerSafePadding],
+  );
+
+  const handleSend = useCallback(() => {
     const text = input.trim();
     if (!text || !conversationIdNumber) return;
 
@@ -173,7 +195,24 @@ export default function ChatDetailScreen() {
     }
 
     setInput('');
-  };
+  }, [
+    conversationIdNumber,
+    input,
+    invalidateChatList,
+    sendChatMessage,
+  ]);
+
+  const handleInputChange = useCallback((value: string) => {
+    setInput(value);
+  }, []);
+
+  const handleInputFocus = useCallback(() => {
+    scrollMessagesToEnd(true);
+  }, [scrollMessagesToEnd]);
+
+  const handleMessagesContentSizeChange = useCallback(() => {
+    scrollMessagesToEnd(false);
+  }, [scrollMessagesToEnd]);
 
   const headerTitle =
     title ??
@@ -184,35 +223,6 @@ export default function ChatDetailScreen() {
   const isContractConversation = chatData?.data?.matchType === 'CONTRACT';
   const { chatContractBanner } = TRANSLATIONS;
 
-  const composer = (
-    <View style={styles.composerDock}>
-      <View style={styles.inputRow}>
-        <View style={styles.inputField}>
-          <TextInput
-            required={false}
-            placeholder="Escribe un mensaje..."
-            value={input}
-            onChangeText={setInput}
-            multiline
-            numberOfLines={4}
-            onFocus={() => scrollMessagesToEnd(true)}
-            style={styles.messageInput}
-          />
-        </View>
-        <Button
-          type="primary"
-          onPress={handleSend}
-          disabled={!input.trim()}
-          animated={false}
-          style={styles.sendButtonWrap}
-          buttonStyle={styles.sendButton}
-        >
-          <Ionicons name="send" size={20} color={theme.button.primaryText} />
-        </Button>
-      </View>
-    </View>
-  );
-
   return (
     <PageContainer
       title={headerTitle}
@@ -220,7 +230,6 @@ export default function ChatDetailScreen() {
       disableScroll
       includeTabBarPadding={false}
       hasBottomPadding={false}
-      footer={composer}
     >
       {isContractConversation && (
         <View style={styles.contractBanner}>
@@ -244,65 +253,88 @@ export default function ChatDetailScreen() {
         </View>
       )}
 
-      <View style={styles.messagesContainer}>
-        {isMessagesLoading ? (
-          <View style={styles.centered}>
-            <ActivityIndicator color={theme.text.primary} />
-            <AppText style={styles.systemText}>Cargando mensajes...</AppText>
-          </View>
-        ) : hasError ? (
-          <View style={styles.centered}>
-            <AppText style={styles.systemText}>
-              No se pudieron cargar los mensajes.
-            </AppText>
-          </View>
-        ) : mergedMessages.length === 0 ? (
-          <View style={styles.centered}>
-            <AppText style={styles.systemText}>
-              Aún no hay mensajes. ¡Envía el primero!
-            </AppText>
-          </View>
-        ) : (
-          <ScrollView
-            ref={messagesScrollRef}
-            contentContainerStyle={styles.messagesContent}
-            onContentSizeChange={() => scrollMessagesToEnd(false)}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="interactive"
-          >
-            {mergedMessages.map((msg) => {
-              const isMe = msg.from === 'me';
+      <View style={styles.chatBody}>
+        <View style={styles.messagesContainer}>
+          {isMessagesLoading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator color={theme.text.primary} />
+              <AppText style={styles.systemText}>Cargando mensajes...</AppText>
+            </View>
+          ) : hasError ? (
+            <View style={styles.centered}>
+              <AppText style={styles.systemText}>
+                No se pudieron cargar los mensajes.
+              </AppText>
+            </View>
+          ) : mergedMessages.length === 0 ? (
+            <View style={styles.centered}>
+              <AppText style={styles.systemText}>
+                Aún no hay mensajes. ¡Envía el primero!
+              </AppText>
+            </View>
+          ) : (
+            <ScrollView
+              ref={messagesScrollRef}
+              style={styles.messagesScroll}
+              contentContainerStyle={[
+                styles.messagesContent,
+                { paddingBottom: messagesBottomPadding },
+              ]}
+              onContentSizeChange={handleMessagesContentSizeChange}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+            >
+              {mergedMessages.map((msg) => {
+                const isMe = msg.from === 'me';
 
-              return (
-                <View
-                  key={msg.id}
-                  style={[
-                    styles.messageRow,
-                    isMe ? styles.messageRowMe : styles.messageRowThem,
-                  ]}
-                >
+                return (
                   <View
+                    key={msg.id}
                     style={[
-                      styles.bubble,
-                      isMe ? styles.bubbleMe : styles.bubbleThem,
+                      styles.messageRow,
+                      isMe ? styles.messageRowMe : styles.messageRowThem,
                     ]}
                   >
-                    <AppText
-                      style={isMe ? styles.bubbleMeText : styles.bubbleText}
+                    <View
+                      style={[
+                        styles.bubble,
+                        isMe ? styles.bubbleMe : styles.bubbleThem,
+                      ]}
                     >
-                      {msg.text}
-                    </AppText>
-                    <AppText
-                      style={isMe ? styles.bubbleMeTime : styles.bubbleTime}
-                    >
-                      {msg.time}
-                    </AppText>
+                      <AppText
+                        style={isMe ? styles.bubbleMeText : styles.bubbleText}
+                      >
+                        {msg.text}
+                      </AppText>
+                      <AppText
+                        style={isMe ? styles.bubbleMeTime : styles.bubbleTime}
+                      >
+                        {msg.time}
+                      </AppText>
+                    </View>
                   </View>
-                </View>
-              );
-            })}
-          </ScrollView>
-        )}
+                );
+              })}
+            </ScrollView>
+          )}
+        </View>
+
+        <View
+          style={[
+            styles.composerDock,
+            {
+              bottom: composerOffset,
+              paddingBottom: composerSafePadding,
+            },
+          ]}
+        >
+          <ChatMessageComposer
+            value={input}
+            onChangeText={handleInputChange}
+            onSend={handleSend}
+            onFocus={handleInputFocus}
+          />
+        </View>
       </View>
     </PageContainer>
   );
@@ -315,6 +347,11 @@ const getStyles = (theme: AppTheme) => {
       flex: 1,
       paddingBottom: 0,
       rowGap: 12,
+    },
+    chatBody: {
+      flex: 1,
+      minHeight: 0,
+      position: 'relative',
     },
     contractBanner: {
       flexDirection: 'row',
@@ -346,6 +383,9 @@ const getStyles = (theme: AppTheme) => {
     messagesContainer: {
       flex: 1,
       minHeight: 0,
+    },
+    messagesScroll: {
+      flex: 1,
     },
     messagesContent: {
       flexGrow: 1,
@@ -414,32 +454,10 @@ const getStyles = (theme: AppTheme) => {
       textAlign: 'right',
     },
     composerDock: {
-      width: '100%',
-    },
-    inputRow: {
-      flexDirection: 'row',
-      alignItems: 'flex-end',
-      columnGap: 10,
-    },
-    inputField: {
-      flex: 1,
-      minWidth: 0,
-    },
-    messageInput: {
-      maxHeight: 96,
-      minHeight: 48,
-      textAlignVertical: 'top',
-    },
-    sendButtonWrap: {
-      flexShrink: 0,
-    },
-    sendButton: {
-      width: 48,
-      height: 48,
-      minHeight: 48,
-      paddingHorizontal: 0,
-      paddingVertical: 0,
-      borderRadius: 12,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      backgroundColor: theme.background.app,
     },
   });
 };

@@ -57,5 +57,27 @@ export function getHrefFromPushData(data: unknown): Href | null {
     return ROOT_ALIASES[path];
   }
 
-  return path as Href;
+  return parseAppRedirectUrl(path);
+}
+
+/** Parses `/path?foo=bar` into an Expo Router href with explicit params. */
+export function parseAppRedirectUrl(raw: string): Href {
+  const trimmed = raw.trim();
+  if (!trimmed.startsWith('/')) {
+    return trimmed as Href;
+  }
+
+  const queryIndex = trimmed.indexOf('?');
+  if (queryIndex === -1) {
+    return trimmed as Href;
+  }
+
+  const pathname = trimmed.slice(0, queryIndex);
+  const params: Record<string, string> = {};
+
+  new URLSearchParams(trimmed.slice(queryIndex + 1)).forEach((value, key) => {
+    params[key] = value;
+  });
+
+  return { pathname, params } as Href;
 }

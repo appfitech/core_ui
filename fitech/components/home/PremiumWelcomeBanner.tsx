@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
@@ -23,15 +23,19 @@ export function PremiumWelcomeBanner({ onDismiss }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const goToMatchPreferences = () => {
+  const handleGoToMatchPreferences = useCallback(() => {
     onDismiss();
     router.push(ROUTES.matchPreferences);
-  };
+  }, [onDismiss, router]);
+
+  const handleDismiss = useCallback(() => {
+    onDismiss();
+  }, [onDismiss]);
 
   return (
     <Animated.View entering={FadeInUp.duration(400)} style={styles.banner}>
       <Pressable
-        onPress={onDismiss}
+        onPress={handleDismiss}
         style={styles.dismissButton}
         accessibilityRole="button"
         accessibilityLabel={copy.dismiss}
@@ -53,7 +57,7 @@ export function PremiumWelcomeBanner({ onDismiss }: Props) {
       <Button
         label={copy.cta}
         type="primary"
-        onPress={goToMatchPreferences}
+        onPress={handleGoToMatchPreferences}
         animated={false}
         style={styles.cta}
       />
@@ -66,7 +70,6 @@ const getStyles = (theme: AppTheme) => {
 
   return StyleSheet.create({
     banner: {
-      marginHorizontal: 16,
       marginBottom: 12,
       backgroundColor: theme.brand.primarySoft,
       borderRadius: 16,

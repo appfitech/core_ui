@@ -4,15 +4,9 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { TextInput } from '@/components/TextInput';
-import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { parsePortionInput } from '@/lib/macros/portion-input';
-import {
-  formatGrams,
-  getGramsPerServing,
-  getTotalGramsFromPortions,
-} from '@/lib/macros/serving-weight';
+import { getFoodUnitTypeLabel } from '@/lib/macros/unit-type';
 import { FoodItemDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 
@@ -26,8 +20,6 @@ type Props = {
   isLast?: boolean;
 };
 
-const { macrosCalculatorScreen: copy } = TRANSLATIONS;
-
 export function MacroPortionListItem({
   foodItem,
   portionValue,
@@ -38,25 +30,10 @@ export function MacroPortionListItem({
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const portions = parsePortionInput(portionValue);
-  const gramsPerServing = getGramsPerServing(foodItem);
-  const totalGrams = getTotalGramsFromPortions(foodItem, portions);
-
-  const weightLabel = useMemo(() => {
-    if (gramsPerServing <= 0) return null;
-    if (portions <= 0) {
-      return copy.gramsPerPortion.replace(
-        '{grams}',
-        formatGrams(gramsPerServing),
-      );
-    }
-    if (portions === 1) {
-      return formatGrams(totalGrams);
-    }
-    return copy.portionsGrams
-      .replace('{portions}', formatPortionCount(portions))
-      .replace('{grams}', formatGrams(totalGrams));
-  }, [gramsPerServing, portions, totalGrams]);
+  const unitLabel = useMemo(
+    () => getFoodUnitTypeLabel(foodItem.unitType, foodItem.unitName),
+    [foodItem.unitName, foodItem.unitType],
+  );
 
   const handleRemove = useCallback(() => {
     onRemove(foodItem);
@@ -68,8 +45,8 @@ export function MacroPortionListItem({
         <AppText style={styles.name} numberOfLines={2}>
           {foodItem.name}
         </AppText>
-        {weightLabel ? (
-          <AppText style={styles.weight}>{weightLabel}</AppText>
+        {unitLabel ? (
+          <AppText style={styles.unitType}>{unitLabel}</AppText>
         ) : null}
       </View>
 
@@ -98,11 +75,6 @@ export function MacroPortionListItem({
   );
 }
 
-function formatPortionCount(portions: number): string {
-  const rounded = Math.round(portions * 10) / 10;
-  return rounded % 1 === 0 ? String(Math.round(rounded)) : String(rounded);
-}
-
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
 
@@ -127,7 +99,7 @@ const getStyles = (theme: AppTheme) => {
       ...text.smallMedium,
       color: theme.text.primary,
     },
-    weight: {
+    unitType: {
       ...text.caption,
       color: theme.text.secondary,
     },

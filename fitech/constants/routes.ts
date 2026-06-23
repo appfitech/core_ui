@@ -9,7 +9,7 @@ export const ROUTES = {
   onboarding: '/onboarding',
   home: '/home',
   /** Push deep link after premium upgrade — home shows welcome banner. */
-  homePremiumWelcome: '/home?from=premium',
+  homePremiumWelcome: '/home?type=premium',
   workouts: '/workouts',
   trainers: '/trainers',
   profile: '/profile',

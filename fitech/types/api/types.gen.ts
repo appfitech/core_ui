@@ -791,8 +791,8 @@ export type FitnessGoalStatusDto = {
 };
 
 export type CancelContractRequestDto = {
-  reason: string;
-  fileIds: number[];
+  reason?: string;
+  fileIds?: number[];
 };
 
 /**
@@ -1731,8 +1731,8 @@ export type MatchActionDto = {
   targetUserId?: number;
   actionType?: string;
   matchSystem?: string;
-  like?: boolean;
   pass?: boolean;
+  like?: boolean;
   block?: boolean;
   validActionType?: boolean;
   validMatchSystem?: boolean;
@@ -1977,8 +1977,8 @@ export type PageableObject = {
   pageSize?: number;
   offset?: number;
   sort?: SortObject;
-  paged?: boolean;
   unpaged?: boolean;
+  paged?: boolean;
 };
 
 export type SortObject = {
@@ -2286,6 +2286,7 @@ export type MembershipPayment = {
   collectionRequestedAt?: string;
   failureReason?: string;
   cancelled?: boolean;
+  availableForCollection?: boolean;
   collected?: boolean;
   pending?: boolean;
   observed?: boolean;
@@ -2297,7 +2298,6 @@ export type MembershipPayment = {
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
-  availableForCollection?: boolean;
 };
 
 export type MembershipPlan = {
@@ -2321,11 +2321,11 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
-  monthly?: boolean;
-  annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
+  monthly?: boolean;
+  annual?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {
@@ -4124,7 +4124,7 @@ export type CompleteContractResponse =
   CompleteContractResponses[keyof CompleteContractResponses];
 
 export type CancelContractData = {
-  body: CancelContractRequestDto;
+  body?: CancelContractRequestDto;
   path: {
     contractId: number;
   };
