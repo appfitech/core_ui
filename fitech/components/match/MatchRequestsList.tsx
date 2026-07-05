@@ -1,6 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
-import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { MatchRequestCandidate } from '@/lib/api/queries/matches/use-get-match-requests';
@@ -31,19 +30,19 @@ export function MatchRequestsList({
     <FlatList
       style={styles.list}
       overScrollMode="always"
-      data={requests}
+      data={requests ?? []}
       keyExtractor={(item) => String(item.userId)}
       contentContainerStyle={styles.content}
       refreshControl={refreshControl}
       renderItem={({ item }) => (
-        <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+        <View>
           <MatchRequestCard
             candidate={item}
             type={type}
             onMatch={() => onMatch(item.userId)}
             onPass={() => onPass(item.userId)}
           />
-        </Animated.View>
+        </View>
       )}
       ListEmptyComponent={
         <ListEmptyState

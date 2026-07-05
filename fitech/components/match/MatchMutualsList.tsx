@@ -1,6 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl, StyleSheet } from 'react-native';
-import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { MatchContactCard } from '@/components/MatchContactCard';
@@ -31,17 +30,17 @@ export function MatchMutualsList({
     <FlatList
       style={LIST_SCREEN_FLATLIST.listStyle}
       overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
-      data={mutuals}
+      data={mutuals ?? []}
       keyExtractor={(item) => String(item.userId)}
       contentContainerStyle={styles.content}
       refreshControl={refreshControl}
       renderItem={({ item }) => (
-        <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+        <View>
           <MatchContactCard
             candidate={item}
             onDiscard={() => onDiscard(item?.userId)}
           />
-        </Animated.View>
+        </View>
       )}
       ListEmptyComponent={
         <ListEmptyState

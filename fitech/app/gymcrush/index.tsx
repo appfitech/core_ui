@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { ListRefreshOverlay } from '@/components/list/ListRefreshOverlay';
 import { MatchCelebrationModal } from '@/components/match/MatchCelebrationModal';
 import { MatchDiscoverDeck } from '@/components/match/MatchDiscoverDeck';
 import { MatchMutualsList } from '@/components/match/MatchMutualsList';
@@ -9,10 +8,8 @@ import { MatchRequestsList } from '@/components/match/MatchRequestsList';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import PageContainer from '@/components/PageContainer';
 import { Tabs } from '@/components/Tabs';
-import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
-import { useListScreenRefresh } from '@/hooks/use-list-screen-refresh';
 import { useMatchDiscoverQueue } from '@/hooks/use-match-discover-queue';
 import { useMatchScreenTab } from '@/hooks/use-match-screen-tab';
 import {
@@ -83,8 +80,6 @@ export default function GymCrushScreen() {
     ]);
   }, [resetQueue, refetchMutuals, refetchCandidates, refetchRequests]);
 
-  const { refreshing, refreshControl } = useListScreenRefresh(handleRefetchAll);
-
   const onSwiped = useCallback(
     (dir: 'left' | 'right') => {
       if (!current?.userId) return;
@@ -118,7 +113,7 @@ export default function GymCrushScreen() {
 
       discardGymCrush(targetUserId, {
         onSuccess: () => {
-          handleRefetchAll();
+          void handleRefetchAll();
         },
       });
     },
@@ -175,24 +170,14 @@ export default function GymCrushScreen() {
         />
 
         <View style={styles.content}>
-          <ListRefreshOverlay visible={refreshing} />
           {selectedTab === 'discover' ? (
-            <ScrollView
-              style={LIST_SCREEN_FLATLIST.listStyle}
-              contentContainerStyle={styles.discoverScrollContent}
-              refreshControl={refreshControl}
-              overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
-              showsVerticalScrollIndicator={false}
-              nestedScrollEnabled
-            >
-              <MatchDiscoverDeck
-                current={current}
-                next={next}
-                onSwiped={onSwiped}
-                emptyTitle={DISCOVER_EMPTY.title}
-                emptyHint={DISCOVER_EMPTY.hint}
-              />
-            </ScrollView>
+            <MatchDiscoverDeck
+              current={current}
+              next={next}
+              onSwiped={onSwiped}
+              emptyTitle={DISCOVER_EMPTY.title}
+              emptyHint={DISCOVER_EMPTY.hint}
+            />
           ) : selectedTab === 'requests' ? (
             <MatchRequestsList
               requests={matchRequests}
@@ -201,7 +186,6 @@ export default function GymCrushScreen() {
               onPass={handlePassRequest}
               emptyTitle={REQUESTS_EMPTY.title}
               emptyHint={REQUESTS_EMPTY.hint}
-              refreshControl={refreshControl}
             />
           ) : (
             <MatchMutualsList
@@ -209,7 +193,6 @@ export default function GymCrushScreen() {
               onDiscard={handleRemoveMatch}
               emptyTitle={MUTUALS_EMPTY.title}
               emptyHint={MUTUALS_EMPTY.hint}
-              refreshControl={refreshControl}
             />
           )}
         </View>
@@ -246,8 +229,5 @@ const getStyles = (_theme: AppTheme) =>
     content: {
       flex: 1,
       paddingBottom: 120,
-    },
-    discoverScrollContent: {
-      flexGrow: 1,
     },
   });
