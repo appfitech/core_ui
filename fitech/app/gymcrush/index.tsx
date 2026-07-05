@@ -60,9 +60,8 @@ export default function GymCrushScreen() {
     useMatchDiscoverQueue(candidates);
 
   const [selectedTab, setSelectedTab] = useMatchScreenTab();
-  const [celebration, setCelebration] = useState<MatchCelebrationPayload | null>(
-    null,
-  );
+  const [celebration, setCelebration] =
+    useState<MatchCelebrationPayload | null>(null);
 
   useEffect(() => {
     for (const candidate of [current, next]) {

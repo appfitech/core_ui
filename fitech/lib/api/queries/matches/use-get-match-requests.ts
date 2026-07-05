@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/lib/api/query-keys';
+import { useUserStore } from '@/stores/user';
 import { MatchScreenType } from '@/types/forms';
 
 import { api } from '../../api';
@@ -18,17 +19,18 @@ function getMatchRequestSystem(type: MatchScreenType): MatchRequestSystem {
 }
 
 export function useGetMatchRequests(type: MatchScreenType) {
+  const userId = useUserStore((s) => s?.user?.user?.id);
   const system = getMatchRequestSystem(type);
-  const queryKey =
-    type === 'gymbro'
-      ? queryKeys.gymbro.requests
-      : queryKeys.gymcrush.requests;
-  const enabled = useSessionQueryEnabled();
+  const baseQueryKey =
+    type === 'gymbro' ? queryKeys.gymbro.requests : queryKeys.gymcrush.requests;
+  const enabled = useSessionQueryEnabled(!!userId);
 
   return useQuery<MatchRequestCandidate[]>({
-    queryKey,
+    queryKey: [...baseQueryKey, userId],
     queryFn: async () => {
-      const result = await api.get(`/matches/requests/${system}`);
+      const result = await api.get(
+        `/testing/match-requests?userId=${userId}&system=${system}`,
+      );
       return parseMatchCandidateList(result);
     },
     enabled,
