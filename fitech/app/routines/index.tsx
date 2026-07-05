@@ -4,6 +4,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
+import { ListRefreshOverlay } from '@/components/list/ListRefreshOverlay';
 import PageContainer from '@/components/PageContainer';
 import { ResourceCard } from '@/components/ResourceCard';
 import {
@@ -13,6 +14,7 @@ import {
 import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetRoutines } from '@/lib/api/queries/use-get-routines';
+import { useListScreenRefresh } from '@/hooks/use-list-screen-refresh';
 import {
   ActiveInactiveFilter,
   filterClientResourcesByActive,
@@ -27,7 +29,8 @@ export default function RoutinesScreen() {
   const styles = getStyles(theme);
   const { routinesScreen: copy, common, listFilters } = TRANSLATIONS;
 
-  const { data: routines, isLoading } = useGetRoutines();
+  const { data: routines, isLoading, refetch } = useGetRoutines();
+  const { refreshing, refreshControl } = useListScreenRefresh(refetch);
 
   const filteredRoutines = useMemo(
     () => filterClientResourcesByActive(routines, filter),
@@ -61,37 +64,46 @@ export default function RoutinesScreen() {
 
   return (
     <PageContainer title={copy.title} subheader={copy.subheader} disableScroll>
-      <FlatList
-        data={filteredRoutines}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={renderItem}
-        ListHeaderComponent={listHeader}
-        ListEmptyComponent={
-          isLoading ? (
-            <View style={{ paddingVertical: 48, alignItems: 'center' }}>
-              <ActivityIndicator color={theme.brand.primary} />
-            </View>
-          ) : (
-            <ListEmptyState
-              title={copy.emptyTitle}
-              hint={common.tryOtherFilterHint}
-            />
-          )
-        }
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
-        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
-        windowSize={LIST_SCREEN_FLATLIST.windowSize}
-        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
-      />
+      <View style={styles.listWrap}>
+        <FlatList
+          style={LIST_SCREEN_FLATLIST.listStyle}
+          overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
+          data={filteredRoutines}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={renderItem}
+          ListHeaderComponent={listHeader}
+          ListEmptyComponent={
+            isLoading ? (
+              <View style={{ paddingVertical: 48, alignItems: 'center' }}>
+                <ActivityIndicator color={theme.brand.primary} />
+              </View>
+            ) : (
+              <ListEmptyState
+                title={copy.emptyTitle}
+                hint={common.tryOtherFilterHint}
+              />
+            )
+          }
+          contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+          maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+          windowSize={LIST_SCREEN_FLATLIST.windowSize}
+          removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+          refreshControl={refreshControl}
+        />
+        <ListRefreshOverlay visible={refreshing} />
+      </View>
     </PageContainer>
   );
 }
 
 const getStyles = (_theme: AppTheme) =>
   StyleSheet.create({
+    listWrap: {
+      flex: 1,
+    },
     listHeader: {
       marginBottom: 16,
     },

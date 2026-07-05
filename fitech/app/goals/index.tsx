@@ -10,6 +10,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
 import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useUserStore } from '@/stores/user';
 import { UserResponseDtoReadable } from '@/types/api/types.gen';
 import { FitnessGoal } from '@/types/fitness-goals';
@@ -31,7 +32,8 @@ export default function FitnessGoalsScreen() {
     (s) => s?.user?.user?.person?.fitnessGoalTypes,
   );
 
-  const { data: goalsData = [] } = useGetAllFitnessGoalTypes();
+  const { data: goalsData = [], refetch } = useGetAllFitnessGoalTypes();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   useEffect(() => {
     if (!userGoals?.length || !goalsData.length) return;
@@ -113,6 +115,8 @@ export default function FitnessGoalsScreen() {
           cancelDisabled={isSaving}
         />
       }
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <View style={styles.cardList}>
         {goals.map((goal) => (

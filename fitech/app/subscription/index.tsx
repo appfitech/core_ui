@@ -11,6 +11,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetUserPayments } from '@/lib/api/queries/use-get-user-payments';
 import { useGetUserSubscription } from '@/lib/api/queries/use-get-user-subscription';
+import { usePullToRefreshMany } from '@/hooks/use-pull-to-refresh';
 import { AppTheme } from '@/types/theme';
 
 const { subscriptionScreen: copy } = TRANSLATIONS;
@@ -55,8 +56,13 @@ export default function SubscriptionScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const { data: subscription } = useGetUserSubscription();
-  const { data: payments } = useGetUserPayments();
+  const { data: subscription, refetch: refetchSubscription } =
+    useGetUserSubscription();
+  const { data: payments, refetch: refetchPayments } = useGetUserPayments();
+  const { refreshing, onRefresh } = usePullToRefreshMany(
+    refetchSubscription,
+    refetchPayments,
+  );
 
   return (
     <PageContainer
@@ -64,6 +70,8 @@ export default function SubscriptionScreen() {
       subheader={copy.subheader}
       style={styles.pageStyle}
       includeTabBarPadding={false}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <View style={styles.content}>
         <Animated.View

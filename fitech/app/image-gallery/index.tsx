@@ -14,6 +14,8 @@ import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
 import { ChangeAvatarModal } from '@/components/gallery/ChangeAvatarModal';
 import PageContainer from '@/components/PageContainer';
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
+import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -21,6 +23,7 @@ import { useDeletePhoto } from '@/lib/api/mutations/useDeletePhoto';
 import { useSetProfilePhoto } from '@/lib/api/mutations/useSetProfilePhoto';
 import { useUploadPhoto } from '@/lib/api/mutations/useUploadPhoto';
 import { useGetUserPhotos } from '@/lib/api/queries/useGetUserPhotos';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useUserStore } from '@/stores/user';
 import { AppTheme } from '@/types/theme';
 import { extractErrorMessage } from '@/utils/errors';
@@ -77,6 +80,7 @@ export default function ImageGalleryScreen() {
     useSetProfilePhoto();
 
   const { data: photos = [], isLoading, refetch } = useGetUserPhotos();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   const gridData = useMemo((): GridCell[] => {
     const cells: GridCell[] = [];
@@ -493,7 +497,7 @@ export default function ImageGalleryScreen() {
             }
             renderItem={renderGridCell}
             numColumns={GRID_COLUMNS}
-            ListHeaderComponent={listHeader}
+            ListHeaderComponent={withRefreshFeedback(refreshing, listHeader)}
             contentContainerStyle={styles.gridContent}
             columnWrapperStyle={styles.gridRow}
             showsVerticalScrollIndicator={false}
@@ -501,6 +505,12 @@ export default function ImageGalleryScreen() {
             maxToRenderPerBatch={8}
             windowSize={5}
             removeClippedSubviews
+            refreshControl={
+              <PullToRefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
           />
 
           <ChangeAvatarModal

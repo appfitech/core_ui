@@ -9,11 +9,13 @@ import { AppText } from '@/components/AppText';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
 import { ChipsList } from '@/components/molecules/ChipsList';
 import PageContainer from '@/components/PageContainer';
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetMuscleGroups } from '@/lib/api/queries/use-get-muscle-groups';
 import { useGetWorkoutsFiltered } from '@/lib/api/queries/workouts/use-get-user-workouts';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { WorkoutSessionDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 import {
@@ -73,6 +75,7 @@ export default function ExercisesScreen() {
     isLoading,
     refetch,
   } = useGetWorkoutsFiltered({ start, end, muscleGroups: muscleGroupFilter });
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   useFocusEffect(
     useCallback(() => {
@@ -113,6 +116,8 @@ export default function ExercisesScreen() {
       style={styles.pageStyle}
       includeTabBarPadding={false}
       hasBottomPadding={false}
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <ListFilterSection hint={copy.filterHint} style={styles.filterSection}>
         <AppText style={styles.filterTitle}>{copy.filterTitle}</AppText>

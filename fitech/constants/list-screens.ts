@@ -9,6 +9,10 @@ export const LIST_SCREEN_FLATLIST = {
   windowSize: 7,
   removeClippedSubviews: true,
   itemGap: 12,
+  /** Fill PageContainer when disableScroll wraps a FlatList. */
+  listStyle: { flex: 1 },
+  /** Allows pull-to-refresh even when the list is shorter than the screen. */
+  overScrollMode: 'always' as const,
 } as const;
 
 export const ACTIVE_INACTIVE_CHIPS = [

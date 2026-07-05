@@ -10,7 +10,7 @@ import { TextInput } from '@/components/TextInput';
 import { PersonalInfoFormField } from '@/constants/forms';
 import { useTheme } from '@/contexts/ThemeContext';
 import { getPersonalInfoFieldValue } from '@/lib/personal-info/form';
-import { UserResponseDtoReadable } from '@/types/api/types.gen';
+import { PersonDto, UserResponseDtoReadable } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 import { getDOBMaxDate } from '@/utils/dates';
 
@@ -63,19 +63,23 @@ function PersonalInfoFieldRow({
     (getPersonalInfoFieldValue(form, field.field) as string | undefined) ?? '';
 
   if (field.inputType === 'location-picker') {
+    const locationField = field.field as keyof PersonDto;
+    const locationValue = form?.person?.[locationField] as number | undefined;
+
     return (
       <LocalLocationPicker
         id={field.field}
         label={field.label}
         placeholder={placeholder}
         required={required}
-        value={form?.person?.residenceLocationId ?? null}
+        zIndex={field.zIndex}
+        value={locationValue ?? null}
         onChange={(locationId) =>
           setForm((prev) => ({
             ...prev,
             person: {
               ...prev?.person,
-              residenceLocationId: locationId,
+              [locationField]: locationId,
             },
           }))
         }

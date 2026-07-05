@@ -18,6 +18,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';
 import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import {
   CreateMatchPreferencesRequest,
   LocationDto,
@@ -77,6 +78,7 @@ export default function MatchPreferencesScreen() {
     isLoading,
     refetch,
   } = useGetUserMatchPreferences();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const { mutate: updatePreferences, isPending: isSaving } =
     useUpdateMatchPreferences();
 
@@ -229,6 +231,8 @@ export default function MatchPreferencesScreen() {
           cancelDisabled={isSaving}
         />
       }
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <Card style={styles.card}>
         <SwitchRow

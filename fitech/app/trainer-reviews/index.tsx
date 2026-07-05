@@ -14,6 +14,7 @@ import {
   useTrainerGetReviewsBreakdown,
   useTrainerGetReviewsStats,
 } from '@/lib/api/queries/use-trainer-get-reviews';
+import { usePullToRefreshMany } from '@/hooks/use-pull-to-refresh';
 import { AppTheme } from '@/types/theme';
 
 /** Review item as returned by trainer my-reviews API (content array). */
@@ -31,9 +32,15 @@ export default function TrainerReviewsScreen() {
   const { theme } = useTheme();
   const router = useRouter();
 
-  const { data: stats } = useTrainerGetReviewsStats();
-  const { data: breakdown } = useTrainerGetReviewsBreakdown();
-  const { data: reviews } = useTrainerGetReviews();
+  const { data: stats, refetch: refetchStats } = useTrainerGetReviewsStats();
+  const { data: breakdown, refetch: refetchBreakdown } =
+    useTrainerGetReviewsBreakdown();
+  const { data: reviews, refetch: refetchReviews } = useTrainerGetReviews();
+  const { refreshing, onRefresh } = usePullToRefreshMany(
+    refetchStats,
+    refetchBreakdown,
+    refetchReviews,
+  );
 
   const styles = getStyles(theme);
 
@@ -55,6 +62,8 @@ export default function TrainerReviewsScreen() {
     <PageContainer
       title="Mis Calificaciones"
       subheader="Revisa las calificaciones y comentarios de tus clientes"
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <View style={styles.contentWrap}>
         <AppText style={styles.sectionTitle}>RESUMEN</AppText>

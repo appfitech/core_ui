@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
+import { ListRefreshOverlay } from '@/components/list/ListRefreshOverlay';
 import { MatchCelebrationModal } from '@/components/match/MatchCelebrationModal';
 import { MatchDiscoverDeck } from '@/components/match/MatchDiscoverDeck';
 import { MatchMutualsList } from '@/components/match/MatchMutualsList';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import PageContainer from '@/components/PageContainer';
 import { Tabs } from '@/components/Tabs';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { MATCH_SCREEN_TABS } from '@/constants/screens';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useListScreenRefresh } from '@/hooks/use-list-screen-refresh';
 import { useMatchDiscoverQueue } from '@/hooks/use-match-discover-queue';
 import { useMatchScreenTab } from '@/hooks/use-match-screen-tab';
 import {
@@ -61,11 +64,12 @@ export default function GymBroScreen() {
     }
   }, [current, next]);
 
-  const handleRefetchAll = useCallback(() => {
+  const handleRefetchAll = useCallback(async () => {
     resetQueue();
-    refetchMutuals();
-    refetchCandidates();
+    await Promise.all([refetchMutuals(), refetchCandidates()]);
   }, [resetQueue, refetchMutuals, refetchCandidates]);
+
+  const { refreshing, refreshControl } = useListScreenRefresh(handleRefetchAll);
 
   const onSwiped = useCallback(
     (dir: 'left' | 'right') => {
@@ -123,20 +127,31 @@ export default function GymBroScreen() {
         />
 
         <View style={styles.content}>
+          <ListRefreshOverlay visible={refreshing} />
           {selectedTab === 'discover' ? (
-            <MatchDiscoverDeck
-              current={current}
-              next={next}
-              onSwiped={onSwiped}
-              emptyTitle={DISCOVER_EMPTY.title}
-              emptyHint={DISCOVER_EMPTY.hint}
-            />
+            <ScrollView
+              style={LIST_SCREEN_FLATLIST.listStyle}
+              contentContainerStyle={styles.discoverScrollContent}
+              refreshControl={refreshControl}
+              overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
+              showsVerticalScrollIndicator={false}
+              nestedScrollEnabled
+            >
+              <MatchDiscoverDeck
+                current={current}
+                next={next}
+                onSwiped={onSwiped}
+                emptyTitle={DISCOVER_EMPTY.title}
+                emptyHint={DISCOVER_EMPTY.hint}
+              />
+            </ScrollView>
           ) : (
             <MatchMutualsList
               mutuals={mutuals}
               onDiscard={handleRemoveMatch}
               emptyTitle={MUTUALS_EMPTY.title}
               emptyHint={MUTUALS_EMPTY.hint}
+              refreshControl={refreshControl}
             />
           )}
         </View>
@@ -173,5 +188,8 @@ const getStyles = (_theme: AppTheme) =>
     content: {
       flex: 1,
       paddingBottom: 120,
+    },
+    discoverScrollContent: {
+      flexGrow: 1,
     },
   });

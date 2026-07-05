@@ -137,6 +137,10 @@ export type PersonDto = {
    */
   residenceLocationId?: number;
   /**
+   * Gym location ID
+   */
+  gymLocationId?: number;
+  /**
    * List of fitness goal types
    */
   fitnessGoalTypes?: FitnessGoalTypeDto[];
@@ -621,6 +625,10 @@ export type ProfileUpdateDtoReadable = {
    */
   residenceLocationId?: number;
   /**
+   * User's gym/training location ID (optional)
+   */
+  gymLocationId?: number;
+  /**
    * List of fitness goal type IDs
    */
   fitnessGoalTypeIds?: number[];
@@ -654,6 +662,10 @@ export type ProfileUpdateDtoWritable = {
    * User's residence location ID (optional)
    */
   residenceLocationId?: number;
+  /**
+   * User's gym/training location ID (optional)
+   */
+  gymLocationId?: number;
   /**
    * List of fitness goal type IDs
    */
@@ -1731,8 +1743,8 @@ export type MatchActionDto = {
   targetUserId?: number;
   actionType?: string;
   matchSystem?: string;
-  pass?: boolean;
   like?: boolean;
+  pass?: boolean;
   block?: boolean;
   validActionType?: boolean;
   validMatchSystem?: boolean;
@@ -1957,8 +1969,8 @@ export type TrainerExperienceSummaryDto = {
 };
 
 export type Page = {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   size?: number;
   content?: {
@@ -1977,8 +1989,8 @@ export type PageableObject = {
   pageSize?: number;
   offset?: number;
   sort?: SortObject;
-  unpaged?: boolean;
   paged?: boolean;
+  unpaged?: boolean;
 };
 
 export type SortObject = {
@@ -2146,8 +2158,8 @@ export type TrainerRatingBreakdownDto = {
 };
 
 export type PageReviewResponseDtoReadable = {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ReviewResponseDtoReadable[];
@@ -2160,8 +2172,8 @@ export type PageReviewResponseDtoReadable = {
 };
 
 export type PageReviewResponseDtoWritable = {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ReviewResponseDtoWritable[];
@@ -2321,9 +2333,9 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
-  monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
+  monthlyPrice?: number;
   monthly?: boolean;
   annual?: boolean;
 };
@@ -2761,8 +2773,8 @@ export type ClientResourceResponseDtoWritable = {
 };
 
 export type PageClientResourceGroupDtoReadable = {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ClientResourceGroupDtoReadable[];
@@ -2775,8 +2787,8 @@ export type PageClientResourceGroupDtoReadable = {
 };
 
 export type PageClientResourceGroupDtoWritable = {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ClientResourceGroupDtoWritable[];
@@ -3070,6 +3082,14 @@ export type UserFiles = {
   fileType?: string;
   filePath?: string;
   uploadedAt?: string;
+};
+
+export type ChatResponseDtoVoid = {
+  success?: boolean;
+  message?: string;
+  data?: {
+    [key: string]: unknown;
+  };
 };
 
 export type DeleteExerciseSetData = {
@@ -3964,6 +3984,29 @@ export type Update5Responses = {
 };
 
 export type Update5Response = Update5Responses[keyof Update5Responses];
+
+export type MarkMatchRequestsAsSeenData = {
+  body?: never;
+  path: {
+    matchSystem: string;
+  };
+  query?: never;
+  url: '/v1/app/matches/requests/{matchSystem}/mark-seen';
+};
+
+export type MarkMatchRequestsAsSeenResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type MarkMatchRequestsAsSeenResponse =
+  MarkMatchRequestsAsSeenResponses[keyof MarkMatchRequestsAsSeenResponses];
 
 export type DeactivatePreferencesData = {
   body?: never;
@@ -7094,6 +7137,48 @@ export type GetTestUsersWikiHtmlResponses = {
 export type GetTestUsersWikiHtmlResponse =
   GetTestUsersWikiHtmlResponses[keyof GetTestUsersWikiHtmlResponses];
 
+export type GetMatchRequestsData = {
+  body?: never;
+  path?: never;
+  query: {
+    userId: number;
+    system?: string;
+  };
+  url: '/v1/app/testing/match-requests';
+};
+
+export type GetMatchRequestsResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: unknown;
+  };
+};
+
+export type GetMatchRequestsResponse =
+  GetMatchRequestsResponses[keyof GetMatchRequestsResponses];
+
+export type GetMatchRequestsHtmlData = {
+  body?: never;
+  path?: never;
+  query: {
+    userId: number;
+    system?: string;
+  };
+  url: '/v1/app/testing/match-requests-html';
+};
+
+export type GetMatchRequestsHtmlResponses = {
+  /**
+   * OK
+   */
+  200: string;
+};
+
+export type GetMatchRequestsHtmlResponse =
+  GetMatchRequestsHtmlResponses[keyof GetMatchRequestsHtmlResponses];
+
 export type GetMatchHistoryData = {
   body?: never;
   path?: never;
@@ -8125,6 +8210,52 @@ export type GetCurrentUserDebugResponses = {
 
 export type GetCurrentUserDebugResponse =
   GetCurrentUserDebugResponses[keyof GetCurrentUserDebugResponses];
+
+export type GetMatchRequests1Data = {
+  body?: never;
+  path: {
+    matchSystem: string;
+  };
+  query?: never;
+  url: '/v1/app/matches/requests/{matchSystem}';
+};
+
+export type GetMatchRequests1Responses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type GetMatchRequests1Response =
+  GetMatchRequests1Responses[keyof GetMatchRequests1Responses];
+
+export type CountNewMatchRequestsData = {
+  body?: never;
+  path: {
+    matchSystem: string;
+  };
+  query?: never;
+  url: '/v1/app/matches/requests/{matchSystem}/count';
+};
+
+export type CountNewMatchRequestsResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type CountNewMatchRequestsResponse =
+  CountNewMatchRequestsResponses[keyof CountNewMatchRequestsResponses];
 
 export type GetMutualMatchesData = {
   body?: never;
@@ -9260,6 +9391,25 @@ export type GetConversationsResponses = {
 export type GetConversationsResponse =
   GetConversationsResponses[keyof GetConversationsResponses];
 
+export type DeleteConversationData = {
+  body?: never;
+  path: {
+    conversationId: number;
+  };
+  query?: never;
+  url: '/v1/app/chats/{conversationId}';
+};
+
+export type DeleteConversationResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoVoid;
+};
+
+export type DeleteConversationResponse =
+  DeleteConversationResponses[keyof DeleteConversationResponses];
+
 export type GetConversationData = {
   body?: never;
   path: {
@@ -9641,6 +9791,25 @@ export type DeleteByFileIdResponses = {
 
 export type DeleteByFileIdResponse =
   DeleteByFileIdResponses[keyof DeleteByFileIdResponses];
+
+export type DeleteConversationsByUserData = {
+  body?: never;
+  path: {
+    userId: number;
+  };
+  query?: never;
+  url: '/v1/app/chats/user/{userId}';
+};
+
+export type DeleteConversationsByUserResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoVoid;
+};
+
+export type DeleteConversationsByUserResponse =
+  DeleteConversationsByUserResponses[keyof DeleteConversationsByUserResponses];
 
 export type ClientOptions = {
   baseUrl: 'http://localhost:8081' | 'https://appfitech.com' | (string & {});

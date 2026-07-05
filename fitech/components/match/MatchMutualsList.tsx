@@ -1,9 +1,10 @@
 import React from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { MatchContactCard } from '@/components/MatchContactCard';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import {
   GymBroCandidateResponseDto,
   GymCrushCandidateResponseDto,
@@ -16,6 +17,7 @@ type Props = {
   onDiscard: (userId: number | undefined) => void;
   emptyTitle: string;
   emptyHint: string;
+  refreshControl?: React.ReactElement<React.ComponentProps<typeof RefreshControl>>;
 };
 
 export function MatchMutualsList({
@@ -23,13 +25,16 @@ export function MatchMutualsList({
   onDiscard,
   emptyTitle,
   emptyHint,
+  refreshControl,
 }: Props) {
   return (
     <FlatList
-      style={styles.list}
+      style={LIST_SCREEN_FLATLIST.listStyle}
+      overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
       data={mutuals}
       keyExtractor={(item) => String(item.userId)}
       contentContainerStyle={styles.content}
+      refreshControl={refreshControl}
       renderItem={({ item }) => (
         <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
           <MatchContactCard
@@ -50,7 +55,6 @@ export function MatchMutualsList({
 }
 
 const styles = StyleSheet.create({
-  list: { flex: 1 },
   content: {
     gap: 10,
     paddingBottom: 24,

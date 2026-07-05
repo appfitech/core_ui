@@ -6,7 +6,7 @@ import { Dropdown } from '@/components/Dropdown';
 import { TextInput } from '@/components/TextInput';
 import { CreateUserFormField } from '@/constants/forms';
 import { getRegisterFieldValue } from '@/lib/register/form';
-import { UserDtoWritable } from '@/types/api/types.gen';
+import { PersonDto, UserDtoWritable } from '@/types/api/types.gen';
 import { getDOBMaxDate } from '@/utils/dates';
 
 import { LocalLocationPicker } from '../LocalLocationPicker';
@@ -85,19 +85,23 @@ function RegisterFieldRow({ field, form, setForm }: FieldRowProps) {
   }
 
   if (inputType === 'location-picker') {
+    const locationField = field.field as keyof PersonDto;
+    const locationValue = form.person?.[locationField] as number | undefined;
+
     return (
       <LocalLocationPicker
         label={field.label}
         placeholder={placeholder}
         id={field.field}
         required={!field.isOptional}
-        value={form.person?.residenceLocationId ?? null}
+        zIndex={field.zIndex}
+        value={locationValue ?? null}
         onChange={(locationId) =>
           setForm((prev) => ({
             ...prev,
             person: {
               ...prev.person,
-              residenceLocationId: locationId,
+              [locationField]: locationId,
             },
           }))
         }

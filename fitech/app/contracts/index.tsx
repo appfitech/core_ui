@@ -7,6 +7,8 @@ import { ReviewModal } from '@/components/contracts/ReviewModal';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
 import PageContainer from '@/components/PageContainer';
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
+import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
 import {
   CONTRACT_STATUS_CHIPS,
   LIST_SCREEN_FLATLIST,
@@ -19,6 +21,7 @@ import {
 import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contracts';
 import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
+import { usePullToRefreshMany } from '@/hooks/use-pull-to-refresh';
 import { ReviewableContractDto } from '@/types/api/types.gen';
 
 export default function ContractsScreen() {
@@ -36,6 +39,11 @@ export default function ContractsScreen() {
     useUpdateReview();
   const isReviewSubmitting = isSubmittingReview || isUpdatingReview;
   const { refetch: refetchReviews } = useGetReviews();
+  const { refreshing, onRefresh } = usePullToRefreshMany(
+    refetchActiveContracts,
+    refetchInactiveContracts,
+    refetchReviews,
+  );
 
   const [displayReview, setDisplayReview] = useState(false);
   const [selectedContractId, setSelectedContractId] = useState<number | null>(
@@ -132,7 +140,7 @@ export default function ContractsScreen() {
             onReview={() => openReview(item)}
           />
         )}
-        ListHeaderComponent={listHeader}
+        ListHeaderComponent={withRefreshFeedback(refreshing, listHeader)}
         ListEmptyComponent={
           <ListEmptyState
             title={copy.emptyTitle}
@@ -146,6 +154,9 @@ export default function ContractsScreen() {
         maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
         windowSize={LIST_SCREEN_FLATLIST.windowSize}
         removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+        refreshControl={
+          <PullToRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
 
       <ReviewModal

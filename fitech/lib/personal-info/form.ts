@@ -1,14 +1,16 @@
 import { PERSONAL_INFO_FORM_FIELDS } from '@/constants/forms';
 import { PersonDto, UserResponseDtoReadable } from '@/types/api/types.gen';
 
+const LOCATION_ID_FIELDS = new Set(['residenceLocationId', 'gymLocationId']);
+
 export function getPersonalInfoFieldValue(
   form: UserResponseDtoReadable | undefined,
   field: string,
 ): string | number | undefined {
   if (!form) return undefined;
 
-  if (field === 'residenceLocationId') {
-    return form.person?.residenceLocationId;
+  if (LOCATION_ID_FIELDS.has(field)) {
+    return form.person?.[field as keyof PersonDto] as number | undefined;
   }
 
   const value = form.person?.[field as keyof PersonDto];

@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { AppText } from '@/components/AppText';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
+import { ListRefreshOverlay } from '@/components/list/ListRefreshOverlay';
 import { TrainerListCard } from '@/components/list/TrainerListCard';
 import PageContainer from '@/components/PageContainer';
 import { SearchBar } from '@/components/SearchBar';
@@ -14,6 +15,7 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchTrainers } from '@/lib/api/mutations/use-search-trainers';
+import { useListScreenRefresh } from '@/hooks/use-list-screen-refresh';
 import { PublicTrainerDtoReadable } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 
@@ -57,6 +59,27 @@ export default function TrainersSearchScreen() {
     debouncedSearch(query);
   }, [query, debouncedSearch]);
 
+  const handleRefresh = useCallback(
+    () =>
+      new Promise<void>((resolve, reject) => {
+        const payload = query.trim().length === 0 ? {} : { query: query.trim() };
+        mutate(payload, {
+          onSuccess: (data) => {
+            setResults(data ?? []);
+            setIsSearching(false);
+            resolve();
+          },
+          onError: () => {
+            setIsSearching(false);
+            reject(new Error('trainer search failed'));
+          },
+        });
+      }),
+    [mutate, query],
+  );
+
+  const { refreshing, refreshControl } = useListScreenRefresh(handleRefresh);
+
   const listHeader = useMemo(
     () => (
       <View style={styles.listHeaderWrap}>
@@ -95,36 +118,42 @@ export default function TrainersSearchScreen() {
       disableScroll
       style={styles.pageStyle}
     >
-      <FlatList
-        data={results}
-        keyExtractor={(item) =>
-          String(item.id ?? item.person?.id ?? Math.random())
-        }
-        renderItem={({ item }) => (
-          <TrainerListCard
-            trainer={item}
-            onPress={() => router.push(`/trainers/${item.id}`)}
-          />
-        )}
-        ListHeaderComponent={listHeader}
-        ListEmptyComponent={
-          isSearching ? (
-            <View style={styles.loadingWrap}>
-              <ActivityIndicator color={theme.brand.primary} />
-            </View>
-          ) : (
-            <ListEmptyState title={copy.emptyTitle} hint={copy.emptyHint} />
-          )
-        }
-        contentContainerStyle={styles.listContent}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
-        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
-        windowSize={LIST_SCREEN_FLATLIST.windowSize}
-        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
-      />
+      <View style={styles.listWrap}>
+        <FlatList
+          style={LIST_SCREEN_FLATLIST.listStyle}
+          overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
+          data={results}
+          keyExtractor={(item) =>
+            String(item.id ?? item.person?.id ?? Math.random())
+          }
+          renderItem={({ item }) => (
+            <TrainerListCard
+              trainer={item}
+              onPress={() => router.push(`/trainers/${item.id}`)}
+            />
+          )}
+          ListHeaderComponent={listHeader}
+          ListEmptyComponent={
+            isSearching ? (
+              <View style={styles.loadingWrap}>
+                <ActivityIndicator color={theme.brand.primary} />
+              </View>
+            ) : (
+              <ListEmptyState title={copy.emptyTitle} hint={copy.emptyHint} />
+            )
+          }
+          contentContainerStyle={styles.listContent}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+          maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+          windowSize={LIST_SCREEN_FLATLIST.windowSize}
+          removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+          refreshControl={refreshControl}
+        />
+        <ListRefreshOverlay visible={refreshing} />
+      </View>
     </PageContainer>
   );
 }
@@ -133,6 +162,9 @@ const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 0 },
+    listWrap: {
+      flex: 1,
+    },
     listHeaderWrap: {
       marginBottom: 16,
     },

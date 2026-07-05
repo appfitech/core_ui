@@ -10,6 +10,7 @@ import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useClientResourcesGrouped } from '@/lib/api/queries/use-client-resources-grouped';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import type {
   ClientResourceGroupDtoReadable,
   ClientResourceResponseDtoReadable,
@@ -35,11 +36,12 @@ export default function TrainerRoutinesScreen() {
   const router = useRouter();
   const styles = getStyles(theme);
 
-  const { data: groupedData } = useClientResourcesGrouped({
+  const { data: groupedData, refetch } = useClientResourcesGrouped({
     resourceType: RESOURCE_TYPE,
     page: 0,
     size: 50,
   });
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   const groups = useMemo<ClientResourceGroupDtoReadable[]>(
     () => groupedData?.content ?? [],
@@ -73,6 +75,8 @@ export default function TrainerRoutinesScreen() {
     <PageContainer
       title="Rutinas de Clientes"
       subheader="Gestiona las rutinas asignadas a tus clientes"
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <View style={styles.contentWrap}>
         <View style={styles.topRow}>

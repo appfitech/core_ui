@@ -11,6 +11,7 @@ import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDebounce } from '@/hooks/use-debounce';
 import { useTrainerGetClients } from '@/lib/api/queries/use-trainer-get-clients';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { AppTheme } from '@/types/theme';
 
 type ServiceItem = {
@@ -232,9 +233,10 @@ export default function TrainerClientsScreen() {
   const { theme } = useTheme();
   const debouncedQuery = useDebounce(query, 500);
 
-  const { data: clients } = useTrainerGetClients({
+  const { data: clients, refetch } = useTrainerGetClients({
     search: debouncedQuery ?? '',
   });
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   const results: ClientItem[] =
     (clients as { content?: ClientItem[] } | undefined)?.content ?? [];
@@ -246,6 +248,8 @@ export default function TrainerClientsScreen() {
       hasBackButton={false}
       title="Mis Clientes"
       subheader="Gestiona tus clientes y el progreso de sus entrenamientos"
+      onRefresh={onRefresh}
+      refreshing={refreshing}
     >
       <View style={styles.contentWrap}>
         <View style={styles.searchRow}>

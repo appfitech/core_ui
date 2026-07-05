@@ -7,6 +7,8 @@ import { Button } from '@/components/Button';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { NotificationListRow } from '@/components/list/NotificationListRow';
 import PageContainer from '@/components/PageContainer';
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
+import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
@@ -16,6 +18,7 @@ import {
   useMarkNotificationRead,
 } from '@/lib/api/mutations/use-actions-notifications';
 import { useGetUserNotifications } from '@/lib/api/queries/use-get-notifications';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { NotificationDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 import { parseAppRedirectUrl } from '@/utils/navigate-from-push-notification';
@@ -27,6 +30,7 @@ export default function NotificationsScreen() {
   const { notificationsScreen: copy } = TRANSLATIONS;
 
   const { data, refetch, isLoading } = useGetUserNotifications();
+  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const notifications: NotificationDto[] = useMemo(
     () => data?.recent ?? [],
     [data],
@@ -108,6 +112,7 @@ export default function NotificationsScreen() {
         data={notifications}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
+        ListHeaderComponent={withRefreshFeedback(refreshing)}
         ListEmptyComponent={
           isLoading ? (
             <View style={styles.loadingWrap}>
@@ -124,6 +129,9 @@ export default function NotificationsScreen() {
         maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
         windowSize={LIST_SCREEN_FLATLIST.windowSize}
         removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
+        refreshControl={
+          <PullToRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </PageContainer>
   );

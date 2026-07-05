@@ -5,6 +5,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
+import { RefreshFeedbackBar } from '@/components/RefreshFeedbackBar';
 import { shouldShowNavBar } from '@/constants/navigation';
 import { textStyles } from '@/constants/styles';
 import { useTabBarInset } from '@/contexts/TabBarInsetContext';
@@ -71,6 +73,9 @@ type Props = {
   includeTabBarPadding?: boolean;
   /** Use with a parent `ImageBackground` so the app background does not cover it. */
   transparentBackground?: boolean;
+  /** Pull-to-refresh — pass with `refreshing` from `usePullToRefresh`. */
+  onRefresh?: () => void | Promise<void>;
+  refreshing?: boolean;
 };
 
 export default function PageContainer({
@@ -92,6 +97,8 @@ export default function PageContainer({
   authOptimized = false,
   includeTabBarPadding = true,
   transparentBackground = false,
+  onRefresh,
+  refreshing = false,
 }: Props) {
   const segments = useSegments();
   const insets = useSafeAreaInsets();
@@ -173,6 +180,17 @@ export default function PageContainer({
     showsVerticalScrollIndicator: false,
     nestedScrollEnabled: true,
     overScrollMode: 'always' as const,
+    ...(onRefresh
+      ? {
+          refreshControl: (
+            <PullToRefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              progressViewOffset={scrollPaddingTop}
+            />
+          ),
+        }
+      : {}),
     ...(Platform.OS === 'android' && bottomScrollInset > 0
       ? { scrollIndicatorInsets: { bottom: bottomScrollInset } }
       : {}),
@@ -215,6 +233,7 @@ export default function PageContainer({
 
   const scrollContent = (
     <>
+      {refreshing ? <RefreshFeedbackBar visible /> : null}
       {scrollHeader}
       {children}
       {scrollBottomSpacer}

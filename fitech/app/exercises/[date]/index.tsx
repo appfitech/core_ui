@@ -13,11 +13,14 @@ import { AppText } from '@/components/AppText';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ExerciseCard } from '@/components/modules/ExerciseCard';
 import PageContainer from '@/components/PageContainer';
+import { PullToRefreshControl } from '@/components/PullToRefreshControl';
+import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
 import { Tag } from '@/components/Tag';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useGetDailyWorkouts } from '@/lib/api/queries/workouts/use-get-user-workouts';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { AppTheme } from '@/types/theme';
 
 export default function WorkoutDayScreen() {
@@ -33,6 +36,7 @@ export default function WorkoutDayScreen() {
     isLoading,
     refetch: refetchDailyWorkouts,
   } = useGetDailyWorkouts(date);
+  const { refreshing, onRefresh } = usePullToRefresh(refetchDailyWorkouts);
 
   const exerciseCount = sessions?.length ?? 0;
 
@@ -79,7 +83,9 @@ export default function WorkoutDayScreen() {
           data={sessions ?? []}
           keyExtractor={(item) => `exercise-card-${date}-${item.id}`}
           contentContainerStyle={styles.listContent}
-          ListHeaderComponent={listHeader}
+          ListHeaderComponent={() =>
+            withRefreshFeedback(refreshing, listHeader())
+          }
           renderItem={({ item }) => (
             <View style={styles.cardWrapper}>
               <ExerciseCard
@@ -101,6 +107,9 @@ export default function WorkoutDayScreen() {
                 hint={dayCopy.emptyHint}
               />
             )
+          }
+          refreshControl={
+            <PullToRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         />
       </PageContainer>

@@ -23,6 +23,7 @@ type Props = {
   label?: string;
   placeholder?: string;
   required?: boolean;
+  zIndex?: number;
 };
 
 export function LocalLocationPicker({
@@ -32,6 +33,7 @@ export function LocalLocationPicker({
   label = '',
   placeholder = '',
   required = true,
+  zIndex,
 }: Props) {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
@@ -135,6 +137,7 @@ export function LocalLocationPicker({
       }
       options={options}
       required={required}
+      zIndex={zIndex}
       search
       searchPlaceholder="Buscar distrito..."
       onSearchChange={setSearchText}

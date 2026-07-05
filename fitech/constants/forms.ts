@@ -97,7 +97,17 @@ export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
     label: 'Ubicación',
     field: 'residenceLocationId',
     inputType: 'location-picker',
+    placeholder: 'Seleccionar distrito',
     isOptional: true,
+    zIndex: 900,
+  },
+  {
+    label: 'Lugar de entrenamiento',
+    field: 'gymLocationId',
+    inputType: 'location-picker',
+    placeholder: 'Seleccionar distrito',
+    isOptional: true,
+    zIndex: 800,
   },
   {
     label: 'Acerca de ti',
@@ -157,6 +167,15 @@ export const PERSONAL_INFO_FORM_FIELDS: PersonalInfoFormField[] = [
     inputType: 'location-picker',
     placeholder: 'Seleccionar distrito',
     isOptional: true,
+    zIndex: 900,
+  },
+  {
+    label: 'Lugar de entrenamiento',
+    field: 'gymLocationId',
+    inputType: 'location-picker',
+    placeholder: 'Seleccionar distrito',
+    isOptional: true,
+    zIndex: 800,
   },
   {
     label: 'Acerca de ti',
