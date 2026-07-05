@@ -69,18 +69,21 @@ export default function TrainerContractScreen() {
     if (!service || !clientId || !accepted) return;
 
     try {
-      await createContract({
+      const contractResponse = await createContract({
         serviceId: service.id,
         clientId,
         termsAccepted: true,
         notes: `Contrato desde perfil del trainer ${service.trainerId}`,
       });
+      console.log('[K] contractResponse', contractResponse);
+      const { chatId } = contractResponse ?? {};
+
       router.replace(ROUTES.home);
       showContractToast({
         title: contractToastCopy.title,
         message: contractToastCopy.message,
         ctaLabel: contractToastCopy.chatCta,
-        onOpenChats: () => router.push(ROUTES.chats),
+        onOpenChats: () => router.push(`${ROUTES.chats}/${chatId ?? ''}`),
       });
     } catch {
       showAlert({

@@ -116,6 +116,10 @@ export const MATCH_SCREEN_TABS: Option[] = [
     value: 'discover',
   },
   {
+    label: 'Solicitudes',
+    value: 'requests',
+  },
+  {
     label: 'Matches',
     value: 'matches',
   },

@@ -5,6 +5,7 @@ import { ListRefreshOverlay } from '@/components/list/ListRefreshOverlay';
 import { MatchCelebrationModal } from '@/components/match/MatchCelebrationModal';
 import { MatchDiscoverDeck } from '@/components/match/MatchDiscoverDeck';
 import { MatchMutualsList } from '@/components/match/MatchMutualsList';
+import { MatchRequestsList } from '@/components/match/MatchRequestsList';
 import { MatchButtonSection } from '@/components/MatchButtonSection';
 import PageContainer from '@/components/PageContainer';
 import { Tabs } from '@/components/Tabs';
@@ -22,6 +23,7 @@ import {
   useGetGymBroCandidates,
   useGetGymBroMutuals,
 } from '@/lib/api/queries/matches/use-get-gymbro-list';
+import { useGetMatchRequests } from '@/lib/api/queries/matches/use-get-match-requests';
 import { AppTheme } from '@/types/theme';
 import {
   buildMatchCelebrationFromResponse,
@@ -40,6 +42,11 @@ const MUTUALS_EMPTY = {
   hint: 'Ve a “Descubre” y desliza a la derecha 💪. Si hay like mutuo, te llega una notificación.',
 };
 
+const REQUESTS_EMPTY = {
+  title: 'No tienes solicitudes pendientes',
+  hint: 'Cuando alguien te dé like, aparecerá aquí para que decidas si haces match.',
+};
+
 export default function GymBroScreen() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -47,6 +54,8 @@ export default function GymBroScreen() {
   const { data: candidates, refetch: refetchCandidates } =
     useGetGymBroCandidates();
   const { data: mutuals, refetch: refetchMutuals } = useGetGymBroMutuals();
+  const { data: matchRequests, refetch: refetchRequests } =
+    useGetMatchRequests('gymbro');
   const { mutate: discardGymBro } = useDiscardGymBro();
   const { mutate: matchGymBro } = useMatchGymBro();
 
@@ -66,8 +75,12 @@ export default function GymBroScreen() {
 
   const handleRefetchAll = useCallback(async () => {
     resetQueue();
-    await Promise.all([refetchMutuals(), refetchCandidates()]);
-  }, [resetQueue, refetchMutuals, refetchCandidates]);
+    await Promise.all([
+      refetchMutuals(),
+      refetchCandidates(),
+      refetchRequests(),
+    ]);
+  }, [resetQueue, refetchMutuals, refetchCandidates, refetchRequests]);
 
   const { refreshing, refreshControl } = useListScreenRefresh(handleRefetchAll);
 
@@ -111,6 +124,37 @@ export default function GymBroScreen() {
     [discardGymBro, handleRefetchAll],
   );
 
+  const handleMatchRequest = useCallback(
+    (targetUserId: number | undefined) => {
+      if (!targetUserId) return;
+
+      matchGymBro(targetUserId, {
+        onSuccess: (response) => {
+          void refetchRequests();
+          const payload = buildMatchCelebrationFromResponse('gymbro', response);
+          if (payload) {
+            setCelebration(payload);
+            void refetchMutuals();
+          }
+        },
+      });
+    },
+    [matchGymBro, refetchMutuals, refetchRequests],
+  );
+
+  const handlePassRequest = useCallback(
+    (targetUserId: number | undefined) => {
+      if (!targetUserId) return;
+
+      discardGymBro(targetUserId, {
+        onSuccess: () => {
+          void refetchRequests();
+        },
+      });
+    },
+    [discardGymBro, refetchRequests],
+  );
+
   return (
     <PageContainer
       title="GymBro"
@@ -145,6 +189,16 @@ export default function GymBroScreen() {
                 emptyHint={DISCOVER_EMPTY.hint}
               />
             </ScrollView>
+          ) : selectedTab === 'requests' ? (
+            <MatchRequestsList
+              requests={matchRequests}
+              type="gymbro"
+              onMatch={handleMatchRequest}
+              onPass={handlePassRequest}
+              emptyTitle={REQUESTS_EMPTY.title}
+              emptyHint={REQUESTS_EMPTY.hint}
+              refreshControl={refreshControl}
+            />
           ) : (
             <MatchMutualsList
               mutuals={mutuals}

@@ -15,4 +15,5 @@ export type CreateContractResponse = {
   endDate: string | null;
   totalAmount: number;
   serviceName: string;
+  chatId?: number;
 };

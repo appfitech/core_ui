@@ -20,10 +20,12 @@ export const queryKeys = {
   gymbro: {
     candidates: ['get-gymbro-candidates'] as const,
     mutuals: ['get-gymbro-mutuals'] as const,
+    requests: ['get-gymbro-match-requests'] as const,
   },
   gymcrush: {
     candidates: ['get-gymcrush-candidates'] as const,
     mutuals: ['get-gymcrush-mutuals'] as const,
+    requests: ['get-gymcrush-match-requests'] as const,
   },
   contracts: {
     active: ['get-active-contracts'] as const,

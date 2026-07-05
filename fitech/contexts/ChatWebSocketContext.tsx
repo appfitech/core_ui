@@ -36,11 +36,35 @@ export function ChatWebSocketProvider({
   children: React.ReactNode;
 }) {
   const token = useUserStore((s) => s.token);
-  const userId = useUserStore((s) => s.user?.user?.id);
+  const syncUserId = useUserStore((s) => s.user?.user?.id);
   const isSessionHydrated = useUserStore((s) => s.isSessionHydrated);
   const isSessionHydrating = useUserStore((s) => s.isSessionHydrating);
 
+  const [storedUserId, setStoredUserId] = useState<number | undefined>();
+  const userId = syncUserId ?? storedUserId;
+
   const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    if (syncUserId != null) {
+      setStoredUserId(undefined);
+      return;
+    }
+
+    let cancelled = false;
+    void useUserStore
+      .getState()
+      .getStoredUserId()
+      .then((id) => {
+        if (!cancelled && id != null) {
+          setStoredUserId(id);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [syncUserId]);
 
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(

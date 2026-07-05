@@ -7,7 +7,9 @@ function parseTabParam(
   tab: string | string[] | undefined,
 ): MatchScreenTab | undefined {
   const value = tab == null ? undefined : Array.isArray(tab) ? tab[0] : tab;
-  if (value === 'matches' || value === 'discover') return value;
+  if (value === 'matches' || value === 'discover' || value === 'requests') {
+    return value;
+  }
   return undefined;
 }
 

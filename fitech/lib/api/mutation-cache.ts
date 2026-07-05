@@ -131,8 +131,10 @@ export async function invalidateMatchQueries(
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: queryKeys.gymbro.candidates }),
     queryClient.invalidateQueries({ queryKey: queryKeys.gymbro.mutuals }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.gymbro.requests }),
     queryClient.invalidateQueries({ queryKey: queryKeys.gymcrush.candidates }),
     queryClient.invalidateQueries({ queryKey: queryKeys.gymcrush.mutuals }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.gymcrush.requests }),
     queryClient.invalidateQueries({ queryKey: queryKeys.chats.all }),
   ]);
 }
@@ -144,9 +146,12 @@ export async function invalidateMatchMutuals(
 ): Promise<void> {
   const mutualKey =
     system === 'gymbro' ? queryKeys.gymbro.mutuals : queryKeys.gymcrush.mutuals;
+  const requestsKey =
+    system === 'gymbro' ? queryKeys.gymbro.requests : queryKeys.gymcrush.requests;
 
   await Promise.all([
     queryClient.invalidateQueries({ queryKey: mutualKey }),
+    queryClient.invalidateQueries({ queryKey: requestsKey }),
     queryClient.invalidateQueries({ queryKey: queryKeys.chats.all }),
   ]);
 }

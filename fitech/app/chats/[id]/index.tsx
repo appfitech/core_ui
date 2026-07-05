@@ -23,6 +23,7 @@ import { ChatMessageComposer, CHAT_COMPOSER_RESERVE } from '@/components/chat/Ch
 import PageContainer from '@/components/PageContainer';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
+import { useAlert } from '@/contexts/AlertContext';
 import { useChatWebSocket } from '@/contexts/ChatWebSocketContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import {
@@ -41,7 +42,17 @@ type Message = {
   from: 'me' | 'them';
   text: string;
   time: string;
+  createdAt?: string;
 };
+
+function sortMessages(messages: Message[]): Message[] {
+  return [...messages].sort((a, b) => {
+    const ta = a.createdAt ? Date.parse(a.createdAt) : 0;
+    const tb = b.createdAt ? Date.parse(b.createdAt) : 0;
+    if (ta !== tb) return ta - tb;
+    return a.id.localeCompare(b.id);
+  });
+}
 
 function formatTime(isoDate?: string) {
   if (!isoDate) return '';
@@ -62,6 +73,7 @@ function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
     from: isMine ? 'me' : 'them',
     text: m.messageContent ?? '',
     time: formatTime(m.createdAt),
+    createdAt: m.createdAt,
   };
 }
 
@@ -70,13 +82,15 @@ export default function ChatDetailScreen() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
+  const { showAlert } = useAlert();
   const styles = getStyles(theme);
+  const { chatsScreen: chatCopy, common } = TRANSLATIONS;
 
   const invalidateChatList = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.chats.all });
   }, [queryClient]);
 
-  const currentUserId = useUserStore((s) => s.user?.user?.id ?? 0);
+  const currentUserId = useUserStore((s) => s.getUserId());
   const isTrainer = useUserStore((s) => s.getIsTrainer());
   const { sendMessage: sendChatMessage, subscribe: subscribeChatMessages } =
     useChatWebSocket();
@@ -90,6 +104,7 @@ export default function ChatDetailScreen() {
     data: messagesData,
     isLoading: isMessagesLoading,
     error: messagesError,
+    refetch: refetchMessages,
   } = useGetChatMessages(conversationId);
 
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
@@ -123,6 +138,7 @@ export default function ChatDetailScreen() {
   }, [scrollMessagesToEnd]);
 
   const restMessages: Message[] = useMemo(() => {
+    if (currentUserId == null) return [];
     const backendMessages: MessageDto[] = messagesData?.data ?? [];
     return backendMessages.map((m) => mapMessageFromApi(m, currentUserId));
   }, [messagesData, currentUserId]);
@@ -131,7 +147,7 @@ export default function ChatDetailScreen() {
     const byId = new Map<string, Message>();
     for (const m of restMessages) byId.set(m.id, m);
     for (const m of wsMessages) byId.set(m.id, m);
-    return Array.from(byId.values());
+    return sortMessages(Array.from(byId.values()));
   }, [restMessages, wsMessages]);
 
   useEffect(() => {
@@ -144,7 +160,13 @@ export default function ChatDetailScreen() {
     !!messagesError || (messagesData && messagesData.success === false);
 
   useEffect(() => {
-    if (!conversationIdNumber || !currentUserId) return;
+    if (
+      !Number.isFinite(conversationIdNumber) ||
+      conversationIdNumber <= 0 ||
+      currentUserId == null
+    ) {
+      return;
+    }
 
     return subscribeChatMessages((msgFromApi) => {
       if (msgFromApi.conversationId !== conversationIdNumber) return;
@@ -153,7 +175,17 @@ export default function ChatDetailScreen() {
 
       setWsMessages((prev) => {
         if (prev.some((m) => m.id === mapped.id)) return prev;
-        return [...prev, mapped];
+
+        const withoutPendingEcho = prev.filter(
+          (m) =>
+            !(
+              m.id.startsWith('pending-') &&
+              m.from === 'me' &&
+              m.text === mapped.text
+            ),
+        );
+
+        return [...withoutPendingEcho, mapped];
       });
       invalidateChatList();
     });
@@ -181,7 +213,35 @@ export default function ChatDetailScreen() {
 
   const handleSend = useCallback(() => {
     const text = input.trim();
-    if (!text || !conversationIdNumber) return;
+    if (
+      !text ||
+      !Number.isFinite(conversationIdNumber) ||
+      conversationIdNumber <= 0
+    ) {
+      return;
+    }
+
+    if (currentUserId == null) {
+      showAlert({
+        title: common.errorTitle,
+        message: chatCopy.sendNotConnectedMessage,
+        buttons: [{ text: common.understood }],
+      });
+      return;
+    }
+
+    const pendingId = `pending-${Date.now()}`;
+    const nowIso = new Date().toISOString();
+    const optimisticMessage: Message = {
+      id: pendingId,
+      from: 'me',
+      text,
+      time: formatTime(nowIso),
+      createdAt: nowIso,
+    };
+
+    setWsMessages((prev) => [...prev, optimisticMessage]);
+    setInput('');
 
     const sent = sendChatMessage({
       conversationId: conversationIdNumber,
@@ -190,16 +250,27 @@ export default function ChatDetailScreen() {
 
     if (sent) {
       invalidateChatList();
+      void refetchMessages();
     } else {
-      console.warn('[ChatWS] Not connected — message was not sent.');
+      setWsMessages((prev) => prev.filter((m) => m.id !== pendingId));
+      showAlert({
+        title: chatCopy.sendNotConnectedTitle,
+        message: chatCopy.sendNotConnectedMessage,
+        buttons: [{ text: common.understood }],
+      });
     }
-
-    setInput('');
   }, [
+    chatCopy.sendNotConnectedMessage,
+    chatCopy.sendNotConnectedTitle,
+    common.errorTitle,
+    common.understood,
     conversationIdNumber,
+    currentUserId,
     input,
     invalidateChatList,
+    refetchMessages,
     sendChatMessage,
+    showAlert,
   ]);
 
   const handleInputChange = useCallback((value: string) => {
@@ -457,6 +528,7 @@ const getStyles = (theme: AppTheme) => {
       position: 'absolute',
       left: 0,
       right: 0,
+      zIndex: 2,
       backgroundColor: theme.background.app,
     },
   });

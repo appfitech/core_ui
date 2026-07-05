@@ -5,6 +5,6 @@ export type Option = {
   disabled?: boolean;
 };
 
-export type MatchScreenTab = 'discover' | 'matches';
+export type MatchScreenTab = 'discover' | 'matches' | 'requests';
 
 export type MatchScreenType = 'gymbro' | 'gymcrush';

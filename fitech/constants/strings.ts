@@ -437,6 +437,9 @@ export const TRANSLATIONS = {
     deleteMessage:
       'Se eliminará el chat con {name}. Esta acción no se puede deshacer.',
     deleteError: 'No se pudo eliminar la conversación.',
+    sendNotConnectedTitle: 'Sin conexión',
+    sendNotConnectedMessage:
+      'No se pudo enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.',
   },
   macrosCalculatorScreen: {
     title: '¿Cuántos gramos tiene tu antojo?',
