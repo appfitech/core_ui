@@ -75,7 +75,7 @@ export default function TrainerContractScreen() {
         termsAccepted: true,
         notes: `Contrato desde perfil del trainer ${service.trainerId}`,
       });
-      console.log('[K] contractResponse', contractResponse);
+
       const { chatId } = contractResponse ?? {};
 
       router.replace(ROUTES.home);
