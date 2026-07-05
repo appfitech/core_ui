@@ -4,7 +4,6 @@ import { GymCrushCandidateResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
 import { useSessionQueryEnabled } from '../use-session-query-enabled';
-import { parseMatchCandidateList } from './parse-match-candidates';
 
 export const useGetGymCrushCandidates = () => {
   const enabled = useSessionQueryEnabled();
@@ -13,7 +12,8 @@ export const useGetGymCrushCandidates = () => {
     queryKey: ['get-gymcrush-candidates'],
     queryFn: async () => {
       const result = await api.get(`/matches/gymcrush/candidates`);
-      return parseMatchCandidateList(result) as GymCrushCandidateResponseDto[];
+
+      return result?.data ?? [];
     },
     enabled,
   });
@@ -26,7 +26,8 @@ export const useGetGymCrushMutuals = () => {
     queryKey: ['get-gymcrush-mutuals'],
     queryFn: async () => {
       const result = await api.get(`/matches/mutual/GYMCRUSH`);
-      return parseMatchCandidateList(result) as GymCrushCandidateResponseDto[];
+
+      return result?.data ?? [];
     },
     enabled,
   });

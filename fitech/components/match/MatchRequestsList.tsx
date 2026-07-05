@@ -2,13 +2,13 @@ import React from 'react';
 import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
-import { MatchRequestCandidate } from '@/lib/api/queries/matches/use-get-match-requests';
+import { MatchRequestItem } from '@/lib/api/queries/matches/use-get-match-requests';
 import { MatchScreenType } from '@/types/forms';
 
 import { MatchRequestCard } from './MatchRequestCard';
 
 type Props = {
-  requests: MatchRequestCandidate[] | undefined;
+  requests: MatchRequestItem[] | undefined;
   type: MatchScreenType;
   onMatch: (userId: number | undefined) => void;
   onPass: (userId: number | undefined) => void;
@@ -37,7 +37,7 @@ export function MatchRequestsList({
       renderItem={({ item }) => (
         <View>
           <MatchRequestCard
-            candidate={item}
+            request={item}
             type={type}
             onMatch={() => onMatch(item.userId)}
             onPass={() => onPass(item.userId)}

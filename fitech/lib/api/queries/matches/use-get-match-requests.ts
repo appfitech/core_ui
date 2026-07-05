@@ -6,13 +6,22 @@ import { MatchScreenType } from '@/types/forms';
 
 import { api } from '../../api';
 import { useSessionQueryEnabled } from '../use-session-query-enabled';
-import {
-  MatchCandidate,
-  parseMatchCandidateList,
-} from './parse-match-candidates';
 
 export type MatchRequestSystem = 'GYMBRO' | 'GYMCRUSH';
-export type MatchRequestCandidate = MatchCandidate;
+
+export type MatchRequestItem = {
+  userId: number;
+  name: string;
+  email: string;
+};
+
+type MatchRequestsResponse = {
+  matchSystem?: MatchRequestSystem;
+  newUnseenCount?: number;
+  pendingCount?: number;
+  requests?: MatchRequestItem[];
+  targetUserId?: number;
+};
 
 function getMatchRequestSystem(type: MatchScreenType): MatchRequestSystem {
   return type === 'gymbro' ? 'GYMBRO' : 'GYMCRUSH';
@@ -25,13 +34,14 @@ export function useGetMatchRequests(type: MatchScreenType) {
     type === 'gymbro' ? queryKeys.gymbro.requests : queryKeys.gymcrush.requests;
   const enabled = useSessionQueryEnabled(!!userId);
 
-  return useQuery<MatchRequestCandidate[]>({
+  return useQuery<MatchRequestItem[]>({
     queryKey: [...baseQueryKey, userId],
     queryFn: async () => {
-      const result = await api.get(
+      const result = (await api.get(
         `/testing/match-requests?userId=${userId}&system=${system}`,
-      );
-      return parseMatchCandidateList(result);
+      )) as MatchRequestsResponse;
+
+      return result.requests ?? [];
     },
     enabled,
     staleTime: 0,

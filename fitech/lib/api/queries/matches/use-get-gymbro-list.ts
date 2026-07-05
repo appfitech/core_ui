@@ -4,7 +4,6 @@ import { GymBroCandidateResponseDto } from '@/types/api/types.gen';
 
 import { api } from '../../api';
 import { useSessionQueryEnabled } from '../use-session-query-enabled';
-import { parseMatchCandidateList } from './parse-match-candidates';
 
 export const useGetGymBroCandidates = () => {
   const enabled = useSessionQueryEnabled();
@@ -13,7 +12,8 @@ export const useGetGymBroCandidates = () => {
     queryKey: ['get-gymbro-candidates'],
     queryFn: async () => {
       const result = await api.get(`/matches/gymbro/candidates`);
-      return parseMatchCandidateList(result) as GymBroCandidateResponseDto[];
+
+      return result?.data ?? [];
     },
     enabled,
   });
@@ -26,7 +26,8 @@ export const useGetGymBroMutuals = () => {
     queryKey: ['get-gymbro-mutuals'],
     queryFn: async () => {
       const result = await api.get(`/matches/mutual/GYMBRO`);
-      return parseMatchCandidateList(result) as GymBroCandidateResponseDto[];
+
+      return result?.data ?? [];
     },
     enabled,
   });

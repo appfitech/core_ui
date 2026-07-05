@@ -1,58 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import React, { useMemo } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import { Tag } from '@/components/Tag';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
-import { MatchRequestCandidate } from '@/lib/api/queries/matches/use-get-match-requests';
+import { MatchRequestItem } from '@/lib/api/queries/matches/use-get-match-requests';
 import { MatchScreenType } from '@/types/forms';
 import { AppTheme } from '@/types/theme';
-import { getCandidateProfileImageUrl } from '@/utils/user';
 
 const PHOTO_WIDTH = 96;
 const PHOTO_HEIGHT = 120;
 
-type CandidateWithBioPref = MatchRequestCandidate & {
-  gymBroShowBioInProfile?: boolean;
-  gymCrushShowBioInProfile?: boolean;
-};
-
 type Props = {
-  candidate: MatchRequestCandidate;
+  request: MatchRequestItem;
   type: MatchScreenType;
   onMatch: () => void;
   onPass: () => void;
 };
 
-export function MatchRequestCard({
-  candidate,
-  type,
-  onMatch,
-  onPass,
-}: Props) {
+export function MatchRequestCard({ request, type, onMatch, onPass }: Props) {
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
-
-  const imageUri = getCandidateProfileImageUrl(candidate?.profilePhotoUrl);
-
-  const displayName = [candidate?.firstName, candidate?.lastName]
-    .filter(Boolean)
-    .join(' ');
-
-  const nameLine = displayName
-    ? candidate.age != null
-      ? `${displayName}, ${candidate.age}`
-      : displayName
-    : '';
-
-  const showBio =
-    !!candidate?.bio &&
-    (type === 'gymbro'
-      ? !!(candidate as CandidateWithBioPref).gymBroShowBioInProfile
-      : !!(candidate as CandidateWithBioPref).gymCrushShowBioInProfile);
 
   const matchIcon =
     type === 'gymbro' ? ('barbell' as const) : ('heart' as const);
@@ -62,30 +31,25 @@ export function MatchRequestCard({
   return (
     <View style={styles.card}>
       <View style={styles.photoWrap}>
-        {imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.photo}
-            contentFit="cover"
-            transition={0}
-            cachePolicy="memory-disk"
-          />
-        ) : (
-          <View style={styles.photoPlaceholder}>
-            <Ionicons name="person" size={36} color={theme.text.tertiary} />
-          </View>
-        )}
+        <View style={styles.photoPlaceholder}>
+          <Ionicons name="person" size={36} color={theme.text.tertiary} />
+        </View>
       </View>
 
       <View style={styles.body}>
         <View style={styles.titleRow}>
-          {nameLine ? (
-            <AppText style={styles.nameText} numberOfLines={2}>
-              {nameLine}
-            </AppText>
-          ) : (
-            <View style={styles.nameSpacer} />
-          )}
+          <View style={styles.nameBlock}>
+            {request.name ? (
+              <AppText style={styles.nameText} numberOfLines={2}>
+                {request.name}
+              </AppText>
+            ) : null}
+            {request.email ? (
+              <AppText style={styles.emailText} numberOfLines={1}>
+                {request.email}
+              </AppText>
+            ) : null}
+          </View>
 
           <View style={styles.actions}>
             <Pressable
@@ -123,31 +87,6 @@ export function MatchRequestCard({
             </Pressable>
           </View>
         </View>
-
-        {(candidate.city || candidate.fitnessLevel) && (
-          <View style={styles.tagsContainer}>
-            {candidate.city ? (
-              <Tag
-                backgroundColor={theme.brand.primarySoft}
-                textColor={theme.brand.primary}
-                label={candidate.city}
-              />
-            ) : null}
-            {candidate.fitnessLevel ? (
-              <Tag
-                backgroundColor={theme.background.input}
-                textColor={theme.text.secondary}
-                label={candidate.fitnessLevel}
-              />
-            ) : null}
-          </View>
-        )}
-
-        {showBio ? (
-          <AppText style={styles.bioText} numberOfLines={2}>
-            {candidate.bio}
-          </AppText>
-        ) : null}
       </View>
     </View>
   );
@@ -175,10 +114,6 @@ const getStyles = (theme: AppTheme) => {
       overflow: 'hidden',
       backgroundColor: theme.background.input,
     },
-    photo: {
-      width: '100%',
-      height: '100%',
-    },
     photoPlaceholder: {
       flex: 1,
       alignItems: 'center',
@@ -189,20 +124,23 @@ const getStyles = (theme: AppTheme) => {
       flex: 1,
       minWidth: 0,
       justifyContent: 'center',
-      rowGap: 8,
     },
     titleRow: {
       flexDirection: 'row',
       alignItems: 'flex-start',
       columnGap: 8,
     },
+    nameBlock: {
+      flex: 1,
+      rowGap: 4,
+    },
     nameText: {
       ...text.leadSemibold,
-      flex: 1,
       color: theme.text.primary,
     },
-    nameSpacer: {
-      flex: 1,
+    emailText: {
+      ...text.small,
+      color: theme.text.secondary,
     },
     actions: {
       flexDirection: 'row',
@@ -229,17 +167,6 @@ const getStyles = (theme: AppTheme) => {
     },
     actionPressed: {
       opacity: 0.88,
-    },
-    tagsContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      columnGap: 6,
-      rowGap: 4,
-    },
-    bioText: {
-      ...text.small,
-      color: theme.text.secondary,
-      lineHeight: 18,
     },
   });
 };
