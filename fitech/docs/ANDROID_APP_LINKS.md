@@ -11,7 +11,7 @@ iOS uses Universal Links (`apple-app-site-association`). **Each path must be lis
 ### Common causes (check in this order)
 
 1. **Stale or wrong Android build** — App Links are baked into the native APK. OTA / JS-only updates are not enough after changing `app.json` or `plugins/`.
-2. **Wrong signing certificate** — `assetlinks.json` must list the SHA-256 of the **same keystore** used to sign the APK you installed (EAS `apk` profile: fingerprint with `…18:7F:C3…`, not `…18:7E:C3…`). Compare with `adb shell pm get-app-links com.fitech` → `Signatures:`.
+2. **Wrong signing certificate** — `assetlinks.json` must list the SHA-256 of the **same keystore** used to sign the APK you installed (EAS `apk` profile: fingerprint with `…18:7F:C3…`, not `…18:7E:C3…`). Compare with `adb shell pm get-app-links com.appfitech` → `Signatures:`.
 3. **`www` host redirects** — `https://www.appfitech.com/.well-known/assetlinks.json` must return **200** JSON on `www`, not **301** to apex. A redirect fails verification for `www.appfitech.com` and often leaves `get-app-links` at **`1024`** for all hosts until fixed. Use apex links in emails: `https://appfitech.com/...` (no `www`).
 4. **Broken `autoVerify` manifest** — `expo-dev-client` can inject `exp+fitech` into verified intent filters and break verification. This repo includes `plugins/with-android-verified-app-links.js` to strip those schemes (must be first in `app.json` → `plugins`).
 5. **Re-verify is not enough on some devices (MIUI)** — After fixing `assetlinks.json`, **uninstall FITECH**, redeploy server files, reinstall the APK, then run `pm verify-app-links --re-verify`.
@@ -62,8 +62,8 @@ https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=http
 4. On a device with the app installed:
 
    ```bash
-   adb shell pm verify-app-links --re-verify com.fitech
-   adb shell pm get-app-links com.fitech
+   adb shell pm verify-app-links --re-verify com.appfitech
+   adb shell pm get-app-links com.appfitech
    ```
 
    `appfitech.com` should show `verified`.
@@ -95,8 +95,8 @@ adb shell am start -a android.intent.action.VIEW -d "fitech://reset-password?tok
 # HTTPS — only works when App Links are verified
 adb shell am start -a android.intent.action.VIEW -d "https://appfitech.com/verify-email?token=TEST"
 
-adb shell pm verify-app-links --re-verify com.fitech
-adb shell pm get-app-links com.fitech
+adb shell pm verify-app-links --re-verify com.appfitech
+adb shell pm get-app-links com.appfitech
 ```
 
 `appfitech.com` should show **verified** for the build you installed. If status is `none` or `legacy_failure`, add that APK’s SHA-256 to `assetlinks.json` (see `eas credentials -p android`).

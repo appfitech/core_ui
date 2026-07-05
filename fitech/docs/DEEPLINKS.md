@@ -40,8 +40,8 @@ Full troubleshooting: **`docs/ANDROID_APP_LINKS.md`**.
 Verify on device:
 
 ```bash
-adb shell pm verify-app-links --re-verify com.fitech
-adb shell pm get-app-links com.fitech
+adb shell pm verify-app-links --re-verify com.appfitech
+adb shell pm get-app-links com.appfitech
 ```
 
 ## Test on device

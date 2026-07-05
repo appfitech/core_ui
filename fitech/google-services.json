@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "356321766615",
-    "project_id": "fitech-344b4",
-    "storage_bucket": "fitech-344b4.firebasestorage.app"
+    "project_number": "1014449998097",
+    "project_id": "fitech-8226f",
+    "storage_bucket": "fitech-8226f.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:356321766615:android:a99705d498b311da53d492",
+        "mobilesdk_app_id": "1:1014449998097:android:53b1ca5a36379c7dd1e4b0",
         "android_client_info": {
-          "package_name": "com.fitech"
+          "package_name": "com.appfitech"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDvaLMC1-UFrtCKsKTJ8Phnbo-zNCtTZQA"
+          "current_key": "AIzaSyB3Ofwb2E7-Umei9J2jsSXk_XIHKzEKJeg"
         }
       ],
       "services": {

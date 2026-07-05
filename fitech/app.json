@@ -10,8 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.fitech",
-      "associatedDomains": ["applinks:appfitech.com"],
+      "bundleIdentifier": "com.appfitech",
+      "associatedDomains": [
+        "applinks:appfitech.com"
+      ],
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
@@ -31,13 +33,14 @@
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.VIBRATE",
-        "android.permission.RECEIVE_BOOT_COMPLETED"
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.RECORD_AUDIO"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logos/android-adaptive-foreground.png",
         "backgroundColor": "#39CC39"
       },
-      "package": "com.fitech",
+      "package": "com.appfitech",
       "softwareKeyboardLayoutMode": "pan",
       "intentFilters": [
         {
@@ -50,7 +53,10 @@
               "pathPrefix": "/verify-email"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         },
         {
           "action": "VIEW",
@@ -62,7 +68,10 @@
               "pathPrefix": "/reset-password"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         },
         {
           "action": "VIEW",
@@ -76,7 +85,10 @@
               "host": "reset-password"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },
@@ -157,8 +169,9 @@
         "origin": "https://appfitech.com"
       },
       "eas": {
-        "projectId": "ec35caa5-1c8e-465f-b389-b3a21c1dd17f"
+        "projectId": "91bc39fa-08b6-48d3-be40-193275ca330b"
       }
-    }
+    },
+    "owner": "appfitechs-team"
   }
 }
