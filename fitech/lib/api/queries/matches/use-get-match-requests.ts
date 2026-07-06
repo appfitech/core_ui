@@ -29,18 +29,22 @@ function getMatchRequestSystem(type: MatchScreenType): MatchRequestSystem {
 
 export function useGetMatchRequests(type: MatchScreenType) {
   const userId = useUserStore((s) => s?.user?.user?.id);
+  const token = useUserStore((s) => s.getToken());
   const system = getMatchRequestSystem(type);
   const baseQueryKey =
     type === 'gymbro' ? queryKeys.gymbro.requests : queryKeys.gymcrush.requests;
-  const enabled = useSessionQueryEnabled(!!userId);
+  const enabled = useSessionQueryEnabled(!!userId && !!token);
 
   return useQuery<MatchRequestItem[]>({
-    queryKey: [...baseQueryKey, userId],
+    queryKey: [...baseQueryKey, userId, token],
     queryFn: async () => {
-      const result = (await api.get(
-        `/testing/match-requests?userId=${userId}&system=${system}`,
-      )) as MatchRequestsResponse;
+      if (!token) return [];
 
+      const result = (await api.get(`/matches/requests/${system}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })) as MatchRequestsResponse;
+
+      console.log('[K] result', result);
       return result.requests ?? [];
     },
     enabled,

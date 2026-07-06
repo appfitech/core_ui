@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { MatchContactCard } from '@/components/MatchContactCard';
@@ -16,7 +16,6 @@ type Props = {
   onDiscard: (userId: number | undefined) => void;
   emptyTitle: string;
   emptyHint: string;
-  refreshControl?: React.ReactElement<React.ComponentProps<typeof RefreshControl>>;
 };
 
 export function MatchMutualsList({
@@ -24,16 +23,13 @@ export function MatchMutualsList({
   onDiscard,
   emptyTitle,
   emptyHint,
-  refreshControl,
 }: Props) {
   return (
     <FlatList
-      style={LIST_SCREEN_FLATLIST.listStyle}
-      overScrollMode={LIST_SCREEN_FLATLIST.overScrollMode}
+      style={styles.list}
       data={mutuals ?? []}
       keyExtractor={(item) => String(item.userId)}
       contentContainerStyle={styles.content}
-      refreshControl={refreshControl}
       renderItem={({ item }) => (
         <View>
           <MatchContactCard
@@ -49,11 +45,15 @@ export function MatchMutualsList({
           hint={emptyHint}
         />
       }
+      removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
     />
   );
 }
 
 const styles = StyleSheet.create({
+  list: {
+    flex: 1,
+  },
   content: {
     gap: 10,
     paddingBottom: 24,

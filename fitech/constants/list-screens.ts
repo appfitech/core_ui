@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import { TRANSLATIONS } from '@/constants/strings';
 
 const { common } = TRANSLATIONS;
@@ -7,12 +9,9 @@ export const LIST_SCREEN_FLATLIST = {
   initialNumToRender: 8,
   maxToRenderPerBatch: 6,
   windowSize: 7,
-  removeClippedSubviews: true,
+  /** RefreshControl + clipped subviews breaks row rendering on Android. */
+  removeClippedSubviews: Platform.OS === 'ios',
   itemGap: 12,
-  /** Fill PageContainer when disableScroll wraps a FlatList. */
-  listStyle: { flex: 1 },
-  /** Allows pull-to-refresh even when the list is shorter than the screen. */
-  overScrollMode: 'always' as const,
 } as const;
 
 export const ACTIVE_INACTIVE_CHIPS = [

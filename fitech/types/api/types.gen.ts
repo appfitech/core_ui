@@ -1757,6 +1757,7 @@ export type MatchActionResponseDto = {
   matchedUserId?: number;
   matchedUserName?: string;
   matchedUserPhoto?: string;
+  chatId?: number;
   error?: string;
 };
 
@@ -2298,12 +2299,12 @@ export type MembershipPayment = {
   collectionRequestedAt?: string;
   failureReason?: string;
   cancelled?: boolean;
-  availableForCollection?: boolean;
   collected?: boolean;
   pending?: boolean;
   observed?: boolean;
   paymentCompleted?: boolean;
   paymentPending?: boolean;
+  availableForCollection?: boolean;
   paymentRejected?: boolean;
   pendingClientApproval?: boolean;
   collectedByTrainer?: boolean;
@@ -2333,9 +2334,9 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
+  monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
-  monthlyPrice?: number;
   monthly?: boolean;
   annual?: boolean;
 };

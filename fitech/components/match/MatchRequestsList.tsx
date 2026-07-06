@@ -1,7 +1,8 @@
 import React from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { MatchRequestItem } from '@/lib/api/queries/matches/use-get-match-requests';
 import { MatchScreenType } from '@/types/forms';
 
@@ -14,7 +15,6 @@ type Props = {
   onPass: (userId: number | undefined) => void;
   emptyTitle: string;
   emptyHint: string;
-  refreshControl?: React.ReactElement<React.ComponentProps<typeof RefreshControl>>;
 };
 
 export function MatchRequestsList({
@@ -24,16 +24,13 @@ export function MatchRequestsList({
   onPass,
   emptyTitle,
   emptyHint,
-  refreshControl,
 }: Props) {
   return (
     <FlatList
       style={styles.list}
-      overScrollMode="always"
       data={requests ?? []}
       keyExtractor={(item) => String(item.userId)}
       contentContainerStyle={styles.content}
-      refreshControl={refreshControl}
       renderItem={({ item }) => (
         <View>
           <MatchRequestCard
@@ -51,6 +48,7 @@ export function MatchRequestsList({
           hint={emptyHint}
         />
       }
+      removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
     />
   );
 }

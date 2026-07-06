@@ -7,14 +7,11 @@ import { type ChatListRowItem } from '@/components/list/ChatListRow';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { SwipeableChatListRow } from '@/components/list/SwipeableChatListRow';
 import PageContainer from '@/components/PageContainer';
-import { PullToRefreshControl } from '@/components/PullToRefreshControl';
-import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
 import { LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useDeleteChat } from '@/lib/api/mutations/use-delete-chat';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
 import { useUserStore } from '@/stores/user';
@@ -68,7 +65,6 @@ export default function ChatsScreen() {
   const { chatsScreen: copy, common } = TRANSLATIONS;
 
   const { data, isLoading, refetch } = useGetChats();
-  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const { mutate: deleteChat } = useDeleteChat();
 
   useFocusEffect(
@@ -142,7 +138,6 @@ export default function ChatsScreen() {
         data={chats}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        ListHeaderComponent={withRefreshFeedback(refreshing)}
         ListEmptyComponent={
           isLoading ? (
             <View style={styles.loadingWrap}>
@@ -159,9 +154,6 @@ export default function ChatsScreen() {
         maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
         windowSize={LIST_SCREEN_FLATLIST.windowSize}
         removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
-        refreshControl={
-          <PullToRefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
       />
     </PageContainer>
   );
