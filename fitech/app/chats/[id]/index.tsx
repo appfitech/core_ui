@@ -34,6 +34,7 @@ import { queryKeys } from '@/lib/api/query-keys';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
+import { formatTimeLocal, parseServerDateTime } from '@/utils/dates';
 
 const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 
@@ -45,22 +46,29 @@ type Message = {
   createdAt?: string;
 };
 
-function sortMessages(messages: Message[]): Message[] {
-  return [...messages].sort((a, b) => {
-    const ta = a.createdAt ? Date.parse(a.createdAt) : 0;
-    const tb = b.createdAt ? Date.parse(b.createdAt) : 0;
-    if (ta !== tb) return ta - tb;
-    return a.id.localeCompare(b.id);
-  });
+function getMessageSortKey(message: Message): number {
+  if (message.createdAt) {
+    const parsed = parseServerDateTime(message.createdAt);
+    if (parsed) return parsed.getTime();
+  }
+
+  if (message.id.startsWith('pending-')) {
+    const pendingTs = Number(message.id.slice('pending-'.length));
+    if (!Number.isNaN(pendingTs)) return pendingTs;
+  }
+
+  const numericId = Number(message.id);
+  if (!Number.isNaN(numericId)) return numericId;
+
+  return Number.MAX_SAFE_INTEGER;
 }
 
-function formatTime(isoDate?: string) {
-  if (!isoDate) return '';
-  const date = new Date(isoDate);
-
-  return date.toLocaleTimeString('es-PE', {
-    hour: 'numeric',
-    minute: '2-digit',
+function sortMessages(messages: Message[]): Message[] {
+  return [...messages].sort((a, b) => {
+    const ta = getMessageSortKey(a);
+    const tb = getMessageSortKey(b);
+    if (ta !== tb) return ta - tb;
+    return a.id.localeCompare(b.id);
   });
 }
 
@@ -72,7 +80,7 @@ function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
     id,
     from: isMine ? 'me' : 'them',
     text: m.messageContent ?? '',
-    time: formatTime(m.createdAt),
+    time: formatTimeLocal(m.createdAt),
     createdAt: m.createdAt,
   };
 }
@@ -104,7 +112,6 @@ export default function ChatDetailScreen() {
     data: messagesData,
     isLoading: isMessagesLoading,
     error: messagesError,
-    refetch: refetchMessages,
   } = useGetChatMessages(conversationId);
 
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
@@ -176,16 +183,27 @@ export default function ChatDetailScreen() {
       setWsMessages((prev) => {
         if (prev.some((m) => m.id === mapped.id)) return prev;
 
-        const withoutPendingEcho = prev.filter(
+        const pendingMatch = prev.find(
           (m) =>
-            !(
-              m.id.startsWith('pending-') &&
-              m.from === 'me' &&
-              m.text === mapped.text
-            ),
+            m.id.startsWith('pending-') &&
+            m.from === 'me' &&
+            m.text === mapped.text,
         );
 
-        return [...withoutPendingEcho, mapped];
+        const withoutPendingEcho = pendingMatch
+          ? prev.filter((m) => m.id !== pendingMatch.id)
+          : prev;
+
+        const messageToAdd =
+          pendingMatch && !mapped.createdAt
+            ? {
+                ...mapped,
+                createdAt: pendingMatch.createdAt,
+                time: pendingMatch.time,
+              }
+            : mapped;
+
+        return [...withoutPendingEcho, messageToAdd];
       });
       invalidateChatList();
     });
@@ -236,7 +254,7 @@ export default function ChatDetailScreen() {
       id: pendingId,
       from: 'me',
       text,
-      time: formatTime(nowIso),
+      time: formatTimeLocal(nowIso),
       createdAt: nowIso,
     };
 
@@ -250,7 +268,6 @@ export default function ChatDetailScreen() {
 
     if (sent) {
       invalidateChatList();
-      void refetchMessages();
     } else {
       setWsMessages((prev) => prev.filter((m) => m.id !== pendingId));
       showAlert({
@@ -268,7 +285,6 @@ export default function ChatDetailScreen() {
     currentUserId,
     input,
     invalidateChatList,
-    refetchMessages,
     sendChatMessage,
     showAlert,
   ]);

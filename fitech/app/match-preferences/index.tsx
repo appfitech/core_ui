@@ -199,7 +199,7 @@ export default function MatchPreferencesScreen() {
 
   const ageInput = (
     value: number | undefined,
-    onChange: (n: number) => void,
+    onChange: (n: number | undefined) => void,
     placeholder: string,
   ) => (
     <View style={styles.ageField}>
@@ -207,7 +207,13 @@ export default function MatchPreferencesScreen() {
         keyboardType="number-pad"
         value={value != null ? String(value) : ''}
         onChangeText={(t) => {
-          const n = parseInt(t, 10);
+          const digits = t.replace(/\D/g, '');
+          if (digits === '') {
+            onChange(undefined);
+            return;
+          }
+
+          const n = parseInt(digits, 10);
           if (!Number.isNaN(n)) onChange(n);
         }}
         placeholder={placeholder}

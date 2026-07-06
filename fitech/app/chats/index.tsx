@@ -3,11 +3,9 @@ import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
-import {
-  SwipeableChatListRow,
-} from '@/components/list/SwipeableChatListRow';
 import { type ChatListRowItem } from '@/components/list/ChatListRow';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
+import { SwipeableChatListRow } from '@/components/list/SwipeableChatListRow';
 import PageContainer from '@/components/PageContainer';
 import { PullToRefreshControl } from '@/components/PullToRefreshControl';
 import { withRefreshFeedback } from '@/components/RefreshFeedbackBar';
@@ -16,44 +14,14 @@ import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useDeleteChat } from '@/lib/api/mutations/use-delete-chat';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
+import { formatConversationTimeLocal } from '@/utils/dates';
 import { getFileUploadViewUrl } from '@/utils/files';
-
-function formatConversationTime(iso: string | undefined) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  const now = new Date();
-
-  const isSameDay =
-    date.getFullYear() === now.getFullYear() &&
-    date.getMonth() === now.getMonth() &&
-    date.getDate() === now.getDate();
-
-  const yesterday = new Date();
-  yesterday.setDate(now.getDate() - 1);
-  const isYesterday =
-    date.getFullYear() === yesterday.getFullYear() &&
-    date.getMonth() === yesterday.getMonth() &&
-    date.getDate() === yesterday.getDate();
-
-  const time = date.toLocaleTimeString('es-PE', {
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-
-  if (isSameDay) return time;
-  if (isYesterday) return TRANSLATIONS.common.yesterday;
-
-  const weekday = date.toLocaleDateString('es-PE', { weekday: 'short' });
-  return weekday.length > 0
-    ? weekday.charAt(0).toUpperCase() + weekday.slice(1)
-    : weekday;
-}
 
 function getChatAvatarUri(c: ConversationDto): string | undefined {
   const raw = c.otherUserProfileImageUrl?.trim();
@@ -73,7 +41,10 @@ function mapConversationToChatItem(c: ConversationDto): ChatListRowItem {
       c.otherUserUsername ||
       TRANSLATIONS.common.defaultUserName,
     lastMessage: preview || TRANSLATIONS.common.noMessagesYet,
-    time: formatConversationTime(c.lastMessageAt ?? c.createdAt),
+    time: formatConversationTimeLocal(
+      c.lastMessageAt ?? c.createdAt,
+      TRANSLATIONS.common.yesterday,
+    ),
     unread: Math.max(0, c.unreadCount ?? 0),
     matchType: c.matchType,
     avatarUri: getChatAvatarUri(c),
