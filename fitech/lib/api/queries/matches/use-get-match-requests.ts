@@ -2,6 +2,10 @@ import { useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from '@/lib/api/query-keys';
 import { useUserStore } from '@/stores/user';
+import {
+  GymBroCandidateResponseDto,
+  GymCrushCandidateResponseDto,
+} from '@/types/api/types.gen';
 import { MatchScreenType } from '@/types/forms';
 
 import { api } from '../../api';
@@ -9,18 +13,14 @@ import { useSessionQueryEnabled } from '../use-session-query-enabled';
 
 export type MatchRequestSystem = 'GYMBRO' | 'GYMCRUSH';
 
-export type MatchRequestItem = {
-  userId: number;
-  name: string;
-  email: string;
-};
+export type MatchRequestItem =
+  | GymBroCandidateResponseDto
+  | GymCrushCandidateResponseDto;
 
 type MatchRequestsResponse = {
-  matchSystem?: MatchRequestSystem;
-  newUnseenCount?: number;
-  pendingCount?: number;
+  count?: number;
+  success?: boolean;
   requests?: MatchRequestItem[];
-  targetUserId?: number;
 };
 
 function getMatchRequestSystem(type: MatchScreenType): MatchRequestSystem {
@@ -44,7 +44,6 @@ export function useGetMatchRequests(type: MatchScreenType) {
         headers: { Authorization: `Bearer ${token}` },
       })) as MatchRequestsResponse;
 
-      console.log('[K] result', result);
       return result.requests ?? [];
     },
     enabled,

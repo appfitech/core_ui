@@ -53,6 +53,7 @@ export const queryKeys = {
   },
   chats: {
     all: ['/chats'] as const,
+    unreadCount: ['get-chats-unread-count'] as const,
     detail: (id: number | string) => [`/chats/${id}`] as const,
     messages: (id: number | string) => [`/chats/${id}/messages`] as const,
   },

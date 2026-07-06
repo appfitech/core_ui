@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useMemo } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
@@ -14,6 +15,7 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useDeleteChat } from '@/lib/api/mutations/use-delete-chat';
 import { useGetChats } from '@/lib/api/queries/use-chat-queries';
+import { queryKeys } from '@/lib/api/query-keys';
 import { useUserStore } from '@/stores/user';
 import { ConversationDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
@@ -61,6 +63,7 @@ export default function ChatsScreen() {
   const styles = getStyles(theme);
   const router = useRouter();
   const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const isTrainer = useUserStore((s) => s.getIsTrainer());
   const { chatsScreen: copy, common } = TRANSLATIONS;
 
@@ -70,7 +73,10 @@ export default function ChatsScreen() {
   useFocusEffect(
     useCallback(() => {
       void refetch();
-    }, [refetch]),
+      void queryClient.invalidateQueries({
+        queryKey: queryKeys.chats.unreadCount,
+      });
+    }, [queryClient, refetch]),
   );
 
   const chats = useMemo(

@@ -15,6 +15,6 @@ export const useGetUserNotifications = () => {
       return result?.data;
     },
     enabled,
-    refetchInterval: 60_000,
+    refetchInterval: 40_000,
   });
 };

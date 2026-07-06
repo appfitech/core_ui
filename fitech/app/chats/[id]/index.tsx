@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useLocalSearchParams } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import React, {
   useCallback,
   useEffect,
@@ -19,7 +19,10 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppText } from '@/components/AppText';
-import { ChatMessageComposer, CHAT_COMPOSER_RESERVE } from '@/components/chat/ChatMessageComposer';
+import {
+  CHAT_COMPOSER_RESERVE,
+  ChatMessageComposer,
+} from '@/components/chat/ChatMessageComposer';
 import PageContainer from '@/components/PageContainer';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
@@ -96,7 +99,20 @@ export default function ChatDetailScreen() {
 
   const invalidateChatList = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.chats.all });
+    void queryClient.invalidateQueries({
+      queryKey: queryKeys.chats.unreadCount,
+    });
   }, [queryClient]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        void queryClient.invalidateQueries({
+          queryKey: queryKeys.chats.unreadCount,
+        });
+      };
+    }, [queryClient]),
+  );
 
   const currentUserId = useUserStore((s) => s.getUserId());
   const isTrainer = useUserStore((s) => s.getIsTrainer());

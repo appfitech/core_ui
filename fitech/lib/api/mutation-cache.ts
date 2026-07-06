@@ -170,6 +170,7 @@ export async function invalidateChatQueries(
 ): Promise<void> {
   const tasks = [
     queryClient.invalidateQueries({ queryKey: queryKeys.chats.all }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.chats.unreadCount }),
   ];
 
   if (conversationId != null) {
