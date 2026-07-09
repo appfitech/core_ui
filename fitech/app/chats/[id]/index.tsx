@@ -40,6 +40,7 @@ import { AppTheme } from '@/types/theme';
 import { formatTimeLocal, parseServerDateTime } from '@/utils/dates';
 
 const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
+const CONNECTING_OVERLAY_DELAY_MS = 1000;
 
 type Message = {
   id: string;
@@ -168,6 +169,7 @@ export default function ChatDetailScreen() {
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [showConnectingOverlay, setShowConnectingOverlay] = useState(false);
 
   const messagesScrollRef = useRef<ScrollView | null>(null);
 
@@ -219,6 +221,19 @@ export default function ChatDetailScreen() {
 
   const hasError =
     !!messagesError || (messagesData && messagesData.success === false);
+
+  useEffect(() => {
+    if (isConnected) {
+      setShowConnectingOverlay(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setShowConnectingOverlay(true);
+    }, CONNECTING_OVERLAY_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [isConnected]);
 
   useEffect(() => {
     if (
@@ -483,7 +498,7 @@ export default function ChatDetailScreen() {
           />
         </View>
 
-        {!isConnected ? (
+        {!isConnected && showConnectingOverlay ? (
           <View style={styles.connectingOverlay} pointerEvents="auto">
             <View style={styles.connectingCard}>
               <ActivityIndicator color={theme.brand.primary} size="small" />

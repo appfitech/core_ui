@@ -31,6 +31,8 @@ const ChatWebSocketContext = createContext<ChatWebSocketContextValue | null>(
   null,
 );
 
+const RECONNECT_DELAY_MS = 1500;
+
 export function ChatWebSocketProvider({
   children,
 }: {
@@ -45,6 +47,18 @@ export function ChatWebSocketProvider({
   const userId = syncUserId ?? storedUserId;
 
   const [isConnected, setIsConnected] = useState(false);
+
+  const tokenRef = useRef<string | null>(token);
+  tokenRef.current = token ?? null;
+
+  const wsRef = useRef<WebSocket | null>(null);
+  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const listenersRef = useRef(new Set<MessageListener>());
+  const isUnmountedRef = useRef(false);
+  const intentionalCloseRef = useRef(false);
+  const prevTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
     if (syncUserId != null) {
@@ -66,13 +80,6 @@ export function ChatWebSocketProvider({
       cancelled = true;
     };
   }, [syncUserId]);
-
-  const wsRef = useRef<WebSocket | null>(null);
-  const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null,
-  );
-  const listenersRef = useRef(new Set<MessageListener>());
-  const isUnmountedRef = useRef(false);
 
   const notifyListeners = useCallback((message: MessageDto) => {
     for (const listener of listenersRef.current) {
@@ -96,26 +103,123 @@ export function ChatWebSocketProvider({
     return true;
   }, []);
 
+  const clearReconnect = useCallback(() => {
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
+  }, []);
+
+  const closeSocket = useCallback(() => {
+    clearReconnect();
+    intentionalCloseRef.current = true;
+
+    const ws = wsRef.current;
+    if (ws) {
+      ws.onclose = null;
+      ws.onerror = null;
+      ws.close();
+      wsRef.current = null;
+    }
+
+    intentionalCloseRef.current = false;
+    setIsConnected(false);
+  }, [clearReconnect]);
+
+  const scheduleReconnect = useCallback(
+    (delayMs = RECONNECT_DELAY_MS) => {
+      clearReconnect();
+      reconnectTimeoutRef.current = setTimeout(() => {
+        reconnectTimeoutRef.current = null;
+        connectRef.current();
+      }, delayMs);
+    },
+    [clearReconnect],
+  );
+
+  const connectRef = useRef<() => void>(() => {});
+
+  const connect = useCallback(() => {
+    const authToken = tokenRef.current;
+    if (isUnmountedRef.current || !authToken) return;
+
+    clearReconnect();
+
+    const existing = wsRef.current;
+    if (existing) {
+      if (
+        existing.readyState === WebSocket.OPEN ||
+        existing.readyState === WebSocket.CONNECTING
+      ) {
+        return;
+      }
+
+      intentionalCloseRef.current = true;
+      existing.onclose = null;
+      existing.onerror = null;
+      existing.close();
+      wsRef.current = null;
+      intentionalCloseRef.current = false;
+    }
+
+    const url = buildChatWsUrl(authToken);
+    if (__DEV__) {
+      console.log('[ChatWS] Connecting:', url);
+    }
+
+    const ws = new WebSocket(url);
+    wsRef.current = ws;
+
+    ws.onopen = () => {
+      if (isUnmountedRef.current) return;
+      setIsConnected(true);
+      if (__DEV__) {
+        console.log('[ChatWS] Connected');
+      }
+    };
+
+    ws.onmessage = (event) => {
+      try {
+        const message: MessageDto = JSON.parse(event.data);
+        notifyListeners(message);
+      } catch (error) {
+        console.error('[ChatWS] Failed to parse message', error);
+      }
+    };
+
+    ws.onclose = (event) => {
+      wsRef.current = null;
+      setIsConnected(false);
+
+      if (isUnmountedRef.current || intentionalCloseRef.current) return;
+
+      if (event.code === 1008) {
+        if (__DEV__) {
+          console.warn('[ChatWS] Invalid token (1008) — refreshing session');
+        }
+        void refreshAccessToken().then((result) => {
+          if (isUnmountedRef.current) return;
+          if (result === 'refreshed') {
+            scheduleReconnect(400);
+          }
+        });
+        return;
+      }
+
+      scheduleReconnect();
+    };
+
+    ws.onerror = (event) => {
+      console.error('[ChatWS] Error', event);
+    };
+  }, [clearReconnect, notifyListeners, scheduleReconnect]);
+
+  connectRef.current = connect;
+
   useEffect(() => {
     isUnmountedRef.current = false;
 
-    const clearReconnect = () => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-        reconnectTimeoutRef.current = null;
-      }
-    };
-
-    const closeSocket = () => {
-      clearReconnect();
-      if (wsRef.current) {
-        wsRef.current.close();
-        wsRef.current = null;
-      }
-      setIsConnected(false);
-    };
-
-    if (!isSessionHydrated || isSessionHydrating || !token || !userId) {
+    if (!isSessionHydrated || isSessionHydrating || !tokenRef.current || !userId) {
       closeSocket();
       return () => {
         isUnmountedRef.current = true;
@@ -123,70 +227,19 @@ export function ChatWebSocketProvider({
       };
     }
 
-    const connect = () => {
-      clearReconnect();
-
-      const url = buildChatWsUrl(token);
-      if (__DEV__) {
-        console.log('[ChatWS] Connecting:', url);
-      }
-
-      const ws = new WebSocket(url);
-      wsRef.current = ws;
-
-      ws.onopen = () => {
-        if (isUnmountedRef.current) return;
-        setIsConnected(true);
-        if (__DEV__) {
-          console.log('[ChatWS] Connected');
-        }
-      };
-
-      ws.onmessage = (event) => {
-        try {
-          const message: MessageDto = JSON.parse(event.data);
-          notifyListeners(message);
-        } catch (error) {
-          console.error('[ChatWS] Failed to parse message', error);
-        }
-      };
-
-      ws.onclose = (event) => {
-        wsRef.current = null;
-        setIsConnected(false);
-
-        if (isUnmountedRef.current) return;
-
-        if (event.code === 1008) {
-          if (__DEV__) {
-            console.warn('[ChatWS] Invalid token (1008) — refreshing session');
-          }
-          void refreshAccessToken().then((result) => {
-            if (isUnmountedRef.current) return;
-            if (result === 'refreshed') {
-              reconnectTimeoutRef.current = setTimeout(connect, 400);
-            }
-          });
-          return;
-        }
-
-        reconnectTimeoutRef.current = setTimeout(connect, 3000);
-      };
-
-      ws.onerror = (event) => {
-        console.error('[ChatWS] Error', event);
-      };
-    };
-
     connect();
 
     const handleAppStateChange = (nextState: AppStateStatus) => {
       if (nextState !== 'active') return;
 
       const ws = wsRef.current;
-      if (ws?.readyState === WebSocket.OPEN) return;
+      if (
+        ws?.readyState === WebSocket.OPEN ||
+        ws?.readyState === WebSocket.CONNECTING
+      ) {
+        return;
+      }
 
-      clearReconnect();
       connect();
     };
 
@@ -200,7 +253,40 @@ export function ChatWebSocketProvider({
       isUnmountedRef.current = true;
       closeSocket();
     };
-  }, [isSessionHydrated, isSessionHydrating, token, userId, notifyListeners]);
+  }, [closeSocket, connect, isSessionHydrated, isSessionHydrating, userId]);
+
+  useEffect(() => {
+    const nextToken = token ?? null;
+    const prevToken = prevTokenRef.current;
+    prevTokenRef.current = nextToken;
+
+    if (
+      !isSessionHydrated ||
+      isSessionHydrating ||
+      !userId ||
+      !nextToken ||
+      prevToken == null ||
+      prevToken === nextToken
+    ) {
+      return;
+    }
+
+    const ws = wsRef.current;
+    if (
+      ws &&
+      (ws.readyState === WebSocket.OPEN ||
+        ws.readyState === WebSocket.CONNECTING)
+    ) {
+      intentionalCloseRef.current = true;
+      ws.onclose = null;
+      ws.onerror = null;
+      ws.close();
+      wsRef.current = null;
+      intentionalCloseRef.current = false;
+    }
+
+    connect();
+  }, [connect, isSessionHydrated, isSessionHydrating, token, userId]);
 
   const value = useMemo(
     () => ({
