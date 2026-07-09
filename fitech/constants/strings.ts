@@ -297,6 +297,9 @@ export const TRANSLATIONS = {
     dateUntil: 'Hasta {date}',
     dateRange: '{start} – {end}',
     amount: 'S/ {amount}',
+    reviewSubmitSuccess: 'Reseña enviada',
+    reviewUpdateSuccess: 'Reseña actualizada',
+    reviewSubmitError: 'No se pudo guardar la reseña. Intenta de nuevo.',
   },
   cancelContractModal: {
     title: 'Cancelar contrato',
@@ -358,6 +361,12 @@ export const TRANSLATIONS = {
     amountLabel: 'Monto total',
     amountValue: 'S/ {amount}',
     paymentStatusLabel: 'Estado de pago',
+    paymentStatus: {
+      PENDING: 'Pendiente',
+      COMPLETED: 'Completado',
+      FAILED: 'Fallido',
+      REFUNDED: 'Reembolsado',
+    },
     descriptionLabel: 'Descripción',
     dateFrom: 'Desde {date}',
     dateUntil: 'Hasta {date}',
@@ -411,6 +420,14 @@ export const TRANSLATIONS = {
     contractBlockedTitle: 'Aviso',
     contractBlockedDefault:
       'Ya tienes un servicio contratado y no puedes volver a contratarlo',
+    reviewsTitle: 'Reseñas de clientes',
+    reviewsSummaryMany: '{rating} · {count} reseñas',
+    reviewsSummaryOne: '{rating} · 1 reseña',
+    reviewsEmpty: 'Este entrenador aún no tiene reseñas.',
+    anonymousClient: 'Cliente anónimo',
+    reviewCommentLabel: 'Comentario',
+    reviewsExpand: 'Mostrar reseñas',
+    reviewsCollapse: 'Ocultar reseñas',
   },
   contractSuccessToast: {
     title: '¡Listo!',
@@ -440,6 +457,9 @@ export const TRANSLATIONS = {
     sendNotConnectedTitle: 'Sin conexión',
     sendNotConnectedMessage:
       'No se pudo enviar el mensaje. Comprueba tu conexión e inténtalo de nuevo.',
+    connectingTitle: 'Conectando al chat',
+    connectingMessage:
+      'Estamos restableciendo la conexión. Podrás enviar mensajes en un momento.',
   },
   macrosCalculatorScreen: {
     title: '¿Cuántos gramos tiene tu antojo?',

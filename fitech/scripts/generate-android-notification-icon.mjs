@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 
 const INPUT_CANDIDATES = [
-  join(root, 'assets/images/logos/rounded_logo.webp'),
+  join(root, 'assets/images/logos/fitech_logo.png'),
   join(root, 'assets/images/logos/app-icon.png'),
 ];
 

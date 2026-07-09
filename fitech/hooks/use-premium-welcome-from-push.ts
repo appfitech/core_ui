@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { ROUTES } from '@/constants/routes';
 import { refreshCurrentUserSession } from '@/lib/api/mutation-cache';
+import { useUserStore } from '@/stores/user';
 
 function parseQueryParam(
   value: string | string[] | undefined,
@@ -36,9 +37,34 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
   useEffect(() => {
     if (!isPremiumWelcomeParam(from, type) || isTrainer) return;
 
-    setVisible(true);
-    void refreshCurrentUserSession();
-  }, [from, isTrainer, type]);
+    let cancelled = false;
+
+    const run = async () => {
+      const wasAlreadyPremium = Boolean(
+        useUserStore.getState().user?.user?.premium,
+      );
+
+      await refreshCurrentUserSession();
+      if (cancelled) return;
+
+      const isPremiumNow = Boolean(
+        useUserStore.getState().user?.user?.premium,
+      );
+
+      if (!wasAlreadyPremium && isPremiumNow) {
+        setVisible(true);
+        return;
+      }
+
+      router.replace(ROUTES.home);
+    };
+
+    void run();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [from, isTrainer, router, type]);
 
   const dismissPremiumWelcome = useCallback(() => {
     setVisible(false);

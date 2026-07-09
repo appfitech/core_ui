@@ -108,7 +108,7 @@ export default function LoginScreen() {
       <View style={styles.headerWrapper}>
         <Animated.Image
           entering={authFadeInUp(600)}
-          source={require('@/assets/images/logos/rounded_logo.webp')}
+          source={require('@/assets/images/logos/fitech_logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />

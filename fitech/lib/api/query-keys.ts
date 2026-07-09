@@ -77,6 +77,14 @@ export const queryKeys = {
       stats: ['get-trainer-reviews-stats'] as const,
       breakdown: ['get-trainer-reviews-breakdown'] as const,
       list: ['get-trainer-reviews'] as const,
+      byTrainer: {
+        stats: (trainerId: number | string) =>
+          ['get-trainer-public-stats', trainerId] as const,
+        breakdown: (trainerId: number | string) =>
+          ['get-trainer-public-breakdown', trainerId] as const,
+        list: (trainerId: number | string) =>
+          ['get-trainer-public-reviews', trainerId] as const,
+      },
     },
   },
   reviews: {

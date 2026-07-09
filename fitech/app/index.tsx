@@ -42,7 +42,7 @@ export default function WelcomeScreen() {
           style={styles.logoContainer}
         >
           <Image
-            source={require('@/assets/images/logos/welcome_logo.png')}
+            source={require('@/assets/images/logos/fitech_logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />

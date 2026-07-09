@@ -30,6 +30,7 @@ import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 import { useUserStore } from '@/stores/user';
 import {
   getHrefFromPushData,
+  isPremiumWelcomeHref,
   setPendingPushHref,
   takePendingPushHref,
 } from '@/utils/navigate-from-push-notification';
@@ -66,6 +67,13 @@ function RoutedApp() {
     (data: unknown) => {
       const href = getHrefFromPushData(data);
       if (!href) return;
+
+      if (
+        isPremiumWelcomeHref(href) &&
+        Boolean(useUserStore.getState().user?.user?.premium)
+      ) {
+        return;
+      }
 
       const hrefStr = href as string;
 

@@ -64,15 +64,16 @@ const getStyles = (theme: AppTheme) => {
     },
     stars: {
       flexDirection: 'row',
-      width: 56,
+      width: 84,
       gap: 2,
+      marginRight: 12,
     },
     progressContainer: {
       flex: 1,
       height: 10,
       backgroundColor: theme.background.input,
       borderRadius: 6,
-      marginHorizontal: 10,
+      marginRight: 10,
       overflow: 'hidden',
     },
     progressFill: {

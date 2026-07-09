@@ -114,6 +114,14 @@ export default function ContractDetailScreen() {
           ? copy.dateUntil.replace('{date}', formatDate(parsedContract.endDate))
           : common.dash;
 
+  const paymentStatusValue = useMemo(() => {
+    const status = parsedContract?.paymentStatus as
+      | keyof typeof copy.paymentStatus
+      | undefined;
+    if (!status) return common.dash;
+    return copy.paymentStatus[status] ?? common.dash;
+  }, [common.dash, copy.paymentStatus, parsedContract?.paymentStatus]);
+
   const trainerAvatarUri = parsedContract?.trainerProfilePhotoId
     ? getFileUploadViewUrl(parsedContract.trainerProfilePhotoId)
     : null;
@@ -200,7 +208,7 @@ export default function ContractDetailScreen() {
         <ContractDetailRow
           icon="card-outline"
           label={copy.paymentStatusLabel}
-          value={parsedContract?.paymentStatus ?? common.dash}
+          value={paymentStatusValue}
         />
 
         {parsedContract?.serviceDescription ? (

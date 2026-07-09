@@ -52,8 +52,20 @@ export function ReviewModal({
   const insets = useSafeAreaInsets();
   const { data: reviews } = useGetReviews();
 
+  const resetForm = () => {
+    setComment('');
+    setAnonymous(false);
+    setRating(5);
+  };
+
   useEffect(() => {
-    if (!existingReviewId) return;
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !existingReviewId) return;
 
     const existing = reviews?.find((review) => review.id === existingReviewId);
     if (existing) {
@@ -61,22 +73,15 @@ export function ReviewModal({
       setComment(existing.comment ?? '');
       setAnonymous(existing.isAnonymous ?? false);
     }
-  }, [reviews, existingReviewId]);
+  }, [existingReviewId, isOpen, reviews]);
 
   const styles = getStyles(theme, insets.bottom);
   const ratingLabel =
     copy.ratingLabels[rating as keyof typeof copy.ratingLabels] ??
     copy.ratingLabels[5];
 
-  const resetForm = () => {
-    setComment('');
-    setAnonymous(false);
-    setRating(5);
-  };
-
   const handleClose = () => {
     onCloseModal();
-    resetForm();
   };
 
   const handleSubmit = () => {

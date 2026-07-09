@@ -60,6 +60,21 @@ export function getHrefFromPushData(data: unknown): Href | null {
   return parseAppRedirectUrl(path);
 }
 
+/** True when href targets home with premium welcome query params. */
+export function isPremiumWelcomeHref(href: Href | string | null): boolean {
+  if (href == null) return false;
+
+  if (typeof href === 'string') {
+    const queryIndex = href.indexOf('?');
+    if (queryIndex === -1) return false;
+    const params = new URLSearchParams(href.slice(queryIndex + 1));
+    return params.get('type') === 'premium' || params.get('from') === 'premium';
+  }
+
+  const params = (href as { params?: Record<string, string> }).params;
+  return params?.type === 'premium' || params?.from === 'premium';
+}
+
 /** Parses `/path?foo=bar` into an Expo Router href with explicit params. */
 export function parseAppRedirectUrl(raw: string): Href {
   const trimmed = raw.trim();

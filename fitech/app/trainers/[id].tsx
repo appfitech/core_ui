@@ -6,6 +6,7 @@ import { AppText } from '@/components/AppText';
 import { AvatarPhoto } from '@/components/AvatarPhoto';
 import PageContainer from '@/components/PageContainer';
 import { Tag } from '@/components/Tag';
+import { TrainerReviewsSection } from '@/components/trainers/TrainerReviewsSection';
 import { TrainerServiceCard } from '@/components/trainers/TrainerServiceCard';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
@@ -120,6 +121,8 @@ export default function TrainerProfileScreen() {
           </View>
         </View>
       ) : null}
+
+      <TrainerReviewsSection trainerId={Number(id)} />
     </PageContainer>
   );
 }

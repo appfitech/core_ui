@@ -12,6 +12,10 @@ import { PUSH_TOKEN_KEY } from '@/constants/push';
 import { useSavePushToken } from '@/lib/api/mutations/user/use-save-push-token';
 import { registerAndSyncPushToken } from '@/lib/push/register-and-sync-push-token';
 import { useUserStore } from '@/stores/user';
+import {
+  getHrefFromPushData,
+  isPremiumWelcomeHref,
+} from '@/utils/navigate-from-push-notification';
 
 export { PUSH_TOKEN_KEY };
 
@@ -72,13 +76,32 @@ export function withPushNotifications<P extends Record<string, unknown>>(
 
     useEffect(() => {
       Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldShowAlert: true,
-          shouldShowBanner: true,
-          shouldShowList: true,
-          shouldPlaySound: true,
-          shouldSetBadge: false,
-        }),
+        handleNotification: async (notification) => {
+          const href = getHrefFromPushData(
+            notification.request.content.data,
+          );
+          const suppressPremiumWelcome =
+            isPremiumWelcomeHref(href) &&
+            Boolean(useUserStore.getState().user?.user?.premium);
+
+          if (suppressPremiumWelcome) {
+            return {
+              shouldShowAlert: false,
+              shouldShowBanner: false,
+              shouldShowList: false,
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+            };
+          }
+
+          return {
+            shouldShowAlert: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
+            shouldPlaySound: true,
+            shouldSetBadge: false,
+          };
+        },
       });
 
       const subReceived = Notifications.addNotificationReceivedListener(

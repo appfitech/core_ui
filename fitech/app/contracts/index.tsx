@@ -7,11 +7,13 @@ import { ReviewModal } from '@/components/contracts/ReviewModal';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
 import PageContainer from '@/components/PageContainer';
+import { showInfoToast } from '@/components/Toast';
 import {
   CONTRACT_STATUS_CHIPS,
   LIST_SCREEN_FLATLIST,
 } from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
+import { useAlert } from '@/contexts/AlertContext';
 import {
   useSubmitReview,
   useUpdateReview,
@@ -20,10 +22,12 @@ import { useGetActiveContracts } from '@/lib/api/queries/use-get-active-contract
 import { useGetInactiveContracts } from '@/lib/api/queries/use-get-inactive-contracts';
 import { useGetReviews } from '@/lib/api/queries/use-get-reviews';
 import { ReviewableContractDto } from '@/types/api/types.gen';
+import { extractErrorMessage } from '@/utils/errors';
 
 export default function ContractsScreen() {
   const [filter, setFilter] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');
   const router = useRouter();
+  const { showAlert } = useAlert();
   const { contractsScreen: copy, common, listFilters } = TRANSLATIONS;
 
   const { data: activeContracts, refetch: refetchActiveContracts } =
@@ -42,6 +46,12 @@ export default function ContractsScreen() {
     null,
   );
   const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
+
+  const closeReviewModal = () => {
+    setDisplayReview(false);
+    setSelectedContractId(null);
+    setSelectedReviewId(null);
+  };
 
   const filteredContracts = useMemo(
     () => (filter === 'ACTIVE' ? activeContracts : inactiveContracts) ?? [],
@@ -67,9 +77,21 @@ export default function ContractsScreen() {
     existingReviewId: number | null = null,
   ) => {
     const onSuccess = () => {
-      refetchActiveContracts();
-      refetchInactiveContracts();
-      refetchReviews();
+      closeReviewModal();
+      void refetchActiveContracts();
+      void refetchInactiveContracts();
+      void refetchReviews();
+      showInfoToast(
+        existingReviewId ? copy.reviewUpdateSuccess : copy.reviewSubmitSuccess,
+      );
+    };
+
+    const onError = (error: Error) => {
+      showAlert({
+        title: common.errorTitle,
+        message: extractErrorMessage(error, copy.reviewSubmitError),
+        buttons: [{ text: common.understood }],
+      });
     };
 
     if (existingReviewId) {
@@ -81,7 +103,7 @@ export default function ContractsScreen() {
           isAnonymous: anonymous,
           reviewId: existingReviewId,
         },
-        { onSuccess },
+        { onSuccess, onError },
       );
       return;
     }
@@ -93,7 +115,7 @@ export default function ContractsScreen() {
         comment,
         isAnonymous: anonymous,
       },
-      { onSuccess },
+      { onSuccess, onError },
     );
   };
 
@@ -151,11 +173,7 @@ export default function ContractsScreen() {
       <ReviewModal
         isOpen={displayReview}
         contractId={selectedContractId}
-        onCloseModal={() => {
-          setDisplayReview(false);
-          setSelectedContractId(null);
-          setSelectedReviewId(null);
-        }}
+        onCloseModal={closeReviewModal}
         existingReviewId={selectedReviewId}
         onSubmit={handleSubmitReview}
         isSubmitting={isReviewSubmitting}

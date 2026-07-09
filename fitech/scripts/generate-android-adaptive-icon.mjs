@@ -8,7 +8,7 @@ import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
-const input = join(root, 'assets/images/logos/app-icon.png');
+const input = join(root, 'assets/images/logos/fitech_logo.png');
 const output = join(
   root,
   'assets/images/logos/android-adaptive-foreground.png',

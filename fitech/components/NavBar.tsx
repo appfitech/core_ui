@@ -22,7 +22,7 @@ import { AppText } from './AppText';
 
 SplashScreen.preventAutoHideAsync();
 
-const FAB_LOGO = require('@/assets/images/logos/rounded_logo.webp');
+const FAB_LOGO = require('@/assets/images/logos/fitech_logo.png');
 const FAB_SIZE = 64;
 
 const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
@@ -191,8 +191,8 @@ const getStyles = (theme: AppTheme) =>
       borderColor: theme.border.default,
     },
     fabLogo: {
-      width: 40,
-      height: 40,
+      width: 50,
+      height: 50,
     },
     fabLogoDisabled: {
       opacity: 0.35,

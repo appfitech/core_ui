@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 
 import { buildChatWsUrl } from '@/lib/api/chat-ws';
 import { refreshAccessToken } from '@/services/auth-session';
@@ -179,7 +180,23 @@ export function ChatWebSocketProvider({
 
     connect();
 
+    const handleAppStateChange = (nextState: AppStateStatus) => {
+      if (nextState !== 'active') return;
+
+      const ws = wsRef.current;
+      if (ws?.readyState === WebSocket.OPEN) return;
+
+      clearReconnect();
+      connect();
+    };
+
+    const appStateSubscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange,
+    );
+
     return () => {
+      appStateSubscription.remove();
       isUnmountedRef.current = true;
       closeSocket();
     };

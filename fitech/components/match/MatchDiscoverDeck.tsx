@@ -54,7 +54,6 @@ export function MatchDiscoverDeck({
   emptyTitle,
   emptyHint,
 }: Props) {
-  console.log('[K] MatchDiscoverDeck', current);
   const { theme } = useTheme();
   const styles = useMemo(() => getStyles(theme), [theme]);
 

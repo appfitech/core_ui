@@ -30,6 +30,7 @@ type Props = {
   onSend: () => void;
   onFocus: () => void;
   placeholder?: string;
+  disabled?: boolean;
 };
 
 function getApproxCharsPerLine(): number {
@@ -66,6 +67,7 @@ export function ChatMessageComposer({
   onSend,
   onFocus,
   placeholder = 'Escribe un mensaje...',
+  disabled = false,
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -104,7 +106,7 @@ export function ChatMessageComposer({
   );
 
   const trimmed = value.trim();
-  const canSend = trimmed.length > 0;
+  const canSend = !disabled && trimmed.length > 0;
 
   const handleSendPress = useCallback(() => {
     if (!canSend) return;
@@ -112,7 +114,7 @@ export function ChatMessageComposer({
   }, [canSend, onSend]);
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, disabled && styles.rootDisabled]}>
       <View style={styles.inputRow}>
         <View style={[styles.inputShell, { height: inputHeight }]}>
           <NativeTextInput
@@ -121,6 +123,7 @@ export function ChatMessageComposer({
             onFocus={onFocus}
             placeholder={placeholder}
             placeholderTextColor={theme.icon.muted}
+            editable={!disabled}
             multiline
             scrollEnabled={scrollEnabled}
             blurOnSubmit={false}
@@ -147,6 +150,7 @@ export function ChatMessageComposer({
           disabled={!canSend}
           accessibilityRole="button"
           accessibilityLabel="Enviar mensaje"
+          accessibilityState={{ disabled: !canSend }}
           style={({ pressed }) => [
             styles.sendButton,
             canSend ? styles.sendButtonActive : styles.sendButtonDisabled,
@@ -176,6 +180,9 @@ const getStyles = (theme: AppTheme) => {
       borderTopWidth: 1,
       borderTopColor: theme.border.default,
       backgroundColor: theme.background.app,
+    },
+    rootDisabled: {
+      opacity: 0.55,
     },
     inputRow: {
       flexDirection: 'row',

@@ -1521,6 +1521,14 @@ export type PublicTrainerDtoReadable = {
    * How premium access was obtained
    */
   premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+  /**
+   * Average rating from 1 to 5
+   */
+  averageRating?: number;
+  /**
+   * Total number of reviews
+   */
+  reviewCount?: number;
   premium?: boolean;
 };
 
@@ -1549,6 +1557,14 @@ export type PublicTrainerDtoWritable = {
    * How premium access was obtained
    */
   premiumBy?: 'NONE' | 'PAYMENT' | 'CONTRACT';
+  /**
+   * Average rating from 1 to 5
+   */
+  averageRating?: number;
+  /**
+   * Total number of reviews
+   */
+  reviewCount?: number;
   premium?: boolean;
 };
 
@@ -1970,8 +1986,8 @@ export type TrainerExperienceSummaryDto = {
 };
 
 export type Page = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
   content?: {
@@ -2159,8 +2175,8 @@ export type TrainerRatingBreakdownDto = {
 };
 
 export type PageReviewResponseDtoReadable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ReviewResponseDtoReadable[];
@@ -2173,8 +2189,8 @@ export type PageReviewResponseDtoReadable = {
 };
 
 export type PageReviewResponseDtoWritable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ReviewResponseDtoWritable[];
@@ -2304,13 +2320,13 @@ export type MembershipPayment = {
   observed?: boolean;
   paymentCompleted?: boolean;
   paymentPending?: boolean;
-  availableForCollection?: boolean;
   paymentRejected?: boolean;
   pendingClientApproval?: boolean;
   collectedByTrainer?: boolean;
   cancelling?: boolean;
   observedForCollection?: boolean;
   processingCollection?: boolean;
+  availableForCollection?: boolean;
 };
 
 export type MembershipPlan = {
@@ -2334,11 +2350,11 @@ export type MembershipPlan = {
   displayOrder?: number;
   createdAt?: string;
   updatedAt?: string;
+  monthly?: boolean;
+  annual?: boolean;
   monthlyPrice?: number;
   formattedPrice?: string;
   durationDescription?: string;
-  monthly?: boolean;
-  annual?: boolean;
 };
 
 export type GymCrushMatchResponseDto = {
@@ -2774,8 +2790,8 @@ export type ClientResourceResponseDtoWritable = {
 };
 
 export type PageClientResourceGroupDtoReadable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ClientResourceGroupDtoReadable[];
@@ -2788,8 +2804,8 @@ export type PageClientResourceGroupDtoReadable = {
 };
 
 export type PageClientResourceGroupDtoWritable = {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   size?: number;
   content?: ClientResourceGroupDtoWritable[];
@@ -2849,6 +2865,16 @@ export type SenderInfo = {
   firstName?: string;
   lastName?: string;
   profileImageUrl?: string;
+};
+
+export type ChatResponseDtoUnreadCountDto = {
+  success?: boolean;
+  message?: string;
+  data?: UnreadCountDto;
+};
+
+export type UnreadCountDto = {
+  unreadCount?: number;
 };
 
 /**
@@ -4365,6 +4391,31 @@ export type SetPreferredAccountResponses = {
    */
   200: unknown;
 };
+
+export type UpdateStatusData = {
+  body: {
+    [key: string]: string;
+  };
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/admin/support/{id}/status';
+};
+
+export type UpdateStatusResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type UpdateStatusResponse =
+  UpdateStatusResponses[keyof UpdateStatusResponses];
 
 export type DeleteFoodItemData = {
   body?: never;
@@ -9449,6 +9500,23 @@ export type GetMessagesResponses = {
 export type GetMessagesResponse =
   GetMessagesResponses[keyof GetMessagesResponses];
 
+export type GetUnreadCountData = {
+  body?: never;
+  path?: never;
+  query?: never;
+  url: '/v1/app/chats/unread-count';
+};
+
+export type GetUnreadCountResponses = {
+  /**
+   * OK
+   */
+  200: ChatResponseDtoUnreadCountDto;
+};
+
+export type GetUnreadCountResponse =
+  GetUnreadCountResponses[keyof GetUnreadCountResponses];
+
 export type GetBankAccountsByPersonData = {
   body?: never;
   path: {
@@ -9497,6 +9565,51 @@ export type CheckAvailabilityResponses = {
    */
   200: unknown;
 };
+
+export type GetAllInquiriesData = {
+  body?: never;
+  path?: never;
+  query?: {
+    status?: 'PENDING' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED';
+  };
+  url: '/v1/app/admin/support';
+};
+
+export type GetAllInquiriesResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type GetAllInquiriesResponse =
+  GetAllInquiriesResponses[keyof GetAllInquiriesResponses];
+
+export type GetInquiryData = {
+  body?: never;
+  path: {
+    id: number;
+  };
+  query?: never;
+  url: '/v1/app/admin/support/{id}';
+};
+
+export type GetInquiryResponses = {
+  /**
+   * OK
+   */
+  200: {
+    [key: string]: {
+      [key: string]: unknown;
+    };
+  };
+};
+
+export type GetInquiryResponse = GetInquiryResponses[keyof GetInquiryResponses];
 
 export type GetAllPaymentsData = {
   body?: never;

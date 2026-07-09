@@ -47,7 +47,52 @@ type Message = {
   text: string;
   time: string;
   createdAt?: string;
+  senderId?: number;
 };
+
+function getMessageSenderId(m: MessageDto): number | undefined {
+  const raw = m as MessageDto & { senderId?: number };
+  return raw.sender?.id ?? raw.senderId;
+}
+
+function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
+  const id = m.id != null ? String(m.id) : Math.random().toString(36).slice(2);
+  const senderId = getMessageSenderId(m);
+  const isMine = senderId != null ? senderId === currentUserId : false;
+
+  return {
+    id,
+    from: isMine ? 'me' : 'them',
+    senderId,
+    text: m.messageContent ?? '',
+    time: formatTimeLocal(m.createdAt),
+    createdAt: m.createdAt,
+  };
+}
+
+function mergeWsWithExisting(existing: Message, incoming: Message): Message {
+  if (existing.senderId != null && incoming.senderId == null) {
+    return {
+      ...incoming,
+      senderId: existing.senderId,
+      from: existing.from,
+    };
+  }
+
+  if (
+    existing.from === 'me' &&
+    incoming.from === 'them' &&
+    incoming.senderId == null
+  ) {
+    return {
+      ...incoming,
+      from: 'me',
+      senderId: existing.senderId,
+    };
+  }
+
+  return incoming;
+}
 
 function getMessageSortKey(message: Message): number {
   if (message.createdAt) {
@@ -73,19 +118,6 @@ function sortMessages(messages: Message[]): Message[] {
     if (ta !== tb) return ta - tb;
     return a.id.localeCompare(b.id);
   });
-}
-
-function mapMessageFromApi(m: MessageDto, currentUserId: number): Message {
-  const id = m.id != null ? String(m.id) : Math.random().toString(36).slice(2);
-  const isMine = m.sender?.id === currentUserId;
-
-  return {
-    id,
-    from: isMine ? 'me' : 'them',
-    text: m.messageContent ?? '',
-    time: formatTimeLocal(m.createdAt),
-    createdAt: m.createdAt,
-  };
 }
 
 export default function ChatDetailScreen() {
@@ -116,8 +148,11 @@ export default function ChatDetailScreen() {
 
   const currentUserId = useUserStore((s) => s.getUserId());
   const isTrainer = useUserStore((s) => s.getIsTrainer());
-  const { sendMessage: sendChatMessage, subscribe: subscribeChatMessages } =
-    useChatWebSocket();
+  const {
+    sendMessage: sendChatMessage,
+    subscribe: subscribeChatMessages,
+    isConnected,
+  } = useChatWebSocket();
 
   const conversationId = id;
   const conversationIdNumber = Number(id);
@@ -169,7 +204,10 @@ export default function ChatDetailScreen() {
   const mergedMessages: Message[] = useMemo(() => {
     const byId = new Map<string, Message>();
     for (const m of restMessages) byId.set(m.id, m);
-    for (const m of wsMessages) byId.set(m.id, m);
+    for (const m of wsMessages) {
+      const existing = byId.get(m.id);
+      byId.set(m.id, existing ? mergeWsWithExisting(existing, m) : m);
+    }
     return sortMessages(Array.from(byId.values()));
   }, [restMessages, wsMessages]);
 
@@ -210,14 +248,15 @@ export default function ChatDetailScreen() {
           ? prev.filter((m) => m.id !== pendingMatch.id)
           : prev;
 
-        const messageToAdd =
-          pendingMatch && !mapped.createdAt
-            ? {
-                ...mapped,
-                createdAt: pendingMatch.createdAt,
-                time: pendingMatch.time,
-              }
-            : mapped;
+        const messageToAdd = pendingMatch
+          ? {
+              ...mapped,
+              from: 'me' as const,
+              senderId: currentUserId ?? mapped.senderId,
+              createdAt: pendingMatch.createdAt ?? mapped.createdAt,
+              time: pendingMatch.time ?? mapped.time,
+            }
+          : mapped;
 
         return [...withoutPendingEcho, messageToAdd];
       });
@@ -246,6 +285,8 @@ export default function ChatDetailScreen() {
   );
 
   const handleSend = useCallback(() => {
+    if (!isConnected) return;
+
     const text = input.trim();
     if (
       !text ||
@@ -272,6 +313,7 @@ export default function ChatDetailScreen() {
       text,
       time: formatTimeLocal(nowIso),
       createdAt: nowIso,
+      senderId: currentUserId ?? undefined,
     };
 
     setWsMessages((prev) => [...prev, optimisticMessage]);
@@ -301,6 +343,7 @@ export default function ChatDetailScreen() {
     currentUserId,
     input,
     invalidateChatList,
+    isConnected,
     sendChatMessage,
     showAlert,
   ]);
@@ -436,8 +479,23 @@ export default function ChatDetailScreen() {
             onChangeText={handleInputChange}
             onSend={handleSend}
             onFocus={handleInputFocus}
+            disabled={!isConnected}
           />
         </View>
+
+        {!isConnected ? (
+          <View style={styles.connectingOverlay} pointerEvents="auto">
+            <View style={styles.connectingCard}>
+              <ActivityIndicator color={theme.brand.primary} size="small" />
+              <AppText style={styles.connectingTitle}>
+                {chatCopy.connectingTitle}
+              </AppText>
+              <AppText style={styles.connectingMessage}>
+                {chatCopy.connectingMessage}
+              </AppText>
+            </View>
+          </View>
+        ) : null}
       </View>
     </PageContainer>
   );
@@ -562,6 +620,37 @@ const getStyles = (theme: AppTheme) => {
       right: 0,
       zIndex: 2,
       backgroundColor: theme.background.app,
+    },
+    connectingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      zIndex: 3,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.35)',
+      paddingHorizontal: 24,
+    },
+    connectingCard: {
+      width: '100%',
+      maxWidth: 320,
+      alignItems: 'center',
+      rowGap: 10,
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      borderRadius: 16,
+      backgroundColor: theme.background.card,
+      borderWidth: 1,
+      borderColor: theme.border.default,
+    },
+    connectingTitle: {
+      ...text.leadSemibold,
+      color: theme.text.primary,
+      textAlign: 'center',
+    },
+    connectingMessage: {
+      ...text.small,
+      color: theme.text.secondary,
+      textAlign: 'center',
+      lineHeight: 20,
     },
   });
 };
