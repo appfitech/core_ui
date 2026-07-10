@@ -2,7 +2,7 @@ import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { type Href, useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import PageContainer from '@/components/PageContainer';
@@ -10,7 +10,6 @@ import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useClientResourcesGrouped } from '@/lib/api/queries/use-client-resources-grouped';
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import type {
   ClientResourceGroupDtoReadable,
   ClientResourceResponseDtoReadable,
@@ -36,12 +35,11 @@ export default function TrainerDietsScreen() {
   const router = useRouter();
   const styles = getStyles(theme);
 
-  const { data: groupedData, refetch } = useClientResourcesGrouped({
+  const { data: groupedData } = useClientResourcesGrouped({
     resourceType: RESOURCE_TYPE,
     page: 0,
     size: 50,
   });
-  const { refreshing, onRefresh } = usePullToRefresh(refetch);
 
   const groups = useMemo<ClientResourceGroupDtoReadable[]>(
     () => groupedData?.content ?? [],
@@ -75,8 +73,6 @@ export default function TrainerDietsScreen() {
     <PageContainer
       title="Dietas de Clientes"
       subheader="Gestiona las dietas asignadas a tus clientes"
-      onRefresh={onRefresh}
-      refreshing={refreshing}
     >
       <View style={styles.contentWrap}>
         <View style={styles.topRow}>
@@ -164,11 +160,7 @@ export default function TrainerDietsScreen() {
             </AppText>
           </View>
         ) : (
-          <ScrollView
-            style={styles.listScroll}
-            contentContainerStyle={styles.listScrollContent}
-            showsVerticalScrollIndicator={false}
-          >
+          <View style={styles.groupsList}>
             {groups.map((group) => {
               const cid = group.clientId ?? 0;
               const isCollapsed = collapsedByClient[cid] ?? false;
@@ -397,7 +389,7 @@ export default function TrainerDietsScreen() {
                 </View>
               );
             })}
-          </ScrollView>
+          </View>
         )}
       </View>
     </PageContainer>
@@ -489,8 +481,7 @@ const getStyles = (theme: AppTheme) => {
       marginTop: 8,
       textAlign: 'center',
     },
-    listScroll: { flex: 1 },
-    listScrollContent: { paddingBottom: 24, gap: 12 },
+    groupsList: { gap: 12, paddingBottom: 24 },
     clientGroupCard: {
       backgroundColor: theme.background.card,
       borderRadius: 16,

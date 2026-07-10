@@ -9,9 +9,10 @@ import {
 } from 'react-native';
 
 import { AppText } from '@/components/AppText';
+import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
 import PageContainer from '@/components/PageContainer';
-import { ACTIVE_INACTIVE_CHIPS } from '@/constants/list-screens';
+import { ACTIVE_INACTIVE_CHIPS, LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -194,85 +195,105 @@ export default function TrainerServicesScreen() {
     </View>
   );
 
+  const listHeader = useMemo(
+    () => (
+      <>
+        <View style={styles.topSection}>
+          <View style={styles.summaryColumn}>
+            <SummaryCard
+              icon={
+                <Ionicons
+                  name="checkmark-circle"
+                  size={18}
+                  color={theme.status.success.icon}
+                />
+              }
+              value={String(activeCount)}
+              label="Servicios Activos"
+            />
+            <SummaryCard
+              icon={
+                <Ionicons
+                  name="people"
+                  size={18}
+                  color={theme.status.info.icon}
+                />
+              }
+              value={String(enrolledTotal)}
+              label="Clientes Inscritos"
+            />
+            <SummaryCard
+              icon={
+                <MaterialCommunityIcons
+                  name="trending-up"
+                  size={18}
+                  color={theme.status.warning.icon}
+                />
+              }
+              value={formatPEN(avgPrice || 0)}
+              label="Precio Promedio"
+            />
+          </View>
+          <TouchableOpacity style={styles.newBtn} activeOpacity={0.8}>
+            <Ionicons name="add" size={18} color={theme.background.app} />
+            <AppText style={styles.newBtnText}>Nuevo Servicio</AppText>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.sectionHeader}>
+          <AppText style={styles.sectionTitle}>MIS SERVICIOS</AppText>
+        </View>
+
+        <ListFilterSection
+          hint={listFilters.trainerServicesHint}
+          chips={ACTIVE_INACTIVE_CHIPS}
+          selectedValue={statusFilter}
+          onChipPress={(value) => setStatusFilter(value as FilterOpt)}
+        />
+      </>
+    ),
+    [
+      activeCount,
+      avgPrice,
+      enrolledTotal,
+      listFilters.trainerServicesHint,
+      statusFilter,
+      styles,
+      theme,
+    ],
+  );
+
   return (
     <PageContainer
       hasBackButton
       title="Gestión de Servicios"
       subheader="Administra los servicios que ofreces a tus clientes"
+      disableScroll
+      style={styles.pageStyle}
     >
-      <View style={styles.topSection}>
-        <View style={styles.summaryColumn}>
-          <SummaryCard
-            icon={
-              <Ionicons
-                name="checkmark-circle"
-                size={18}
-                color={theme.status.success.icon}
-              />
-            }
-            value={String(activeCount)}
-            label="Servicios Activos"
+      <FlatList
+        data={filtered}
+        key={numColumns}
+        keyExtractor={(item) => String(item.id)}
+        renderItem={({ item }) => <Card item={item} />}
+        numColumns={numColumns}
+        columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
+        ListHeaderComponent={listHeader}
+        ListEmptyComponent={
+          <ListEmptyState
+            title="No hay servicios con el filtro aplicado"
+            hint={common.tryOtherFilterHint}
           />
-          <SummaryCard
-            icon={
-              <Ionicons
-                name="people"
-                size={18}
-                color={theme.status.info.icon}
-              />
-            }
-            value={String(enrolledTotal)}
-            label="Clientes Inscritos"
-          />
-          <SummaryCard
-            icon={
-              <MaterialCommunityIcons
-                name="trending-up"
-                size={18}
-                color={theme.status.warning.icon}
-              />
-            }
-            value={formatPEN(avgPrice || 0)}
-            label="Precio Promedio"
-          />
-        </View>
-        <TouchableOpacity style={styles.newBtn} activeOpacity={0.8}>
-          <Ionicons name="add" size={18} color={theme.background.app} />
-          <AppText style={styles.newBtnText}>Nuevo Servicio</AppText>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.sectionHeader}>
-        <AppText style={styles.sectionTitle}>MIS SERVICIOS</AppText>
-      </View>
-
-      <ListFilterSection
-        hint={listFilters.trainerServicesHint}
-        chips={ACTIVE_INACTIVE_CHIPS}
-        selectedValue={statusFilter}
-        onChipPress={(value) => setStatusFilter(value as FilterOpt)}
+        }
+        ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        initialNumToRender={LIST_SCREEN_FLATLIST.initialNumToRender}
+        maxToRenderPerBatch={LIST_SCREEN_FLATLIST.maxToRenderPerBatch}
+        windowSize={LIST_SCREEN_FLATLIST.windowSize}
+        removeClippedSubviews={LIST_SCREEN_FLATLIST.removeClippedSubviews}
       />
-
-      {filtered.length === 0 ? (
-        <View style={styles.emptyWrap}>
-          <AppText style={styles.emptyText}>
-            No hay servicios con el filtro aplicado
-          </AppText>
-          <AppText style={styles.emptyHint}>
-            {common.tryOtherFilterHint}
-          </AppText>
-        </View>
-      ) : (
-        <FlatList
-          data={filtered}
-          keyExtractor={(item) => String(item.id)}
-          renderItem={({ item }) => <Card item={item} />}
-          numColumns={numColumns}
-          columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
-          ItemSeparatorComponent={() => <View style={styles.listSeparator} />}
-          contentContainerStyle={styles.listContent}
-        />
-      )}
     </PageContainer>
   );
 }
@@ -280,6 +301,7 @@ export default function TrainerServicesScreen() {
 const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
+    pageStyle: { paddingBottom: 0 },
     topSection: {
       marginBottom: 16,
       gap: 16,
@@ -358,9 +380,9 @@ const getStyles = (theme: AppTheme) => {
       textAlign: 'center',
     },
     listContent: {
+      flexGrow: 1,
       paddingTop: 4,
       paddingBottom: 24,
-      gap: 12,
     },
     columnWrapper: { gap: 12 },
     listSeparator: { height: 12 },
