@@ -30,6 +30,7 @@ export type TrainerService = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  serviceTypeId?: number;
   districts: any[];
 };
 

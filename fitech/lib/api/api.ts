@@ -56,7 +56,7 @@ async function refreshTokenOnce(): Promise<string | null> {
 }
 
 type RequestOptions = {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: any;
   isFormData?: boolean;
   auth?: boolean;
@@ -82,7 +82,9 @@ async function request(path: string, opts: RequestOptions = {}) {
     ...headers,
   };
 
-  if (!isFormData && !updatedHeaders['Content-Type']) {
+  const hasJsonBody = !isFormData && body != null;
+
+  if (hasJsonBody && !updatedHeaders['Content-Type']) {
     updatedHeaders['Content-Type'] = 'application/json';
   }
 
@@ -148,6 +150,11 @@ export const api = {
     body?: any,
     opts?: Omit<RequestOptions, 'method' | 'isFormData'>,
   ) => request(path, { ...opts, method: 'PUT', body }),
+  patch: (
+    path: string,
+    body?: any,
+    opts?: Omit<RequestOptions, 'method' | 'isFormData'>,
+  ) => request(path, { ...opts, method: 'PATCH', body }),
   delete: (
     path: string,
     body?: any,

@@ -1,7 +1,9 @@
-import { Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import React, { useMemo, useState } from 'react';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   FlatList,
+  Pressable,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
@@ -12,83 +14,61 @@ import { AppText } from '@/components/AppText';
 import { ListEmptyState } from '@/components/list/ListEmptyState';
 import { ListFilterSection } from '@/components/list/ListFilterSection';
 import PageContainer from '@/components/PageContainer';
-import { ACTIVE_INACTIVE_CHIPS, LIST_SCREEN_FLATLIST } from '@/constants/list-screens';
+import {
+  ACTIVE_INACTIVE_CHIPS,
+  LIST_SCREEN_FLATLIST,
+} from '@/constants/list-screens';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useTrainerServiceActions } from '@/hooks/use-trainer-service-actions';
 import { useTrainerGetServices } from '@/lib/api/queries/use-trainer-get-services';
 import { AppTheme } from '@/types/theme';
+import { TrainerService } from '@/types/trainer';
+import { formatPEN } from '@/utils/currency';
 
-type Service = {
-  id: number;
-  trainerId: number;
-  name: string;
-  description: string;
-  totalPrice: number;
-  pricePerSession: number;
-  platformCommissionRate: number;
-  platformCommissionAmount: number;
-  trainerEarnings: number;
-  isInPerson: boolean;
-  transportIncluded: boolean;
-  transportCostPerSession: number;
-  enrolledUsersCount: number;
-  country: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  districts: any[];
-};
+type StatTone = 'success' | 'info' | 'warning';
 
-const PEN = new Intl.NumberFormat('es-PE', {
-  style: 'currency',
-  currency: 'PEN',
-  minimumFractionDigits: 2,
-});
-const formatPEN = (n: number) => PEN.format(n);
-
-export default function TrainerServicesScreen() {
+function ServiceStatTile({
+  icon,
+  value,
+  label,
+  tone,
+}: {
+  icon: React.ReactNode;
+  value: string;
+  label: string;
+  tone: StatTone;
+}) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const { listFilters, common } = TRANSLATIONS;
-  const { width } = useWindowDimensions();
+  const palette =
+    tone === 'success'
+      ? theme.status.success
+      : tone === 'info'
+        ? theme.status.info
+        : theme.status.warning;
 
-  const { data: services } = useTrainerGetServices();
-
-  const list = useMemo<Service[]>(
-    () => (services as Service[]) ?? [],
-    [services],
+  return (
+    <View style={styles.statTile}>
+      <View style={[styles.statIconWrap, { backgroundColor: palette.bg }]}>
+        {icon}
+      </View>
+      <AppText style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit>
+        {value}
+      </AppText>
+      <AppText style={styles.statLabel} numberOfLines={2}>
+        {label}
+      </AppText>
+    </View>
   );
+}
 
-  // ------- Summary metrics -------
-  const activeCount = useMemo(
-    () => list.filter((s) => s.isActive).length,
-    [list],
-  );
-  const enrolledTotal = useMemo(
-    () => list.reduce((sum, s) => sum + (s.enrolledUsersCount || 0), 0),
-    [list],
-  );
-  const avgPrice = useMemo(() => {
-    if (!list.length) return 0;
-    const sum = list.reduce((acc, s) => acc + (s.pricePerSession || 0), 0);
-    return sum / list.length;
-  }, [list]);
+function ServiceStatusPill({ active }: { active: boolean }) {
+  const { theme } = useTheme();
+  const styles = getStyles(theme);
 
-  // ------- Filters -------
-  type FilterOpt = 'ACTIVE' | 'INACTIVE';
-  const [statusFilter, setStatusFilter] = useState<FilterOpt>('ACTIVE');
-
-  const filtered = useMemo(() => {
-    if (statusFilter === 'ACTIVE') return list.filter((s) => s.isActive);
-    return list.filter((s) => !s.isActive);
-  }, [list, statusFilter]);
-
-  const isTwoCol = width >= 700; // simple heuristic for tablets
-  const numColumns = isTwoCol ? 2 : 1;
-
-  // ------- UI helpers -------
-  const StatusPill = ({ active }: { active: boolean }) => (
+  return (
     <View
       style={[
         styles.statusPill,
@@ -115,92 +95,153 @@ export default function TrainerServicesScreen() {
       </AppText>
     </View>
   );
+}
 
-  const Card = ({ item }: { item: Service }) => (
-    <View style={styles.card}>
-      <View style={styles.cardTopRow}>
-        <StatusPill active={item.isActive} />
-        <View style={styles.cardActions}>
-          <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Ionicons name="pencil" size={16} color={theme.text.secondary} />
-          </TouchableOpacity>
-          <TouchableOpacity hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-            <Entypo
-              name="dots-three-vertical"
-              size={14}
-              color={theme.text.secondary}
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
+export default function TrainerServicesScreen() {
+  const { theme } = useTheme();
+  const router = useRouter();
+  const styles = getStyles(theme);
+  const { listFilters, common } = TRANSLATIONS;
+  const { width } = useWindowDimensions();
+  const { handleNewService } = useTrainerServiceActions();
 
-      <View style={styles.titleRow}>
-        <View style={styles.iconBadge}>
-          <Ionicons
-            name={item.isInPerson ? 'walk' : 'videocam'}
-            size={16}
-            color={theme.background.app}
-          />
-        </View>
-        <AppText style={styles.cardTitle}>{item.name}</AppText>
-      </View>
+  const { data: services } = useTrainerGetServices();
 
-      {!!item.description && (
-        <AppText style={styles.cardDesc} numberOfLines={6}>
-          {item.description.trim()}
-        </AppText>
-      )}
-
-      <View style={styles.metaRow}>
-        <View style={styles.metaCell}>
-          <Ionicons
-            name={item.isInPerson ? 'location' : 'laptop-outline'}
-            size={14}
-            color={theme.text.secondary}
-          />
-          <AppText style={styles.metaText}>
-            {item.isInPerson ? 'Presencial' : 'Virtual'}
-          </AppText>
-        </View>
-        <View style={styles.metaCell}>
-          <Ionicons
-            name="people-outline"
-            size={14}
-            color={theme.text.secondary}
-          />
-          <AppText style={styles.metaText}>
-            {item.enrolledUsersCount}{' '}
-            {item.enrolledUsersCount === 1 ? 'cliente' : 'clientes'}
-          </AppText>
-        </View>
-      </View>
-    </View>
+  const list = useMemo<TrainerService[]>(
+    () => (services as TrainerService[]) ?? [],
+    [services],
   );
 
-  const SummaryCard = ({
-    icon,
-    value,
-    label,
-  }: {
-    icon: React.ReactNode;
-    value: string;
-    label: string;
-  }) => (
-    <View style={styles.summaryCard}>
-      <View style={styles.summaryIcon}>{icon}</View>
-      <View style={styles.summaryContent}>
-        <AppText style={styles.summaryValue}>{value}</AppText>
-        <AppText style={styles.summaryLabel}>{label}</AppText>
-      </View>
-    </View>
+  const activeCount = useMemo(
+    () => list.filter((s) => s.isActive).length,
+    [list],
+  );
+  const enrolledTotal = useMemo(
+    () => list.reduce((sum, s) => sum + (s.enrolledUsersCount || 0), 0),
+    [list],
+  );
+  const avgPrice = useMemo(() => {
+    if (!list.length) return 0;
+    const sum = list.reduce((acc, s) => acc + (s.pricePerSession || 0), 0);
+    return sum / list.length;
+  }, [list]);
+
+  type FilterOpt = 'ACTIVE' | 'INACTIVE';
+  const [statusFilter, setStatusFilter] = useState<FilterOpt>('ACTIVE');
+
+  const filtered = useMemo(() => {
+    if (statusFilter === 'ACTIVE') return list.filter((s) => s.isActive);
+    return list.filter((s) => !s.isActive);
+  }, [list, statusFilter]);
+
+  const isTwoCol = width >= 700;
+  const numColumns = isTwoCol ? 2 : 1;
+
+  const handleOpenService = useCallback(
+    (item: TrainerService) => {
+      router.push({
+        pathname: '/trainer-services/[id]',
+        params: {
+          id: String(item.id),
+          service: JSON.stringify(item),
+        },
+      });
+    },
+    [router],
+  );
+
+  const renderCard = useCallback(
+    ({ item }: { item: TrainerService }) => {
+      const handlePress = () => {
+        handleOpenService(item);
+      };
+
+      return (
+        <Pressable
+          onPress={handlePress}
+          style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+        >
+          <View style={styles.cardTopRow}>
+            <ServiceStatusPill active={item.isActive} />
+            <Ionicons
+              name="chevron-forward"
+              size={18}
+              color={theme.text.tertiary}
+            />
+          </View>
+
+          <View style={styles.titleRow}>
+            <View style={styles.iconBadge}>
+              <Ionicons
+                name={item.isInPerson ? 'walk' : 'videocam'}
+                size={16}
+                color={theme.background.app}
+              />
+            </View>
+            <AppText style={styles.cardTitle} numberOfLines={1}>
+              {item.name}
+            </AppText>
+          </View>
+
+          <View style={styles.metaRow}>
+            <View style={styles.metaCell}>
+              <Ionicons
+                name={item.isInPerson ? 'location' : 'laptop-outline'}
+                size={14}
+                color={theme.text.secondary}
+              />
+              <AppText style={styles.metaText}>
+                {item.isInPerson ? 'Presencial' : 'Virtual'}
+              </AppText>
+            </View>
+            <View style={styles.metaCell}>
+              <Ionicons
+                name="people-outline"
+                size={14}
+                color={theme.text.secondary}
+              />
+              <AppText style={styles.metaText}>
+                {item.enrolledUsersCount}{' '}
+                {item.enrolledUsersCount === 1 ? 'cliente' : 'clientes'}
+              </AppText>
+            </View>
+          </View>
+
+          <View style={styles.priceRow}>
+            <AppText style={styles.totalPrice}>
+              {formatPEN(item.totalPrice)}
+            </AppText>
+            <AppText style={styles.earnings}>
+              Ganas: {formatPEN(item.trainerEarnings)}
+            </AppText>
+          </View>
+          <AppText style={styles.sessionPrice}>
+            Por sesión: {formatPEN(item.pricePerSession)}
+          </AppText>
+        </Pressable>
+      );
+    },
+    [handleOpenService, styles, theme],
   );
 
   const listHeader = useMemo(
     () => (
-      <>
-        <View style={styles.topSection}>
-          <View style={styles.summaryColumn}>
-            <SummaryCard
+      <View style={styles.listHeader}>
+        <View style={styles.summaryBlock}>
+          <View style={styles.topRow}>
+            <AppText style={styles.sectionTitle}>Resumen</AppText>
+            <TouchableOpacity
+              style={styles.createBtn}
+              activeOpacity={0.8}
+              onPress={handleNewService}
+            >
+              <Ionicons name="add" size={18} color={theme.background.app} />
+              <AppText style={styles.createBtnText}>Nuevo Servicio</AppText>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.summaryRow}>
+            <ServiceStatTile
               icon={
                 <Ionicons
                   name="checkmark-circle"
@@ -209,9 +250,10 @@ export default function TrainerServicesScreen() {
                 />
               }
               value={String(activeCount)}
-              label="Servicios Activos"
+              label="Servicios activos"
+              tone="success"
             />
-            <SummaryCard
+            <ServiceStatTile
               icon={
                 <Ionicons
                   name="people"
@@ -220,9 +262,10 @@ export default function TrainerServicesScreen() {
                 />
               }
               value={String(enrolledTotal)}
-              label="Clientes Inscritos"
+              label="Clientes inscritos"
+              tone="info"
             />
-            <SummaryCard
+            <ServiceStatTile
               icon={
                 <MaterialCommunityIcons
                   name="trending-up"
@@ -231,31 +274,30 @@ export default function TrainerServicesScreen() {
                 />
               }
               value={formatPEN(avgPrice || 0)}
-              label="Precio Promedio"
+              label="Precio promedio"
+              tone="warning"
             />
           </View>
-          <TouchableOpacity style={styles.newBtn} activeOpacity={0.8}>
-            <Ionicons name="add" size={18} color={theme.background.app} />
-            <AppText style={styles.newBtnText}>Nuevo Servicio</AppText>
-          </TouchableOpacity>
         </View>
 
-        <View style={styles.sectionHeader}>
-          <AppText style={styles.sectionTitle}>MIS SERVICIOS</AppText>
-        </View>
+        <View style={styles.listSection}>
+          <AppText style={styles.sectionTitle}>Mis servicios</AppText>
 
-        <ListFilterSection
-          hint={listFilters.trainerServicesHint}
-          chips={ACTIVE_INACTIVE_CHIPS}
-          selectedValue={statusFilter}
-          onChipPress={(value) => setStatusFilter(value as FilterOpt)}
-        />
-      </>
+          <ListFilterSection
+            hint={listFilters.trainerServicesHint}
+            chips={ACTIVE_INACTIVE_CHIPS}
+            selectedValue={statusFilter}
+            onChipPress={(value) => setStatusFilter(value as FilterOpt)}
+            style={styles.filters}
+          />
+        </View>
+      </View>
     ),
     [
       activeCount,
       avgPrice,
       enrolledTotal,
+      handleNewService,
       listFilters.trainerServicesHint,
       statusFilter,
       styles,
@@ -275,7 +317,7 @@ export default function TrainerServicesScreen() {
         data={filtered}
         key={numColumns}
         keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => <Card item={item} />}
+        renderItem={renderCard}
         numColumns={numColumns}
         columnWrapperStyle={numColumns > 1 ? styles.columnWrapper : undefined}
         ListHeaderComponent={listHeader}
@@ -302,45 +344,24 @@ const getStyles = (theme: AppTheme) => {
   const text = textStyles(theme);
   return StyleSheet.create({
     pageStyle: { paddingBottom: 0 },
-    topSection: {
-      marginBottom: 16,
-      gap: 16,
+    listHeader: {
+      gap: 24,
+      marginBottom: 4,
     },
-    summaryColumn: {
-      flexDirection: 'column',
-      gap: 10,
+    summaryBlock: {
+      gap: 12,
     },
-    summaryCard: {
+    topRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: theme.background.card,
-      borderRadius: 14,
-      padding: 14,
+      justifyContent: 'space-between',
+      flexWrap: 'wrap',
       gap: 12,
-      borderWidth: 1,
-      borderColor: theme.border.default,
-      borderLeftWidth: 4,
-      borderLeftColor: theme.brand.primary,
     },
-    summaryIcon: {
-      width: 36,
-      height: 36,
-      borderRadius: 10,
-      backgroundColor: theme.background.input,
-      alignItems: 'center',
-      justifyContent: 'center',
+    sectionTitle: {
+      ...text.overline,
     },
-    summaryContent: { flex: 1 },
-    summaryValue: {
-      ...text.sectionTitle,
-      color: theme.text.primary,
-    },
-    summaryLabel: {
-      ...text.caption,
-      color: theme.text.secondary,
-      marginTop: 2,
-    },
-    newBtn: {
+    createBtn: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
@@ -348,36 +369,49 @@ const getStyles = (theme: AppTheme) => {
       paddingHorizontal: 16,
       paddingVertical: 12,
       borderRadius: 14,
-      alignSelf: 'flex-start',
     },
-    newBtnText: {
-      color: theme.background.app,
+    createBtnText: {
       ...text.smallSemibold,
+      color: theme.background.app,
     },
-    sectionHeader: {
-      marginBottom: 12,
+    summaryRow: {
+      flexDirection: 'row',
+      gap: 10,
     },
-    sectionTitle: {
-      ...text.captionSemibold,
-      color: theme.text.secondary,
-      letterSpacing: 0.6,
-      textTransform: 'uppercase',
-    },
-    emptyWrap: {
-      paddingVertical: 32,
-      paddingHorizontal: 24,
+    statTile: {
+      flex: 1,
+      minWidth: 0,
       alignItems: 'center',
+      backgroundColor: theme.background.card,
+      borderRadius: 14,
+      borderWidth: 1,
+      borderColor: theme.border.default,
+      paddingVertical: 14,
+      paddingHorizontal: 8,
+      gap: 6,
     },
-    emptyText: {
-      ...text.bodySemibold,
-      color: theme.text.primary,
+    statIconWrap: {
+      width: 36,
+      height: 36,
+      borderRadius: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    statValue: {
+      ...text.stat,
       textAlign: 'center',
     },
-    emptyHint: {
-      ...text.small,
+    statLabel: {
+      ...text.caption,
       color: theme.text.secondary,
-      marginTop: 8,
       textAlign: 'center',
+      lineHeight: 16,
+    },
+    listSection: {
+      gap: 10,
+    },
+    filters: {
+      marginBottom: 16,
     },
     listContent: {
       flexGrow: 1,
@@ -390,17 +424,20 @@ const getStyles = (theme: AppTheme) => {
       flex: 1,
       backgroundColor: theme.background.card,
       borderRadius: 16,
-      padding: 16,
+      padding: 14,
       borderWidth: 1,
       borderColor: theme.border.default,
+      gap: 8,
+    },
+    cardPressed: {
+      backgroundColor: theme.background.input,
+      borderColor: theme.border.strong,
     },
     cardTopRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginBottom: 10,
     },
-    cardActions: { flexDirection: 'row', gap: 12 },
     statusPill: {
       flexDirection: 'row',
       alignItems: 'center',
@@ -414,7 +451,6 @@ const getStyles = (theme: AppTheme) => {
     titleRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginBottom: 8,
       gap: 10,
     },
     iconBadge: {
@@ -430,21 +466,11 @@ const getStyles = (theme: AppTheme) => {
       color: theme.text.primary,
       flex: 1,
     },
-    cardDesc: {
-      ...text.small,
-      color: theme.text.secondary,
-      lineHeight: 20,
-      marginBottom: 10,
-    },
     metaRow: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-end',
-      gap: 20,
-      borderTopWidth: 1,
-      borderTopColor: theme.border.default,
-      paddingTop: 12,
-      marginTop: 6,
+      gap: 16,
     },
     metaCell: {
       flexDirection: 'row',
@@ -452,6 +478,28 @@ const getStyles = (theme: AppTheme) => {
       gap: 6,
     },
     metaText: {
+      ...text.caption,
+      color: theme.text.secondary,
+    },
+    priceRow: {
+      flexDirection: 'row',
+      alignItems: 'baseline',
+      justifyContent: 'space-between',
+      gap: 8,
+      borderTopWidth: 1,
+      borderTopColor: theme.border.default,
+      paddingTop: 10,
+      marginTop: 2,
+    },
+    totalPrice: {
+      ...text.bodySemibold,
+      color: theme.status.info.text,
+    },
+    earnings: {
+      ...text.captionSemibold,
+      color: theme.status.success.text,
+    },
+    sessionPrice: {
       ...text.caption,
       color: theme.text.secondary,
     },
