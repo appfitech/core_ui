@@ -371,6 +371,7 @@ export const TRANSLATIONS = {
     dateRange: '{start} – {end}',
     completeButton: 'Completar',
     cancelButton: 'Cancelar contrato',
+    openChatButton: 'Ir al chat',
   },
   reviewModal: {
     title: '¿Cómo fue tu experiencia?',

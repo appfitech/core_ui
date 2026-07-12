@@ -2601,6 +2601,10 @@ export type ReviewableContractDto = {
    * ID of existing review if any
    */
   existingReviewId?: number;
+  /**
+   * Chat conversation ID linked to this contract
+   */
+  chatId?: number;
 };
 
 /**

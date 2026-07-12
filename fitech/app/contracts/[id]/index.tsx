@@ -1,6 +1,7 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import CancelModal from '@/components/contracts/CancelModal';
@@ -148,6 +149,19 @@ export default function ContractDetailScreen() {
 
   const isActive = parsedContract?.contractStatus === 'ACTIVE';
   const actionsBusy = isCompleting || isCancelling;
+  const chatId = parsedContract?.chatId;
+
+  const handleOpenChat = useCallback(() => {
+    if (chatId == null) return;
+
+    router.push({
+      pathname: '/chats/[id]',
+      params: {
+        id: String(chatId),
+        title: parsedContract?.trainerName ?? '',
+      },
+    });
+  }, [chatId, parsedContract?.trainerName, router]);
 
   const footer = isActive ? (
     <FooterActions
@@ -172,12 +186,40 @@ export default function ContractDetailScreen() {
         {statusTag ? <View style={styles.statusRow}>{statusTag}</View> : null}
 
         {parsedContract?.trainerName ? (
-          <ContractDetailRow
-            avatarUri={trainerAvatarUri}
-            icon="person-outline"
-            label={copy.trainerLabel}
-            value={parsedContract.trainerName}
-          />
+          chatId != null ? (
+            <View style={styles.trainerRow}>
+              <View style={styles.trainerRowContent}>
+                <ContractDetailRow
+                  avatarUri={trainerAvatarUri}
+                  icon="person-outline"
+                  label={copy.trainerLabel}
+                  value={parsedContract.trainerName}
+                />
+              </View>
+              <Pressable
+                onPress={handleOpenChat}
+                accessibilityRole="button"
+                accessibilityLabel={copy.openChatButton}
+                style={({ pressed }) => [
+                  styles.chatButton,
+                  pressed && styles.chatButtonPressed,
+                ]}
+              >
+                <Ionicons
+                  name="chatbubble-outline"
+                  size={20}
+                  color={theme.brand.primary}
+                />
+              </Pressable>
+            </View>
+          ) : (
+            <ContractDetailRow
+              avatarUri={trainerAvatarUri}
+              icon="person-outline"
+              label={copy.trainerLabel}
+              value={parsedContract.trainerName}
+            />
+          )
         ) : null}
 
         {(parsedContract?.startDate || parsedContract?.endDate) && (
@@ -256,7 +298,29 @@ const getStyles = (theme: AppTheme) => {
     },
     statusRow: {
       alignSelf: 'flex-start',
-      marginBottom: 2,
+    },
+    trainerRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 12,
+    },
+    trainerRowContent: {
+      flex: 1,
+      minWidth: 0,
+    },
+    chatButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.brand.primarySoft,
+      borderWidth: 1,
+      borderColor: theme.border.default,
+      flexShrink: 0,
+    },
+    chatButtonPressed: {
+      opacity: 0.85,
     },
     descriptionBlock: {
       rowGap: 8,
