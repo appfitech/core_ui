@@ -24,6 +24,7 @@ import {
   ChatMessageComposer,
 } from '@/components/chat/ChatMessageComposer';
 import PageContainer from '@/components/PageContainer';
+import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
@@ -34,6 +35,7 @@ import {
   useGetChatMessages,
 } from '@/lib/api/queries/use-chat-queries';
 import { queryKeys } from '@/lib/api/query-keys';
+import { useSmartBack } from '@/hooks/use-smart-back';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
@@ -129,6 +131,7 @@ export default function ChatDetailScreen() {
   const { showAlert } = useAlert();
   const styles = getStyles(theme);
   const { chatsScreen: chatCopy, common } = TRANSLATIONS;
+  const handleBack = useSmartBack({ authenticatedFallback: ROUTES.chats });
 
   const invalidateChatList = useCallback(() => {
     void queryClient.invalidateQueries({ queryKey: queryKeys.chats.all });
@@ -391,6 +394,7 @@ export default function ChatDetailScreen() {
       disableScroll
       includeTabBarPadding={false}
       hasBottomPadding={false}
+      onBackPress={handleBack}
     >
       {isContractConversation && (
         <View style={styles.contractBanner}>
