@@ -9,6 +9,7 @@ import { useGetLocations } from '@/lib/api/queries/use-get-locations';
 import {
   buildGroupedLocationItems,
   filterLocationsForSearch,
+  getLocationDepartmentLabel,
   getLocationDistrictLabel,
 } from '@/lib/locations/grouped-location-options';
 import { LocationDto } from '@/types/api/types.gen';
@@ -100,19 +101,39 @@ export function LocalLocationPicker({
       const districtLabel = location
         ? getLocationDistrictLabel(location)
         : item.label;
+      const departmentLabel = location
+        ? getLocationDepartmentLabel(location)
+        : '';
+      const showDepartment =
+        !!departmentLabel &&
+        departmentLabel.localeCompare(districtLabel, 'es', {
+          sensitivity: 'base',
+        }) !== 0;
 
       return (
         <View
           style={[styles.locationRow, selected && styles.locationRowSelected]}
         >
-          <AppText
-            style={[
-              styles.locationText,
-              selected && styles.locationTextSelected,
-            ]}
-          >
-            {districtLabel}
-          </AppText>
+          <View style={styles.locationTextWrap}>
+            <AppText
+              style={[
+                styles.locationText,
+                selected && styles.locationTextSelected,
+              ]}
+            >
+              {districtLabel}
+            </AppText>
+            {showDepartment ? (
+              <AppText
+                style={[
+                  styles.locationContext,
+                  selected && styles.locationContextSelected,
+                ]}
+              >
+                {departmentLabel}
+              </AppText>
+            ) : null}
+          </View>
           {selected && (
             <Ionicons
               name="checkmark-circle"
@@ -189,13 +210,23 @@ const getStyles = (theme: AppTheme) => {
     locationRowSelected: {
       backgroundColor: theme.brand.primarySoft,
     },
+    locationTextWrap: {
+      flex: 1,
+      rowGap: 2,
+    },
     locationText: {
       color: theme.text.primary,
       ...text.link,
-      flex: 1,
     },
     locationTextSelected: {
       color: theme.brand.primaryLight,
+    },
+    locationContext: {
+      color: theme.text.tertiary,
+      ...text.caption,
+    },
+    locationContextSelected: {
+      color: theme.brand.primary,
     },
   });
 };

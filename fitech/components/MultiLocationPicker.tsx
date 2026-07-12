@@ -17,7 +17,9 @@ import { useGetLocations } from '@/lib/api/queries/use-get-locations';
 import {
   buildGroupedLocationItems,
   filterLocationsForSearch,
+  getLocationDepartmentLabel,
   getLocationDistrictLabel,
+  getLocationOptionLabel,
 } from '@/lib/locations/grouped-location-options';
 import { LocationDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
@@ -116,7 +118,7 @@ export function MultiLocationPicker({
                 onPress={() => removeLocation(loc.id!)}
               >
                 <AppText style={styles.chipText}>
-                  {getLocationDistrictLabel(loc)}
+                  {getLocationOptionLabel(loc)}
                 </AppText>
                 <Ionicons name="close" size={14} color={theme.brand.primary} />
               </Pressable>
@@ -166,6 +168,17 @@ export function MultiLocationPicker({
                 const locationId = Number(item.value);
                 const location = locationById.get(locationId);
                 const isSelected = selectedIds.has(locationId);
+                const districtLabel = location
+                  ? getLocationDistrictLabel(location)
+                  : item.label;
+                const departmentLabel = location
+                  ? getLocationDepartmentLabel(location)
+                  : '';
+                const showDepartment =
+                  !!departmentLabel &&
+                  departmentLabel.localeCompare(districtLabel, 'es', {
+                    sensitivity: 'base',
+                  }) !== 0;
 
                 return (
                   <Pressable
@@ -176,16 +189,26 @@ export function MultiLocationPicker({
                       isSelected && styles.locationRowSelected,
                     ]}
                   >
-                    <AppText
-                      style={[
-                        styles.locationText,
-                        isSelected && styles.locationTextSelected,
-                      ]}
-                    >
-                      {location
-                        ? getLocationDistrictLabel(location)
-                        : item.label}
-                    </AppText>
+                    <View style={styles.locationTextWrap}>
+                      <AppText
+                        style={[
+                          styles.locationText,
+                          isSelected && styles.locationTextSelected,
+                        ]}
+                      >
+                        {districtLabel}
+                      </AppText>
+                      {showDepartment ? (
+                        <AppText
+                          style={[
+                            styles.locationContext,
+                            isSelected && styles.locationContextSelected,
+                          ]}
+                        >
+                          {departmentLabel}
+                        </AppText>
+                      ) : null}
+                    </View>
                     {isSelected ? (
                       <Ionicons
                         name="checkmark-circle"
@@ -326,14 +349,24 @@ const getStyles = (theme: AppTheme) => {
     locationRowSelected: {
       backgroundColor: theme.brand.primarySoft,
     },
+    locationTextWrap: {
+      flex: 1,
+      rowGap: 2,
+    },
     locationText: {
       ...text.small,
       color: theme.text.primary,
-      flex: 1,
     },
     locationTextSelected: {
       color: theme.brand.primary,
       ...text.smallSemibold,
+    },
+    locationContext: {
+      color: theme.text.tertiary,
+      ...text.caption,
+    },
+    locationContextSelected: {
+      color: theme.brand.primary,
     },
     doneBtn: {
       marginTop: 12,

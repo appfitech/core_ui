@@ -22,6 +22,22 @@ export function getLocationDistrictLabel(location: LocationDto) {
   return location.district?.trim() || formatLocationName(location);
 }
 
+export function getLocationDepartmentLabel(location: LocationDto) {
+  return location.department?.trim() || location.province?.trim() || '';
+}
+
+/** Searchable label — includes department so duplicate district names are distinct. */
+export function getLocationOptionLabel(location: LocationDto) {
+  const district = getLocationDistrictLabel(location);
+  const department = getLocationDepartmentLabel(location);
+
+  if (!department || department.localeCompare(district, 'es', { sensitivity: 'base' }) === 0) {
+    return district;
+  }
+
+  return `${district} — ${department}`;
+}
+
 /** Flat list with department / province headers and selectable districts. */
 export function buildGroupedLocationItems(
   locations: LocationDto[],
@@ -78,7 +94,7 @@ export function buildGroupedLocationItems(
 
         items.push({
           kind: 'location',
-          label: getLocationDistrictLabel(loc),
+          label: getLocationOptionLabel(loc),
           value: String(loc.id),
           disabled: false,
         });
