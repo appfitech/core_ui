@@ -60,6 +60,19 @@ const formatDate = (iso: string | null) =>
         .replace('.', '')
     : '—';
 
+function formatActiveServicesChip(count: number): {
+  text: string;
+  tone: 'neutral' | 'success';
+} {
+  if (count === 0) {
+    return { text: 'Sin planes activos', tone: 'neutral' };
+  }
+  if (count === 1) {
+    return { text: '1 plan activo', tone: 'success' };
+  }
+  return { text: `${count} planes activos`, tone: 'success' };
+}
+
 const Chip = ({
   text,
   tone = 'neutral',
@@ -269,77 +282,92 @@ export default function TrainerClientsScreen() {
           {results.length} clientes encontrados
         </AppText>
 
-        {results.map((client) => (
-          <View key={client.clientId} style={styles.clientCard}>
-            {/* Header: round avatar left, name + chips right */}
-            <View style={styles.clientHeaderRow}>
-              <View style={styles.avatarWrap}>
-                {client.profilePhotoId ? (
-                  <Image
-                    source={{
-                      uri: `https://appfitech.com/v1/app/file-upload/view/${client.profilePhotoId}`,
-                    }}
-                    style={styles.avatar}
-                  />
-                ) : (
-                  <View style={styles.avatarPlaceholder} />
-                )}
-              </View>
-              <View style={styles.clientInfo}>
-                <AppText style={styles.clientName}>{client.clientName}</AppText>
-                <View style={styles.rowChips}>
-                  <Chip
-                    text={`${client.activeServicesCount} activos`}
-                    tone="success"
-                  />
-                  <Chip text={`Total: ${formatPEN(client.totalAmountPaid)}`} />
+        {results.map((client) => {
+          const activeServicesChip = formatActiveServicesChip(
+            client.activeServicesCount,
+          );
+          const hasActivePlans = client.activeServicesCount > 0;
+
+          return (
+            <View key={client.clientId} style={styles.clientCard}>
+              {/* Header: round avatar left, name + chips right */}
+              <View style={styles.clientHeaderRow}>
+                <View style={styles.avatarWrap}>
+                  {client.profilePhotoId ? (
+                    <Image
+                      source={{
+                        uri: `https://appfitech.com/v1/app/file-upload/view/${client.profilePhotoId}`,
+                      }}
+                      style={styles.avatar}
+                    />
+                  ) : (
+                    <View style={styles.avatarPlaceholder} />
+                  )}
+                </View>
+                <View style={styles.clientInfo}>
+                  <AppText style={styles.clientName}>
+                    {client.clientName}
+                  </AppText>
+                  <View style={styles.rowChips}>
+                    <Chip
+                      text={activeServicesChip.text}
+                      tone={activeServicesChip.tone}
+                    />
+                    <Chip
+                      text={`Total: ${formatPEN(client.totalAmountPaid)}`}
+                    />
+                  </View>
                 </View>
               </View>
-            </View>
-            {!!client.fitnessGoals?.length && (
-              <AppText style={styles.bio} numberOfLines={2}>
-                {client.fitnessGoals.join(', ')}
-              </AppText>
-            )}
+              {!!client.fitnessGoals?.length && (
+                <AppText style={styles.bio} numberOfLines={2}>
+                  {client.fitnessGoals.join(', ')}
+                </AppText>
+              )}
 
-            <TouchableOpacity
-              style={styles.contactarButton}
-              onPress={() => {
-                if (client.chatId != null) {
-                  router.push({
-                    pathname: '/chats/[id]',
-                    params: {
-                      id: String(client.chatId),
-                      title: client.clientName,
-                    },
-                  });
-                } else {
-                  router.push(ROUTES.chats);
-                }
-              }}
-              activeOpacity={0.8}
-            >
-              <Ionicons
-                name="chatbubble-outline"
-                size={18}
-                color={theme.background.app}
-              />
-              <AppText style={styles.contactarButtonText}>Contactar</AppText>
-            </TouchableOpacity>
+              {hasActivePlans ? (
+                <TouchableOpacity
+                  style={styles.contactarButton}
+                  onPress={() => {
+                    if (client.chatId != null) {
+                      router.push({
+                        pathname: '/chats/[id]',
+                        params: {
+                          id: String(client.chatId),
+                          title: client.clientName,
+                        },
+                      });
+                    } else {
+                      router.push(ROUTES.chats);
+                    }
+                  }}
+                  activeOpacity={0.8}
+                >
+                  <Ionicons
+                    name="chatbubble-outline"
+                    size={18}
+                    color={theme.background.app}
+                  />
+                  <AppText style={styles.contactarButtonText}>
+                    Contactar
+                  </AppText>
+                </TouchableOpacity>
+              ) : null}
 
-            <View style={styles.servicesHeaderRow}>
-              <AppText style={styles.sectionTitle}>
-                {`SERVICIOS CONTRATADOS (${client.totalServicesCount})`}
-              </AppText>
-            </View>
+              <View style={styles.servicesHeaderRow}>
+                <AppText style={styles.sectionTitle}>
+                  {`SERVICIOS CONTRATADOS (${client.totalServicesCount})`}
+                </AppText>
+              </View>
 
-            <View style={styles.servicesList}>
-              {client.services.map((s) => (
-                <ServiceCard key={s.contractId} s={s} />
-              ))}
+              <View style={styles.servicesList}>
+                {client.services.map((s) => (
+                  <ServiceCard key={s.contractId} s={s} />
+                ))}
+              </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     </PageContainer>
   );

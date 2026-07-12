@@ -186,7 +186,7 @@ export default function ContractDetailScreen() {
         {statusTag ? <View style={styles.statusRow}>{statusTag}</View> : null}
 
         {parsedContract?.trainerName ? (
-          chatId != null ? (
+          chatId != null && isActive ? (
             <View style={styles.trainerRow}>
               <View style={styles.trainerRowContent}>
                 <ContractDetailRow
