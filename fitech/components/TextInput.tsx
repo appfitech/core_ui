@@ -59,6 +59,61 @@ function resolveSecureTextProps(
   };
 }
 
+function isNumericKeyboard(keyboardType: TextInputProps['keyboardType']) {
+  return (
+    keyboardType === 'number-pad' ||
+    keyboardType === 'decimal-pad' ||
+    keyboardType === 'phone-pad' ||
+    keyboardType === 'numeric'
+  );
+}
+
+function resolveKeyboardAssistProps({
+  secureTextEntry,
+  keyboardType,
+  multiline,
+  autoCorrect,
+  autoCapitalize,
+  spellCheck,
+  textContentType,
+}: Pick<
+  TextInputProps,
+  | 'secureTextEntry'
+  | 'keyboardType'
+  | 'multiline'
+  | 'autoCorrect'
+  | 'autoCapitalize'
+  | 'spellCheck'
+  | 'textContentType'
+>): Pick<TextInputProps, 'autoCorrect' | 'autoCapitalize' | 'spellCheck'> {
+  if (
+    secureTextEntry ||
+    isNumericKeyboard(keyboardType) ||
+    keyboardType === 'email-address' ||
+    textContentType === 'emailAddress'
+  ) {
+    return {
+      autoCorrect: autoCorrect ?? false,
+      autoCapitalize: autoCapitalize ?? 'none',
+      spellCheck: spellCheck ?? false,
+    };
+  }
+
+  if (multiline) {
+    return {
+      autoCorrect: autoCorrect ?? true,
+      autoCapitalize: autoCapitalize ?? 'sentences',
+      spellCheck: spellCheck ?? true,
+    };
+  }
+
+  return {
+    autoCorrect: autoCorrect ?? true,
+    autoCapitalize: autoCapitalize ?? 'sentences',
+    spellCheck: spellCheck ?? true,
+  };
+}
+
 export function TextInput(props: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
@@ -77,6 +132,12 @@ export function TextInput(props: Props) {
     onFocus,
     onBlur,
     editable = true,
+    keyboardType,
+    multiline: multilineProp,
+    autoCorrect,
+    autoCapitalize,
+    spellCheck,
+    textContentType,
     ...rest
   } = props;
 
@@ -106,7 +167,16 @@ export function TextInput(props: Props) {
     props,
   );
 
-  const multiline = Boolean(props.multiline);
+  const multiline = Boolean(multilineProp);
+  const keyboardAssistProps = resolveKeyboardAssistProps({
+    secureTextEntry,
+    keyboardType,
+    multiline,
+    autoCorrect,
+    autoCapitalize,
+    spellCheck,
+    textContentType,
+  });
   const lineCount = multiline ? Math.max(props.numberOfLines ?? 4, 4) : 1;
   const multilineMinHeight = lineCount * MULTILINE_LINE_HEIGHT + 24;
 
@@ -138,6 +208,8 @@ export function TextInput(props: Props) {
         <NativeTextInput
           {...rest}
           {...secureAutofillProps}
+          {...keyboardAssistProps}
+          keyboardType={keyboardType}
           editable={editable}
           value={displayValue}
           onChangeText={handleChangeText}
@@ -146,6 +218,7 @@ export function TextInput(props: Props) {
           importantForAutofill={bufferActive ? 'no' : rest.importantForAutofill}
           secureTextEntry={secureTextEntry}
           multiline={multiline}
+          textContentType={textContentType}
           scrollEnabled={multiline ? false : rest.scrollEnabled}
           placeholderTextColor={theme.icon.muted}
           style={[
@@ -174,8 +247,6 @@ export function TextInput(props: Props) {
                     paddingVertical: 12,
                   },
           ]}
-          autoCapitalize="none"
-          autoCorrect={false}
         />
         {endElement && <View style={styles.endElement}>{endElement}</View>}
       </View>

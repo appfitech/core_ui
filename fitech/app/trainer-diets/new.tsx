@@ -24,7 +24,7 @@ import { fromISODate, today } from '@/utils/dates';
 type Step = 1 | 2;
 
 const DIET_TEMPLATE_URL =
-  'https://appfitech.com/v1/app/templates/plantilla_dieta.xlsx';
+  'https://appfitech.com/v1/app/templates/plantilla_dieta.docx';
 
 const XLSX_MIME =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -271,7 +271,7 @@ export default function NewTrainerDietScreen() {
                 style={styles.downloadBtnIcon}
               />
               <AppText style={styles.downloadBtnText}>
-                Descargar Plantilla Excel
+                Descargar Plantilla
               </AppText>
             </TouchableOpacity>
             <AppText style={styles.downloadHint}>

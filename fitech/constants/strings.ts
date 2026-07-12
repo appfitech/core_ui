@@ -172,10 +172,8 @@ export const TRANSLATIONS = {
   },
   homePremiumWelcome: {
     title: '¡Ya eres Premium!',
-    body:
-      'Tu membresía está activa. Ahora puedes usar GymBro y GymCrush para encontrar tu dupla de entrenamiento o conectar con tu crush fitness.',
-    hint:
-      'Configura tus preferencias de match para empezar a descubrir perfiles y usar ambas funciones.',
+    body: 'Tu membresía está activa. Ahora puedes usar GymBro y GymCrush para encontrar tu dupla de entrenamiento o conectar con tu crush fitness.',
+    hint: 'Configura tus preferencias de match para empezar a descubrir perfiles y usar ambas funciones.',
     cta: 'Ir a preferencias de match',
     dismiss: 'Cerrar',
   },
@@ -581,7 +579,7 @@ export const TRANSLATIONS = {
     title: 'Gestiona tus fotos',
     profilePhotoBadge: 'Foto de perfil',
     noProfilePhoto: 'Sin foto de perfil',
-    changeAvatarButton: 'Cambiar avatar',
+    changeAvatarButton: 'Cambiar foto',
     updatingAvatar: 'Actualizando…',
     addPhotoLabel: 'AGREGAR FOTO',
     bannerTitle: 'Haz que tu perfil destaque',
@@ -606,7 +604,7 @@ export const TRANSLATIONS = {
     noPhotosMessage: 'Sube al menos una foto para poder elegir tu avatar.',
     pickExistingPhoto: 'Elegir de tus fotos',
     uploadNewPhoto: 'Subir nueva foto',
-    changeAvatarTitle: 'Cambiar avatar',
+    changeAvatarTitle: 'Cambiar foto',
     changeAvatarMessageUpload: 'Elige una foto existente o sube una nueva',
     changeAvatarMessagePick: 'Elige una de tus fotos de la galería',
     deleteProfilePhotoTitle: 'Eliminar foto de perfil',

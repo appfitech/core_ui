@@ -273,7 +273,7 @@ export default function NewTrainerRoutineScreen() {
                 style={styles.downloadBtnIcon}
               />
               <AppText style={styles.downloadBtnText}>
-                Descargar Plantilla Excel
+                Descargar Plantilla
               </AppText>
             </TouchableOpacity>
             <AppText style={styles.downloadHint}>

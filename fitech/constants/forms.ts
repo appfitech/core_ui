@@ -1,4 +1,4 @@
-import type { KeyboardTypeOptions } from 'react-native';
+import type { KeyboardTypeOptions, TextInputProps } from 'react-native';
 
 import type { Option } from '@/types/forms';
 
@@ -22,6 +22,8 @@ export type CreateUserFormField = {
   numberOfLines?: number;
   maxLength?: number;
   isOptional?: boolean;
+  autoCorrect?: TextInputProps['autoCorrect'];
+  autoCapitalize?: TextInputProps['autoCapitalize'];
 };
 
 export const USER_TYPES: Option[] = [
@@ -43,6 +45,8 @@ export const REGISTER_ACCOUNT_TYPE_FIELDS: CreateUserFormField[] = [
     label: 'Correo electrónico',
     field: 'email',
     keyboardType: 'email-address',
+    autoCorrect: false,
+    autoCapitalize: 'none',
   },
 ];
 
@@ -66,8 +70,8 @@ export const REGISTER_DOCUMENT_FIELDS: CreateUserFormField[] = [
     keyboardType: 'number-pad',
     maxLength: 15,
   },
-  { label: 'Nombres', field: 'firstName' },
-  { label: 'Apellidos', field: 'lastName' },
+  { label: 'Nombres', field: 'firstName', autoCapitalize: 'words' },
+  { label: 'Apellidos', field: 'lastName', autoCapitalize: 'words' },
 ];
 
 export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
@@ -121,7 +125,13 @@ export const REGISTER_BASIC_INFO_FIELDS: CreateUserFormField[] = [
 ];
 
 export const REGISTER_CREDENTIALS_FIELDS: CreateUserFormField[] = [
-  { label: 'Usuario', field: 'username', isBase: true },
+  {
+    label: 'Usuario',
+    field: 'username',
+    isBase: true,
+    autoCorrect: false,
+    autoCapitalize: 'none',
+  },
   {
     label: 'Contraseña',
     field: 'password',
@@ -147,8 +157,8 @@ export const PERSONAL_INFO_FORM_FIELDS: PersonalInfoFormField[] = [
     editable: false,
     showEmailVerifiedBadge: true,
   },
-  { label: 'Nombre', field: 'firstName', placeholder: 'Nombre' },
-  { label: 'Apellido', field: 'lastName', placeholder: 'Apellido' },
+  { label: 'Nombre', field: 'firstName', placeholder: 'Nombre', autoCapitalize: 'words' },
+  { label: 'Apellido', field: 'lastName', placeholder: 'Apellido', autoCapitalize: 'words' },
   {
     label: 'Fecha de Nacimiento',
     field: 'birthDate',

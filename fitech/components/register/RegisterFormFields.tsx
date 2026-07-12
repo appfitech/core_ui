@@ -135,6 +135,8 @@ function RegisterFieldRow({ field, form, setForm }: FieldRowProps) {
       multiline={field.multiline}
       numberOfLines={field.numberOfLines ?? (field.multiline ? 5 : undefined)}
       required={!field.isOptional}
+      autoCorrect={field.autoCorrect}
+      autoCapitalize={field.autoCapitalize}
     />
   );
 }

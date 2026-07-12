@@ -163,9 +163,6 @@ export function ChatWebSocketProvider({
     }
 
     const url = buildChatWsUrl(authToken);
-    if (__DEV__) {
-      console.log('[ChatWS] Connecting:', url);
-    }
 
     const ws = new WebSocket(url);
     wsRef.current = ws;
@@ -173,17 +170,14 @@ export function ChatWebSocketProvider({
     ws.onopen = () => {
       if (isUnmountedRef.current) return;
       setIsConnected(true);
-      if (__DEV__) {
-        console.log('[ChatWS] Connected');
-      }
     };
 
     ws.onmessage = (event) => {
       try {
         const message: MessageDto = JSON.parse(event.data);
         notifyListeners(message);
-      } catch (error) {
-        console.error('[ChatWS] Failed to parse message', error);
+      } catch {
+        // Ignore malformed payloads; the REST chat API remains the source of truth.
       }
     };
 
@@ -194,9 +188,6 @@ export function ChatWebSocketProvider({
       if (isUnmountedRef.current || intentionalCloseRef.current) return;
 
       if (event.code === 1008) {
-        if (__DEV__) {
-          console.warn('[ChatWS] Invalid token (1008) — refreshing session');
-        }
         void refreshAccessToken().then((result) => {
           if (isUnmountedRef.current) return;
           if (result === 'refreshed') {
@@ -209,9 +200,8 @@ export function ChatWebSocketProvider({
       scheduleReconnect();
     };
 
-    ws.onerror = (event) => {
-      console.error('[ChatWS] Error', event);
-    };
+    // onclose already handles reconnect; onerror is noisy and duplicates the URL/token.
+    ws.onerror = () => {};
   }, [clearReconnect, notifyListeners, scheduleReconnect]);
 
   connectRef.current = connect;

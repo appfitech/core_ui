@@ -139,6 +139,8 @@ function PersonalInfoFieldRow({
       multiline={field.multiline}
       numberOfLines={field.numberOfLines ?? (field.multiline ? 8 : undefined)}
       required={required}
+      autoCorrect={field.autoCorrect}
+      autoCapitalize={field.autoCapitalize}
     />
   );
 }

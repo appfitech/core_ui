@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { type Href, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   Image,
   Platform,
@@ -52,21 +52,29 @@ export function NavBar() {
     '/' + (Array.isArray(segments) ? segments.filter(Boolean).join('/') : '');
   const isPremium = Boolean(user?.user?.premium);
   const isTrainer = useUserStore((s) => s.getIsTrainer());
+  const showPremiumFab = !isTrainer;
   const setTabBarInset = useSetTabBarInset();
+  const navBarHeightRef = useRef(0);
   const fabBottom = (insets.bottom || 10) + 32;
   const navBarPaddingBottom = insets.bottom > 0 ? insets.bottom : 10;
 
   const reportTabBarInset = useCallback(
     (navBarHeight: number) => {
-      const fabTopFromBottom = fabBottom + FAB_SIZE;
+      const fabTopFromBottom = showPremiumFab ? fabBottom + FAB_SIZE : 0;
       const androidNavEstimate =
         Platform.OS === 'android' && insets.bottom < 20 ? 24 : 0;
       setTabBarInset(
         Math.max(navBarHeight, fabTopFromBottom) + 12 + androidNavEstimate,
       );
     },
-    [fabBottom, insets.bottom, setTabBarInset],
+    [fabBottom, insets.bottom, setTabBarInset, showPremiumFab],
   );
+
+  useEffect(() => {
+    if (navBarHeightRef.current > 0) {
+      reportTabBarInset(navBarHeightRef.current);
+    }
+  }, [reportTabBarInset, showPremiumFab]);
 
   useEffect(() => {
     return () => {
@@ -89,7 +97,10 @@ export function NavBar() {
     <>
       <View
         style={[styles.navBar, { paddingBottom: navBarPaddingBottom }]}
-        onLayout={(e) => reportTabBarInset(e.nativeEvent.layout.height)}
+        onLayout={(e) => {
+          navBarHeightRef.current = e.nativeEvent.layout.height;
+          reportTabBarInset(e.nativeEvent.layout.height);
+        }}
       >
         {Object.entries(NAV_ITEMS_MAPPER(isTrainer)).map(
           ([key, { icon, route, label }]) => {
@@ -125,24 +136,26 @@ export function NavBar() {
         )}
       </View>
 
-      <Pressable
-        onPress={isPremium ? handlePremiumClick : undefined}
-        disabled={!isPremium}
-        style={[
-          styles.fab,
-          { bottom: fabBottom },
-          !isPremium && styles.fabDisabled,
-        ]}
-        accessibilityRole="button"
-        accessibilityState={{ disabled: !isPremium }}
-        accessibilityLabel="FITECH Premium"
-      >
-        <Image
-          source={FAB_LOGO}
-          style={[styles.fabLogo, !isPremium && styles.fabLogoDisabled]}
-          resizeMode="contain"
-        />
-      </Pressable>
+      {showPremiumFab ? (
+        <Pressable
+          onPress={isPremium ? handlePremiumClick : undefined}
+          disabled={!isPremium}
+          style={[
+            styles.fab,
+            { bottom: fabBottom },
+            !isPremium && styles.fabDisabled,
+          ]}
+          accessibilityRole="button"
+          accessibilityState={{ disabled: !isPremium }}
+          accessibilityLabel="FITECH Premium"
+        >
+          <Image
+            source={FAB_LOGO}
+            style={[styles.fabLogo, !isPremium && styles.fabLogoDisabled]}
+            resizeMode="contain"
+          />
+        </Pressable>
+      ) : null}
     </>
   );
 }
