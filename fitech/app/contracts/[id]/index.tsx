@@ -44,8 +44,11 @@ export default function ContractDetailScreen() {
   );
 
   const styles = getStyles(theme);
-  const { contractDetailScreen: copy, common, cancelContractModal } =
-    TRANSLATIONS;
+  const {
+    contractDetailScreen: copy,
+    common,
+    cancelContractModal,
+  } = TRANSLATIONS;
 
   const handleComplete = useCallback(() => {
     completeContract(parsedContract?.id ?? parsedContract?.contractId, {
@@ -229,12 +232,6 @@ export default function ContractDetailScreen() {
             value={validityValue}
           />
         )}
-
-        <ContractDetailRow
-          icon="document-text-outline"
-          label={copy.createdAtLabel}
-          value={createdAtFormatted}
-        />
 
         {parsedContract?.totalAmount != null && (
           <ContractDetailRow

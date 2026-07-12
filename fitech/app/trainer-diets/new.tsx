@@ -28,6 +28,20 @@ const DIET_TEMPLATE_URL =
 
 const XLSX_MIME =
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+const DOCX_MIME =
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+const ALLOWED_FILE_TYPES = [DOCX_MIME, XLSX_MIME] as const;
+
+function getFileMimeType(fileName: string): string | null {
+  const lowerName = fileName.toLowerCase();
+  if (lowerName.endsWith('.xlsx')) return XLSX_MIME;
+  if (lowerName.endsWith('.docx')) return DOCX_MIME;
+  return null;
+}
+
+function isAllowedDietFile(fileName: string): boolean {
+  return getFileMimeType(fileName) != null;
+}
 
 export default function NewTrainerDietScreen() {
   const { theme } = useTheme();
@@ -42,6 +56,7 @@ export default function NewTrainerDietScreen() {
   const [pickedFile, setPickedFile] = useState<{
     uri: string;
     name: string;
+    mimeType: string;
   } | null>(null);
 
   const { mutate: createDiet, isPending } = useCreateClientResourceWithFile();
@@ -83,15 +98,27 @@ export default function NewTrainerDietScreen() {
     }
   };
 
-  const handlePickXlsx = async () => {
+  const handlePickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: XLSX_MIME,
+        type: [...ALLOWED_FILE_TYPES],
         copyToCacheDirectory: true,
       });
       if (result.canceled) return;
+
       const file = result.assets[0];
-      setPickedFile({ uri: file.uri, name: file.name ?? 'plantilla.xlsx' });
+      const fileName = file.name ?? 'plantilla.docx';
+      const mimeType = file.mimeType ?? getFileMimeType(fileName);
+
+      if (!mimeType || !isAllowedDietFile(fileName)) {
+        showInfoToast(
+          'Archivo no válido',
+          'Solo se permiten archivos .docx o .xlsx.',
+        );
+        return;
+      }
+
+      setPickedFile({ uri: file.uri, name: fileName, mimeType });
     } catch (e) {
       console.error('[FITECH] document picker error', e);
     }
@@ -123,7 +150,7 @@ export default function NewTrainerDietScreen() {
     formData.append('file', {
       uri: pickedFile.uri,
       name: pickedFile.name,
-      type: XLSX_MIME,
+      type: pickedFile.mimeType,
     } as any);
     formData.append('resourceName', dietName.trim());
     formData.append('resourceType', 'DIETA');
@@ -281,11 +308,13 @@ export default function NewTrainerDietScreen() {
             <AppText style={[styles.plantillaStepTitle, { marginTop: 16 }]}>
               Paso 2: Sube la plantilla completada
             </AppText>
-            <AppText style={styles.uploadHint}>Solo archivos .xlsx</AppText>
+            <AppText style={styles.uploadHint}>
+              Solo archivos .docx o .xlsx
+            </AppText>
             <TouchableOpacity
               style={styles.uploadArea}
               activeOpacity={0.8}
-              onPress={handlePickXlsx}
+              onPress={handlePickFile}
             >
               <Ionicons
                 name="cloud-upload-outline"
@@ -294,7 +323,7 @@ export default function NewTrainerDietScreen() {
               />
               <AppText style={styles.uploadText}>
                 {pickedFile?.name ??
-                  'Toca para seleccionar archivo Excel (.xlsx)'}
+                  'Toca para seleccionar archivo (.docx o .xlsx)'}
               </AppText>
             </TouchableOpacity>
 
