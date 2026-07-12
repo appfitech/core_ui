@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSmartBack } from '@/hooks/use-smart-back';
 import { AppTheme } from '@/types/theme';
 
 const BUTTON_SIZE = 36;
@@ -16,14 +16,16 @@ type Props = {
 
 export function BackButton({ variant = 'default', onPress }: Props) {
   const { theme } = useTheme();
-  const router = useRouter();
   const isLight = variant === 'light';
   const styles = getStyles(theme, isLight);
+
+  const handleBack = useSmartBack();
+  const handlePress = onPress ?? handleBack;
 
   return (
     <TouchableOpacity
       style={styles.button}
-      onPress={onPress ?? (() => router.back())}
+      onPress={handlePress}
       hitSlop={4}
       accessibilityRole="button"
       accessibilityLabel="Volver"

@@ -30,12 +30,12 @@ import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useChatWebSocket } from '@/contexts/ChatWebSocketContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSmartBack } from '@/hooks/use-smart-back';
 import {
   useGetChat,
   useGetChatMessages,
 } from '@/lib/api/queries/use-chat-queries';
 import { queryKeys } from '@/lib/api/query-keys';
-import { useSmartBack } from '@/hooks/use-smart-back';
 import { useUserStore } from '@/stores/user';
 import { MessageDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
