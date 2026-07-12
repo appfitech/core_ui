@@ -1,16 +1,17 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
+import { AppText } from '@/components/AppText';
 import { FooterActions } from '@/components/FooterActions';
 import PageContainer from '@/components/PageContainer';
 import { SelectableCard } from '@/components/SelectableCard';
 import { TRANSLATIONS } from '@/constants/strings';
+import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateFitnessGoals } from '@/lib/api/mutations/use-update-fitness-goals';
 import { useGetAllFitnessGoalTypes } from '@/lib/api/queries/use-get-all-fitness-goal-types';
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import { useUserStore } from '@/stores/user';
 import { UserResponseDtoReadable } from '@/types/api/types.gen';
 import { FitnessGoal } from '@/types/fitness-goals';
@@ -32,8 +33,12 @@ export default function FitnessGoalsScreen() {
     (s) => s?.user?.user?.person?.fitnessGoalTypes,
   );
 
-  const { data: goalsData = [], refetch } = useGetAllFitnessGoalTypes();
-  const { refreshing, onRefresh } = usePullToRefresh(refetch);
+  const {
+    data: goalsData = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAllFitnessGoalTypes();
 
   useEffect(() => {
     if (!userGoals?.length || !goalsData.length) return;
@@ -112,41 +117,64 @@ export default function FitnessGoalsScreen() {
           cancelLabel={copy.cancelButton}
           onCancel={handleCancel}
           primaryLoading={isSaving}
-          cancelDisabled={isSaving}
+          cancelDisabled={isSaving || isLoading}
+          primaryDisabled={isLoading || goals.length === 0}
         />
       }
-      onRefresh={onRefresh}
-      refreshing={refreshing}
     >
-      <View style={styles.cardList}>
-        {goals.map((goal) => (
-          <SelectableCard
-            key={`${goal.id}-fitness-goal-option`}
-            icon={goal.icon ?? 'fitness'}
-            title={goal.name ?? ''}
-            description={goal.description ?? ''}
-            selected={selectedGoals.some((g) => g.id === goal.id)}
-            onPress={() => toggleGoal(goal)}
-          />
-        ))}
-      </View>
+      {isLoading ? (
+        <View style={styles.loadingWrap}>
+          <ActivityIndicator color={theme.brand.primary} />
+        </View>
+      ) : (
+        <>
+          {isError ? (
+            <Pressable onPress={() => refetch()}>
+              <AppText style={styles.errorHint}>
+                No se pudieron cargar los objetivos. Toca para reintentar.
+              </AppText>
+            </Pressable>
+          ) : null}
+
+          <View style={styles.cardList}>
+            {goals.map((goal) => (
+              <SelectableCard
+                key={`${goal.id}-fitness-goal-option`}
+                icon={goal.icon ?? 'fitness'}
+                title={goal.name ?? ''}
+                description={goal.description ?? ''}
+                selected={selectedGoals.some((g) => g.id === goal.id)}
+                onPress={() => toggleGoal(goal)}
+              />
+            ))}
+          </View>
+        </>
+      )}
     </PageContainer>
   );
 }
 
-const getStyles = (theme: AppTheme) =>
-  StyleSheet.create({
+const getStyles = (theme: AppTheme) => {
+  const text = textStyles(theme);
+  return StyleSheet.create({
     pageStyle: {
       rowGap: 20,
       paddingBottom: 0,
     },
-    subheader: {
-      fontSize: 15,
-      color: theme.text.secondary,
-      lineHeight: 22,
-      marginBottom: 8,
-    },
     cardList: {
       rowGap: 12,
     },
+    loadingWrap: {
+      paddingVertical: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    errorHint: {
+      ...text.small,
+      color: theme.status.error.text,
+      textAlign: 'center',
+      paddingVertical: 8,
+      marginBottom: 4,
+    },
   });
+};

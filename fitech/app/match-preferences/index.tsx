@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { ChipToggle } from '@/components/atoms/ChipToggle';
@@ -18,7 +18,6 @@ import { useAlert } from '@/contexts/AlertContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUpdateMatchPreferences } from '@/lib/api/mutations/use-update-match-preferences';
 import { useGetUserMatchPreferences } from '@/lib/api/queries/use-get-user-match-preferences';
-import { usePullToRefresh } from '@/hooks/use-pull-to-refresh';
 import {
   CreateMatchPreferencesRequest,
   LocationDto,
@@ -76,9 +75,9 @@ export default function MatchPreferencesScreen() {
   const {
     data: matchPreferencesData,
     isLoading,
+    isError,
     refetch,
   } = useGetUserMatchPreferences();
-  const { refreshing, onRefresh } = usePullToRefresh(refetch);
   const { mutate: updatePreferences, isPending: isSaving } =
     useUpdateMatchPreferences();
 
@@ -86,14 +85,28 @@ export default function MatchPreferencesScreen() {
     useState<MatchPreferencesDto | null>(null);
 
   useEffect(() => {
-    if (!isLoading && matchPreferencesData) {
+    if (isLoading) return;
+
+    if (matchPreferencesData) {
       setMatchPreferences({
         ...matchPreferencesData,
         gymBroWorkoutTimes: matchPreferencesData.gymBroWorkoutTimes || [],
         gymBroLocations: matchPreferencesData.gymBroLocations || [],
         gymCrushLocations: matchPreferencesData.gymCrushLocations || [],
       });
+      return;
     }
+
+    setMatchPreferences({
+      showInGymBro: false,
+      showInGymCrush: false,
+      showAge: false,
+      gymBroWorkoutTimes: [],
+      gymBroLocations: [],
+      gymCrushLocations: [],
+      ...DEFAULT_GYM_BRO,
+      ...DEFAULT_GYM_CRUSH,
+    });
   }, [matchPreferencesData, isLoading]);
 
   const anyEnabled =
@@ -234,248 +247,270 @@ export default function MatchPreferencesScreen() {
           onPrimary={handleSave}
           onCancel={() => router.back()}
           primaryLoading={isSaving}
-          cancelDisabled={isSaving}
+          cancelDisabled={isSaving || isLoading}
+          primaryDisabled={isLoading}
         />
       }
-      onRefresh={onRefresh}
-      refreshing={refreshing}
     >
-      <Card style={styles.card}>
-        <SwitchRow
-          label="GymBro"
-          value={!!matchPreferences?.showInGymBro}
-          onChange={onToggleGymBro}
-          labelStyle={styles.cardTitle}
-        />
-        <AppText style={styles.cardHint}>
-          Encuentra compañeros de entrenamiento que compartan tus objetivos y
-          horarios.
-        </AppText>
-
-        {!!matchPreferences?.showInGymBro && (
-          <View style={styles.section}>
-            <SectionLabel label="Horarios de entrenamiento" styles={styles} />
-            <ChipsList
-              options={[...MATCH_WORKOUT_SCHEDULES]}
-              selectedValues={matchPreferences?.gymBroWorkoutTimes || []}
-              onChange={(times) =>
-                setMatchPreferences((prev) => ({
-                  ...(prev || {}),
-                  gymBroWorkoutTimes: times as TimePref[],
-                }))
-              }
+      {isLoading ? (
+        <View style={styles.loadingWrap}>
+          <ActivityIndicator color={theme.brand.primary} />
+        </View>
+      ) : (
+        <>
+          {isError ? (
+            <Pressable onPress={() => refetch()}>
+              <AppText style={styles.errorHint}>
+                No se pudieron cargar las preferencias. Toca para reintentar.
+              </AppText>
+            </Pressable>
+          ) : null}
+          <Card style={styles.card}>
+            <SwitchRow
+              label="GymBro"
+              value={!!matchPreferences?.showInGymBro}
+              onChange={onToggleGymBro}
+              labelStyle={styles.cardTitle}
             />
+            <AppText style={styles.cardHint}>
+              Encuentra compañeros de entrenamiento que compartan tus objetivos
+              y horarios.
+            </AppText>
 
-            <SectionLabel label="Nivel de intensidad" styles={styles} />
-            <ChipRow>
-              {INTENSITY_OPTIONS.map((opt) => (
-                <ChipToggle
-                  key={opt.value}
-                  label={opt.label}
-                  value={opt.value}
-                  selected={matchPreferences?.gymBroIntensity === opt.value}
-                  onPress={(val) =>
+            {!!matchPreferences?.showInGymBro && (
+              <View style={styles.section}>
+                <SectionLabel
+                  label="Horarios de entrenamiento"
+                  styles={styles}
+                />
+                <ChipsList
+                  options={[...MATCH_WORKOUT_SCHEDULES]}
+                  selectedValues={matchPreferences?.gymBroWorkoutTimes || []}
+                  onChange={(times) =>
                     setMatchPreferences((prev) => ({
                       ...(prev || {}),
-                      gymBroIntensity: val as Intensity,
+                      gymBroWorkoutTimes: times as TimePref[],
                     }))
                   }
                 />
-              ))}
-            </ChipRow>
 
-            <SectionLabel label="Ubicaciones de interés" styles={styles} />
-            <MultiLocationPicker
-              selected={
-                (matchPreferences?.gymBroLocations || []) as LocationDto[]
-              }
-              onChange={(locations) =>
-                setMatchPreferences((prev) => ({
-                  ...(prev || {}),
-                  gymBroLocations: locations,
-                }))
-              }
-            />
+                <SectionLabel label="Nivel de intensidad" styles={styles} />
+                <ChipRow>
+                  {INTENSITY_OPTIONS.map((opt) => (
+                    <ChipToggle
+                      key={opt.value}
+                      label={opt.label}
+                      value={opt.value}
+                      selected={matchPreferences?.gymBroIntensity === opt.value}
+                      onPress={(val) =>
+                        setMatchPreferences((prev) => ({
+                          ...(prev || {}),
+                          gymBroIntensity: val as Intensity,
+                        }))
+                      }
+                    />
+                  ))}
+                </ChipRow>
 
-            <SectionLabel label="Preferencias generales" styles={styles} />
-            <FieldLabel label="Buscando" styles={styles} />
-            <ChipRow>
-              {GENDER_OPTIONS.map((opt) => (
-                <ChipToggle
-                  key={opt.value}
-                  label={opt.label}
-                  value={opt.value}
+                <SectionLabel label="Ubicaciones de interés" styles={styles} />
+                <MultiLocationPicker
                   selected={
-                    matchPreferences?.gymBroLookingForGender === opt.value
+                    (matchPreferences?.gymBroLocations || []) as LocationDto[]
                   }
-                  onPress={(val) =>
+                  onChange={(locations) =>
                     setMatchPreferences((prev) => ({
                       ...(prev || {}),
-                      gymBroLookingForGender: val as Gender,
+                      gymBroLocations: locations,
                     }))
                   }
                 />
-              ))}
-            </ChipRow>
 
-            <FieldLabel label="Rango de edad" styles={styles} />
-            <View style={styles.ageRow}>
-              {ageInput(
-                matchPreferences?.gymBroAgeRangeMin,
-                (n) =>
-                  setMatchPreferences((g) => ({
-                    ...(g || {}),
-                    gymBroAgeRangeMin: n,
-                  })),
-                'Desde',
-              )}
-              <AppText style={styles.ageDash}>—</AppText>
-              {ageInput(
-                matchPreferences?.gymBroAgeRangeMax,
-                (n) =>
-                  setMatchPreferences((g) => ({
-                    ...(g || {}),
-                    gymBroAgeRangeMax: n,
-                  })),
-                'Hasta',
-              )}
-            </View>
+                <SectionLabel label="Preferencias generales" styles={styles} />
+                <FieldLabel label="Buscando" styles={styles} />
+                <ChipRow>
+                  {GENDER_OPTIONS.map((opt) => (
+                    <ChipToggle
+                      key={opt.value}
+                      label={opt.label}
+                      value={opt.value}
+                      selected={
+                        matchPreferences?.gymBroLookingForGender === opt.value
+                      }
+                      onPress={(val) =>
+                        setMatchPreferences((prev) => ({
+                          ...(prev || {}),
+                          gymBroLookingForGender: val as Gender,
+                        }))
+                      }
+                    />
+                  ))}
+                </ChipRow>
 
+                <FieldLabel label="Rango de edad" styles={styles} />
+                <View style={styles.ageRow}>
+                  {ageInput(
+                    matchPreferences?.gymBroAgeRangeMin,
+                    (n) =>
+                      setMatchPreferences((g) => ({
+                        ...(g || {}),
+                        gymBroAgeRangeMin: n,
+                      })),
+                    'Desde',
+                  )}
+                  <AppText style={styles.ageDash}>—</AppText>
+                  {ageInput(
+                    matchPreferences?.gymBroAgeRangeMax,
+                    (n) =>
+                      setMatchPreferences((g) => ({
+                        ...(g || {}),
+                        gymBroAgeRangeMax: n,
+                      })),
+                    'Hasta',
+                  )}
+                </View>
+
+                <SwitchRow
+                  label="Mostrar bio"
+                  value={!!matchPreferences?.gymBroShowBioInProfile}
+                  onChange={(v) =>
+                    setMatchPreferences((prev) => ({
+                      ...(prev || {}),
+                      gymBroShowBioInProfile: v,
+                    }))
+                  }
+                />
+              </View>
+            )}
+          </Card>
+
+          <Card style={styles.card}>
             <SwitchRow
-              label="Mostrar bio"
-              value={!!matchPreferences?.gymBroShowBioInProfile}
-              onChange={(v) =>
-                setMatchPreferences((prev) => ({
-                  ...(prev || {}),
-                  gymBroShowBioInProfile: v,
-                }))
-              }
+              label="GymCrush"
+              value={!!matchPreferences?.showInGymCrush}
+              onChange={onToggleGymCrush}
+              labelStyle={styles.cardTitle}
             />
-          </View>
-        )}
-      </Card>
+            <AppText style={styles.cardHint}>
+              Conecta con personas que te interesen para algo más que entrenar.
+            </AppText>
 
-      <Card style={styles.card}>
-        <SwitchRow
-          label="GymCrush"
-          value={!!matchPreferences?.showInGymCrush}
-          onChange={onToggleGymCrush}
-          labelStyle={styles.cardTitle}
-        />
-        <AppText style={styles.cardHint}>
-          Conecta con personas que te interesen para algo más que entrenar.
-        </AppText>
+            {!!matchPreferences?.showInGymCrush && (
+              <View style={styles.section}>
+                <SectionLabel label="Tipo de conexión" styles={styles} />
+                <ChipRow>
+                  {CONNECTION_OPTIONS.map((opt) => (
+                    <ChipToggle
+                      key={opt.value}
+                      label={opt.label}
+                      value={opt.value}
+                      selected={
+                        matchPreferences?.gymCrushLookingFor === opt.value
+                      }
+                      onPress={(val) =>
+                        setMatchPreferences((g) => ({
+                          ...(g || {}),
+                          gymCrushLookingFor: val as CrushLookingFor,
+                        }))
+                      }
+                    />
+                  ))}
+                </ChipRow>
 
-        {!!matchPreferences?.showInGymCrush && (
-          <View style={styles.section}>
-            <SectionLabel label="Tipo de conexión" styles={styles} />
-            <ChipRow>
-              {CONNECTION_OPTIONS.map((opt) => (
-                <ChipToggle
-                  key={opt.value}
-                  label={opt.label}
-                  value={opt.value}
-                  selected={matchPreferences?.gymCrushLookingFor === opt.value}
-                  onPress={(val) =>
-                    setMatchPreferences((g) => ({
-                      ...(g || {}),
-                      gymCrushLookingFor: val as CrushLookingFor,
-                    }))
-                  }
-                />
-              ))}
-            </ChipRow>
-
-            <SectionLabel label="Ubicaciones de interés" styles={styles} />
-            <MultiLocationPicker
-              selected={
-                (matchPreferences?.gymCrushLocations || []) as LocationDto[]
-              }
-              onChange={(locations) =>
-                setMatchPreferences((g) => ({
-                  ...(g || {}),
-                  gymCrushLocations: locations,
-                }))
-              }
-            />
-
-            <SectionLabel label="Preferencias generales" styles={styles} />
-            <FieldLabel label="Buscando" styles={styles} />
-            <ChipRow>
-              {GENDER_OPTIONS.map((opt) => (
-                <ChipToggle
-                  key={opt.value}
-                  label={opt.label}
-                  value={opt.value}
+                <SectionLabel label="Ubicaciones de interés" styles={styles} />
+                <MultiLocationPicker
                   selected={
-                    matchPreferences?.gymCrushLookingForGender === opt.value
+                    (matchPreferences?.gymCrushLocations || []) as LocationDto[]
                   }
-                  onPress={(val) =>
+                  onChange={(locations) =>
                     setMatchPreferences((g) => ({
                       ...(g || {}),
-                      gymCrushLookingForGender: val as Gender,
+                      gymCrushLocations: locations,
                     }))
                   }
                 />
-              ))}
-            </ChipRow>
 
-            <FieldLabel label="Rango de edad" styles={styles} />
-            <View style={styles.ageRow}>
-              {ageInput(
-                matchPreferences?.gymCrushAgeRangeMin,
-                (n) =>
-                  setMatchPreferences((g) => ({
-                    ...(g || {}),
-                    gymCrushAgeRangeMin: n,
-                  })),
-                'Desde',
-              )}
-              <AppText style={styles.ageDash}>—</AppText>
-              {ageInput(
-                matchPreferences?.gymCrushAgeRangeMax,
-                (n) =>
-                  setMatchPreferences((g) => ({
-                    ...(g || {}),
-                    gymCrushAgeRangeMax: n,
-                  })),
-                'Hasta',
-              )}
-            </View>
+                <SectionLabel label="Preferencias generales" styles={styles} />
+                <FieldLabel label="Buscando" styles={styles} />
+                <ChipRow>
+                  {GENDER_OPTIONS.map((opt) => (
+                    <ChipToggle
+                      key={opt.value}
+                      label={opt.label}
+                      value={opt.value}
+                      selected={
+                        matchPreferences?.gymCrushLookingForGender === opt.value
+                      }
+                      onPress={(val) =>
+                        setMatchPreferences((g) => ({
+                          ...(g || {}),
+                          gymCrushLookingForGender: val as Gender,
+                        }))
+                      }
+                    />
+                  ))}
+                </ChipRow>
 
-            <SwitchRow
-              label="Mostrar bio"
-              value={!!matchPreferences?.gymCrushShowBioInProfile}
-              onChange={(v) =>
-                setMatchPreferences((prev) => ({
-                  ...(prev || {}),
-                  gymCrushShowBioInProfile: v,
-                }))
-              }
-            />
-          </View>
-        )}
-      </Card>
+                <FieldLabel label="Rango de edad" styles={styles} />
+                <View style={styles.ageRow}>
+                  {ageInput(
+                    matchPreferences?.gymCrushAgeRangeMin,
+                    (n) =>
+                      setMatchPreferences((g) => ({
+                        ...(g || {}),
+                        gymCrushAgeRangeMin: n,
+                      })),
+                    'Desde',
+                  )}
+                  <AppText style={styles.ageDash}>—</AppText>
+                  {ageInput(
+                    matchPreferences?.gymCrushAgeRangeMax,
+                    (n) =>
+                      setMatchPreferences((g) => ({
+                        ...(g || {}),
+                        gymCrushAgeRangeMax: n,
+                      })),
+                    'Hasta',
+                  )}
+                </View>
 
-      {anyEnabled && (
-        <Card style={styles.card}>
-          <AppText style={styles.cardTitle}>Privacidad</AppText>
-          <AppText style={styles.cardHint}>
-            Controla qué información pueden ver otros usuarios.
-          </AppText>
-          <SwitchRow
-            label="Mostrar edad (otros verán tu edad exacta)"
-            value={!!matchPreferences?.showAge}
-            onChange={(v) =>
-              setMatchPreferences((prev) => ({ ...(prev || {}), showAge: v }))
-            }
-          />
-        </Card>
+                <SwitchRow
+                  label="Mostrar bio"
+                  value={!!matchPreferences?.gymCrushShowBioInProfile}
+                  onChange={(v) =>
+                    setMatchPreferences((prev) => ({
+                      ...(prev || {}),
+                      gymCrushShowBioInProfile: v,
+                    }))
+                  }
+                />
+              </View>
+            )}
+          </Card>
+
+          {anyEnabled && (
+            <Card style={styles.card}>
+              <AppText style={styles.cardTitle}>Privacidad</AppText>
+              <AppText style={styles.cardHint}>
+                Controla qué información pueden ver otros usuarios.
+              </AppText>
+              <SwitchRow
+                label="Mostrar edad (otros verán tu edad exacta)"
+                value={!!matchPreferences?.showAge}
+                onChange={(v) =>
+                  setMatchPreferences((prev) => ({
+                    ...(prev || {}),
+                    showAge: v,
+                  }))
+                }
+              />
+            </Card>
+          )}
+
+          <Pressable onPress={handleReset}>
+            <AppText style={styles.resetLink}>Restablecer valores</AppText>
+          </Pressable>
+        </>
       )}
-
-      <Pressable onPress={handleReset}>
-        <AppText style={styles.resetLink}>Restablecer valores</AppText>
-      </Pressable>
     </PageContainer>
   );
 }
@@ -572,6 +607,18 @@ const getStyles = (theme: AppTheme) => {
       color: theme.text.tertiary,
       textAlign: 'center',
       paddingVertical: 8,
+    },
+    loadingWrap: {
+      paddingVertical: 48,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    errorHint: {
+      ...text.small,
+      color: theme.status.error.text,
+      textAlign: 'center',
+      paddingVertical: 8,
+      marginBottom: 4,
     },
   });
 };
