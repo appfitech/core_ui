@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Button } from '@/components/Button';
@@ -9,21 +9,22 @@ import PageContainer from '@/components/PageContainer';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useGetDietById } from '@/lib/api/queries/use-get-diet-by-id';
 
-const DIET_TEMPLATE_URL =
-  'https://appfitech.com/v1/app/templates/plantilla_dieta.xlsx';
+const FILE_DOWNLOAD_BASE = 'https://appfitech.com/v1/app/file-upload/download';
 
 export default function DietDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const diet = useGetDietById(Number(id));
   const { clientResourceScreen: copy } = TRANSLATIONS;
 
-  const handleDownload = async () => {
+  const handleDownload = useCallback(async () => {
+    if (diet?.fileId == null) return;
+
     try {
-      await WebBrowser.openBrowserAsync(DIET_TEMPLATE_URL);
+      await WebBrowser.openBrowserAsync(`${FILE_DOWNLOAD_BASE}/${diet.fileId}`);
     } catch (e) {
-      console.error('[FITECH] error opening diet template', e);
+      console.error('[FITECH] error opening diet file', e);
     }
-  };
+  }, [diet?.fileId]);
 
   return (
     <PageContainer
@@ -37,6 +38,7 @@ export default function DietDetailScreen() {
             <Button
               label={copy.downloadExcel}
               onPress={handleDownload}
+              disabled={diet.fileId == null}
               style={styles.actionButton}
             />
           </View>

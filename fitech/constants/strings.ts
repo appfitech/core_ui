@@ -345,7 +345,7 @@ export const TRANSLATIONS = {
     statusActive: 'Activa',
     statusInactive: 'Inactiva',
     contractTag: 'Contrato',
-    downloadExcel: 'Descargar Excel',
+    downloadExcel: 'Descargar archivo',
     defaultDietTitle: 'Plan nutricional',
     defaultRoutineTitle: 'Rutina',
   },
