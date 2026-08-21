@@ -83,7 +83,16 @@ export const PROFILE_MENU_SECTIONS: {
         route: ROUTES.support,
         label: profileMenu.items.support,
       },
-      //TODO: Add FAQ and Privacy Policy items later
+      {
+        icon: 'document-text-outline',
+        route: ROUTES.termsAndConditions,
+        label: profileMenu.items.termsAndConditions,
+      },
+      {
+        icon: 'shield-checkmark-outline',
+        route: ROUTES.privacyPolicy,
+        label: profileMenu.items.privacyPolicy,
+      },
       {
         icon: 'logo-github',
         route: ROUTES.testTools,

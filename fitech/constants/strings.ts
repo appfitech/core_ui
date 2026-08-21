@@ -33,6 +33,14 @@ export const TRANSLATIONS = {
     cancelRegisterStay: 'Seguir registrándome',
     cancelRegisterLeave: 'Salir',
   },
+  legalDocuments: {
+    privacyTitle: 'Política de privacidad',
+    termsTitle: 'Términos y condiciones',
+    privacyLabel: 'Política de Privacidad',
+    termsLabel: 'Términos y Condiciones',
+    registerPrefix: 'Al crear tu cuenta aceptas nuestros',
+    registerMiddle: 'y la',
+  },
   verifyEmailScreen: {
     title: 'Verifica tu correo',
     verifying: 'Verificando tu correo electrónico…',
@@ -571,6 +579,8 @@ export const TRANSLATIONS = {
       subscription: 'Suscripción',
       notifications: 'Notificaciones',
       support: 'Soporte',
+      privacyPolicy: 'Política de privacidad',
+      termsAndConditions: 'Términos y condiciones',
       testTools: 'Testing tools',
       deleteAccount: 'Eliminar cuenta',
       logout: 'Logout',

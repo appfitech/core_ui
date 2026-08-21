@@ -25,6 +25,7 @@ import {
 } from '@/components/chat/ChatMessageComposer';
 import PageContainer from '@/components/PageContainer';
 import { ROUTES } from '@/constants/routes';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
 import { useAlert } from '@/contexts/AlertContext';
@@ -41,7 +42,6 @@ import { MessageDto } from '@/types/api/types.gen';
 import { AppTheme } from '@/types/theme';
 import { formatTimeLocal, parseServerDateTime } from '@/utils/dates';
 
-const CONTRACT_LOGO = require('../../../assets/images/logos/rounded_logo.webp');
 const CONNECTING_OVERLAY_DELAY_MS = 1000;
 
 type Message = {
@@ -399,7 +399,7 @@ export default function ChatDetailScreen() {
       {isContractConversation && (
         <View style={styles.contractBanner}>
           <Image
-            source={CONTRACT_LOGO}
+            source={FITECH_APP_LOGO}
             style={styles.contractBannerLogo}
             resizeMode="contain"
           />

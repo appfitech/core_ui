@@ -21,11 +21,13 @@ export const queryKeys = {
     candidates: ['get-gymbro-candidates'] as const,
     mutuals: ['get-gymbro-mutuals'] as const,
     requests: ['get-gymbro-match-requests'] as const,
+    requestsCount: ['get-gymbro-match-requests-count'] as const,
   },
   gymcrush: {
     candidates: ['get-gymcrush-candidates'] as const,
     mutuals: ['get-gymcrush-mutuals'] as const,
     requests: ['get-gymcrush-match-requests'] as const,
+    requestsCount: ['get-gymcrush-match-requests-count'] as const,
   },
   contracts: {
     active: ['get-active-contracts'] as const,

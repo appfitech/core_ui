@@ -16,10 +16,12 @@ import {
   useDiscardGymCrush,
   useMatchGymCrush,
 } from '@/lib/api/mutations/matches/use-match-action';
+import { useMarkMatchRequestsSeen } from '@/lib/api/mutations/matches/use-mark-match-requests-seen';
 import {
   useGetGymCrushCandidates,
   useGetGymCrushMutuals,
 } from '@/lib/api/queries/matches/use-get-gymcrush-list';
+import { useGetMatchRequestsCount } from '@/lib/api/queries/matches/use-get-match-requests-count';
 import { useGetMatchRequests } from '@/lib/api/queries/matches/use-get-match-requests';
 import { AppTheme } from '@/types/theme';
 import {
@@ -53,6 +55,8 @@ export default function GymCrushScreen() {
   const { data: mutuals, refetch: refetchMutuals } = useGetGymCrushMutuals();
   const { data: matchRequests, refetch: refetchRequests } =
     useGetMatchRequests('gymcrush');
+  const { data: requestsCount = 0 } = useGetMatchRequestsCount('gymcrush');
+  const { mutate: markRequestsSeen } = useMarkMatchRequestsSeen('gymcrush');
   const { mutate: discardGymCrush } = useDiscardGymCrush();
   const { mutate: matchGymCrush } = useMatchGymCrush();
 
@@ -69,6 +73,11 @@ export default function GymCrushScreen() {
       void prefetchMatchProfileImage(uri);
     }
   }, [current, next]);
+
+  useEffect(() => {
+    if (selectedTab !== 'requests' || requestsCount <= 0) return;
+    markRequestsSeen();
+  }, [markRequestsSeen, requestsCount, selectedTab]);
 
   const handleRefetchAll = useCallback(async () => {
     resetQueue();
@@ -166,6 +175,7 @@ export default function GymCrushScreen() {
           options={MATCH_SCREEN_TABS}
           value={selectedTab}
           onSelect={setSelectedTab}
+          badges={{ requests: requestsCount }}
         />
 
         <View style={styles.content}>

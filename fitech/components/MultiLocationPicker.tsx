@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useCallback, useMemo, useState } from 'react';
 import {
+  FlatList,
   Modal,
   Pressable,
-  ScrollView,
   StyleSheet,
   TextInput as RNTextInput,
   View,
@@ -38,7 +38,7 @@ export function MultiLocationPicker({
   onChange,
 }: Props) {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
   const { data: locations = [] } = useGetLocations();
   const [open, setOpen] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -89,10 +89,95 @@ export function MultiLocationPicker({
     [onChange, selected],
   );
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setSearchText('');
     setOpen(false);
-  };
+  }, []);
+
+  const renderListItem = useCallback(
+    ({ item }: { item: (typeof groupedItems)[number] }) => {
+      if (item.kind === 'department') {
+        return (
+          <View style={styles.departmentRow}>
+            <AppText style={styles.departmentText}>{item.label}</AppText>
+          </View>
+        );
+      }
+
+      if (item.kind === 'province') {
+        return (
+          <View style={styles.provinceRow}>
+            <AppText style={styles.provinceText}>{item.label}</AppText>
+          </View>
+        );
+      }
+
+      const locationId = Number(item.value);
+      const location = locationById.get(locationId);
+      const isSelected = selectedIds.has(locationId);
+      const districtLabel = location
+        ? getLocationDistrictLabel(location)
+        : item.label;
+      const departmentLabel = location
+        ? getLocationDepartmentLabel(location)
+        : '';
+      const showDepartment =
+        !!departmentLabel &&
+        departmentLabel.localeCompare(districtLabel, 'es', {
+          sensitivity: 'base',
+        }) !== 0;
+
+      return (
+        <Pressable
+          onPress={() => toggleLocation(locationId)}
+          style={[
+            styles.locationRow,
+            isSelected && styles.locationRowSelected,
+          ]}
+        >
+          <View style={styles.locationTextWrap}>
+            <AppText
+              style={[
+                styles.locationText,
+                isSelected && styles.locationTextSelected,
+              ]}
+            >
+              {districtLabel}
+            </AppText>
+            {showDepartment ? (
+              <AppText
+                style={[
+                  styles.locationContext,
+                  isSelected && styles.locationContextSelected,
+                ]}
+              >
+                {departmentLabel}
+              </AppText>
+            ) : null}
+          </View>
+          {isSelected ? (
+            <Ionicons
+              name="checkmark-circle"
+              size={20}
+              color={theme.brand.primary}
+            />
+          ) : null}
+        </Pressable>
+      );
+    },
+    [
+      locationById,
+      selectedIds,
+      styles,
+      theme.brand.primary,
+      toggleLocation,
+    ],
+  );
+
+  const keyExtractor = useCallback(
+    (item: (typeof groupedItems)[number]) => item.value,
+    [],
+  );
 
   return (
     <View style={styles.wrap}>
@@ -143,83 +228,18 @@ export function MultiLocationPicker({
               />
             </View>
 
-            <ScrollView style={styles.modalScroll}>
-              {groupedItems.map((item) => {
-                if (item.kind === 'department') {
-                  return (
-                    <View key={item.value} style={styles.departmentRow}>
-                      <AppText style={styles.departmentText}>
-                        {item.label}
-                      </AppText>
-                    </View>
-                  );
-                }
-
-                if (item.kind === 'province') {
-                  return (
-                    <View key={item.value} style={styles.provinceRow}>
-                      <AppText style={styles.provinceText}>
-                        {item.label}
-                      </AppText>
-                    </View>
-                  );
-                }
-
-                const locationId = Number(item.value);
-                const location = locationById.get(locationId);
-                const isSelected = selectedIds.has(locationId);
-                const districtLabel = location
-                  ? getLocationDistrictLabel(location)
-                  : item.label;
-                const departmentLabel = location
-                  ? getLocationDepartmentLabel(location)
-                  : '';
-                const showDepartment =
-                  !!departmentLabel &&
-                  departmentLabel.localeCompare(districtLabel, 'es', {
-                    sensitivity: 'base',
-                  }) !== 0;
-
-                return (
-                  <Pressable
-                    key={item.value}
-                    onPress={() => toggleLocation(locationId)}
-                    style={[
-                      styles.locationRow,
-                      isSelected && styles.locationRowSelected,
-                    ]}
-                  >
-                    <View style={styles.locationTextWrap}>
-                      <AppText
-                        style={[
-                          styles.locationText,
-                          isSelected && styles.locationTextSelected,
-                        ]}
-                      >
-                        {districtLabel}
-                      </AppText>
-                      {showDepartment ? (
-                        <AppText
-                          style={[
-                            styles.locationContext,
-                            isSelected && styles.locationContextSelected,
-                          ]}
-                        >
-                          {departmentLabel}
-                        </AppText>
-                      ) : null}
-                    </View>
-                    {isSelected ? (
-                      <Ionicons
-                        name="checkmark-circle"
-                        size={20}
-                        color={theme.brand.primary}
-                      />
-                    ) : null}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+            <FlatList
+              style={styles.modalScroll}
+              data={groupedItems}
+              keyExtractor={keyExtractor}
+              renderItem={renderListItem}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
+              nestedScrollEnabled
+              initialNumToRender={20}
+              maxToRenderPerBatch={24}
+              windowSize={10}
+            />
 
             <Button label="Listo" onPress={closeModal} style={styles.doneBtn} />
           </View>
@@ -313,6 +333,7 @@ const getStyles = (theme: AppTheme) => {
       paddingVertical: 10,
     },
     modalScroll: {
+      flexGrow: 0,
       maxHeight: 360,
     },
     departmentRow: {

@@ -6,9 +6,10 @@ import Animated, { FadeInUp } from 'react-native-reanimated';
 
 import { SummaryCard } from '@/app/trainer-payments';
 import { AppText } from '@/components/AppText';
-import { HomeSectionContainer } from '@/components/HomeSectionContainer';
 import { ReviewsCarouselSkeleton } from '@/components/home/skeletons/ReviewsCarouselSkeleton';
 import { TrainerPaymentsSkeleton } from '@/components/home/skeletons/TrainerPaymentsSkeleton';
+import { HomeSectionContainer } from '@/components/HomeSectionContainer';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { ROUTES } from '@/constants/routes';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -25,7 +26,8 @@ export function TrainerHomeContent() {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
-  const { data: reviews, isLoading: reviewsLoading } = useTrainerGetReviews(true);
+  const { data: reviews, isLoading: reviewsLoading } =
+    useTrainerGetReviews(true);
   const { data: paymentsSummary, isLoading: paymentsLoading } =
     useTrainerGetPaymentsSummary(true);
 
@@ -34,7 +36,7 @@ export function TrainerHomeContent() {
       <View style={styles.trainerBadgeRow}>
         <View style={styles.trainerBadge}>
           <Image
-            source={require('@/assets/images/logos/rounded_logo.webp')}
+            source={FITECH_APP_LOGO}
             style={styles.trainerBadgeLogo}
             resizeMode="contain"
           />
@@ -53,9 +55,7 @@ export function TrainerHomeContent() {
           <View style={styles.pagosCard}>
             <View style={styles.summaryCardsRow}>
               <SummaryCard
-                icon={
-                  <Ionicons name="checkmark-done" size={18} color="#FFF" />
-                }
+                icon={<Ionicons name="checkmark-done" size={18} color="#FFF" />}
                 label="COBRADO HASTA LA FECHA"
                 amount={paymentsSummary?.collectedToDate}
                 tone="green"

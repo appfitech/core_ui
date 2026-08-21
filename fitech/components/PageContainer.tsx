@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { shouldShowNavBar } from '@/constants/navigation';
 import { textStyles } from '@/constants/styles';
 import { useTabBarInset } from '@/contexts/TabBarInsetContext';
@@ -184,7 +185,7 @@ export default function PageContainer({
         {includeLogo && (
           <Animated.Image
             entering={headerEnter(600)}
-            source={require('@/assets/images/logos/logo.webp')}
+            source={FITECH_APP_LOGO}
             style={styles.logo}
             resizeMode="contain"
           />

@@ -1,10 +1,11 @@
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { Button } from '@/components/Button';
 import { ErrorBanner } from '@/components/ErrorBanner';
+import { LegalDocumentLinks } from '@/components/LegalDocumentLinks';
 import PageContainer from '@/components/PageContainer';
 import { RegisterWizardHeader } from '@/components/register/RegisterWizardHeader';
 import { RegisterStepAccountType } from '@/components/register/steps/RegisterStepAccountType';
@@ -145,21 +146,24 @@ export default function Register() {
       hasNoTopPadding
       hasBottomPadding={false}
       footer={
-        <Button
-          label={
-            isLastStep
-              ? registerScreen.createAccountButton
-              : registerScreen.nextButton
-          }
-          loadingLabel={
-            isLastStep ? registerScreen.creatingAccountButton : undefined
-          }
-          onPress={isLastStep ? handleSubmit : handleNext}
-          disabled={isPending}
-          loading={isPending && isLastStep}
-          animated={false}
-          style={styles.primaryAction}
-        />
+        <View style={styles.footer}>
+          {isLastStep ? <LegalDocumentLinks /> : null}
+          <Button
+            label={
+              isLastStep
+                ? registerScreen.createAccountButton
+                : registerScreen.nextButton
+            }
+            loadingLabel={
+              isLastStep ? registerScreen.creatingAccountButton : undefined
+            }
+            onPress={isLastStep ? handleSubmit : handleNext}
+            disabled={isPending}
+            loading={isPending && isLastStep}
+            animated={false}
+            style={styles.primaryAction}
+          />
+        </View>
       }
     >
       <RegisterWizardHeader
@@ -189,6 +193,10 @@ export default function Register() {
 const getStyles = () =>
   StyleSheet.create({
     stepContent: {
+      rowGap: 12,
+    },
+    footer: {
+      width: '100%',
       rowGap: 12,
     },
     primaryAction: {

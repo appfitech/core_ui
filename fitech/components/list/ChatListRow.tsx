@@ -3,11 +3,10 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/AppText';
 import { AvatarPhoto } from '@/components/AvatarPhoto';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { textStyles } from '@/constants/styles';
 import { useTheme } from '@/contexts/ThemeContext';
 import { AppTheme } from '@/types/theme';
-
-const FITECH_LOGO = require('@/assets/images/logos/rounded_logo.webp');
 
 export type ChatListRowItem = {
   id: string;
@@ -50,7 +49,7 @@ function ChatListRowComponent({ chat, isTrainer, onPress }: Props) {
         {showTrainerLogo ? (
           <View style={styles.trainerLogoBadge}>
             <Image
-              source={FITECH_LOGO}
+              source={FITECH_APP_LOGO}
               style={styles.trainerLogo}
               resizeMode="contain"
             />

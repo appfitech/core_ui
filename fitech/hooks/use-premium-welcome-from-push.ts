@@ -40,10 +40,6 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
     let cancelled = false;
 
     const run = async () => {
-      const wasAlreadyPremium = Boolean(
-        useUserStore.getState().user?.user?.premium,
-      );
-
       await refreshCurrentUserSession();
       if (cancelled) return;
 
@@ -51,7 +47,7 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
         useUserStore.getState().user?.user?.premium,
       );
 
-      if (!wasAlreadyPremium && isPremiumNow) {
+      if (isPremiumNow) {
         setVisible(true);
         return;
       }

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { ReactElement, useMemo } from 'react';
+import { ReactElement, useCallback, useMemo } from 'react';
 import {
   Platform,
   Pressable,
@@ -58,7 +58,7 @@ export function Dropdown({
   clearable = false,
 }: Props) {
   const { theme } = useTheme();
-  const styles = getStyles(theme);
+  const styles = useMemo(() => getStyles(theme), [theme]);
 
   const data = useMemo<DropdownItem[]>(
     () =>
@@ -83,6 +83,28 @@ export function Dropdown({
   const enableSearch = search ?? data.length > 6;
   const dropdownMode = enableSearch ? 'modal' : 'default';
 
+  const handleRenderInputSearch = useCallback(
+    (onSearch: (text: string) => void) => (
+      <View style={styles.searchWrap}>
+        <NativeTextInput
+          style={styles.searchInput}
+          placeholder={searchPlaceholder}
+          placeholderTextColor={theme.icon.muted}
+          selectionColor={theme.brand.primary}
+          autoCorrect={false}
+          onChangeText={onSearch}
+        />
+      </View>
+    ),
+    [
+      searchPlaceholder,
+      styles.searchInput,
+      styles.searchWrap,
+      theme.brand.primary,
+      theme.icon.muted,
+    ],
+  );
+
   return (
     <View key={id || 'dropdown'} style={{ zIndex }}>
       {label && (
@@ -105,7 +127,13 @@ export function Dropdown({
         valueField="value"
         value={selectedValue}
         mode={dropdownMode}
-        keyboardAvoiding
+        autoScroll={false}
+        inverted={false}
+        keyboardAvoiding={dropdownMode === 'default'}
+        flatListProps={{
+          keyboardShouldPersistTaps: 'handled',
+          nestedScrollEnabled: true,
+        }}
         backgroundColor={
           dropdownMode === 'modal' ? 'rgba(0, 0, 0, 0.55)' : undefined
         }
@@ -141,22 +169,7 @@ export function Dropdown({
         activeColor={theme.brand.primarySoft}
         searchPlaceholderTextColor={theme.icon.muted}
         iconColor={theme.icon.secondary}
-        renderInputSearch={
-          enableSearch
-            ? (onSearch) => (
-                <View style={styles.searchWrap}>
-                  <NativeTextInput
-                    style={styles.searchInput}
-                    placeholder={searchPlaceholder}
-                    placeholderTextColor={theme.icon.muted}
-                    selectionColor={theme.brand.primary}
-                    autoCorrect={false}
-                    onChangeText={onSearch}
-                  />
-                </View>
-              )
-            : undefined
-        }
+        renderInputSearch={enableSearch ? handleRenderInputSearch : undefined}
         renderRightIcon={() => (
           <View style={styles.rightIcons}>
             {clearable && selectedValue ? (

@@ -4,6 +4,7 @@ import Animated from 'react-native-reanimated';
 
 import { AppText } from '@/components/AppText';
 import { Button } from '@/components/Button';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { TRANSLATIONS } from '@/constants/strings';
 import { useAuthRedirect } from '@/hooks/use-auth-redirect';
 import {
@@ -42,7 +43,7 @@ export default function WelcomeScreen() {
           style={styles.logoContainer}
         >
           <Image
-            source={require('@/assets/images/logos/fitech_logo.png')}
+            source={FITECH_APP_LOGO}
             style={styles.logo}
             resizeMode="contain"
           />

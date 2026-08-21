@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  Dimensions,
   Platform,
   Pressable,
   StyleSheet,
@@ -17,7 +16,7 @@ const LINE_HEIGHT = 22;
 const INPUT_PADDING_VERTICAL = 8;
 const MIN_INPUT_HEIGHT = LINE_HEIGHT + INPUT_PADDING_VERTICAL * 2;
 const MAX_INPUT_HEIGHT = LINE_HEIGHT * 4 + INPUT_PADDING_VERTICAL * 2;
-const MAX_VISIBLE_LINES = 4;
+const SCROLL_TAIL_THRESHOLD = 12;
 const SEND_BUTTON_SIZE = 44;
 
 /** Space reserved at bottom of message list (max composer + chrome). */
@@ -33,32 +32,9 @@ type Props = {
   disabled?: boolean;
 };
 
-function getApproxCharsPerLine(): number {
-  const pagePadding = 32;
-  const inputPadding = 28;
-  const sendAndGap = SEND_BUTTON_SIZE + 8;
-  const available =
-    Dimensions.get('window').width - pagePadding - inputPadding - sendAndGap;
-  return Math.max(14, Math.floor(available / 8));
-}
-
-function countVisualLines(text: string, charsPerLine: number): number {
-  if (!text) return 1;
-
-  return text.split('\n').reduce((total, line) => {
-    return total + Math.max(1, Math.ceil(line.length / charsPerLine));
-  }, 0);
-}
-
-function estimateComposerHeight(text: string): number {
-  const charsPerLine = getApproxCharsPerLine();
-  const visualLines = countVisualLines(text, charsPerLine);
-  const cappedLines = Math.min(MAX_VISIBLE_LINES, Math.max(1, visualLines));
-
-  return Math.min(
-    MAX_INPUT_HEIGHT,
-    Math.max(MIN_INPUT_HEIGHT, cappedLines * LINE_HEIGHT + INPUT_PADDING_VERTICAL * 2),
-  );
+function clampInputHeight(contentHeight: number): number {
+  const paddedHeight = contentHeight + INPUT_PADDING_VERTICAL * 2;
+  return Math.min(MAX_INPUT_HEIGHT, Math.max(MIN_INPUT_HEIGHT, paddedHeight));
 }
 
 export function ChatMessageComposer({
@@ -71,39 +47,67 @@ export function ChatMessageComposer({
 }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
-  const [contentOverflows, setContentOverflows] = useState(false);
+  const inputRef = useRef<NativeTextInput>(null);
+  const [inputHeight, setInputHeight] = useState(MIN_INPUT_HEIGHT);
+  const [followTail, setFollowTail] = useState(true);
 
-  const estimatedLines = useMemo(() => {
-    const charsPerLine = getApproxCharsPerLine();
-    return countVisualLines(value, charsPerLine);
-  }, [value]);
+  const scrollEnabled = inputHeight >= MAX_INPUT_HEIGHT;
 
-  const estimatedHeight = useMemo(
-    () => estimateComposerHeight(value),
-    [value],
-  );
-
-  const scrollEnabled =
-    contentOverflows || estimatedLines >= MAX_VISIBLE_LINES;
-  const inputHeight = scrollEnabled ? MAX_INPUT_HEIGHT : estimatedHeight;
-  const isMultiline = inputHeight > MIN_INPUT_HEIGHT + 2;
-
-  useEffect(() => {
-    if (!value) {
-      setContentOverflows(false);
-    }
-  }, [value]);
+  const scrollToInputEnd = useCallback(() => {
+    requestAnimationFrame(() => {
+      inputRef.current?.scrollToEnd({ animated: false });
+    });
+  }, []);
 
   const handleContentSizeChange = useCallback(
     (event: { nativeEvent: { contentSize: { height: number } } }) => {
-      const contentHeight = event.nativeEvent.contentSize.height;
-      const overflows = contentHeight + INPUT_PADDING_VERTICAL * 2 > MAX_INPUT_HEIGHT;
-      setContentOverflows((current) =>
-        current === overflows ? current : overflows,
+      const nextHeight = clampInputHeight(event.nativeEvent.contentSize.height);
+      setInputHeight((current) =>
+        current === nextHeight ? current : nextHeight,
       );
     },
     [],
   );
+
+  const handleChangeText = useCallback(
+    (text: string) => {
+      onChangeText(text);
+      if (followTail) {
+        scrollToInputEnd();
+      }
+    },
+    [followTail, onChangeText, scrollToInputEnd],
+  );
+
+  const handleScroll = useCallback(
+    (event: {
+      nativeEvent: {
+        contentOffset: { y: number };
+        contentSize: { height: number };
+        layoutMeasurement: { height: number };
+      };
+    }) => {
+      const { contentOffset, contentSize, layoutMeasurement } =
+        event.nativeEvent;
+      const distanceFromBottom =
+        contentSize.height - (contentOffset.y + layoutMeasurement.height);
+      const isAtTail = distanceFromBottom <= SCROLL_TAIL_THRESHOLD;
+      setFollowTail((current) => (current === isAtTail ? current : isAtTail));
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (!value) {
+      setInputHeight(MIN_INPUT_HEIGHT);
+      setFollowTail(true);
+      return;
+    }
+
+    if (followTail) {
+      scrollToInputEnd();
+    }
+  }, [followTail, inputHeight, scrollToInputEnd, value]);
 
   const trimmed = value.trim();
   const canSend = !disabled && trimmed.length > 0;
@@ -118,8 +122,9 @@ export function ChatMessageComposer({
       <View style={styles.inputRow}>
         <View style={[styles.inputShell, { height: inputHeight }]}>
           <NativeTextInput
+            ref={inputRef}
             value={value}
-            onChangeText={onChangeText}
+            onChangeText={handleChangeText}
             onFocus={onFocus}
             placeholder={placeholder}
             placeholderTextColor={theme.icon.muted}
@@ -128,11 +133,14 @@ export function ChatMessageComposer({
             scrollEnabled={scrollEnabled}
             blurOnSubmit={false}
             onContentSizeChange={handleContentSizeChange}
-            textAlignVertical={isMultiline ? 'top' : 'center'}
-            lineBreakModeIOS="char"
-            textBreakStrategy="simple"
+            onScroll={scrollEnabled ? handleScroll : undefined}
+            scrollEventThrottle={16}
+            textAlignVertical="top"
+            lineBreakModeIOS="wordWrapping"
+            textBreakStrategy="highQuality"
             autoCapitalize="sentences"
             autoCorrect
+            spellCheck
             showsVerticalScrollIndicator={scrollEnabled}
             style={[
               styles.input,

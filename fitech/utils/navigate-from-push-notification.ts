@@ -75,6 +75,22 @@ export function isPremiumWelcomeHref(href: Href | string | null): boolean {
   return params?.type === 'premium' || params?.from === 'premium';
 }
 
+/** Serialize an Expo Router href for pending push storage (always a path string). */
+export function hrefToPushStorageString(href: Href): string {
+  if (typeof href === 'string') return href;
+
+  const record = href as { pathname?: string; params?: Record<string, string> };
+  const pathname = record.pathname ?? '/';
+  const params = record.params;
+
+  if (!params || Object.keys(params).length === 0) {
+    return pathname;
+  }
+
+  const qs = new URLSearchParams(params).toString();
+  return `${pathname}?${qs}`;
+}
+
 /** Parses `/path?foo=bar` into an Expo Router href with explicit params. */
 export function parseAppRedirectUrl(raw: string): Href {
   const trimmed = raw.trim();

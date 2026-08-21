@@ -27,9 +27,14 @@ type Props = {
   options: Option[];
   value: string;
   onSelect: React.Dispatch<React.SetStateAction<any>>;
+  badges?: Partial<Record<string, number>>;
 };
 
-export function Tabs({ options, value, onSelect }: Props) {
+function formatBadgeCount(count: number): string {
+  return count > 99 ? '99+' : String(count);
+}
+
+export function Tabs({ options, value, onSelect, badges }: Props) {
   const { theme } = useTheme();
   const styles = getStyles(theme);
 
@@ -71,6 +76,8 @@ export function Tabs({ options, value, onSelect }: Props) {
       <Animated.View style={[styles.pill, indicatorStyle]} />
       {options.map(({ label, value: optValue }) => {
         const isSelected = value === optValue;
+        const badgeCount = badges?.[optValue] ?? 0;
+        const showBadge = badgeCount > 0;
 
         return (
           <Pressable
@@ -83,11 +90,25 @@ export function Tabs({ options, value, onSelect }: Props) {
             }
             style={({ pressed }) => [styles.tab, pressed && styles.tabPressed]}
           >
-            <AppText
-              style={[styles.tabText, isSelected && styles.tabTextSelected]}
-            >
-              {label}
-            </AppText>
+            <View style={styles.tabLabelRow}>
+              <AppText
+                style={[styles.tabText, isSelected && styles.tabTextSelected]}
+              >
+                {label}
+              </AppText>
+              {showBadge ? (
+                <View style={[styles.badge, isSelected && styles.badgeSelected]}>
+                  <AppText
+                    style={[
+                      styles.badgeText,
+                      isSelected && styles.badgeTextSelected,
+                    ]}
+                  >
+                    {formatBadgeCount(badgeCount)}
+                  </AppText>
+                </View>
+              ) : null}
+            </View>
           </Pressable>
         );
       })}
@@ -127,6 +148,11 @@ const getStyles = (theme: AppTheme) => {
     tabPressed: {
       opacity: 0.88,
     },
+    tabLabelRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      columnGap: 6,
+    },
     tabText: {
       ...text.bodyMedium,
       color: theme.text.secondary,
@@ -134,6 +160,27 @@ const getStyles = (theme: AppTheme) => {
     tabTextSelected: {
       ...text.bodySemibold,
       color: theme.text.inverse,
+    },
+    badge: {
+      minWidth: 18,
+      height: 18,
+      borderRadius: 9,
+      paddingHorizontal: 5,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.brand.primary,
+    },
+    badgeSelected: {
+      backgroundColor: theme.text.inverse,
+    },
+    badgeText: {
+      ...text.caption,
+      color: theme.background.app,
+      fontSize: 11,
+      lineHeight: 14,
+    },
+    badgeTextSelected: {
+      color: theme.brand.primary,
     },
   });
 };

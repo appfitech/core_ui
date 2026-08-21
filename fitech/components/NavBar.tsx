@@ -13,6 +13,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ROUTES } from '@/constants/routes';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { useSetTabBarInset } from '@/contexts/TabBarInsetContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useUserStore } from '@/stores/user';
@@ -22,7 +23,6 @@ import { AppText } from './AppText';
 
 SplashScreen.preventAutoHideAsync();
 
-const FAB_LOGO = require('@/assets/images/logos/fitech_logo.png');
 const FAB_SIZE = 64;
 
 const NAV_ITEMS_MAPPER = (isTrainer: boolean = false) => ({
@@ -150,7 +150,7 @@ export function NavBar() {
           accessibilityLabel="FITECH Premium"
         >
           <Image
-            source={FAB_LOGO}
+            source={FITECH_APP_LOGO}
             style={[styles.fabLogo, !isPremium && styles.fabLogoDisabled]}
             resizeMode="contain"
           />

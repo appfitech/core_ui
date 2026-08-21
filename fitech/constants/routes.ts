@@ -38,6 +38,8 @@ export const ROUTES = {
   chats: '/chats',
   changePassword: '/change-password',
   deleteAccount: '/delete-account',
+  privacyPolicy: '/privacy-policy',
+  termsAndConditions: '/terms-and-conditions',
 } as const;
 
 type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

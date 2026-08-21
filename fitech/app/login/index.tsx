@@ -11,6 +11,7 @@ import { Card } from '@/components/Card';
 import { ErrorBanner } from '@/components/ErrorBanner';
 import PageContainer from '@/components/PageContainer';
 import { TextInput } from '@/components/TextInput';
+import { FITECH_APP_LOGO } from '@/constants/branding';
 import { ROUTES } from '@/constants/routes';
 import { TRANSLATIONS } from '@/constants/strings';
 import { textStyles } from '@/constants/styles';
@@ -108,7 +109,7 @@ export default function LoginScreen() {
       <View style={styles.headerWrapper}>
         <Animated.Image
           entering={authFadeInUp(600)}
-          source={require('@/assets/images/logos/fitech_logo.png')}
+          source={FITECH_APP_LOGO}
           style={styles.logo}
           resizeMode="contain"
         />

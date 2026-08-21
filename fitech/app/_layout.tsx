@@ -30,7 +30,7 @@ import { useAutoRefreshToken } from '@/hooks/use-auto-refresh-token';
 import { useUserStore } from '@/stores/user';
 import {
   getHrefFromPushData,
-  isPremiumWelcomeHref,
+  hrefToPushStorageString,
   setPendingPushHref,
   takePendingPushHref,
 } from '@/utils/navigate-from-push-notification';
@@ -47,6 +47,8 @@ const PUBLIC_ROUTES = [
   'reset-password',
   'verify-email',
   'index',
+  'privacy-policy',
+  'terms-and-conditions',
 ];
 
 function RoutedApp() {
@@ -68,14 +70,7 @@ function RoutedApp() {
       const href = getHrefFromPushData(data);
       if (!href) return;
 
-      if (
-        isPremiumWelcomeHref(href) &&
-        Boolean(useUserStore.getState().user?.user?.premium)
-      ) {
-        return;
-      }
-
-      const hrefStr = href as string;
+      const hrefStr = hrefToPushStorageString(href);
 
       if (!isSessionHydrated || !token) {
         setPendingPushHref(hrefStr);

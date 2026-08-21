@@ -16,10 +16,12 @@ import {
   useDiscardGymBro,
   useMatchGymBro,
 } from '@/lib/api/mutations/matches/use-match-action';
+import { useMarkMatchRequestsSeen } from '@/lib/api/mutations/matches/use-mark-match-requests-seen';
 import {
   useGetGymBroCandidates,
   useGetGymBroMutuals,
 } from '@/lib/api/queries/matches/use-get-gymbro-list';
+import { useGetMatchRequestsCount } from '@/lib/api/queries/matches/use-get-match-requests-count';
 import { useGetMatchRequests } from '@/lib/api/queries/matches/use-get-match-requests';
 import { AppTheme } from '@/types/theme';
 import {
@@ -53,6 +55,8 @@ export default function GymBroScreen() {
   const { data: mutuals, refetch: refetchMutuals } = useGetGymBroMutuals();
   const { data: matchRequests, refetch: refetchRequests } =
     useGetMatchRequests('gymbro');
+  const { data: requestsCount = 0 } = useGetMatchRequestsCount('gymbro');
+  const { mutate: markRequestsSeen } = useMarkMatchRequestsSeen('gymbro');
   const { mutate: discardGymBro } = useDiscardGymBro();
   const { mutate: matchGymBro } = useMatchGymBro();
 
@@ -69,6 +73,11 @@ export default function GymBroScreen() {
       void prefetchMatchProfileImage(uri);
     }
   }, [current, next]);
+
+  useEffect(() => {
+    if (selectedTab !== 'requests' || requestsCount <= 0) return;
+    markRequestsSeen();
+  }, [markRequestsSeen, requestsCount, selectedTab]);
 
   const handleRefetchAll = useCallback(async () => {
     resetQueue();
@@ -163,6 +172,7 @@ export default function GymBroScreen() {
           options={MATCH_SCREEN_TABS}
           value={selectedTab}
           onSelect={setSelectedTab}
+          badges={{ requests: requestsCount }}
         />
 
         <View style={styles.content}>
