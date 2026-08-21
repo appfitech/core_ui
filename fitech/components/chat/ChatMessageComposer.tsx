@@ -16,7 +16,7 @@ const LINE_HEIGHT = 22;
 const INPUT_PADDING_VERTICAL = 8;
 const MIN_INPUT_HEIGHT = LINE_HEIGHT + INPUT_PADDING_VERTICAL * 2;
 const MAX_INPUT_HEIGHT = LINE_HEIGHT * 4 + INPUT_PADDING_VERTICAL * 2;
-const SCROLL_TAIL_THRESHOLD = 12;
+const HEIGHT_EPSILON = 2;
 const SEND_BUTTON_SIZE = 44;
 
 /** Space reserved at bottom of message list (max composer + chrome). */
@@ -33,8 +33,10 @@ type Props = {
 };
 
 function clampInputHeight(contentHeight: number): number {
-  const paddedHeight = contentHeight + INPUT_PADDING_VERTICAL * 2;
-  return Math.min(MAX_INPUT_HEIGHT, Math.max(MIN_INPUT_HEIGHT, paddedHeight));
+  return Math.min(
+    MAX_INPUT_HEIGHT,
+    Math.max(MIN_INPUT_HEIGHT, Math.ceil(contentHeight)),
+  );
 }
 
 export function ChatMessageComposer({
@@ -48,22 +50,21 @@ export function ChatMessageComposer({
   const { theme } = useTheme();
   const styles = getStyles(theme);
   const inputRef = useRef<NativeTextInput>(null);
-  const [inputHeight, setInputHeight] = useState(MIN_INPUT_HEIGHT);
-  const [followTail, setFollowTail] = useState(true);
+  const [contentHeight, setContentHeight] = useState(MIN_INPUT_HEIGHT);
 
-  const scrollEnabled = inputHeight >= MAX_INPUT_HEIGHT;
+  const scrollEnabled = contentHeight >= MAX_INPUT_HEIGHT - HEIGHT_EPSILON;
 
-  const scrollToInputEnd = useCallback(() => {
-    requestAnimationFrame(() => {
-      inputRef.current?.scrollToEnd({ animated: false });
-    });
-  }, []);
+  useEffect(() => {
+    if (!value) {
+      setContentHeight(MIN_INPUT_HEIGHT);
+    }
+  }, [value]);
 
   const handleContentSizeChange = useCallback(
     (event: { nativeEvent: { contentSize: { height: number } } }) => {
       const nextHeight = clampInputHeight(event.nativeEvent.contentSize.height);
-      setInputHeight((current) =>
-        current === nextHeight ? current : nextHeight,
+      setContentHeight((current) =>
+        Math.abs(current - nextHeight) <= HEIGHT_EPSILON ? current : nextHeight,
       );
     },
     [],
@@ -72,42 +73,23 @@ export function ChatMessageComposer({
   const handleChangeText = useCallback(
     (text: string) => {
       onChangeText(text);
-      if (followTail) {
-        scrollToInputEnd();
+
+      if (!text) {
+        setContentHeight(MIN_INPUT_HEIGHT);
+        return;
+      }
+
+      if (scrollEnabled) {
+        requestAnimationFrame(() => {
+          const input = inputRef.current as NativeTextInput & {
+            scrollToEnd?: (options?: { animated?: boolean }) => void;
+          };
+          input?.scrollToEnd?.({ animated: false });
+        });
       }
     },
-    [followTail, onChangeText, scrollToInputEnd],
+    [onChangeText, scrollEnabled],
   );
-
-  const handleScroll = useCallback(
-    (event: {
-      nativeEvent: {
-        contentOffset: { y: number };
-        contentSize: { height: number };
-        layoutMeasurement: { height: number };
-      };
-    }) => {
-      const { contentOffset, contentSize, layoutMeasurement } =
-        event.nativeEvent;
-      const distanceFromBottom =
-        contentSize.height - (contentOffset.y + layoutMeasurement.height);
-      const isAtTail = distanceFromBottom <= SCROLL_TAIL_THRESHOLD;
-      setFollowTail((current) => (current === isAtTail ? current : isAtTail));
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (!value) {
-      setInputHeight(MIN_INPUT_HEIGHT);
-      setFollowTail(true);
-      return;
-    }
-
-    if (followTail) {
-      scrollToInputEnd();
-    }
-  }, [followTail, inputHeight, scrollToInputEnd, value]);
 
   const trimmed = value.trim();
   const canSend = !disabled && trimmed.length > 0;
@@ -120,7 +102,7 @@ export function ChatMessageComposer({
   return (
     <View style={[styles.root, disabled && styles.rootDisabled]}>
       <View style={styles.inputRow}>
-        <View style={[styles.inputShell, { height: inputHeight }]}>
+        <View style={styles.inputShell}>
           <NativeTextInput
             ref={inputRef}
             value={value}
@@ -133,23 +115,21 @@ export function ChatMessageComposer({
             scrollEnabled={scrollEnabled}
             blurOnSubmit={false}
             onContentSizeChange={handleContentSizeChange}
-            onScroll={scrollEnabled ? handleScroll : undefined}
-            scrollEventThrottle={16}
             textAlignVertical="top"
-            lineBreakModeIOS="wordWrapping"
-            textBreakStrategy="highQuality"
+            {...(Platform.OS === 'ios'
+              ? { lineBreakModeIOS: 'char' as const }
+              : null)}
             autoCapitalize="sentences"
             autoCorrect
             spellCheck
-            showsVerticalScrollIndicator={scrollEnabled}
             style={[
               styles.input,
-              {
-                height: inputHeight,
-                maxHeight: MAX_INPUT_HEIGHT,
-              },
+              scrollEnabled ? styles.inputAtMaxHeight : null,
               Platform.OS === 'android' ? styles.inputAndroid : null,
             ]}
+            {...(Platform.OS === 'android'
+              ? { textBreakStrategy: 'simple' as const }
+              : null)}
           />
         </View>
 
@@ -208,14 +188,18 @@ const getStyles = (theme: AppTheme) => {
     },
     input: {
       ...text.body,
-      flexShrink: 1,
       width: '100%',
+      minHeight: MIN_INPUT_HEIGHT,
+      maxHeight: MAX_INPUT_HEIGHT,
       color: theme.text.primary,
       paddingHorizontal: 14,
       paddingVertical: INPUT_PADDING_VERTICAL,
       lineHeight: LINE_HEIGHT,
       fontSize: 16,
       backgroundColor: 'transparent',
+    },
+    inputAtMaxHeight: {
+      height: MAX_INPUT_HEIGHT,
     },
     inputAndroid: {
       includeFontPadding: false,

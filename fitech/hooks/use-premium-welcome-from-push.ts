@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { ROUTES } from '@/constants/routes';
 import { refreshCurrentUserSession } from '@/lib/api/mutation-cache';
 import { useUserStore } from '@/stores/user';
 
@@ -33,9 +32,17 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
   }>();
 
   const [visible, setVisible] = useState(false);
+  const dismissedRef = useRef(false);
+
+  const clearPremiumWelcomeParams = useCallback(() => {
+    if (!isPremiumWelcomeParam(from, type)) return;
+    router.setParams({ type: undefined, from: undefined });
+  }, [from, router, type]);
 
   useEffect(() => {
-    if (!isPremiumWelcomeParam(from, type) || isTrainer) return;
+    if (!isPremiumWelcomeParam(from, type) || isTrainer || dismissedRef.current) {
+      return;
+    }
 
     let cancelled = false;
 
@@ -52,7 +59,7 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
         return;
       }
 
-      router.replace(ROUTES.home);
+      clearPremiumWelcomeParams();
     };
 
     void run();
@@ -60,14 +67,13 @@ export function usePremiumWelcomeFromPush(isTrainer: boolean) {
     return () => {
       cancelled = true;
     };
-  }, [from, isTrainer, router, type]);
+  }, [clearPremiumWelcomeParams, from, isTrainer, type]);
 
   const dismissPremiumWelcome = useCallback(() => {
+    dismissedRef.current = true;
     setVisible(false);
-    if (isPremiumWelcomeParam(from, type)) {
-      router.replace(ROUTES.home);
-    }
-  }, [from, router, type]);
+    clearPremiumWelcomeParams();
+  }, [clearPremiumWelcomeParams]);
 
   return {
     showPremiumWelcome: visible,
