@@ -9,6 +9,8 @@ export type MenuItem = {
   route?: AllowedPath;
   userOnly?: boolean;
   premiumOnly?: boolean;
+  /** Hidden in production store builds; visible only when `__DEV__` is true. */
+  devOnly?: boolean;
   destructive?: boolean;
   type?: 'logout';
 };
@@ -97,6 +99,7 @@ export const PROFILE_MENU_SECTIONS: {
         icon: 'logo-github',
         route: ROUTES.testTools,
         label: profileMenu.items.testTools,
+        devOnly: true,
       },
     ],
   },

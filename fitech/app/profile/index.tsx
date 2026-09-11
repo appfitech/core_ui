@@ -103,6 +103,10 @@ export default function ProfileScreen() {
                     return null;
                   }
 
+                  if (item.devOnly && !__DEV__) {
+                    return null;
+                  }
+
                   return (
                     <ListItem
                       key={`${item.label}-${index}`}

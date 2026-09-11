@@ -35,6 +35,9 @@
     "production": {
       "distribution": "store",
       "autoIncrement": true,
+      "env": {
+        "EXPO_ROUTER_IMPORT_MODE": "lazy"
+      },
       "ios": {
         "image": "macos-sequoia-15.5-xcode-26.0"
       }
